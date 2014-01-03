@@ -1,0 +1,57 @@
+Structure of the plugin
+----------------------
+Main plugin file that includes shortcodes/all.php
+that file includes the shortcodes.php from each subdirectory within the shortcodes directory.
+Each of these subdirectories will serve as the basis for the various libraries of shortcodes.
+Each subdirectory within the shortcodes directory will be named according the category/type of shortcodes it contains.
+
+The main plugin file will also include in admin/admin.php file.
+This file will include separate files for:
+	- Creating an admin page which will contain
+		- Documentation
+		- Intuitive interface for browsing the libraries of shortcodes
+		- Settings for the pluging (if necessary)
+		- Upsells (if we create any)
+	- Creating a button that shows up in the WYSIWYG toolbar which
+		- Generates a popup that allows users to browse or search for available shortcodes and insert them
+
+Shortcode libraries (categories) - basic list (to get ideas going)
+-------------------------------
+Design
+	- Buttons
+	- Columns
+	- Tabs
+	- Toggles
+	- Boxes
+	- Tables
+Forms
+	- Form (with $atts for the form settings (action, recipient, etc.))
+	- Input field
+	- Checkbox
+	- Radio group
+	- Textarea
+	- Hidden field
+	- Etc.
+Data
+	- Number of users (with $atts for role)
+	- Number of posts ($atts for specifying post_type)
+	- Number of comments
+Social
+	- Embed tweet
+	- Facebook like button
+	- Embed Github repo
+	- Number of Twitter followers
+	- Embed Facebook feed
+	- Embed Soundcloud song
+Woocommerce
+	- Latest product
+	- Most popular product
+	- Random product
+	- Most recent purchase
+	- Best deal
+	- On sale products
+	- Top reviewed products
+	- Total sales this month
+WordPress
+	- Author Gravatar
+	- Number of active plugins
