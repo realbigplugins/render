@@ -13,26 +13,12 @@ When I use snippets from other developers I generally leave a link here back to 
 them credit for being awesome and also as a reference for myself later. Not required but recommended.
 */
 
-$usl_cats = array(
-	array(
-		'Holiday'=>'Christmas',
-		'Month'=>'December',
-		'Day'=>25,
-		'Season'=>'Winter'
-		),
-	array(
-		'Holiday'=>'Halloween',
-		'Month'=>'October',
-		'Day'=>31,
-		'Season'=>'Fall'
-		),
-	array(
-		'Holiday'=>'New Years Day',
-		'Month'=>'January',
-		'Day'=>1,
-		'Season'=>'Winter'
-		)
-	);
+/* We will have one array that we can add to for categories */ 
+$usl_cats = array('Social', 'Technical');
+$usl_cats[]='WordPress';
+
+/* and another array we can add to for codes */
+$usl_codes = array();
 
 /*This is what I'd have in every shortcode file
 for adding the shortcodes created there
@@ -44,7 +30,7 @@ $kjm_add = array(
 		'Season'=>'Summer'
 		);
 
-$usl_cats[]=$kjm_add;
+$usl_codes[]=$kjm_add;
 
 //Generally I begin with a main plugin file (which would be this) and use it to assemble all the others together.
 //It is good practice to segment your code into different files. This is a good technique for including them:
