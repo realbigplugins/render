@@ -1,5 +1,12 @@
 <?php
-//Here is where we can make some cool shortcodes. Yippee!
+$usl_design_shortcodes = array(
+		'Title'=>'Button',
+		'Atts'=>'link, shape, size',
+		'Description'=>'Creates a sweet button',
+		'Example'=>'[button link="#" shape="round"] - Creates a round button'
+		);
+
+$usl_cats[]=$kjm_add;
 
 //[yippee] outputs the text in quotes
 //This part just creates a function

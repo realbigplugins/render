@@ -45,36 +45,23 @@ class View_All_Available_Shortcodes
 	 * Display the admin page
 	 */
 	public function Display_Admin_Page(){
-		global $shortcode_tags;
-
+		global $usl_cats;
         ?>
         <div class="wrap">
         	<div id="icon-options-general" class="icon32"><br /></div>
 			<h2>View All Available Shortcodes</h2>
 			<div class="section panel">
-				<p>This page will display all of the available shortcodes that you can use on your WordPress blog.</p>
-        	<table class="widefat importers">
-        		<tr><td><strong>Shortcodes</strong></td></tr>
-        <?php
+				<p>This is where you can view all the amazing shortcodes we gave you.</p>
 
-	        foreach($shortcode_tags as $code => $function)
-	        {
-	        	?>
-	        		<tr><td>[<?php echo $code; ?>]</td></tr>
-	        	<?php
-	        }
-	    ?>
-
-			</table>
 			<table class="widefat importers">
 				<tr><td>
 					<h1>Using a foreach loop with our multidimensional array</h1>
 					<ol>
-				<?php global $kjm_cats;
+				<?php 
 					for ($row = 0; $row < 99; $row++) {
 								echo "<li> Row #$row";
 								echo "<ul>";
-								foreach($kjm_cats[$row] as $key => $value) {
+								foreach($usl_cats[$row] as $key => $value) {
 									echo "<li>".$key.$value."</li>";
 								}
 								echo "</ul>";
