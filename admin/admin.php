@@ -1,24 +1,16 @@
 <?php
 /*
-This would be a great file for adding code that you want run in the backend. For example if you want to
-create an admin or a settings page, this would be the appropriate place to work.
+The contents of this file create the admin page that is found under settings.
+Within the contents of the page both the $usl_cats and $usl_codes arrays
+(which are defined in the plugin's main file) are used to create foreach loops.
 */
 
-if(is_admin())
-{
-	// Create the Paulund toolbar
+if(is_admin()) {
 	$shortcodes = new View_Ultimate_Shortcodes_Library();
 }
 
-/**
- * View all available shrotcodes on an admin page
- *
- * @author
- **/
-class View_Ultimate_Shortcodes_Library
-{
-	public function __construct()
-	{
+class View_Ultimate_Shortcodes_Library {
+	public function __construct() {
 		$this->Admin();
 	}
 	/**
@@ -53,51 +45,35 @@ class View_Ultimate_Shortcodes_Library
 			<h2>View All Available Shortcodes</h2>
 			<div class="section panel">
 				<p>This is where you can view all the amazing shortcodes we gave you.</p>
-<!--second try-->
 			<table class="widefat importers">
-				<tr><td>
-					<ul>
-				<?php 
-				foreach ($usl_cats as $category) { ?>
+			<?php foreach($usl_cats as $element) {
+				echo "<tr><td>";
+				echo "<h3>$element</h3>";
+				echo "<ul>";
+				foreach($usl_codes as $row) {
+				if($row["Category"] === $element) {
+					$usl_title=$row['Title'];
+					$usl_desc=$row['Description'];
+					$usl_code=$row['Code'];
+					$usl_example=$row['Example'];
+					$usl_atts=$row['Atts']; ?>
 					<li>
-						<?php echo "<h3>$category</h3>"; 
-						//start the codes loop
-						for ($row = 0; $row < count($usl_codes); $row++) { ?>
-						<ul>
-							<?php foreach ($usl_codes[$row] as $key => $value) {
-								echo "<li><b>".$key."</b> ".$value."</li>";
-							} ?>
-						</ul>
-						<?php } //end codes loop ?>
+						<h4><?php echo $usl_title; ?></h4>
+						<b>Shortcode: </b><code>[<?php echo $usl_code; ?>]</code><br/>
+						<?php if(!empty($usl_atts)) { ?><b>Attributes: </b><?php echo $usl_atts; ?><br/><?php } ?>
+						<b>Description: </b><?php echo $usl_desc; ?><br/>
+						<?php if(!empty($usl_example)) { ?><b>Example: </b><?php echo $usl_example; ?><?php } ?>
 					</li>
 				<?php }
-					?>
-					</ul>
-				</td></tr>
-			</table>
+				echo "</ul>";
+			} ?>
+			</td></tr>
+	<?php	} ?>
 
-<!--first try-->
-			<table class="widefat importers">
-				<tr><td>
-					<ol>
-				<?php 
-					for ($row = 0; $row < 5; $row++) {
-								echo "<li> Row #$row";
-								echo "<ul>";
-								foreach($usl_cats[$row] as $key => $value) {
-									echo "<li>".$key.$value."</li>";
-								}
-								echo "</ul>";
-								echo "</li>";
-
-								}
-					?>
-					</ol>
-				</td></tr>
 			</table>
 			</div>
 		</div>
 		<?php
 	}
-} // END class View_All_Available_Shortcodes
+} // END class
 ?>
