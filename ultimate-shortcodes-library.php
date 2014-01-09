@@ -26,4 +26,15 @@ $usl_codes = array();
 
 require_once (plugin_dir_path(__FILE__).'/admin/admin.php');
 require_once (plugin_dir_path(__FILE__).'/shortcodes/all.php');
+
+//Add stylesheet to admin page
+add_action('admin_enqueue_scripts', 'usl_admin_styles');
+function usl_admin_styles($page) {
+	if ( 'settings_page_view-all-shortcodes' != $page ) {
+		return;
+	}
+	wp_enqueue_style('usl-admin', plugins_url('css/style.css', __FILE__) );
+	wp_enqueue_script('usl_admin_scripts', plugin_dir_url( __FILE__ ) . 'js/script.js' );
+}
+
 ?>

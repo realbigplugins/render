@@ -1,8 +1,11 @@
 /*
-This file is where your CSS goes.
+Admin page styles
 */
-
-.my-custom-class {
-	color: #fff;
-	font-size: 18px;
+.postbox-container {
+	width: 100%;
+}
+.postbox {
+	width: 31%;
+	float: left;
+	margin: 0 10px 5px 0;
 }
