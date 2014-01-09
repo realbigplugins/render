@@ -60,10 +60,12 @@ class View_Ultimate_Shortcodes_Library {
 			$usl_atts=$row['Atts']; ?>
 		<div class="usl_codes">
 			<h4><?php echo $usl_title; ?></h4>
+			<p>
 			<b>Shortcode: </b><code>[<?php echo $usl_code; ?>]</code><br/>
 			<?php if(!empty($usl_atts)) { ?><b>Attributes: </b><?php echo $usl_atts; ?><br/><?php } ?>
 			<b>Description: </b><?php echo $usl_desc; ?><br/>
 			<?php if(!empty($usl_example)) { ?><b>Example: </b><code><?php echo $usl_example; ?></code><?php } ?>
+			</p>
 		</div>
 		<?php } } ?>
 		</div>
