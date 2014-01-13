@@ -21,6 +21,7 @@ to the $usl_codes array.
 
 /* We will have one array that we can add to for categories */ 
 $usl_cats = array();
+
 /* and another array we can add to for codes */
 $usl_codes = array();
 

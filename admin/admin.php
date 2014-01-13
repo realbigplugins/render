@@ -46,12 +46,12 @@ class View_Ultimate_Shortcodes_Library {
 	<div class="postbox-container">
 	<div id="normal-sortables" class="section panel meta-box-sortables ui-sortable">
 		<p>This is where you can view all the amazing shortcodes we gave you.</p>
-	<?php foreach($usl_cats as $element) { ?>
+	<?php foreach(apply_filters('usl_extend_cats', $usl_cats) as $element) { ?>
 		<div id="usl_<?php echo $element; ?>" class="postbox">
 		<div class='handlediv' title='Click to toggle' onclick="usl_tog_vis('<?php echo $element; ?>-inside')"><br/></div>
 		<h3 class='hndle'><span><?php echo $element; ?></span></h3>
 		<div id="<?php echo $element; ?>-inside" class='inside' style="display: none;">
-		<?php foreach($usl_codes as $row) {
+		<?php foreach(apply_filters('usl_extend_codes', $usl_codes) as $row) {
 		if($row["Category"] === $element) {
 			$usl_title=$row['Title'];
 			$usl_desc=$row['Description'];
@@ -73,6 +73,8 @@ class View_Ultimate_Shortcodes_Library {
 	<?php	} ?>
 	</div>
 	</div>
+	<?php
+	apply_filters('usl_extend_codes', $usl_codes); ?>
 </div>
 		<?php
 	}

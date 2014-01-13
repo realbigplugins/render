@@ -55,3 +55,25 @@ Woocommerce
 WordPress
 	- Author Gravatar
 	- Number of active plugins
+	-------------------------------
+Shortcode ideas:
+Today's date
+Current time
+Embed WordPress.org plugin
+Embed YouTube video
+Display PHP code
+Display HTML code
+Display CSS code
+Display Javacsript code
+Embed Soundcloud song
+Embed Tweet
+Number of registered users
+Total number of comments on this site
+Number of Posts
+Number of custom post types
+Restrict content
+Random Christmas lyric
+Days until Christmas
+Days until Halloween
+Days until next holiday
+Next holiday
