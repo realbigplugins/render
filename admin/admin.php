@@ -73,8 +73,6 @@ class View_Ultimate_Shortcodes_Library {
 	<?php	} ?>
 	</div>
 	</div>
-	<?php
-	apply_filters('usl_extend_codes', $usl_codes); ?>
 </div>
 		<?php
 	}
