@@ -8,7 +8,8 @@ $usl_cats[]='Design';
 Button
 -------------------------------*/
 function usl_button() {
-	return "Button time";
+	global $usl_add_style;
+	$usl_add_style = true;
 }
 add_shortcode('usl_button', 'usl_button');
 

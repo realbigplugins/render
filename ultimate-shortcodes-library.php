@@ -27,7 +27,18 @@ $usl_codes = array();
 
 require_once (plugin_dir_path(__FILE__).'/admin/admin.php');
 require_once (plugin_dir_path(__FILE__).'/shortcodes/all.php');
-
+//Register shortcodes stylesheet
+add_action('init', 'usl_reg_style');
+function usl_reg_style() {
+wp_register_style('usl-shortcodes', plugins_url('css/shortcodes.css', __FILE__));
+}
+add_action('wp_print_styles', 'usl_print_style');
+function usl_print_style() {
+	global $usl_add_style;
+	if ( ! $usl_add_style )
+		return;
+	wp_enqueue_style('usl-shortcodes');
+}
 //Add stylesheet to admin page
 add_action('admin_enqueue_scripts', 'usl_admin_styles');
 function usl_admin_styles($page) {
@@ -37,5 +48,4 @@ function usl_admin_styles($page) {
 	wp_enqueue_style('usl-admin', plugins_url('css/style.css', __FILE__) );
 	wp_enqueue_script('usl_admin_scripts', plugin_dir_url( __FILE__ ) . 'js/script.js' );
 }
-
 ?>
