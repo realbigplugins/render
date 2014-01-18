@@ -32,12 +32,15 @@ add_action('init', 'usl_reg_style');
 function usl_reg_style() {
 wp_register_style('usl-shortcodes', plugins_url('css/shortcodes.css', __FILE__));
 }
-add_action('wp_print_styles', 'usl_print_style');
-function usl_print_style() {
-	global $usl_add_style;
-	if ( ! $usl_add_style )
-		return;
+//Conditionally enqueue stylesheet
+add_filter('query', 'usl_print_style');
+function usl_print_style($posts) {
+if (empty($posts)) return $posts;
+global $usl_add_style;
+if ($usl_add_style) {
+	var_dump($posts);
 	wp_enqueue_style('usl-shortcodes');
+	return $posts; } else { return $posts; }
 }
 //Add stylesheet to admin page
 add_action('admin_enqueue_scripts', 'usl_admin_styles');
