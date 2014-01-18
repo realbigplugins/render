@@ -123,3 +123,20 @@ border-radius: 5px;
 -moz-border-radius: 0px;
 border-radius: 0px;
 }
+/* Box text */
+.usl-red h3 {
+color: #FDB7B7;
+}
+.usl-blue h3 {
+color: #B6BBCC;
+}
+.usl-green h3 {
+color: #294200;
+}
+.usl-orange h3 {
+color: #A03A00;
+}
+/* Box */
+.usl-box {
+	padding: 15px;
+}

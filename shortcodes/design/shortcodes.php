@@ -31,20 +31,28 @@ $usl_button = array(
 		);
 $usl_codes[]=$usl_button;
 /*-------------------------------
-Create a content box
+Box
 -------------------------------*/
-function usl_box() {
-	return "A content box";
+function usl_box($atts, $content = null) {
+	global $usl_add_style;
+	$usl_add_style = true;
+	extract(shortcode_atts(array(
+    'color'  => 'red',
+    'shape' => 'rounded',
+    'heading' => ''
+    ), $atts));
+
+    return "<div class='usl-$color usl-$shape usl-box'><h3>$heading</h3>".$content."</div>";
 }
 add_shortcode('usl_box', 'usl_box');
 
 $usl_box = array(
 		'Title'=>'Box',
 		'Code'=>'usl_box',
-		'Description'=>'Creates a sweet box',
-		'Example'=>'[box link="#" shape="round"]',
+		'Atts'=>'color(red, blue, green, orange), shape(square, rounded, round), heading',
+		'Description'=>'Creates a nice box for your content.',
+		'Example'=>'[usl_box color="blue" shape="round" heading="About me"]Lorem ipsem...[/usl_box]',
 		'Category'=>'Design'
 		);
 $usl_codes[]=$usl_box;
-
 ?>
