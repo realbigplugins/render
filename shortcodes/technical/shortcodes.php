@@ -3,7 +3,6 @@
 Header info
 -------------------------------*/
 $usl_cats[]='Technical';
-
 /*-------------------------------
 Get current month
 -------------------------------*/
@@ -18,5 +17,19 @@ $usl_codes[] = array(
 		'Description'=>'Outputs the current month.',
 		'Category'=>'Technical'
 		);
-
+/*-------------------------------
+Get current year
+-------------------------------*/
+function usl_year() {
+//$usl_date=getdate(date("Y"));
+//return "$usl_date[year]";
+	return date("Y");
+}
+add_shortcode( 'usl_year', 'usl_year' );
+$usl_codes[] = array(
+		'Title'=>'Current year',
+		'Code'=>'usl_year',
+		'Description'=>'Outputs the current year.',
+		'Category'=>'Technical'
+		);
 ?>

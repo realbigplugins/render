@@ -3,7 +3,6 @@
 Header info
 -------------------------------*/
 $usl_cats[]='Design';
-
 /*-------------------------------
 Button
 -------------------------------*/
@@ -21,7 +20,7 @@ function usl_button($atts, $content = null) {
 }
 add_shortcode('usl_button', 'usl_button');
 
-$usl_button = array(
+$usl_codes[] = array(
 		'Title'=>'Button',
 		'Code'=>'usl_button',
 		'Atts'=>'link, color(red, blue, green, orange), size(large, medium, small), shape(square, rounded, round)',
@@ -29,7 +28,6 @@ $usl_button = array(
 		'Example'=>'[usl_button link="#" size="large" color="blue" shape="round"]Click here[/usl_button]',
 		'Category'=>'Design'
 		);
-$usl_codes[]=$usl_button;
 /*-------------------------------
 Box
 -------------------------------*/
@@ -46,13 +44,12 @@ function usl_box($atts, $content = null) {
 }
 add_shortcode('usl_box', 'usl_box');
 
-$usl_box = array(
+$usl_codes[] = array(
 		'Title'=>'Box',
 		'Code'=>'usl_box',
 		'Atts'=>'color(red, blue, green, orange), shape(square, rounded, round), heading',
 		'Description'=>'Creates a nice box for your content.',
-		'Example'=>'[usl_box color="blue" shape="round" heading="About me"]Lorem ipsem...[/usl_box]',
+		'Example'=>'[usl_box color="blue" shape="round" heading="About me"]Lorem ipsum...[/usl_box]',
 		'Category'=>'Design'
 		);
-$usl_codes[]=$usl_box;
 ?>
