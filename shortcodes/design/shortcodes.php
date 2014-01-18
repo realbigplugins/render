@@ -7,18 +7,25 @@ $usl_cats[]='Design';
 /*-------------------------------
 Button
 -------------------------------*/
-function usl_button() {
+function usl_button($atts, $content = null) {
 	global $usl_add_style;
 	$usl_add_style = true;
+	extract(shortcode_atts(array(
+    'link' => '',
+    'size'   => 'small',
+    'color'  => 'red'
+    ), $atts));
+
+    return "<a href='$link' class='usl-$color usl-$size'>".$content."</a>";
 }
 add_shortcode('usl_button', 'usl_button');
 
 $usl_button = array(
 		'Title'=>'Button',
 		'Code'=>'usl_button',
-		'Atts'=>'link, shape, size',
+		'Atts'=>'link, color(red, blue), size(large, medium, small)',
 		'Description'=>'Creates a sweet button',
-		'Example'=>'[button link="#" shape="round"]',
+		'Example'=>'[usl_button link="#" size="large" color="blue"]Click here[/usl_button]',
 		'Category'=>'Design'
 		);
 $usl_codes[]=$usl_button;

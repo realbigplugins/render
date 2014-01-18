@@ -38,7 +38,6 @@ function usl_print_style($posts) {
 if (empty($posts)) return $posts;
 global $usl_add_style;
 if ($usl_add_style) {
-	var_dump($posts);
 	wp_enqueue_style('usl-shortcodes');
 	return $posts; } else { return $posts; }
 }
