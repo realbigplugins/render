@@ -21,8 +21,6 @@ $usl_codes[] = array(
 Get current year
 -------------------------------*/
 function usl_year() {
-//$usl_date=getdate(date("Y"));
-//return "$usl_date[year]";
 	return date("Y");
 }
 add_shortcode( 'usl_year', 'usl_year' );
