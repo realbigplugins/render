@@ -1,9 +1,5 @@
 <?php
 /*-------------------------------
-Header info
--------------------------------*/
-$usl_cats[]='Design';
-/*-------------------------------
 Button
 -------------------------------*/
 function usl_button($atts, $content = null) {
@@ -34,14 +30,4 @@ function usl_box($atts, $content = null) {
 
     return "<div class='usl-$color usl-$shape usl-box'><h3>$heading</h3>".$content."</div>";
 }
-add_shortcode('usl_box', 'usl_box');
-
-$usl_codes[] = array(
-		'Title'=>'Box',
-		'Code'=>'usl_box',
-		'Atts'=>'color(red, blue, green, orange), shape(square, rounded, round), heading',
-		'Description'=>'Creates a nice box for your content.',
-		'Example'=>'[usl_box color="blue" shape="round" heading="About me"]Lorem ipsum...[/usl_box]',
-		'Category'=>'Design'
-		);
-?>
+add_usl_shortcode('usl_box', 'usl_box', 'Box', 'Creates a nice box for your content.', 'Design', 'color(red, blue, green, orange), shape(square, rounded, round), heading', '[usl_box color="blue" shape="round" heading="About me"]Lorem ipsum...[/usl_box]');
