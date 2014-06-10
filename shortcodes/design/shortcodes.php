@@ -18,16 +18,8 @@ function usl_button($atts, $content = null) {
 
     return "<a href='$link' class='usl-$color usl-$size usl-$shape'>".$content."</a>";
 }
-add_shortcode('usl_button', 'usl_button');
+add_usl_shortcode('usl_button', 'usl_button', 'Button', 'Creates a sweet button', 'Design', 'link, color(red, blue, green, orange), size(large, medium, small), shape(square, rounded, round)', '[usl_button link="#" size="large" color="blue" shape="round"]Click here[/usl_button]');
 
-$usl_codes[] = array(
-		'Title'=>'Button',
-		'Code'=>'usl_button',
-		'Atts'=>'link, color(red, blue, green, orange), size(large, medium, small), shape(square, rounded, round)',
-		'Description'=>'Creates a sweet button',
-		'Example'=>'[usl_button link="#" size="large" color="blue" shape="round"]Click here[/usl_button]',
-		'Category'=>'Design'
-		);
 /*-------------------------------
 Box
 -------------------------------*/

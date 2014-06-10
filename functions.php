@@ -12,3 +12,4 @@ $usl_codes[] = array(
 		'Category' => $category
 		);
 }
+add_usl_shortcode('apple', 'grape', 'orange', 'banana', 'Design', 'pear', 'grapefruit');
