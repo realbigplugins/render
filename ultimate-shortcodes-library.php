@@ -50,4 +50,7 @@ function usl_admin_styles($page) {
 	wp_enqueue_style('usl-admin', plugins_url('css/style.css', __FILE__) );
 	wp_enqueue_script('usl_admin_scripts', plugin_dir_url( __FILE__ ) . 'js/script.js' );
 }
-?>
+
+/* REAL TESTING GOING ON HERE */
+require_once('functions.php');
+// Experimenting with real implementation
