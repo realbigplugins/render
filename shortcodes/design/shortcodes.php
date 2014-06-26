@@ -2,7 +2,7 @@
 /*-------------------------------
 Button
 -------------------------------*/
-function usl_button($atts, $content = null) {
+function usl_button( $atts, $content = null ) {
 	global $usl_add_style;
 	$usl_add_style = true;
 	extract(shortcode_atts(array(
@@ -14,12 +14,12 @@ function usl_button($atts, $content = null) {
 
     return "<a href='$link' class='usl-$color usl-$size usl-$shape'>".$content."</a>";
 }
-add_usl_shortcode('usl_button', 'usl_button', 'Button', 'Creates a sweet button', 'Design', 'link, color(red, blue, green, orange), size(large, medium, small), shape(square, rounded, round)', '[usl_button link="#" size="large" color="blue" shape="round"]Click here[/usl_button]');
+add_usl_shortcode( 'usl_button', 'usl_button', 'Button', 'Creates a sweet button', 'Design', 'link, color(red, blue, green, orange), size(large, medium, small), shape(square, rounded, round)', '[usl_button link="#" size="large" color="blue" shape="round"]Click here[/usl_button]' );
 
 /*-------------------------------
 Box
 -------------------------------*/
-function usl_box($atts, $content = null) {
+function usl_box( $atts, $content = null ) {
 	global $usl_add_style;
 	$usl_add_style = true;
 	extract(shortcode_atts(array(
@@ -30,4 +30,4 @@ function usl_box($atts, $content = null) {
 
     return "<div class='usl-$color usl-$shape usl-box'><h3>$heading</h3>".$content."</div>";
 }
-add_usl_shortcode('usl_box', 'usl_box', 'Box', 'Creates a nice box for your content.', 'Design', 'color(red, blue, green, orange), shape(square, rounded, round), heading', '[usl_box color="blue" shape="round" heading="About me"]Lorem ipsum...[/usl_box]');
+add_usl_shortcode( 'usl_box', 'usl_box', 'Box', 'Creates a nice box for your content.', 'Design', 'color(red, blue, green, orange), shape(square, rounded, round), heading', '[usl_box color="blue" shape="round" heading="About me"]Lorem ipsum...[/usl_box]' );
