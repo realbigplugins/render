@@ -140,3 +140,24 @@ color: #A03A00;
 .usl-box {
 	padding: 15px;
 }
+/* Columns */
+.usl-column-2, .usl-column-3, .usl-column-4, .usl-column-5 {
+	display: inline-block;
+	vertical-align: top;
+}
+.usl-column-2 {
+	width: 48%;
+	padding-right: 1%;
+}
+.usl-column-3 {
+	width: 31%;
+	padding-right: 1%;
+}
+.usl-column-4 {
+	width: 22%;
+	padding-right: 2.5%;
+}
+.usl-column-5 {
+	width: 17%;
+	padding-right: 2%;
+}
