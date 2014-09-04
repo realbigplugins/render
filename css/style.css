@@ -26,3 +26,6 @@ Admin page styles
 .hndle {
 	padding: 7px;
 }
+.post-title strong {
+    text-transform: capitalize;
+}

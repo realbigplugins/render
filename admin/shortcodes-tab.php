@@ -37,46 +37,151 @@ class View_Ultimate_Shortcodes_Library {
 	 * Display the admin page
 	 */
 	public function Display_USL_Page(){
+		global $shortcode_tags;
 		global $usl_cats;
 		global $usl_codes;
-        ?>
-<div class="wrap">
-	<div id="icon-options-general" class="icon32"><br /></div>
-	<h2>View All Available Shortcodes</h2>
-	<div class="postbox-container">
-	<div id="normal-sortables" class="section panel meta-box-sortables ui-sortable">
-		<p>This is where you can view all the amazing shortcodes we gave you.</p>
-	
-	<?php foreach(apply_filters('usl_extend_cats', $usl_cats) as $element) { ?>
-		<div id="usl_<?php echo $element; ?>" class="postbox">
-		<div class='handlediv' title='Click to toggle' onclick="usl_tog_vis('<?php echo $element; ?>-inside')"><br/></div>
-		<h3 class='hndle'><span><?php echo $element; ?></span></h3>
-		<div id="<?php echo $element; ?>-inside" class='inside' style="display: none;">
-		
-		<?php foreach($usl_codes as $row) {
-		if($row["Category"] === $element) {
-			$usl_title=$row['Title'];
-			$usl_desc=$row['Description'];
-			$usl_code=$row['Code'];
-			$usl_example=$row['Example'];
-			$usl_atts=$row['Atts']; ?>
-		<div class="usl_codes">
-			<h4><?php echo $usl_title; ?></h4>
-			<p>
-			<b>Shortcode: </b><code>[<?php echo $usl_code; ?>]</code><br/>
-			<?php if(!empty($usl_atts)) { ?><b>Attributes: </b><?php echo $usl_atts; ?><br/><?php } ?>
-			<b>Description: </b><?php echo $usl_desc; ?><br/>
-			<?php if(!empty($usl_example)) { ?><b>Example: </b><code><?php echo $usl_example; ?></code><?php } ?>
-			</p>
-		</div>
-		<?php } } // Shortcodes loop ?>
-		</div>
+		if ( $shortcode_tags ) {
+			foreach ( $shortcode_tags as $tag => $v ) {
+				$check = strpos( $tag, 'usl_' );
+				if ( $check === false ) {
+					$title = str_replace( '_', ' ', $tag );
+					$usl_codes[] = array(
+						'Code' => $tag,
+						'Title' => $title,
+						'Description' => '',
+						'Atts' => '',
+						'Category' => '',
+						'Example' => ''
+					);
+				} else { }
+			}
+		}
+		/*
+		echo '<pre>';
+		print_r( $shortcode_tags );
+		echo 'USL Codes';
+		print_r( $usl_codes );
+		echo 'USL Cats';
+		print_r( $usl_cats );
+		echo '</pre>';
+        */ ?>
+	<div class="wrap">
+		<div id="icon-options-general" class="icon32"><br /></div>
+		<h2>View All Available Shortcodes</h2>
+
+		<form id="posts-filter" action="" method="get">
+
+			<!--Search-->
+			<p class="search-box">
+				<label class="screen-reader-text" for="post-search-input">Search Shortcodes:</label>
+				<input type="search" id="post-search-input" name="s" value="" />
+				<input type="submit" name="" id="search-submit" class="button" value="Search Shortcodes"  /></p>
+
+			<!--Not sure-->
+			<input type="hidden" name="post_status" class="post_status_page" value="all" />
+			<input type="hidden" name="post_type" class="post_type_page" value="post" />
+
+			<input type="hidden" id="_wpnonce" name="_wpnonce" value="ad493613e7" />
+			<input type="hidden" name="_wp_http_referer" value="/wp-admin/edit.php" />
+			<div class="tablenav top">
+
+				<!--Date select-->
+				<div class="alignleft actions">
+
+					<!--Category select-->
+					<select name='cat' id='cat' class='postform' >
+						<option value='0'>View all categories</option>
+						<?php $level = 0;
+						if ( $usl_cats ) {
+							foreach ( $usl_cats as $cat ) {
+								$level = ++$level; ?>
+							<option class="level-<?php echo $level; ?>" value="<?php echo $cat; ?>"><?php echo $cat; ?></option>
+						<?php } }  ?>
+					</select>
+					<input type="submit" name="" id="post-query-submit" class="button" value="Filter"  />
+				</div>
+				<!--Number of items-->
+				<div class='tablenav-pages one-page'>
+					<span class="displaying-num"><?php echo count( $shortcode_tags ); ?> total shortcodes</span>
+				</div>
+
+				<br class="clear" />
+			</div>
+
+			<!--Actual list table-->
+			<table class="wp-list-table widefat fixed posts">
+				<!--Table header row-->
+				<thead>
+				<tr>
+					<th scope='col' id='title' class='manage-column column-title sortable desc'>
+						<a href="http://plugins.dev/wp-admin/edit.php?orderby=title&#038;order=asc">
+							<span>Title</span>
+							<span class="sorting-indicator"></span>
+						</a>
+					</th>
+					<th scope='col' id='author' class='manage-column column-code'>Code</th>
+					<th scope='col' id='categories' class='manage-column column-description'>Description</th>
+					<th scope='col' id='tags' class='manage-column column-atts'>Attributes</th>
+					<th scope='col' id='comments' class='manage-column column-category'>Category</th>
+					<th scope='col' id='date' class='manage-column column-example'>Example</th>
+				</tr>
+				</thead>
+
+				<tfoot>
+				<!--Table footer-->
+				<tr>
+					<th scope='col'  class='manage-column column-title sortable desc'>
+						<a href="http://plugins.dev/wp-admin/edit.php?orderby=title&#038;order=asc">
+							<span>Title</span>
+							<span class="sorting-indicator"></span>
+						</a>
+					</th>
+					<th scope='col'  class='manage-column column-code'>Code</th>
+					<th scope='col'  class='manage-column column-description'>Description</th>
+					<th scope='col'  class='manage-column column-atts'>Attributes</th>
+					<th scope='col'  class='manage-column column-category'>Category</th>
+					<th scope='col'  class='manage-column column-example sortable asc'>Example</th>
+				</tr>
+				</tfoot>
+
+				<tbody id="the-list">
+
+				<!--The rows-->
+
+				<!--Row 1-->
+				<?php
+				if ( $usl_codes ) {
+					foreach ( $usl_codes as $key => $code ) {
+				?>
+				<tr class="post-<?php echo $key; ?> type-post status-publish format-standard hentry category-uncategorized alternate iedit author-self level-0">
+					<td class="post-title page-title column-title">
+						<strong><?php echo $code['Title']; ?></strong>
+						<div class="locked-info"><span class="locked-avatar"></span> <span class="locked-text"></span></div>
+						<div class="row-actions">
+							<span class='edit'>
+								<a href="#" title="Copy this shortcode">Copy to clipboard</a>
+							</span>
+						</div>
+					</td>
+					<td class="code column-code">
+						[<?php echo $code['Code']; ?>]
+					</td>
+					<td class="description column-description">
+						<?php echo $code['Description']; ?>
+					</td>
+					<td class="atts column-atts"><?php echo $code['Atts']; ?></td>
+					<td class="category column-category">
+						<?php echo $code['Category']; ?>
+					</td>
+					<td class="example column-example">
+						<?php echo $code['Example']; ?>
+					</td>
+				</tr>
+					<?php } } ?>
+				</tbody>
+			</table>
+		</form>
 	</div>
-	<?php	} // Categories loop ?>
-	</div>
-	</div>
-</div>
 		<?php
 	}
 } // END class
-?>

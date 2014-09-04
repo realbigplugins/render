@@ -2,7 +2,7 @@
 /*
 Plugin Name: Ultimate Shortcodes Library
 Description: This plugin is the only shortcode plugin you will ever need.
-Version: 0.2
+Version: 0.2.1
 Author: Kyle Maurer
 Author URI: http://realbigmarketing.com/staff/kyle
 */
