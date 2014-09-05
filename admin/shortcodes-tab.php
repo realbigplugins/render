@@ -50,7 +50,7 @@ class View_Ultimate_Shortcodes_Library {
 						'Title' => $title,
 						'Description' => '',
 						'Atts' => '',
-						'Category' => usl_other_shortcodes( $tag ),
+						'Category' => usl_core_shortcodes( $tag ),
 						'Example' => ''
 					);
 				} else { }
@@ -78,11 +78,11 @@ class View_Ultimate_Shortcodes_Library {
 				<input type="submit" name="" id="search-submit" class="button" value="Search Shortcodes"  /></p>
 
 			<!--Not sure-->
-			<input type="hidden" name="post_status" class="post_status_page" value="all" />
-			<input type="hidden" name="post_type" class="post_type_page" value="post" />
+			<!--<input type="hidden" name="post_status" class="post_status_page" value="all" />-->
+			<!--<input type="hidden" name="post_type" class="post_type_page" value="post" />-->
 
-			<input type="hidden" id="_wpnonce" name="_wpnonce" value="ad493613e7" />
-			<input type="hidden" name="_wp_http_referer" value="/wp-admin/edit.php" />
+			<!--<input type="hidden" id="_wpnonce" name="_wpnonce" value="ad493613e7" />-->
+			<!--<input type="hidden" name="_wp_http_referer" value="/wp-admin/edit.php" />-->
 			<div class="tablenav top">
 
 				<!--Date select-->
@@ -150,8 +150,13 @@ class View_Ultimate_Shortcodes_Library {
 
 				<!--Row 1-->
 				<?php
+				if ( isset( $_GET['cat'] ) ) {
+					$category = $_GET['cat'];
+				}
+
 				if ( $usl_codes ) {
 					foreach ( $usl_codes as $key => $code ) {
+						if ( isset( $category ) && $code['Category'] == $category OR !isset( $category ) ) {
 				?>
 				<tr class="post-<?php echo $key; ?> type-post status-publish format-standard hentry category-uncategorized alternate iedit author-self level-0">
 					<td class="post-title page-title column-title">
@@ -177,7 +182,7 @@ class View_Ultimate_Shortcodes_Library {
 						<?php echo $code['Example']; ?>
 					</td>
 				</tr>
-					<?php } } ?>
+					<?php } else { } } } ?>
 				</tbody>
 			</table>
 		</form>

@@ -31,43 +31,18 @@ global $usl_codes;
  *
  * @return string
  */
-function usl_other_shortcodes( $code ) {
-	switch ( $code ) {
-		case 'embed':
-			$code = 'Media';
-			return $code;
-			break;
-		case 'wp_caption':
-			$code = 'Media';
-			return $code;
-			break;
-		case 'caption':
-			$code = 'Media';
-			return $code;
-			break;
-		case 'gallery':
-			$code = 'Media';
-			return $code;
-			break;
-		case 'playlist':
-			$code = 'Media';
-			return $code;
-			break;
-		case 'audio':
-			$code = 'Media';
-			return $code;
-			break;
-		case 'video':
-			$code = 'Media';
-			return $code;
-			break;
-		case 'gravityform':
-			$code = 'Forms';
-			return $code;
-			break;
-		case 'gravityforms':
-			$code = 'Forms';
-			return $code;
-			break;
+function usl_core_shortcodes( $code ) {
+	$core = array(
+		'embed',
+		'caption',
+		'wp_caption',
+		'gallery',
+		'playlist',
+		'audio',
+		'video'
+	);
+	if ( in_array( $code, $core ) ) {
+		$code = 'Media';
+		return $code;
 	}
 }
