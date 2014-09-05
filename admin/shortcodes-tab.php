@@ -50,7 +50,7 @@ class View_Ultimate_Shortcodes_Library {
 						'Title' => $title,
 						'Description' => '',
 						'Atts' => '',
-						'Category' => '',
+						'Category' => usl_other_shortcodes( $tag ),
 						'Example' => ''
 					);
 				} else { }

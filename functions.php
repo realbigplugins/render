@@ -25,3 +25,49 @@ global $usl_codes;
 		return $usl_cats;
 	}
 }
+
+/**
+ * @param $code
+ *
+ * @return string
+ */
+function usl_other_shortcodes( $code ) {
+	switch ( $code ) {
+		case 'embed':
+			$code = 'Media';
+			return $code;
+			break;
+		case 'wp_caption':
+			$code = 'Media';
+			return $code;
+			break;
+		case 'caption':
+			$code = 'Media';
+			return $code;
+			break;
+		case 'gallery':
+			$code = 'Media';
+			return $code;
+			break;
+		case 'playlist':
+			$code = 'Media';
+			return $code;
+			break;
+		case 'audio':
+			$code = 'Media';
+			return $code;
+			break;
+		case 'video':
+			$code = 'Media';
+			return $code;
+			break;
+		case 'gravityform':
+			$code = 'Forms';
+			return $code;
+			break;
+		case 'gravityforms':
+			$code = 'Forms';
+			return $code;
+			break;
+	}
+}
