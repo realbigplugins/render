@@ -56,6 +56,24 @@ class View_Ultimate_Shortcodes_Library {
 				} else { }
 			}
 		}
+
+		// GET vars
+		if ( isset( $_GET['cat'] ) ) {
+			$category = $_GET['cat'];
+		}
+		$order = null;
+		if ( isset( $_GET['order'] ) ) {
+			$order = $_GET['order'];
+		}
+		$orderby = null;
+		if ( isset( $_GET['orderby'] ) ) {
+			$orderby = $_GET['orderby'];
+		}
+		if ( isset( $order ) && $order == 'asc' ) {
+			usort( $usl_codes, 'usl_sort_title_asc' );
+		} elseif ( isset( $order ) && $order == 'desc' ) {
+			usort( $usl_codes, 'usl_sort_title_desc' );
+		}
 		/*
 		echo '<pre>';
 		print_r( $shortcode_tags );
@@ -64,7 +82,8 @@ class View_Ultimate_Shortcodes_Library {
 		echo 'USL Cats';
 		print_r( $usl_cats );
 		echo '</pre>';
-        */ ?>
+		*/
+		?>
 	<div class="wrap">
 		<div id="icon-options-general" class="icon32"><br /></div>
 		<h2>View All Available Shortcodes</h2>
@@ -72,10 +91,12 @@ class View_Ultimate_Shortcodes_Library {
 		<form id="posts-filter" action="" method="get">
 
 			<!--Search-->
+			<!--
 			<p class="search-box">
 				<label class="screen-reader-text" for="post-search-input">Search Shortcodes:</label>
 				<input type="search" id="post-search-input" name="s" value="" />
 				<input type="submit" name="" id="search-submit" class="button" value="Search Shortcodes"  /></p>
+			-->
 
 			<!--Not sure-->
 			<!--<input type="hidden" name="post_status" class="post_status_page" value="all" />-->
@@ -114,7 +135,7 @@ class View_Ultimate_Shortcodes_Library {
 				<thead>
 				<tr>
 					<th scope='col' id='title' class='manage-column column-title sortable desc'>
-						<a href="http://plugins.dev/wp-admin/edit.php?orderby=title&#038;order=asc">
+						<a href="?orderby=title&#038;order=<?php if ( $order == 'asc' ) { echo 'desc'; } else { echo 'asc'; } ?>&page=view-all-shortcodes">
 							<span>Title</span>
 							<span class="sorting-indicator"></span>
 						</a>
@@ -131,7 +152,7 @@ class View_Ultimate_Shortcodes_Library {
 				<!--Table footer-->
 				<tr>
 					<th scope='col'  class='manage-column column-title sortable desc'>
-						<a href="http://plugins.dev/wp-admin/edit.php?orderby=title&#038;order=asc">
+						<a href="?orderby=title&#038;order=<?php if ( $order == 'asc' ) { echo 'desc'; } else { echo 'asc'; } ?>&page=view-all-shortcodes">
 							<span>Title</span>
 							<span class="sorting-indicator"></span>
 						</a>
@@ -150,9 +171,6 @@ class View_Ultimate_Shortcodes_Library {
 
 				<!--Row 1-->
 				<?php
-				if ( isset( $_GET['cat'] ) ) {
-					$category = $_GET['cat'];
-				}
 				if ( $usl_codes ) {
 					foreach ( $usl_codes as $key => $code ) {
 						if ( isset( $category ) && $code['Category'] == $category OR !isset( $category ) OR $category == 'All' ) {
@@ -160,12 +178,14 @@ class View_Ultimate_Shortcodes_Library {
 				<tr class="post-<?php echo $key; ?> type-post status-publish format-standard hentry category-uncategorized alternate iedit author-self level-0">
 					<td class="post-title page-title column-title">
 						<strong><?php echo $code['Title']; ?></strong>
+						<!--
 						<div class="locked-info"><span class="locked-avatar"></span> <span class="locked-text"></span></div>
 						<div class="row-actions">
 							<span class='edit'>
 								<a href="#" title="Copy this shortcode">Copy to clipboard</a>
 							</span>
 						</div>
+						-->
 					</td>
 					<td class="code column-code">
 						[<?php echo $code['Code']; ?>]

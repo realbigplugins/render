@@ -46,3 +46,16 @@ function usl_core_shortcodes( $code ) {
 		return $code;
 	}
 }
+
+/**
+ * @param $a
+ * @param $b
+ *
+ * @return mixed
+ */
+function usl_sort_title_asc($a, $b) {
+	return strcasecmp( $b['Title'], $a['Title'] );
+}
+function usl_sort_title_desc($a, $b) {
+	return strcasecmp( $a['Title'], $b['Title'] );
+}

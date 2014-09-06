@@ -2,7 +2,7 @@
 /*
 Plugin Name: Ultimate Shortcodes Library
 Description: This plugin is the only shortcode plugin you will ever need.
-Version: 0.2.1
+Version: 0.3
 Author: Kyle Maurer
 Author URI: http://realbigmarketing.com/staff/kyle
 */
@@ -17,6 +17,7 @@ Within each shortcode file, if necessary a new category may be added to the
 $usl_cats array. For each individual shortcode, an array is created with the 
 shortcode's Title, Description, Atts, Code and Category. All of this is added
 to the $usl_codes array.
+// TODO Update this description
 */
 
 /* We will have one array that we can add to for categories */ 
