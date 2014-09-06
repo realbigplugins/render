@@ -79,7 +79,7 @@ class View_Ultimate_Shortcodes_Library {
 
 			<!--Not sure-->
 			<!--<input type="hidden" name="post_status" class="post_status_page" value="all" />-->
-			<!--<input type="hidden" name="post_type" class="post_type_page" value="post" />-->
+			<input type="hidden" name="page" class="post_type_page" value="view-all-shortcodes" />
 
 			<!--<input type="hidden" id="_wpnonce" name="_wpnonce" value="ad493613e7" />-->
 			<!--<input type="hidden" name="_wp_http_referer" value="/wp-admin/edit.php" />-->
@@ -90,7 +90,7 @@ class View_Ultimate_Shortcodes_Library {
 
 					<!--Category select-->
 					<select name='cat' id='cat' class='postform' >
-						<option value='0'>View all categories</option>
+						<option value='All'>View all categories</option>
 						<?php $level = 0;
 						if ( $usl_cats ) {
 							foreach ( $usl_cats as $cat ) {
@@ -98,7 +98,7 @@ class View_Ultimate_Shortcodes_Library {
 							<option class="level-<?php echo $level; ?>" value="<?php echo $cat; ?>"><?php echo $cat; ?></option>
 						<?php } }  ?>
 					</select>
-					<input type="submit" name="" id="post-query-submit" class="button" value="Filter"  />
+					<input type="submit" name="" id="shortcode-query-submit" class="button" value="Filter"  />
 				</div>
 				<!--Number of items-->
 				<div class='tablenav-pages one-page'>
@@ -153,10 +153,9 @@ class View_Ultimate_Shortcodes_Library {
 				if ( isset( $_GET['cat'] ) ) {
 					$category = $_GET['cat'];
 				}
-
 				if ( $usl_codes ) {
 					foreach ( $usl_codes as $key => $code ) {
-						if ( isset( $category ) && $code['Category'] == $category OR !isset( $category ) ) {
+						if ( isset( $category ) && $code['Category'] == $category OR !isset( $category ) OR $category == 'All' ) {
 				?>
 				<tr class="post-<?php echo $key; ?> type-post status-publish format-standard hentry category-uncategorized alternate iedit author-self level-0">
 					<td class="post-title page-title column-title">
