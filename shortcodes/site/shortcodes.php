@@ -34,3 +34,33 @@ add_usl_shortcode(
 	'Gets the title of the current site.',
 	'Site'
 );
+/**
+ * Site tagline
+ *
+ * @return string|void
+ */
+function usl_site_tagline() {
+	return get_bloginfo( 'description' );
+}
+add_usl_shortcode(
+	'usl_site_tagline',
+	'usl_site_tagline',
+	'Site Tagline',
+	'Gets the tagline of the current site.',
+	'Site'
+);
+/**
+ * Site admin email
+ *
+ * @return string|void
+ */
+function usl_site_admin_email() {
+	return get_bloginfo( 'admin_email' );
+}
+add_usl_shortcode(
+	'usl_site_admin_email',
+	'usl_site_admin_email',
+	'Site Admin Email',
+	'Gets the admin email of the current site.',
+	'Site'
+);
