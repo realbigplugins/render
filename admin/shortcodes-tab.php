@@ -23,6 +23,7 @@ class View_Ultimate_Shortcodes_Library {
 	/**
 	 * Function for the admin menu to create a menu item in the settings tree
 	 */
+	// TODO Make this a top level menu item
 	public function Admin_Menu(){
 		add_submenu_page(
 			'options-general.php',

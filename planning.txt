@@ -10,7 +10,7 @@ This file will include separate files for:
 	- Creating an admin page which will contain
 		- Documentation
 		- Intuitive interface for browsing the libraries of shortcodes
-		- Settings for the pluging (if necessary)
+		- Settings for the plugin (if necessary)
 		- Upsells (if we create any)
 	- Creating a button that shows up in the WYSIWYG toolbar which
 		- Generates a popup that allows users to browse or search for available shortcodes and insert them
@@ -77,3 +77,31 @@ Days until Christmas
 Days until Halloween
 Days until next holiday
 Next holiday
+
+CORE VS. EXTENSIONS
+------------------
+User                    Core
+Time                    Core
+Code                    Extension
+Design                  Core
+Media                   Core
+Forms                   Extension
+Social                  Extension
+Gravity Forms           Extension
+Foundation              Extension
+Bootstrap               Extension
+Woocommerce             Extension
+Advanced Custom Fields  Extension
+Google Analytics        Extension
+Github                  Extension
+WordPress.org           Extension
+RSS                     Core
+Loop                    Core
+Meta                    Core
+Comments                Core
+Holiday                 Extension
+Lorem Ipsum             Extension
+WP Help                 Extension
+Permission              Extension
+Site                    Core
+CPT Onomies             Extension
