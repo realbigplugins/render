@@ -33,6 +33,8 @@ Using this plugin is very simple. All you have to do is:
 * Added Site Tagline shortcode
 * Added site admin email shortcode
 * Added general site shortcode which accepts a parameter
+* Added author shortcode
+* Added Meta shortcodes
 * Added shortcode for listing all shortcodes
 * Fixed issue with conditionally loading stylesheet and scripts on admin side
 * Made Shortcodes a top level menu item

@@ -3,7 +3,8 @@ $sources = array(
 	'design',
 	'time',
 	'user',
-	'site'
+	'site',
+	'meta'
 );
 foreach ( $sources as $source ) {
 	include_once( $source . '/shortcodes.php' );
