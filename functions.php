@@ -15,15 +15,6 @@ global $usl_codes;
 			'Example' => $example,
 			'Category' => $category
 			);
-
-	// Add the category if it isn't there already
-	global $usl_cats;
-	if (in_array( $category, $usl_cats )) {
-		return $usl_cats;
-	} else {
-		$usl_cats[]=$category;
-		return $usl_cats;
-	}
 }
 
 /**

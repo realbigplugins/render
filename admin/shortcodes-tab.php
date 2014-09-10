@@ -42,7 +42,6 @@ class View_Ultimate_Shortcodes_Library {
 	 */
 	public function Display_USL_Page() {
 		global $shortcode_tags;
-		global $usl_cats;
 		global $usl_codes;
 		if ( $shortcode_tags ) {
 			foreach ( $shortcode_tags as $tag => $v ) {
@@ -61,7 +60,13 @@ class View_Ultimate_Shortcodes_Library {
 				}
 			}
 		}
-
+		$categories = array();
+		foreach( $usl_codes as $code ) {
+			$c = $code['Category'];
+			if ( !in_array( $c, $categories) ) {
+				$categories[] = $c;
+			} else {}
+		}
 		// GET vars
 		if ( isset( $_GET['cat'] ) ) {
 			$category = $_GET['cat'];
@@ -92,7 +97,6 @@ class View_Ultimate_Shortcodes_Library {
 		<div class="wrap">
 			<div id="icon-options-general" class="icon32"><br/></div>
 			<h2>View All Available Shortcodes</h2>
-
 			<form id="posts-filter" action="" method="get">
 
 				<input type="hidden" name="page" class="post_type_page" value="view-all-shortcodes"/>
@@ -106,8 +110,8 @@ class View_Ultimate_Shortcodes_Library {
 						<select name='cat' id='cat' class='postform'>
 							<option value='All'>View all categories</option>
 							<?php $level = 0;
-							if ( $usl_cats ) {
-								foreach ( $usl_cats as $cat ) {
+							if ( $categories ) {
+								foreach ( $categories as $cat ) {
 									$level = ++ $level; ?>
 									<option class="level-<?php echo $level; ?>"
 									        value="<?php echo $cat; ?>"><?php echo $cat; ?></option>
