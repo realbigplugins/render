@@ -20,12 +20,33 @@
  */
 
 /**
+ * Site
+ *
+ * @return string|void
+ */
+function usl_site( $atts, $content = null ) {
+	extract(shortcode_atts(array(
+		'par' => 'name'
+	), $atts));
+	return get_bloginfo( $par );
+}
+add_usl_shortcode(
+	'usl_site',
+	'usl_site',
+	'Site',
+	'Gets specified info about the current site.',
+	'Site',
+	'par',
+	'[usl_site par="description"]'
+);
+/**
  * Site title
  *
  * @return string|void
  */
-function usl_site_title() {
-	return get_bloginfo( 'name' );
+function usl_site_title( $atts ) {
+	$atts = shortcode_atts( array( 'par' => 'name' ), $atts );
+	return usl_site( $atts );
 }
 add_usl_shortcode(
 	'usl_site_title',
@@ -39,8 +60,9 @@ add_usl_shortcode(
  *
  * @return string|void
  */
-function usl_site_tagline() {
-	return get_bloginfo( 'description' );
+function usl_site_tagline( $atts ) {
+	$atts = shortcode_atts( array( 'par' => 'description' ), $atts );
+	return usl_site( $atts );
 }
 add_usl_shortcode(
 	'usl_site_tagline',
@@ -54,8 +76,9 @@ add_usl_shortcode(
  *
  * @return string|void
  */
-function usl_site_admin_email() {
-	return get_bloginfo( 'admin_email' );
+function usl_site_admin_email( $atts ) {
+	$atts = shortcode_atts( array( 'par' => 'admin_email' ), $atts );
+	return usl_site( $atts );
 }
 add_usl_shortcode(
 	'usl_site_admin_email',
