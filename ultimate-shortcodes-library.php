@@ -53,9 +53,10 @@ function usl_print_style( $posts ) {
 //Add stylesheet to admin page
 add_action( 'admin_enqueue_scripts', 'usl_admin_styles' );
 function usl_admin_styles( $page ) {
-	if ( 'settings_page_view-all-shortcodes' != $page ) {
+	if ( 'toplevel_page_view-all-shortcodes' == $page OR 'shortcodes_page_shortcodes-addons' == $page ) {
+		wp_enqueue_style( 'usl-admin', plugins_url( 'css/style.css', __FILE__ ) );
+		wp_enqueue_script( 'usl_admin_scripts', plugin_dir_url( __FILE__ ) . 'js/script.js' );
+	} else {
 		return;
 	}
-	wp_enqueue_style( 'usl-admin', plugins_url( 'css/style.css', __FILE__ ) );
-	wp_enqueue_script( 'usl_admin_scripts', plugin_dir_url( __FILE__ ) . 'js/script.js' );
 }

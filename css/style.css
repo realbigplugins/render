@@ -29,3 +29,45 @@ Admin page styles
 .post-title strong {
     text-transform: capitalize;
 }
+/* Addons page */
+[class^="usl-col-"], [class*=" usl-col-"] {
+    display: inline-block;
+    margin-right: -4px !important;
+    vertical-align: top;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.usl-col-three {
+    width:33.3333%;
+}
+.usl-addon {
+    text-align: center;
+    padding: 10px;
+}
+.usl-addon-container {
+    background-color: #fff;
+    text-align: center;
+    padding: 10px;
+    min-height: 223px;
+}
+.usl-addon a{
+    text-decoration: none;
+}
+.usl-addon span {
+    font-size: 130px;
+    height: auto;
+    width: auto;
+}
+.usl-addon h4 { margin: 0 0 20px;
+}
+@media screen and (max-width: 700px) {
+    .usl-addon {
+        width: 50% !important;
+    }
+}
+@media screen and (max-width: 450px) {
+    .usl-addon {
+        width:100% !important;
+    }
+}
