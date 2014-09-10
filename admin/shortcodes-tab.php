@@ -25,13 +25,15 @@ class View_Ultimate_Shortcodes_Library {
 	 */
 	// TODO Make this a top level menu item
 	public function Admin_Menu(){
-		add_submenu_page(
-			'options-general.php',
+		add_menu_page(
 			'Ultimate Shortcodes Library',
-			'Ultimate Shortcodes Library',
+			'Shortcodes',
 			'manage_options',
 			'view-all-shortcodes',
-			array(&$this,'Display_USL_Page'));
+			array( $this, 'Display_USL_Page' ),
+			'dashicons-editor-code',
+			82.9
+		);
 	}
 
 	/**
