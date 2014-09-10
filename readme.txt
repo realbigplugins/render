@@ -23,7 +23,7 @@ Using this plugin is very simple. All you have to do is:
 
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
-3. View available shortcodes by going to Settings - >Ultimate Shortcodes Library
+3. View available shortcodes by going to Shortcodes in the admin menu
 
 
 == Changelog ==
@@ -32,6 +32,12 @@ Using this plugin is very simple. All you have to do is:
 * Added Site Title shortcode
 * Added Site Tagline shortcode
 * Added site admin email shortcode
+* Added general site shortcode which accepts a parameter
+* Added shortcode for listing all shortcodes
+* Fixed issue with conditionally loading stylesheet and scripts on admin side
+* Made Shortcodes a top level menu item
+* Added Addons submenu
+* Included Holiday Shortcodes as an item on the Addons tab
 
 = 0.2 =
 * Vastly improved extension functionality
