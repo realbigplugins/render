@@ -28,6 +28,7 @@ function usl_reg_style() {
 
 //Conditionally enqueue stylesheet
 add_filter( 'query', 'usl_print_style' );
+add_filter( 'the_post', 'usl_print_style' );
 function usl_print_style( $posts ) {
 	if ( empty( $posts ) ) {
 		return $posts;
