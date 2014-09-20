@@ -28,7 +28,7 @@ function usl_box( $atts, $content = null ) {
     'heading' => ''
     ), $atts));
 
-    return "<div class='usl-$color usl-$shape usl-box'><h3>$heading</h3>".$content."</div>";
+    return "<div class='usl-$color usl-$shape usl-box'><h3>$heading</h3>" . do_shortcode($content) . "</div>";
 }
 add_usl_shortcode( 'usl_box', 'usl_box', 'Box', 'Creates a nice box for your content.', 'Design', 'color(red, blue, green, orange), shape(square, rounded, round), heading', '[usl_box color="blue" shape="round" heading="About me"]Lorem ipsum...[/usl_box]' );
 
@@ -39,25 +39,25 @@ function usl_column_two( $atts, $content = null ) {
     global $usl_add_style;
     $usl_add_style = true;
 
-    return '<div class="usl-column-2">'. $content .'</div>';
+    return '<div class="usl-column-2">' . do_shortcode($content) . '</div>';
 }
 function usl_column_three( $atts, $content = null ) {
     global $usl_add_style;
     $usl_add_style = true;
 
-    return '<div class="usl-column-3">'. $content .'</div>';
+    return '<div class="usl-column-3">' . do_shortcode($content) . '</div>';
 }
 function usl_column_four( $atts, $content = null ) {
     global $usl_add_style;
     $usl_add_style = true;
 
-    return '<div class="usl-column-4">'. $content .'</div>';
+    return '<div class="usl-column-4">' . do_shortcode($content) . '</div>';
 }
 function usl_column_five( $atts, $content = null ) {
     global $usl_add_style;
     $usl_add_style = true;
 
-    return '<div class="usl-column-5">'. $content .'</div>';
+    return '<div class="usl-column-5">' . do_shortcode($content) . '</div>';
 }
 add_usl_shortcode( 'usl_column_two', 'usl_column_two', 'Column 2', 'Creates a nice column that is half the width of the container.', 'Design', 'N/A', '[usl_column_two]Lorem ipsum...[/usl_column_two]' );
 add_usl_shortcode( 'usl_column_three', 'usl_column_three', 'Column 3', 'Creates a nice column that is one third the width of the container.', 'Design', 'N/A', '[usl_column_three]Lorem ipsum...[/usl_column_three]' );
