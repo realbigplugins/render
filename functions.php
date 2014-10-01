@@ -3,18 +3,18 @@
 function add_usl_shortcode( $name, $function, $title, $desc, $category, $atts = '', $example = '' ) {
 
 // Create the actual shortcode
-add_shortcode( $name, $function );
+	add_shortcode( $name, $function );
 
 // Add the shortcode info to our list
-global $usl_codes;
+	global $usl_codes;
 	$usl_codes[] = array(
-			'Title' => $title,
-			'Code' => $name,
-			'Atts' => $atts,
-			'Description' => $desc,
-			'Example' => $example,
-			'Category' => $category
-			);
+		'Title'       => $title,
+		'Code'        => $name,
+		'Atts'        => $atts,
+		'Description' => $desc,
+		'Example'     => $example,
+		'Category'    => $category
+	);
 }
 
 /**
@@ -34,6 +34,7 @@ function usl_core_shortcodes( $code ) {
 	);
 	if ( in_array( $code, $core ) ) {
 		$code = 'Media';
+
 		return $code;
 	}
 }
@@ -44,9 +45,10 @@ function usl_core_shortcodes( $code ) {
  *
  * @return mixed
  */
-function usl_sort_title_asc($a, $b) {
+function usl_sort_title_asc( $a, $b ) {
 	return strcasecmp( $b['Title'], $a['Title'] );
 }
-function usl_sort_title_desc($a, $b) {
+
+function usl_sort_title_desc( $a, $b ) {
 	return strcasecmp( $a['Title'], $b['Title'] );
 }

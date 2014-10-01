@@ -53,3 +53,27 @@ function usl_admin_styles( $page ) {
 		return;
 	}
 }
+/**
+ * Tiny MCE button
+ */
+add_action( 'init', 'usl_tinymce_buttons' );
+add_action( 'admin_print_styles', 'usl_tinymce_button_style' );
+function usl_tinymce_buttons() {
+	add_filter( "mce_external_plugins", "usl_add_tinymce_buttons" );
+	add_filter( 'mce_buttons', 'usl_register_tinymce_buttons' );
+}
+
+function usl_add_tinymce_buttons( $plugin_array ) {
+	$plugin_array['usl'] = plugins_url( '/js/tinymce.js', __FILE__ );
+
+	return $plugin_array;
+}
+
+function usl_register_tinymce_buttons( $buttons ) {
+	array_push( $buttons, 'usl' );
+	return $buttons;
+}
+
+function usl_tinymce_button_style() {
+	echo '<style>i.mce-i-usl:before { content: "\f475"; } i.mce-i-usl { font: 400 20px/1 dashicons; }</style>';
+}
