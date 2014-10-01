@@ -43,23 +43,7 @@ class View_Ultimate_Shortcodes_Library {
 	public function Display_USL_Page() {
 		global $shortcode_tags;
 		global $usl_codes;
-		if ( $shortcode_tags ) {
-			foreach ( $shortcode_tags as $tag => $v ) {
-				$check = strpos( $tag, 'usl_' );
-				if ( $check === false ) {
-					$title       = str_replace( '_', ' ', $tag );
-					$usl_codes[] = array(
-						'Code'        => $tag,
-						'Title'       => $title,
-						'Description' => '',
-						'Atts'        => '',
-						'Category'    => usl_core_shortcodes( $tag ),
-						'Example'     => ''
-					);
-				} else {
-				}
-			}
-		}
+
 		$categories = array();
 		foreach( $usl_codes as $code ) {
 			$c = $code['Category'];

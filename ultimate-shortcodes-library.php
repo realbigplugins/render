@@ -7,8 +7,13 @@ Author: Kyle Maurer
 Author URI: http://realbigmarketing.com/staff/kyle
 */
 
+/**
+ * Lessons learned from...
+ * https://github.com/GavickPro/TinyMCE-4-own-buttons
+ */
+
 /*
-This plugin works by defining two arrays in this main file.
+This plugin works by defining the $usl_codes array in the main file
 Then it includes the admin page which displays all the available shortcodes.
 Then it includes the shortcodes file which includes all the other files where
 the actual shortcodes are created.
@@ -76,4 +81,34 @@ function usl_register_tinymce_buttons( $buttons ) {
 
 function usl_tinymce_button_style() {
 	echo '<style>i.mce-i-usl:before { content: "\f475"; } i.mce-i-usl { font: 400 20px/1 dashicons; }</style>';
+}
+
+add_action('init', 'usl_codes', 99);
+function usl_codes() {
+	global $shortcode_tags;
+	global $usl_codes;
+	if ( $shortcode_tags ) {
+		foreach ( $shortcode_tags as $tag => $v ) {
+			$check = strpos( $tag, 'usl_' );
+			if ( $check === false ) {
+				$title       = str_replace( '_', ' ', $tag );
+				$usl_codes[] = array(
+					'Code'        => $tag,
+					'Title'       => $title,
+					'Description' => '',
+					'Atts'        => '',
+					'Category'    => usl_core_shortcodes( $tag ),
+					'Example'     => ''
+				);
+			} else {
+			}
+		}
+	}
+	/*
+	echo '<pre>';
+	print_r( $shortcode_tags );
+	echo 'USL Codes';
+	print_r( $usl_codes );
+	echo '</pre>';
+	*/
 }
