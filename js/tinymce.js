@@ -15,8 +15,14 @@
                         type: 'textbox',
                         name: 'title',
                         label: 'Your title'
-                    }],
+                    },
+                    {
+                    type: 'container',
+                    html: 'Test'
+                    }
+                    ],
                     onsubmit: function( e ) {
+                        console.log(usl_mce_options);
                         ed.insertContent( '<h3>' + e.data.title + '</h3>');
                     }
                 });

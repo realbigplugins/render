@@ -29,6 +29,7 @@ require_once( plugin_dir_path( __FILE__ ) . '/shortcodes/all.php' );
 add_action( 'init', 'usl_reg_style' );
 function usl_reg_style() {
 	wp_register_style( 'usl-shortcodes', plugins_url( 'css/shortcodes.css', __FILE__ ) );
+	wp_register_script( 'usl-tinymce', plugins_url( 'js/tinymce.js', __FILE__ ) );
 }
 
 //Conditionally enqueue stylesheet
@@ -58,6 +59,7 @@ function usl_admin_styles( $page ) {
 		return;
 	}
 }
+
 /**
  * Tiny MCE button
  */
@@ -76,6 +78,7 @@ function usl_add_tinymce_buttons( $plugin_array ) {
 
 function usl_register_tinymce_buttons( $buttons ) {
 	array_push( $buttons, 'usl' );
+
 	return $buttons;
 }
 
@@ -83,7 +86,7 @@ function usl_tinymce_button_style() {
 	echo '<style>i.mce-i-usl:before { content: "\f475"; } i.mce-i-usl { font: 400 20px/1 dashicons; }</style>';
 }
 
-add_action('init', 'usl_codes', 99);
+add_action( 'init', 'usl_codes', 99 );
 function usl_codes() {
 	global $shortcode_tags;
 	global $usl_codes;
@@ -111,4 +114,24 @@ function usl_codes() {
 	print_r( $usl_codes );
 	echo '</pre>';
 	*/
+}
+
+//add_action( 'before_wp_tiny_mce', 'usl_localize_codes' );
+function usl_output_codes() {
+	global $usl_codes;
+	foreach ( $usl_codes as $code ) {
+		$output[] = array(
+			$code
+		);
+	}
+	return $output;
+}
+add_action('admin_enqueue_scripts', 'usl_mce');
+function usl_mce($hook) {
+	if ( $hook == 'post.php' || $hook == 'post-new.php') {
+		add_action("admin_head-$hook", 'usl_mce_head');
+	}
+}
+function usl_mce_head() {
+	echo '<script type="text/javascript">var usl_mce_options=' . json_encode(array('categories'=>usl_output_codes(0))).'; </script>';
 }
