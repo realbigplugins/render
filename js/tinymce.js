@@ -9,10 +9,17 @@
             });
 
             ed.addCommand('usl', function() {
-                var selected_text = ed.selection.getContent();
-                var return_text = '';
-                return_text = '[usl]';
-                ed.execCommand('mceInsertContent', 0, return_text);
+                ed.windowManager.open( {
+                    title: 'Insert h3 tag',
+                    body: [{
+                        type: 'textbox',
+                        name: 'title',
+                        label: 'Your title'
+                    }],
+                    onsubmit: function( e ) {
+                        ed.insertContent( '<h3>' + e.data.title + '</h3>');
+                    }
+                });
             });
         },
 
