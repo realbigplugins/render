@@ -10,6 +10,7 @@ Author URI: http://realbigmarketing.com/staff/kyle
 /**
  * Lessons learned from...
  * https://github.com/GavickPro/TinyMCE-4-own-buttons
+ * http://stackoverflow.com/questions/24339864/add-a-php-function-to-a-javascript-file-with-ajax-tinymce-wordpress-related
  */
 
 /*
@@ -86,6 +87,9 @@ function usl_tinymce_button_style() {
 	echo '<style>i.mce-i-usl:before { content: "\f475"; } i.mce-i-usl { font: 400 20px/1 dashicons; }</style>';
 }
 
+/**
+ * Merge all other shortcodes into $usl_codes
+ */
 add_action( 'init', 'usl_codes', 99 );
 function usl_codes() {
 	global $shortcode_tags;
@@ -107,16 +111,8 @@ function usl_codes() {
 			}
 		}
 	}
-	/*
-	echo '<pre>';
-	print_r( $shortcode_tags );
-	echo 'USL Codes';
-	print_r( $usl_codes );
-	echo '</pre>';
-	*/
 }
 
-//add_action( 'before_wp_tiny_mce', 'usl_localize_codes' );
 function usl_output_codes() {
 	global $usl_codes;
 	foreach ( $usl_codes as $code ) {
@@ -133,6 +129,6 @@ function usl_mce($hook) {
 	}
 }
 function usl_mce_head() {
-	echo '<script type="text/javascript">var usl_mce_options=' . json_encode(array('categories'=>usl_output_codes(0))).';</script>';
-	echo '<script type="text/javascript">function uslCodes() { for (i=0;i<usl_mce_options.length;i++) { document.write(scripts[i] + "<br >");} }</script>';
+	echo '<script type="text/javascript">var usl_mce_options=' . json_encode(array('codes'=>usl_output_codes(0))).'; </script>';
+	echo '<script type="text/javascript">function uslCodes() { console.log(usl_mce_options); for (var i = 0; i < usl_mce_options.codes.length; i++) {console.log(usl_mce_options.codes[i]);} }</script>';
 }
