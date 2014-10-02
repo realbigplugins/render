@@ -133,5 +133,6 @@ function usl_mce($hook) {
 	}
 }
 function usl_mce_head() {
-	echo '<script type="text/javascript">var usl_mce_options=' . json_encode(array('categories'=>usl_output_codes(0))).'; </script>';
+	echo '<script type="text/javascript">var usl_mce_options=' . json_encode(array('categories'=>usl_output_codes(0))).';</script>';
+	echo '<script type="text/javascript">function uslCodes() { for (i=0;i<usl_mce_options.length;i++) { document.write(scripts[i] + "<br >");} }</script>';
 }

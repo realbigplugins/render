@@ -10,19 +10,18 @@
 
             ed.addCommand('usl', function() {
                 ed.windowManager.open( {
-                    title: 'Insert h3 tag',
+                    title: 'Shortcodes',
                     body: [{
-                        type: 'textbox',
-                        name: 'title',
-                        label: 'Your title'
+                        type: 'container',
+                        html: uslCodes()
                     },
                     {
-                    type: 'container',
-                    html: 'Test'
+                        type: 'textbox',
+                        name: 'title',
+                        label: 'Stuff'
                     }
                     ],
                     onsubmit: function( e ) {
-                        console.log(usl_mce_options);
                         ed.insertContent( '<h3>' + e.data.title + '</h3>');
                     }
                 });
