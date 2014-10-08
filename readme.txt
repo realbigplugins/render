@@ -1,6 +1,7 @@
 === Ultimate Shortcodes Library ===
 
 Contributors: BrashRebel
+Donate link: http://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=admin%40realbigmarketing%2ecom
 Tags: shortcodes
 Requires at least: 3.8.0
 Tested up to: 4.0
