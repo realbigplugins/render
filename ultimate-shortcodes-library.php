@@ -130,5 +130,5 @@ function usl_mce($hook) {
 }
 function usl_mce_head() {
 	echo '<script type="text/javascript">var usl_mce_options=' . json_encode(array('codes'=>usl_output_codes(0))).'; </script>';
-	echo '<script type="text/javascript">function uslCodes() { console.log(usl_mce_options); for (var i = 0; i < usl_mce_options.codes.length; i++) {console.log(usl_mce_options.codes[i]);} }</script>';
+	echo '<script type="text/javascript">function uslCodes() { for (var i = 0; i < usl_mce_options.codes.length; i++) { console.log(usl_mce_options.codes[i]); } }</script>';
 }

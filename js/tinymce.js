@@ -1,3 +1,8 @@
+function insertCodes() {
+    if (document.getElementById("usl-tiny-modal")) {
+    document.getElementById("usl-tiny-modal").innerHTML = "Paragraph changed.";
+    }
+}
 (function() {
     tinymce.create('tinymce.plugins.usl', {
 
@@ -10,17 +15,24 @@
 
             ed.addCommand('usl', function() {
                 ed.windowManager.open( {
+                    file: url + '/form.html',
+                    width : 450 + parseInt(ed.getLang('example.delta_width', 0)),
+                    height : 450 + parseInt(ed.getLang('example.delta_height', 0)),
+                    inline: 1,
                     title: 'Shortcodes',
                     body: [{
                         type: 'container',
-                        html: uslCodes()
+                        html: '<div id="usl-tiny-modal"></div>'
+                    },
+                    {
+                        type: 'container',
+                        html: insertCodes()
                     },
                     {
                         type: 'textbox',
                         name: 'title',
                         label: 'Stuff'
-                    }
-                    ],
+                    }],
                     onsubmit: function( e ) {
                         ed.insertContent( '<h3>' + e.data.title + '</h3>');
                     }
@@ -41,6 +53,7 @@
                 version : "0.3"
             };
         }
+
     });
 
     // Register plugin
