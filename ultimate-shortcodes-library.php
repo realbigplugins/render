@@ -105,9 +105,9 @@ function usl_codes() {
 					'Description' => '',
 					'Atts'        => '',
 					'Category'    => usl_core_shortcodes( $tag ),
-					'Example'     => ''
+					'Example'     => '',
+					'Wrapping'    => '0',
 				);
-			} else {
 			}
 		}
 	}
@@ -129,6 +129,13 @@ function usl_mce($hook) {
 	}
 }
 function usl_mce_head() {
-	echo '<script type="text/javascript">var usl_mce_options=' . json_encode(array('codes'=>usl_output_codes(0))).'; </script>';
+	global $usl_codes;
+
+	echo '<script type="text/javascript">var usl_mce_options=' . json_encode( $usl_codes ).'; </script>';
 	echo '<script type="text/javascript">function uslCodes() { for (var i = 0; i < usl_mce_options.codes.length; i++) { console.log(usl_mce_options.codes[i]); } }</script>';
 }
+
+function testing() {
+	echo "<div id='stuff' class='hidden'><input type='text' name='bla'/></div>";
+}
+add_action('shutdown', 'testing');

@@ -1,6 +1,6 @@
 <?php
 // Create the new function for adding shortcodes
-function add_usl_shortcode( $name, $function, $title, $desc, $category, $atts = '', $example = '' ) {
+function add_usl_shortcode( $name, $function, $title, $desc, $category, $atts = '', $example = '', $wrapping = false ) {
 
 // Create the actual shortcode
 	add_shortcode( $name, $function );
@@ -13,7 +13,8 @@ function add_usl_shortcode( $name, $function, $title, $desc, $category, $atts = 
 		'Atts'        => $atts,
 		'Description' => $desc,
 		'Example'     => $example,
-		'Category'    => $category
+		'Category'    => $category,
+		'Wrapping'    => $wrapping ? '1' : '0',
 	);
 }
 
@@ -37,6 +38,8 @@ function usl_core_shortcodes( $code ) {
 
 		return $code;
 	}
+
+	return 'Other';
 }
 
 /**
