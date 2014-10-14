@@ -1,0 +1,20 @@
+{
+  "name": "UltimateShortcodesLibrary",
+  "version": "1.0.0",
+  "description": "This plugin is the only shortcode plugin you will ever need.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brashrebel/ultimate-shortcodes-library"
+  },
+  "author": "Kyle Maurer & Joel Worsham",
+  "license": "GPLv2 or later",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-autoprefixer": "^1.0.0",
+    "grunt-contrib-uglify": "~0.5.1",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-sass": "^0.14.0",
+    "grunt-contrib-copy": "~0.6.0",
+    "matchdep": "~0.3.0"
+  }
+}
