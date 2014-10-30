@@ -1,15 +1,11 @@
 <?php
-/*
-The contents of this file create the admin page that is found under settings.
-Within the contents of the page both the $usl_cats and $USL->shortcodes arrays
-(which are defined in the plugin's main file) are used to create the master list.
-*/
 
 if ( is_admin() ) {
-	$uslshortcodes = new View_Ultimate_Shortcodes_Library();
+	new USL_MenuPage();
 }
 
-class View_Ultimate_Shortcodes_Library {
+class USL_MenuPage {
+
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'menu' ) );
 	}
@@ -18,56 +14,71 @@ class View_Ultimate_Shortcodes_Library {
 	 * Function for the admin menu to create a menu item in the settings tree
 	 */
 	public function menu() {
+
 		add_menu_page(
 			'Shortcodes',
 			'Shortcodes',
 			'manage_options',
 			'view-all-shortcodes',
-			array( $this, 'Display_USL_Page' ),
+			array( $this, 'page_output' ),
 			'dashicons-editor-code',
 			82.9
 		);
+
 		add_submenu_page(
 			'view-all-shortcodes',
 			'Shortcodes',
 			'Shortcodes',
 			'manage_options',
 			'view-all-shortcodes',
-			array( $this, 'Display_USL_Page' )
+			array( $this, 'page_output' )
 		);
+	}
+
+	public static function _sort_title_asc( $a, $b ) {
+		return strcmp( $a['title'], $b['title'] );
+	}
+
+	public static function _sort_title_desc( $a, $b ) {
+		return strcmp( $b['title'], $a['title'] );
 	}
 
 	/**
 	 * Display the admin page
 	 */
-	public function Display_USL_Page() {
-		global $shortcode_tags;
-		global $USL;
+	public function page_output() {
+		global $shortcode_tags, $USL;
 
+		// TODO Redo table meeting WP standards
+
+		$all_shortcodes = _usl_get_merged_shortcodes();
+
+		// Setup categories
 		$categories = array();
-		foreach( $USL->shortcodes as $code => $shortcode ) {
-			if ( !in_array( $shortcode['categories'], $categories) ) {
-				$categories[] = $shortcode['categories'];
+		foreach ( $all_shortcodes as $shortcode ) {
+
+			// Add a category if it's set, not empty, and doesn't already exist in our $categories array
+			if ( ! empty( $shortcode['category'] ) && ! in_array( $shortcode['category'], $categories ) ) {
+				$categories[] = $shortcode['category'];
 			}
 		}
 
 		// GET vars
-		if ( isset( $_GET['cat'] ) ) {
-			$category = $_GET['cat'];
+		$category = isset( $_GET['cat'] ) ? $_GET['cat'] : false;
+		$order    = isset( $_GET['order'] ) ? $_GET['order'] : 'asc';
+		$orderby  = isset( $_GET['orderby'] ) ? $_GET['orderby'] : false;
+
+		// Sort by title
+		if ( ! $orderby || $orderby === 'title' ) {
+			uasort( $all_shortcodes, array( __CLASS__, "_sort_title_$order" ) );
 		}
-		$order = null;
-		if ( isset( $_GET['order'] ) ) {
-			$order = $_GET['order'];
-		}
-		$orderby = null;
-		if ( isset( $_GET['orderby'] ) ) {
-			$orderby = $_GET['orderby'];
-		}
+
 		// TODO Enable sorting by title
 		?>
 		<div class="wrap">
 			<div id="icon-options-general" class="icon32"><br/></div>
 			<h2>View All Available Shortcodes</h2>
+
 			<form id="posts-filter" action="" method="get">
 
 				<input type="hidden" name="page" class="post_type_page" value="view-all-shortcodes"/>
@@ -79,21 +90,23 @@ class View_Ultimate_Shortcodes_Library {
 
 						<!--Category select-->
 						<select name='cat' id='cat' class='postform'>
-							<option value='All'>View all categories</option>
-							<?php $level = 0;
+							<option value=''>View all categories</option>
+							<?php
 							if ( $categories ) {
-								foreach ( $categories as $cat ) {
-									$level = ++ $level; ?>
-									<option class="level-<?php echo $level; ?>"
-									        value="<?php echo $cat; ?>"><?php echo $cat; ?></option>
-								<?php }
+								foreach ( $categories as $select_category ) {
+									?>
+									<option value="<?php echo $select_category; ?>" <?php selected( $select_category, $category ); ?>>
+										<?php echo ucwords( $select_category ); ?>
+									</option>
+								<?php
+								}
 							} ?>
 						</select>
 						<input type="submit" name="" id="shortcode-query-submit" class="button" value="Filter"/>
 					</div>
 					<!--Number of items-->
 					<div class='tablenav-pages one-page'>
-						<span class="displaying-num"><?php echo count( $shortcode_tags ); ?> total shortcodes</span>
+						<span class="displaying-num"><?php echo count( $all_shortcodes ); ?> total shortcodes</span>
 					</div>
 
 					<br class="clear"/>
@@ -146,14 +159,14 @@ class View_Ultimate_Shortcodes_Library {
 					<tbody id="the-list">
 
 					<!--The rows-->
-
-					<!--Row 1-->
 					<?php
-					if ( ! empty( $USL->shortcodes ) ) {
-						foreach ( $USL->shortcodes as $code => $shortcode ) {
-							if ( isset( $category ) && $shortcode['category'] == $category OR ! isset( $category ) OR $category == 'All' ) {
+					if ( ! empty( $all_shortcodes ) ) {
+						$i = 0;
+						foreach ( $all_shortcodes as $code => $shortcode ) {
+							$i ++;
+							if ( ( $category && ( $shortcode['category'] == $category ) ) ||  ! $category ) {
 								?>
-								<tr class="post-<?php echo $key; ?> type-post status-publish format-standard hentry category-uncategorized alternate iedit author-self level-0">
+								<tr class="format-standard category-uncategorized <?php echo $i % 2 ? 'alternate' : ''; ?> level-0">
 									<td class="post-title page-title column-title">
 										<strong><?php echo $shortcode['title']; ?></strong>
 									</td>
@@ -163,15 +176,36 @@ class View_Ultimate_Shortcodes_Library {
 									<td class="description column-description">
 										<?php echo $shortcode['description']; ?>
 									</td>
-									<td class="atts column-atts"><?php echo $shortcode['atts']; ?></td>
+									<td class="atts column-atts">
+										<?php
+										$all_attributes = array();
+										if ( ! empty( $shortcode['atts'] ) ) {
+											foreach ( $shortcode['atts'] as $attribute_name => $attribute ) {
+
+												if ( is_array( $attribute ) ) {
+													if ( isset( $attribute['accepted_values'] ) ) {
+														$all_attributes[] = "$attribute_name (" . implode( ', ', $attribute['accepted_values'] ) . ')';
+													} else {
+														$all_attributes[] = $attribute_name;
+													}
+												} else {
+													$all_attributes[] = $attribute;
+												}
+											}
+										}
+
+										echo implode( ' | ', $all_attributes );
+										?>
+									</td>
 									<td class="category column-category">
-										<?php echo $shortcode['category']; ?>
+										<?php echo ucwords( $shortcode['category'] ); ?>
 									</td>
 									<td class="example column-example">
 										<?php echo $shortcode['example']; ?>
 									</td>
 								</tr>
-							<?php } else {
+							<?php
+							} else {
 							}
 						}
 					} ?>
@@ -181,4 +215,4 @@ class View_Ultimate_Shortcodes_Library {
 		</div>
 	<?php
 	}
-} // END class
+}

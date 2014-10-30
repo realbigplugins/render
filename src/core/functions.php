@@ -1,21 +1,16 @@
 <?php
 // Create the new function for adding shortcodes
-function add_usl_shortcode( $args ) {
+function usl_add_shortcode( $args ) {
 
 	global $USL, $shortcode_tags;
 
+	// Merge if it already exists
+	if ( isset( $shortcode_tags[ $args['code'] ] ) ) {
+		$args['function'] = $args['code'];
+	}
+
 	// Establish defaults
-	$defaults = array(
-		'code' => '',
-		'function' => '',
-		'title' => '',
-		'description' => '',
-		'category' => '',
-		'atts' => array(),
-		'example' => '',
-		'wrapping' => false,
-	);
-	wp_parse_args( $args, $defaults );
+	$args = wp_parse_args( $args, USL::$shortcode_defaults );
 
 	// Establish default attribute properties (if any exist)
 	if ( ! empty( $args['atts'] ) ) {
@@ -25,7 +20,7 @@ function add_usl_shortcode( $args ) {
 		);
 
 		foreach ( $args['atts'] as $i => $att ) {
-			wp_parse_args( $args['atts'][ $i ], $defaults );
+			$args['atts'][ $i ] = wp_parse_args( $args['atts'][ $i ], $defaults );
 		}
 	}
 
@@ -40,36 +35,45 @@ function add_usl_shortcode( $args ) {
 		$USL->shortcodes[ $args['code'] ] = array(
 			'title'       => $args['title'],
 			'atts'        => $args['atts'],
-			'description' => $args['desc'],
+			'description' => $args['description'],
 			'example'     => $args['example'],
 			'category'    => $args['category'],
-			'wrapping'    => $args['wrapping '] ? '1' : '0',
+			'wrapping'    => $args['wrapping'],
 		);
 	}
 }
 
 /**
- * @param $code
+ * Merges the WP global shortcode array with the USL array.
  *
- * @return string
+ * @since USL 1.0.0
+ *
+ * @return array The merged shortcode array.
  */
-function usl_core_shortcodes( $code ) {
-	$core = array(
-		'embed',
-		'caption',
-		'wp_caption',
-		'gallery',
-		'playlist',
-		'audio',
-		'video'
-	);
-	if ( in_array( $code, $core ) ) {
-		$code = 'Media';
+function _usl_get_merged_shortcodes() {
 
-		return $code;
+	global $USL, $shortcode_tags;
+
+	// Setup the WP $shortcode_tags to be compatible with USL
+	$_shortcode_tags = array();
+	foreach ( $shortcode_tags as $code => $shortcode_func ) {
+
+		// Skips (shouldn't be many, mainly for duplicated shortcodes)
+		$skips = array(
+			'wp_caption',
+		);
+		if ( in_array( $code, $skips ) ) {
+			continue;
+		}
+
+		$_shortcode_tags[ $code ] = wp_parse_args( array(
+			'function' => $shortcode_func,
+			'title' => ucwords( str_replace( '_', ' ', $code ) ),
+		), USL::$shortcode_defaults );
 	}
 
-	return 'Other';
+	// Merge WP shortcodes with USL shortcodes
+	return array_merge( $_shortcode_tags, $USL->shortcodes );
 }
 
 /**

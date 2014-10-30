@@ -57,6 +57,37 @@ if ( ! class_exists( 'USL' ) ) {
 		public $shortcodes = array();
 
 		/**
+		 * Default values for a shortcode.
+		 *
+		 * @since USL 1.0.0
+		 *
+		 * @var array
+		 */
+		public static $shortcode_defaults = array(
+				'code' => '',
+				'function' => '',
+				'title' => '',
+				'description' => '',
+				'category' => 'other',
+				'atts' => array(),
+				'example' => '',
+				'wrapping' => false,
+		);
+
+		private static $_shortcodes_extensions = array(
+			'core' => array(
+				'design',
+				'meta',
+				'site',
+				'time',
+				'user',
+			),
+			'wordpress' => array(
+				'wordpress',
+			),
+		);
+
+		/**
 		 * The path to the main plugin file.
 		 *
 		 * @since USL 1.0.0
@@ -76,11 +107,13 @@ if ( ! class_exists( 'USL' ) ) {
 
 		private function __construct() {
 
+			// Set up the path and url
 			self::$path = plugin_dir_path( __FILE__ );
-			self::$url = plugins_url( '', __FILE__ );
+			self::$url  = plugins_url( '', __FILE__ );
 
+			// Initialize functions
 			$this->_require_files();
-			self::_add_actions();
+			$this->_add_actions();
 		}
 
 		private final function __clone() {
@@ -101,6 +134,7 @@ if ( ! class_exists( 'USL' ) ) {
 		public static function _getInstance() {
 			if ( self::$_instance === null ) {
 				self::$_instance = new self();
+
 				return self::$_instance;
 			} else {
 				throw new Exception( 'You may only instantiate this class once' );
@@ -120,11 +154,26 @@ if ( ! class_exists( 'USL' ) ) {
 		}
 
 		/**
+		 * Adds all USL shortcodes.
+		 *
+		 * @since USL 1.0.0
+		 */
+		public static function _shortcodes_init() {
+
+			// Cycle through all USL categories and shortcodes, requiring category files and adding each shortcode
+			foreach ( self::$_shortcodes_extensions as $type => $categories) {
+				foreach ( $categories as $category ) {
+					require_once( self::$path . "core/shortcodes/$type/$category.php");
+				}
+			}
+		}
+
+		/**
 		 * Adds all startup WP actions.
 		 *
 		 * @since USL 1.0.0
 		 */
-		private static function _add_actions() {
+		private function _add_actions() {
 
 			// Files and scripts
 			add_action( 'init', array( __CLASS__, '_register_files' ) );
@@ -139,33 +188,30 @@ if ( ! class_exists( 'USL' ) ) {
 		 */
 		public static function _register_files() {
 
-			// If in development, use our non-minified files
-			$maybe_min = defined( 'USL_DEVELOPMENT' ) ? '' : '.min';
-
 			wp_register_style(
 				'usl',
-				self::$url . "/assets/css/usl$maybe_min.css",
+				self::$url . "/assets/css/ultimate-shortcodes-library.min.css",
 				null,
 				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
 			);
 
 			wp_register_style(
 				'usl-admin',
-				self::$url . "/assets/css/usl-admin$maybe_min.css",
+				self::$url . "/assets/css/ultimate-shortcodes-library-admin.min.css",
 				null,
 				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
 			);
 
 			wp_register_script(
 				'usl',
-				self::$url . "/assets/js/usl$maybe_min.js",
+				self::$url . "/assets/js/ultimate-shortcodes-library.min.js",
 				array( 'jquery' ),
 				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
 			);
 
 			wp_register_script(
 				'usl-admin',
-				self::$url . "/assets/js/usl-admin$maybe_min.js",
+				self::$url . "/assets/js/ultimate-shortcodes-library-admin.min.js",
 				array( 'jquery' ),
 				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
 			);
@@ -176,7 +222,7 @@ if ( ! class_exists( 'USL' ) ) {
 		 *
 		 * @since USL 1.0.0
 		 */
-		public static function _enqueue_files() {
+		public function _enqueue_files() {
 
 			wp_enqueue_script( 'usl' );
 			wp_enqueue_style( 'usl' );
@@ -187,16 +233,14 @@ if ( ! class_exists( 'USL' ) ) {
 		 *
 		 * @since USL 1.0.0
 		 */
-		public static function _admin_enqueue_files() {
+		public function _admin_enqueue_files() {
 
 			wp_enqueue_script( 'usl-admin' );
 			wp_enqueue_style( 'usl-admin' );
 		}
 	}
 
-	global $USL;
+	// Instantiate the class and then initialize the shortcodes
 	$USL = USL::_getInstance();
-
-	// Include custom shortcodes
-	require_once( $USL::$path . 'core/shortcodes/all.php' );
+	$USL::_shortcodes_init();
 }

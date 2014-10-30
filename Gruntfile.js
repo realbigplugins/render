@@ -2,9 +2,10 @@
 module.exports = function (grunt) {
 
     var SOURCE_DIR = 'src/',
-        BUILD_DIR = 'build/';
+        BUILD_DIR = 'build/',
+        VERSION = grunt.file.readJSON('package.json').version;
 
-    // Load all grunt tasks
+    // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
     grunt.initConfig({
@@ -18,12 +19,20 @@ module.exports = function (grunt) {
                 livereload: true
             },
             sass: {
-                files: [SOURCE_DIR + 'assets/scss/**/*.scss'],
-                tasks: ['sass', 'autoprefixer']
+                files: [SOURCE_DIR + 'assets/scss/**/*.scss', '!src/assets/scss/admin/**/*.scss'],
+                tasks: ['sass:src', 'autoprefixer']
+            },
+            sass_admin: {
+                files: [SOURCE_DIR + 'assets/scss/admin/**/*.scss'],
+                tasks: ['sass:admin', 'autoprefixer']
             },
             js: {
                 files: [SOURCE_DIR + 'assets/js/source/*.js'],
                 tasks: ['uglify:src']
+            },
+            js_admin: {
+                files: [SOURCE_DIR + 'assets/js/source/admin/*.js'],
+                tasks: ['uglify:admin']
             },
             livereload: {
                 files: [
@@ -35,51 +44,39 @@ module.exports = function (grunt) {
             }
         },
 
-        // SASS transpiling
+
+        // Ruby
+        // To use, make sure that the grunt-contrib-sass falls after grunt-sass and inside of foundation->_functions.scss
+        // change false to null.
         sass: {
-            src: {
-                options: {
-                    outputStyle: 'compressed'
-                },
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: SOURCE_DIR,
-                    src: ['assets/scss/**/*.scss'],
-                    dest: SOURCE_DIR + 'assets/css',
-                    ext: '.min.css'
-                }]
+            options: {
+                style: 'compressed'
             },
-            src_uncompressed: {
-                options: {
-                    outputStyle: 'expanded'
-                },
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: SOURCE_DIR,
-                    src: ['assets/scss/**/*.scss'],
-                    dest: SOURCE_DIR + 'assets/css',
-                    ext: '.css'
-                }]
+            src: {
+                files: {
+                    'src/assets/css/ultimate-shortcodes-library.min.css': 'src/assets/scss/main.scss'
+                }
+            },
+            admin: {
+                files: {
+                    'src/assets/css/ultimate-shortcodes-library-admin.min.css': 'src/assets/scss/admin/admin.scss'
+                }
             }
         },
 
         // Minify and concatenate scripts
         uglify: {
+            options: {
+                sourceMap: true
+            },
             src: {
-                options: {
-                    beautify: true
-                },
                 files: {
-                    'src/assets/js/usl.js': ['src/assets/js/source/*.js'],
-                    'src/assets/js/usl-admin.js': ['src/assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js']
+                    'src/assets/js/ultimate-shortcodes-library.min.js': ['src/assets/js/source/*.js']
                 }
             },
-            src_min: {
+            admin: {
                 files: {
-                    'src/assets/js/usl.min.js': ['src/assets/js/source/*.js'],
-                    'src/assets/js/usl-admin.min.js': ['src/assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js']
+                    'src/assets/js/ultimate-shortcodes-library-admin.min.js': ['src/assets/js/source/admin/*.js']
                 }
             }
         },
@@ -104,6 +101,7 @@ module.exports = function (grunt) {
             src: {
                 options: {
                     process: function( content, src ) {
+
                         // Remove all TODO items
                         content = content.replace(/(\n|\s)?(.*\/\/.*)(TODO|MAYBETODO|FIXME|NEXTUPDATE|MAYBEFIX|FIXED|FUTUREBUILD|REMOVE)(.*)(\n|\s)?/g, '' );
                         return content;
@@ -117,7 +115,8 @@ module.exports = function (grunt) {
                         src: [
                             '**',
                             '!**/.{svn,git}/**', // Ignore VCS settings
-                            '!**/.{idea}/**' // Ignore .idea project settings
+                            '!**/.{idea}/**', // Ignore .idea project settings
+                            '!**/*.map' // No maps
                         ],
                         dest: BUILD_DIR
                     }
