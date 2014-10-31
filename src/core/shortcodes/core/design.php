@@ -20,23 +20,18 @@ class USL_CoreShortcodes_Design {
 			'atts'        => array(
 				'link'  => array(),
 				'color' => array(
-					'accepted_values' => array(
-						'red',
-						'blue',
-						'green',
-						'orange'
-					),
+					'colorpicker' => array(),
 					'required'        => true,
 				),
 				'size'  => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'large',
 						'medium',
 						'small'
 					),
 				),
 				'shape' => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'square',
 						'rounded',
 						'round',
@@ -54,7 +49,7 @@ class USL_CoreShortcodes_Design {
 			'description' => 'Creates a nice box for your content.',
 			'atts'        => array(
 				'color'   => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'red',
 						'blue',
 						'green',

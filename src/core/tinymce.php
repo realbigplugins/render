@@ -26,8 +26,21 @@ class USL_tinymce extends USL {
 
 	public static function admin_scripts() {
 
+		global $wp_scripts;
+		$jquery_ui = $wp_scripts->registered['jquery-ui-core'];
+
 		// Allow WP accordion functionality for our shortcode list
 		wp_enqueue_script( 'accordion' );
+		wp_enqueue_script( 'jquery-ui-slider' );
+		wp_enqueue_script( 'wp-color-picker' );
+
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_style(
+			'jquery-ui',
+			"http://ajax.googleapis.com/ajax/libs/jqueryui/$jquery_ui->ver/themes/ui-lightness/jquery-ui.min.css",
+			null,
+			$jquery_ui->ver
+		);
 	}
 
 	/**
@@ -76,27 +89,38 @@ class USL_tinymce extends USL {
 		foreach ( $shortcode_atts as $att_name => $att ) : ?>
 			<?php if ( ( ! $advanced && ! isset( $att['advanced'] ) ) || $advanced && isset( $att['advanced'] ) ) : ?>
 				<div class="usl-mce-sc-att-row">
-					<label>
-						<span class="usl-mce-sc-att-name">
-							<?php echo ucfirst( $att_name ); ?>
-						</span>
-						<span class="usl-mce-sc-att-field"
-						      data-required="<?php echo $att['required']; ?>">
-							<?php if ( isset( $att['accepted_values'] ) ) : ?>
-								<select name="<?php echo $att_name; ?>">
-									<option value="">Select One</option>
-									<?php foreach ( $att['accepted_values'] as $att_value ) : ?>
-										<option
-											value="<?php echo $att_value; ?>">
-											<?php echo ucfirst( $att_value ); ?>
-										</option>
-									<?php endforeach; ?>
-								</select>
-							<?php else: ?>
-								<input name="<?php echo $att_name; ?>"/>
-							<?php endif; ?>
-						</span>
-					</label>
+					<div class="usl-mce-sc-att-name">
+						<?php echo ucfirst( $att_name ); ?>
+					</div>
+					<div class="usl-mce-sc-att-field"
+					     data-required="<?php echo $att['required']; ?>">
+						<?php if ( isset( $att['slider'] ) ) : ?>
+							<?php
+							$data = '';
+							foreach ( $att['slider'] as $data_name => $data_value ) {
+								$data .= " data-$data_name='$data_value'";
+							}
+							?>
+							<input type="text" class="slider-value" value="0"/>
+							<div class="slider" <?php echo $data; ?>></div>
+						<?php elseif ( isset( $att['colorpicker'] ) ) : ?>
+							<input type="text" value="#bada55" class="colorpicker" />
+						<?php elseif ( isset( $att['selectbox'] ) ) : ?>
+							<select name="<?php echo $att_name; ?>">
+								<option value="">Select One</option>
+								<?php foreach ( $att['selectbox'] as $att_value ) : ?>
+									<option
+										value="<?php echo $att_value; ?>">
+										<?php echo ucfirst( $att_value ); ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+						<?php
+						else: ?>
+							<input type="text" class="text-input" value='' name="<?php echo $att_name; ?>"/>
+						<?php
+						endif; ?>
+					</div>
 				</div>
 			<?php endif; ?>
 		<?php endforeach;

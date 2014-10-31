@@ -17,8 +17,16 @@ class USL_WordPressShortcodes {
 			'title'       => 'Embed',
 			'description' => 'It\'s super easy to embed videos, images, tweets, audio, and other content into your WordPress site',
 			'atts'        => array(
-				'width'  => array(),
-				'height' => array(),
+				'width'  => array(
+					'slider' => array(
+						'max' => 2000,
+					),
+				),
+				'height' => array(
+					'slider' => array(
+						'max' => 2000,
+					),
+				),
 			),
 			'example'     => '[embed]http://www.youtube.com/watch?v=dQw4w9WgXcQ[/embed]',
 			'wrapping'    => true,
@@ -32,7 +40,7 @@ class USL_WordPressShortcodes {
 				'id'    => array(),
 				'class' => array(),
 				'align' => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'alignnone',
 						'aligncenter',
 						'alignright',
@@ -54,7 +62,7 @@ class USL_WordPressShortcodes {
 					'required' => true,
 				),
 				'orderby'    => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'menu_order',
 						'title',
 						'post_date',
@@ -63,7 +71,7 @@ class USL_WordPressShortcodes {
 					),
 				),
 				'order'      => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'ASC',
 						'DSC',
 					),
@@ -98,13 +106,13 @@ class USL_WordPressShortcodes {
 			'description' => 'The playlist shortcode implements the functionality of displaying a collection of WordPress audio or video files in a post',
 			'atts'        => array(
 				'type'         => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'audio',
 						'video',
 					),
 				),
 				'orderby'      => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'menu_order',
 						'title',
 						'post_date',
@@ -113,7 +121,7 @@ class USL_WordPressShortcodes {
 					),
 				),
 				'order'        => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'ASC',
 						'DSC',
 					),
@@ -124,31 +132,31 @@ class USL_WordPressShortcodes {
 				'include'      => array(),
 				'exclude'      => array(),
 				'style'        => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'light',
 						'dark',
 					),
 				),
 				'tracklist'    => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'true',
 						'false',
 					),
 				),
 				'tracknumbers' => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'true',
 						'false',
 					),
 				),
 				'images'       => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'true',
 						'false',
 					),
 				),
 				'artists'      => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'true',
 						'false',
 					),
@@ -170,13 +178,13 @@ class USL_WordPressShortcodes {
 					'on',
 				),
 				'autoplay' => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'off',
 						'on',
 					),
 				),
 				'preload'  => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'metadata',
 						'none',
 						'auto',
@@ -196,19 +204,19 @@ class USL_WordPressShortcodes {
 				),
 				'poster'   => array(),
 				'loop'     => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'off',
 						'on',
 					),
 				),
 				'autoplay' => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'off',
 						'on',
 					),
 				),
 				'preload'  => array(
-					'accepted_values' => array(
+					'selectbox' => array(
 						'metadata',
 						'none',
 						'auto',

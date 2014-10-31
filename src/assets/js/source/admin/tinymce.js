@@ -22,10 +22,13 @@ if (typeof USL_MCE === 'undefined' && typeof tinymce !== 'undefined') {
             init: function () {
                 this.establish_elements();
                 this.binds();
+                this.store_original_values();
                 this.add_to_mce();
                 this.prevent_window_scroll();
                 this.activate_shortcode();
                 this.search();
+                this.sliders();
+                this.colorpickers();
             },
 
             load: function () {
@@ -82,6 +85,42 @@ if (typeof USL_MCE === 'undefined' && typeof tinymce !== 'undefined') {
                     if (usl_tinymce_open && e.which == 13) {
                         USL_MCE.update();
                     }
+                });
+            },
+
+            store_original_values: function () {
+                elements.list.find('input').each(function () {
+                    $(this).data('original-value', $(this).val());
+                });
+            },
+
+            colorpickers: function () {
+                elements.list.find('.colorpicker').each(function () {
+                    var data = $(this).data();
+
+                    // Store the original color for later refresh use
+                    $(this).data('original-color', $(this).val());
+
+                    $(this).wpColorPicker(data);
+                });
+            },
+
+            sliders: function () {
+
+                elements.list.find('.slider').each(function () {
+                    var $e = $(this),
+                        data = $e.data(),
+                        indicator = $e.siblings('.slider-value');
+
+                    data.slide = function (event, ui) {
+                        indicator.val(ui.value);
+                    };
+
+                    indicator.change(function () {
+                        $e.slider('value', $(this).val());
+                    });
+
+                    $e.slider(data);
                 });
             },
 
@@ -253,6 +292,9 @@ if (typeof USL_MCE === 'undefined' && typeof tinymce !== 'undefined') {
                 elements.wrap.hide();
                 elements.backdrop.hide();
 
+                var all_shortcodes = elements.list.find('li');
+                this.refresh(all_shortcodes);
+
                 editor.focus();
             },
 
@@ -315,9 +357,25 @@ if (typeof USL_MCE === 'undefined' && typeof tinymce !== 'undefined') {
             },
 
             refresh: function (e) {
-                e.find('input').val('');
-                e.find('select').prop('selectedIndex', 0);
-                e.removeClass('active open');
+
+                e.each(function () {
+
+                    e.find('.text-input').each(function () {
+                        $(this).val($(this).data('original-value'))
+                    });
+
+                    e.find('select').prop('selectedIndex', 0);
+
+                    e.find('.slider').each(function () {
+                        $(this).slider('value', $(this).data('original-value'));
+                    });
+
+                    e.find('.colorpicker').each(function () {
+                        $(this).iris('color', $(this).data('original-value'));
+                    });
+
+                    e.removeClass('active open');
+                });
             }
         };
 

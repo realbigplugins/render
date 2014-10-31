@@ -183,8 +183,8 @@ class USL_MenuPage {
 											foreach ( $shortcode['atts'] as $attribute_name => $attribute ) {
 
 												if ( is_array( $attribute ) ) {
-													if ( isset( $attribute['accepted_values'] ) ) {
-														$all_attributes[] = "$attribute_name (" . implode( ', ', $attribute['accepted_values'] ) . ')';
+													if ( isset( $attribute['selectbox'] ) ) {
+														$all_attributes[] = "$attribute_name (" . implode( ', ', $attribute['selectbox'] ) . ')';
 													} else {
 														$all_attributes[] = $attribute_name;
 													}

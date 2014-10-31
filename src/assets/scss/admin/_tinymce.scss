@@ -222,18 +222,41 @@ i.mce-i-usl-mce-icon {
       .usl-mce-sc-att-row {
         padding: 10px;
 
+        @include clearfix;
+
         &.invalid {
           background: #ffc3bc;
         }
 
         .usl-mce-sc-att-name {
-          display: inline-block;
-          max-width: 25%;
-          min-width: 100px;
+          float: left;
+          width: 25%;
         }
 
         .usl-mce-sc-att-field {
-          display: inline-block;
+          float: left;
+          width: 75%;
+          position: relative;
+
+          .slider {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20%;
+            right: 0;
+            margin-left: 20px;
+          }
+
+          .ui-slider-handle {
+            outline: none;
+            cursor: pointer;
+          }
+
+          .slider-value {
+            width: 20%;
+            text-align: center;
+            margin: 0;
+          }
         }
       }
 
