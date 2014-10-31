@@ -71,6 +71,37 @@ class USL_tinymce extends USL {
 		wp_localize_script( 'common', 'USL_Data', $data );
 	}
 
+	private static function atts_loop( $shortcode_atts, $advanced = false ) {
+
+		foreach ( $shortcode_atts as $att_name => $att ) : ?>
+			<?php if ( ( ! $advanced && ! isset( $att['advanced'] ) ) || $advanced && isset( $att['advanced'] ) ) : ?>
+				<div class="usl-mce-sc-att-row">
+					<label>
+						<span class="usl-mce-sc-att-name">
+							<?php echo ucfirst( $att_name ); ?>
+						</span>
+						<span class="usl-mce-sc-att-field"
+						      data-required="<?php echo $att['required']; ?>">
+							<?php if ( isset( $att['accepted_values'] ) ) : ?>
+								<select name="<?php echo $att_name; ?>">
+									<option value="">Select One</option>
+									<?php foreach ( $att['accepted_values'] as $att_value ) : ?>
+										<option
+											value="<?php echo $att_value; ?>">
+											<?php echo ucfirst( $att_value ); ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
+							<?php else: ?>
+								<input name="<?php echo $att_name; ?>"/>
+							<?php endif; ?>
+						</span>
+					</label>
+				</div>
+			<?php endif; ?>
+		<?php endforeach;
+	}
+
 	public static function modal_html() {
 
 		$all_shortcodes = _usl_get_merged_shortcodes();
@@ -127,7 +158,7 @@ class USL_tinymce extends USL {
 								    data-code="<?php echo $code; ?>"
 								    class="<?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : ''; ?>">
 
-									<form class="usl-mce-form">
+									<form class="usl-mce-shortcode-form">
 
 										<div
 											class="<?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : 'usl-mce-sc'; ?>-title">
@@ -143,30 +174,27 @@ class USL_tinymce extends USL {
 
 										<?php if ( ! empty( $shortcode['atts'] ) ): ?>
 											<div class="accordion-section-content">
-												<?php foreach ( $shortcode['atts'] as $att_name => $att ) : ?>
-													<div class="usl-mce-sc-att-row">
-														<label>
-														<span class="usl-mce-sc-att-name">
-															<?php echo ucfirst( $att_name ); ?>
-														</span>
-														<span class="usl-mce-sc-att-field"
-														      data-required="<?php echo $att['required']; ?>">
-															<?php if ( isset( $att['accepted_values'] ) ) : ?>
-																<select name="<?php echo $att_name; ?>">
-																	<option value="">Select One</option>
-																	<?php foreach ( $att['accepted_values'] as $att_value ) : ?>
-																		<option value="<?php echo $att_value; ?>">
-																			<?php echo ucfirst( $att_value ); ?>
-																		</option>
-																	<?php endforeach; ?>
-																</select>
-															<?php else: ?>
-																<input name="<?php echo $att_name; ?>"/>
-															<?php endif; ?>
-														</span>
-														</label>
+
+												<?php self::atts_loop( $shortcode['atts'] ); ?>
+
+												<?php
+												// Figure out if any of the attributes are belong to the advanced section
+												$advanced = false;
+												foreach ( $shortcode['atts'] as $_shortcode ) {
+													$advanced = array_key_exists( 'advanced', $_shortcode ) ? true : false;
+													if ( $advanced ) {
+														break;
+													}
+												}
+												if ( $advanced ) :
+													?>
+													<a href="#" class="show-advanced-atts">
+														Show advanced options
+													</a>
+													<div class="advanced-atts" style="display: none;">
+														<?php self::atts_loop( $shortcode['atts'], true ); ?>
 													</div>
-												<?php endforeach; ?>
+												<?php endif; ?>
 											</div>
 										<?php endif; ?>
 									</form>

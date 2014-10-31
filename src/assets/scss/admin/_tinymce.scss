@@ -237,6 +237,11 @@ i.mce-i-usl-mce-icon {
         }
       }
 
+      .show-advanced-atts {
+        padding: 10px;
+        display: inline-block;
+      }
+
       .title {
         width: 25%;
         float: left;
@@ -245,6 +250,8 @@ i.mce-i-usl-mce-icon {
       .description {
         width: 75%;
         float: left;
+        padding-right: 20px;
+        box-sizing: border-box;
       }
     }
   }

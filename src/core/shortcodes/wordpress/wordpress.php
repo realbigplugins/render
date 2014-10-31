@@ -50,6 +50,9 @@ class USL_WordPressShortcodes {
 			'title'       => 'Gallery',
 			'description' => 'The Gallery feature allows you to add one or more image galleries to your posts and pages',
 			'atts'        => array(
+				'ids'         => array(
+					'required' => true,
+				),
 				'orderby'    => array(
 					'accepted_values' => array(
 						'menu_order',
@@ -66,16 +69,25 @@ class USL_WordPressShortcodes {
 					),
 				),
 				'columns'    => array(),
-				'ids'         => array(
-					'required' => true,
-				),
 				'size'       => array(),
-				'itemtag'    => array(),
-				'icontag'    => array(),
-				'captiontag' => array(),
-				'link'       => array(),
-				'include'    => array(),
-				'exclude'    => array(),
+				'include'    => array(
+					'advanced' => true,
+				),
+				'exclude'    => array(
+					'advanced' => true,
+				),
+				'itemtag'    => array(
+					'advanced' => true,
+				),
+				'icontag'    => array(
+					'advanced' => true,
+				),
+				'captiontag' => array(
+					'advanced' => true,
+				),
+				'link'       => array(
+					'advanced' => true,
+				),
 			),
 			'example'     => '[gallery ids="729,732,731,720"]',
 		),

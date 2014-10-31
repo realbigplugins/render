@@ -10,10 +10,11 @@
  * @subpackage TinyMCE
  */
 
-if (typeof USL_MCE === 'undefined') {
+if (typeof USL_MCE === 'undefined' && typeof tinymce !== 'undefined') {
     var USL_MCE;
     (function ($) {
         var elements = {},
+            usl_tinymce_open = false,
             editor, selection;
 
         USL_MCE = {
@@ -38,7 +39,6 @@ if (typeof USL_MCE === 'undefined') {
                 elements.wrap = $('#usl-mce-wrap');
                 elements.submit = $('#usl-mce-submit');
                 elements.backdrop = $('#usl-mce-backdrop');
-                elements.form = $('#usl-mce-form');
                 elements.cancel = elements.wrap.find('.usl-mce-cancel');
                 elements.close = elements.wrap.find('.usl-mce-close');
                 elements.title = elements.wrap.find('.usl-mce-title');
@@ -70,6 +70,19 @@ if (typeof USL_MCE === 'undefined') {
                 elements.categories.find('li').click(function () {
                     USL_MCE.filter_by_category($(this));
                 });
+
+                // Show advanced atts
+                elements.list.find('.show-advanced-atts').click(function () {
+                    USL_MCE.toggle_advanced_atts($(this));
+                    return false;
+                });
+
+                // Submit with enter
+                $(document).keypress(function (e) {
+                    if (usl_tinymce_open && e.which == 13) {
+                        USL_MCE.update();
+                    }
+                });
             },
 
             search: function () {
@@ -79,7 +92,11 @@ if (typeof USL_MCE === 'undefined') {
                     search_delay = 1000,
                     search_fade = 300;
 
-                elements.wrap.find('input[name="usl-mce-search"]').on('keyup', function () {
+                elements.wrap.find('input[name="usl-mce-search"]').on('keyup', function (e) {
+
+                    if (e.which == 13) {
+                        return;
+                    }
 
                     var search_query = $(this).val();
 
@@ -90,7 +107,7 @@ if (typeof USL_MCE === 'undefined') {
                     search_loading = true;
 
                     if (search_query === '') {
-                        _search_delay = 1;
+                        _search_delay = search_fade;
                     } else {
                         _search_delay = search_delay;
                     }
@@ -136,6 +153,13 @@ if (typeof USL_MCE === 'undefined') {
                 });
             },
 
+            toggle_advanced_atts: function (e) {
+                var e_advancedatts = e.next('.advanced-atts'),
+                    txt = e_advancedatts.is(':visible') ? 'Show advanced options' : 'Hide advanced options';
+                e_advancedatts.toggle();
+                e.text(txt);
+            },
+
             prevent_window_scroll: function () {
 
                 elements.list.bind('mousewheel', function (e) {
@@ -174,13 +198,6 @@ if (typeof USL_MCE === 'undefined') {
                     - elements.wrap.find('.dashicons-leftright').outerHeight(true)
                     - elements.footer.outerHeight(true);
 
-                console.log(elements.wrap.innerHeight());
-                console.log(elements.title.outerHeight(true));
-                console.log(elements.search.outerHeight(true));
-                console.log(elements.categories.outerHeight(true));
-                console.log(elements.wrap.find('.dashicons-leftright').outerHeight(true));
-                console.log(elements.footer.outerHeight(true));
-
                 elements.list.height(height);
             },
 
@@ -202,6 +219,8 @@ if (typeof USL_MCE === 'undefined') {
 
             open: function () {
 
+                usl_tinymce_open = true;
+
                 // Get the tinymce editor object
                 if (typeof tinymce !== 'undefined') {
                     var _editor = tinymce.get(wpActiveEditor);
@@ -220,24 +239,33 @@ if (typeof USL_MCE === 'undefined') {
                 elements.wrap.show();
                 elements.backdrop.show();
 
+                elements.search.find('input[name="usl-mce-search"]').focus();
+
                 this.list_height();
             },
 
             close: function () {
 
-                editor.focus();
+                usl_tinymce_open = false;
+
                 $(document).trigger('usl-mce-close');
 
                 elements.wrap.hide();
                 elements.backdrop.hide();
+
+                editor.focus();
             },
 
             update: function () {
 
                 var e_active = elements.list.find('li.active'),
-                    atts = e_active.find('.usl-mce-form').serializeArray(),
+                    atts = e_active.find('.usl-mce-shortcode-form').serializeArray(),
                     code = e_active.attr('data-code'),
                     props, output;
+
+                if (e_active.length === 0) {
+                    return;
+                }
 
                 if (!this.validate()) {
                     return;
