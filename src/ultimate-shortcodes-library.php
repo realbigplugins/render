@@ -151,6 +151,7 @@ if ( ! class_exists( 'USL' ) ) {
 			require_once( self::$path . 'core/functions.php' );
 			require_once( self::$path . 'core/tinymce.php' );
 			require_once( self::$path . 'core/admin/admin.php' );
+			require_once( self::$path . 'core/widget.php' );
 		}
 
 		/**
@@ -222,7 +223,7 @@ if ( ! class_exists( 'USL' ) ) {
 		 *
 		 * @since USL 1.0.0
 		 */
-		public function _enqueue_files() {
+		public static function _enqueue_files() {
 
 			wp_enqueue_script( 'usl' );
 			wp_enqueue_style( 'usl' );
@@ -233,7 +234,7 @@ if ( ! class_exists( 'USL' ) ) {
 		 *
 		 * @since USL 1.0.0
 		 */
-		public function _admin_enqueue_files() {
+		public static function _admin_enqueue_files() {
 
 			wp_enqueue_script( 'usl-admin' );
 			wp_enqueue_style( 'usl-admin' );
