@@ -21,7 +21,16 @@ class USL_CoreShortcodes_Design {
 				'link'  => array(),
 				'color' => array(
 					'colorpicker' => array(),
-					'required'        => true,
+					'default' => '#bada55',
+				),
+				'color_hover' => array(
+					'colorpicker' => array(),
+					'advanced' => true,
+					'default' => '#84A347',
+				),
+				'font_color' => array(
+					'colorpicker' => array(),
+					'default' => '#fff',
 				),
 				'size'  => array(
 					'selectbox' => array(
@@ -34,9 +43,10 @@ class USL_CoreShortcodes_Design {
 					'selectbox' => array(
 						'square',
 						'rounded',
-						'round',
+						'circle',
 					),
 				),
+				'icon' => array(),
 			),
 			'example'     => '[usl_button link="#" size="large" color="blue" shape="round"]Click here[/usl_button]',
 			'wrapping'    => true,
@@ -131,12 +141,29 @@ new USL_CoreShortcodes_Design();
 function _usl_sc_button( $atts = array(), $content = null ) {
 	$atts = shortcode_atts( array(
 		'link'  => '#',
-		'size'  => 'small',
-		'color' => 'red',
-		'shape' => 'rounded'
+		'size'  => 'medium',
+		'color' => '#bada55',
+		'color_hover' => '#84A347',
+		'font_color' => '#fff',
+		'shape' => '',
+		'icon' => '',
 	), $atts );
 
-	return "<a href='$atts[link]' class='usl-$atts[color] usl-$atts[size] usl-$atts[shape]'>$atts[content]</a>";
+	// FIXME Color not working
+
+	$class = 'usl-button';
+	$class .= ! empty( $atts['size'] ) ? "-$atts[size]" : '';
+	$class .= ! empty( $atts['shape'] ) ? "-$atts[shape]" : '';
+
+	$output = "<a href='$atts[link]' class='$class'";
+	$output .= " style='background: $atts[color]; color: $atts[font_color]'";
+	$output .= '>';
+	$output .= "<span class='hover' style='background: $atts[color_hover]'></span>";
+	$output .= ! empty( $atts['icon'] ) ? "<span class='icon dashicons $atts[icon]'></span>" : '';
+	$output .= "<span class='content'>$content</span>";
+	$output .= '</a>';
+
+	return $output;
 }
 
 

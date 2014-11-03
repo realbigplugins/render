@@ -317,6 +317,8 @@ if (typeof USL_MCE === 'undefined' && typeof tinymce !== 'undefined') {
 
                 output = '[' + code;
 
+                console.log(atts);
+
                 // Add on atts if they exist
                 if (atts.length) {
                     for (i = 0; i < atts.length; i++) {

@@ -1,2 +1,11 @@
+@mixin clearfix {
+  &:after {
+    content: ' ';
+    display: table;
+    clear: both;
+  }
+}
+
 @import 'style';
 @import 'shortcodes';
+@import 'shortcodes/button';

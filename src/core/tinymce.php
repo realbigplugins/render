@@ -94,6 +94,7 @@ class USL_tinymce extends USL {
 					</div>
 					<div class="usl-mce-sc-att-field"
 					     data-required="<?php echo $att['required']; ?>">
+
 						<?php if ( isset( $att['slider'] ) ) : ?>
 							<?php
 							$data = '';
@@ -101,11 +102,18 @@ class USL_tinymce extends USL {
 								$data .= " data-$data_name='$data_value'";
 							}
 							?>
-							<input type="text" class="slider-value" value="0"/>
+							<input type="text" class="slider-value" value="0" name="<?php echo $att_name; ?>" />
 							<div class="slider" <?php echo $data; ?>></div>
+
 						<?php elseif ( isset( $att['colorpicker'] ) ) : ?>
-							<input type="text" value="#bada55" class="colorpicker" />
+
+							<input type="text"
+							       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+							       class="colorpicker"
+							       name="<?php echo $att_name; ?>" />
+
 						<?php elseif ( isset( $att['selectbox'] ) ) : ?>
+
 							<select name="<?php echo $att_name; ?>">
 								<option value="">Select One</option>
 								<?php foreach ( $att['selectbox'] as $att_value ) : ?>
@@ -115,11 +123,13 @@ class USL_tinymce extends USL {
 									</option>
 								<?php endforeach; ?>
 							</select>
-						<?php
-						else: ?>
+
+						<?php else: ?>
+
 							<input type="text" class="text-input" value='' name="<?php echo $att_name; ?>"/>
-						<?php
-						endif; ?>
+
+						<?php endif; ?>
+
 					</div>
 				</div>
 			<?php endif; ?>
