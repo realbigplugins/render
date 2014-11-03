@@ -76,7 +76,7 @@ module.exports = function (grunt) {
             },
             admin: {
                 files: {
-                    'src/assets/js/ultimate-shortcodes-library-admin.min.js': ['src/assets/js/source/admin/*.js']
+                    'src/assets/js/ultimate-shortcodes-library-admin.min.js': ['src/assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js']
                 }
             }
         },
