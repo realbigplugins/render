@@ -11,7 +11,6 @@
  * @package USL
  * @subpackage Modal
  */
-
 var USL_tinymce;
 (function ($) {
     var editor, selection;
@@ -34,8 +33,8 @@ var USL_tinymce;
         },
 
         add_to_tinymce: function () {
-            tinymce.PluginManager.add('usl_button', function (editor) {
-                editor.addButton('usl_button', {
+            tinymce.PluginManager.add('usl', function (editor) {
+                editor.addButton('usl', {
 
                     // Establishes an icon class with the prefix "mce-i-"
                     icon: 'usl-mce-icon',
@@ -50,20 +49,19 @@ var USL_tinymce;
                 editor.on('BeforeSetContent', function (e) {
 
                     if (e.content) {
-                        $.each(USL_MCECallbacks.visual.callbacks, function (callback) {
-                            e.content = USL_MCECallbacks.visual._parseContent(USL_MCECallbacks.visual.callbacks[callback], e.content);
-                            console.log(e.content);
+                        $.each(USL_MCECallbacks.callbacks, function (callback) {
+                            e.content = USL_MCECallbacks._parseVisualContent(USL_MCECallbacks.callbacks[callback], e.content);
                         });
                     }
                 });
 
                 editor.on('PostProcess', function (e) {
-                    //if (e.get) {
-                    //
-                    //    $.each(USL_MCECallbacks.visual, function (callback) {
-                    //        e.content = USL_MCECallbacks.visual[callback](e.content);
-                    //    });
-                    //}
+                    if (e.get) {
+
+                        $.each(USL_MCECallbacks.callbacks, function (callback) {
+                            e.content = USL_MCECallbacks._parseTextContent(USL_MCECallbacks.callbacks[callback], e.content);
+                        });
+                    }
                 });
             });
         },

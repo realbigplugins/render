@@ -14,16 +14,44 @@ class USL_tinymce extends USL {
 
 	function __construct() {
 
-		add_action( 'load-post.php', array( __CLASS__, 'init' ) );
+		// TODO make this only load where needed
+		self::init();
 	}
 
 	public static function init() {
 
-		add_filter( 'mce_external_plugins', array( __CLASS__, 'add_tinymce_buttons' ) );
+		add_filter( 'mce_external_plugins', array( __CLASS__, 'add_tinymce_plugins' ) );
 		add_filter( 'mce_buttons', array( __CLASS__, 'register_tinymce_buttons' ) );
+
+		add_filter( 'tiny_mce_before_init', array( __CLASS__, 'modify_tinymce_init' ) );
+
+		add_action( 'after_setup_theme', array( __CLASS__, 'add_tinymce_style' ) );
 
 		include_once( self::$path . 'core/modal.php' );
 		new USL_Modal();
+	}
+
+	/**
+	 * This filter allows the tinymce.init() args to be modified.
+	 *
+	 * Currently, I'm adding some extended_valid_elememnts so that tinymce doesn't strip my empty tags (mainly spans).
+	 *
+	 * @since USL 1.0.0
+	 *
+	 * @param array $mceinit The init settings for tinymce.
+	 *
+	 * @return mixed The modified init array.
+	 */
+	public static function modify_tinymce_init( $mceinit ) {
+
+		$mceinit['noneditable_noneditable_class'] = 'usl-tinymce-shortcode-wrapper';
+		$mceinit['noneditable_editable_class'] = 'usl-tinymce-shortcode-content';
+		$mceinit['extended_valid_elements'] = 'span[*]';
+		return $mceinit;
+	}
+
+	public static function add_tinymce_style() {
+		add_editor_style( self::$url . "/assets/css/ultimate-shortcodes-library.min.css" );
 	}
 
 	/**
@@ -31,15 +59,16 @@ class USL_tinymce extends USL {
 	 *
 	 * @since USL 1.0.0
 	 *
-	 * @param null|array $plugin_array The array of button scripts.
+	 * @param null|array $plugins The array of button scripts.
 	 *
 	 * @return mixed|array
 	 */
-	public static function add_tinymce_buttons( $plugin_array ) {
+	public static function add_tinymce_plugins( $plugins ) {
 
-		$plugin_array['usl_button'] = self::$url . '/assets/js/source/admin/tinymce.js';
+		$plugins['usl'] = self::$url . '/assets/js/includes/tinymce-plugins/usl/plugin.min.js';
+		$plugins['noneditable'] = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
 
-		return $plugin_array;
+		return $plugins;
 	}
 
 	/**
@@ -53,7 +82,7 @@ class USL_tinymce extends USL {
 	 */
 	public static function register_tinymce_buttons( $buttons ) {
 
-		array_push( $buttons, 'usl_button' );
+		array_push( $buttons, 'usl' );
 
 		return $buttons;
 	}

@@ -76,6 +76,10 @@ function _usl_get_merged_shortcodes() {
 	return array_merge( $_shortcode_tags, $USL->shortcodes );
 }
 
+function _usl_translate_id_to_name( $id ) {
+	return ucwords( str_replace( array( ' ', '_' ), ' ', $id ) );
+}
+
 /**
  * @param $a
  * @param $b

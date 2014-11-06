@@ -18,7 +18,14 @@ class USL_CoreShortcodes_Design {
 			'title'       => 'Button',
 			'description' => 'Creates a sweet button',
 			'atts'        => array(
-				'link'  => array(),
+				'link'  => array(
+					'validate' => array(
+						'url:',
+					),
+					'sanitize' => array(
+						'url:',
+					),
+				),
 				'color' => array(
 					'colorpicker' => array(),
 					'default' => '#bada55',
@@ -148,8 +155,6 @@ function _usl_sc_button( $atts = array(), $content = null ) {
 		'shape' => '',
 		'icon' => '',
 	), $atts );
-
-	// FIXME Color not working
 
 	$class = 'usl-button';
 	$class .= ! empty( $atts['size'] ) ? "-$atts[size]" : '';

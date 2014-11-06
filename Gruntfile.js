@@ -31,8 +31,12 @@ module.exports = function (grunt) {
                 tasks: ['uglify:src']
             },
             js_admin: {
-                files: [SOURCE_DIR + 'assets/js/source/admin/*.js'],
+                files: [SOURCE_DIR + 'assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js'],
                 tasks: ['uglify:admin']
+            },
+            js_tinymce: {
+                files: ['src/assets/js/source/admin/tinymce.js'],
+                tasks: ['uglify:tinymce']
             },
             livereload: {
                 files: [
@@ -77,6 +81,11 @@ module.exports = function (grunt) {
             admin: {
                 files: {
                     'src/assets/js/ultimate-shortcodes-library-admin.min.js': ['src/assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js']
+                }
+            },
+            tinymce: {
+                files: {
+                    'src/assets/js/includes/tinymce-plugins/usl/plugin.min.js': ['src/assets/js/source/admin/tinymce.js']
                 }
             }
         },

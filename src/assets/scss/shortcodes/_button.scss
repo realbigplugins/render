@@ -1,3 +1,5 @@
+// FIXME Hover border radius not working (at least on circle)
+
 @mixin button-size($size) {
 
   $button-padding-base: $size;
@@ -24,6 +26,7 @@
   text-decoration: none !important;
   position: relative;
   white-space: nowrap;
+  border: none;
 
   &:hover {
     .hover, .content-hover {

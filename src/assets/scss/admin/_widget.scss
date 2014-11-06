@@ -1,0 +1,28 @@
+.usl-widget-add-shortcode-container {
+  text-align: center;
+
+  .usl-widget-add-shortcode {
+    border: 1px solid #ddd;
+  }
+}
+
+.usl-widget-shortcode {
+  text-align: center;
+}
+
+#usl-modal-remove {
+  float: right;
+  margin-right: 20px;
+  background: #ec6750;
+  color: #fff;
+  border-color: darken(#ec6750, 25%);
+  box-shadow: inset 0 1px 0 lighten(#ec6750, 10%),0 1px 0 rgba(0,0,0,.08);
+
+  &:hover {
+    background: darken(#ec6750, 5%);
+  }
+
+  &:active {
+    background: darken(#ec6750, 10%);
+  }
+}

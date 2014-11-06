@@ -1,5 +1,5 @@
 $usl-modal-width: 600px;
-$usl-modal-height: 500px;
+$usl-modal-height: 800px;
 
 #usl-modal-backdrop {
   position: fixed;
@@ -211,26 +211,34 @@ $usl-modal-height: 500px;
         border-top: 1px solid darken(#fff, 30%);
       }
 
-      .usl-modal-sc-att-row {
+      .usl-modal-att-row {
         padding: 10px;
 
         @include clearfix;
 
         &.invalid {
           background: #ffc3bc;
+          
+          .usl-modal-att-field .usl-modal-att-errormsg {
+            display: block;
+          }
         }
 
-        .usl-modal-sc-att-name {
+        .usl-modal-att-name {
           float: left;
           width: 25%;
         }
 
-        .usl-modal-sc-att-field {
+        .usl-modal-att-field {
           float: left;
           width: 75%;
           position: relative;
+          
+          .usl-modal-att-errormsg {
+            display: none;
+          }
 
-          .slider {
+          .usl-modal-att-slider {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
@@ -244,25 +252,30 @@ $usl-modal-height: 500px;
             cursor: pointer;
           }
 
-          .slider-value {
+          .usl-modal-att-slider-value {
             width: 20%;
             text-align: center;
             margin: 0;
           }
+
+          textarea[name="content"] {
+            width: 100%;
+            height: 100px;
+          }
         }
       }
 
-      .show-advanced-atts {
+      .usl-modal-show-advanced-atts {
         padding: 10px;
         display: inline-block;
       }
 
-      .title {
+      .usl-modal-shortcode-title {
         width: 25%;
         float: left;
       }
 
-      .description {
+      .usl-modal-shortcode-description {
         width: 75%;
         float: left;
         padding-right: 20px;
