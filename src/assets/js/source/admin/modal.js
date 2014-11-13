@@ -1,3 +1,5 @@
+// TODO Don't initialize each attribute's data object until needed
+
 /**
  * Functionality for the USL modal.
  *
@@ -14,6 +16,7 @@ var USL_Modal;
     var elements = {},
         shortcodes = {},
         usl_modal_open = false,
+        editing = false,
         selection, _search_timeout, search_loading;
 
     USL_Modal = {
@@ -36,7 +39,7 @@ var USL_Modal;
         },
 
         resize: function () {
-            this.list_height();
+            this.listHeight();
         },
 
         establishElements: function () {
@@ -166,9 +169,7 @@ var USL_Modal;
 
                 $(this).data('attObj', attObj);
             });
-        }
-
-        ,
+        },
 
         colorpickersInit: function () {
             elements.list.find('.usl-modal-att-colorpicker').each(function () {
@@ -323,7 +324,12 @@ var USL_Modal;
             }
         },
 
-        list_height: function () {
+        resetScroll: function () {
+            elements.list.scrollTop(0);
+        },
+
+        listHeight: function () {
+
             var height = elements.wrap.innerHeight()
                 - elements.title.outerHeight(true)
                 - elements.search.outerHeight(true)
@@ -334,7 +340,12 @@ var USL_Modal;
             elements.list.height(height);
         },
 
-        modify: function (code) {
+        modify: function (code, _selection) {
+
+            // Set the selection if it's set manually
+            if (typeof _selection !== 'undefined') {
+                selection = _selection;
+            }
 
             // Crop off any whitespace (generally preceding)
             code = code.trim();
@@ -425,7 +436,10 @@ var USL_Modal;
 
         open: function (_selection) {
 
-            selection = _selection;
+            if (typeof _selection !== 'undefined') {
+                selection = _selection;
+            }
+
             usl_modal_open = true;
 
             $(document).trigger('usl-modal-open');
@@ -435,7 +449,7 @@ var USL_Modal;
 
             elements.search.find('input[name="usl-modal-search"]').focus();
 
-            this.list_height();
+            this.listHeight();
 
             $(document).trigger('usl-modal-open');
         },
@@ -447,7 +461,8 @@ var USL_Modal;
             elements.wrap.hide();
             elements.backdrop.hide();
 
-            this.refresh();
+            this.resetScroll();
+            this.closeShortcode();
             this.clearSearch();
             elements.list.find('.usl-mce-shortcode.active').removeClass('active open');
 

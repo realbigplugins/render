@@ -20,23 +20,23 @@ module.exports = function (grunt) {
             },
             sass: {
                 files: [SOURCE_DIR + 'assets/scss/**/*.scss', '!src/assets/scss/admin/**/*.scss'],
-                tasks: ['sass:src', 'autoprefixer']
+                tasks: ['sass:src', 'autoprefixer', 'notify:sass']
             },
             sass_admin: {
                 files: [SOURCE_DIR + 'assets/scss/admin/**/*.scss'],
-                tasks: ['sass:admin', 'autoprefixer']
+                tasks: ['sass:admin', 'autoprefixer', 'notify:sass_admin']
             },
             js: {
                 files: [SOURCE_DIR + 'assets/js/source/*.js'],
-                tasks: ['uglify:src']
+                tasks: ['uglify:src', 'notify:js']
             },
             js_admin: {
                 files: [SOURCE_DIR + 'assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js'],
-                tasks: ['uglify:admin']
+                tasks: ['uglify:admin', 'notify:js_admin']
             },
             js_tinymce: {
                 files: ['src/assets/js/source/admin/tinymce.js'],
-                tasks: ['uglify:tinymce']
+                tasks: ['uglify:tinymce', 'notify:js_tinymce']
             },
             livereload: {
                 files: [
@@ -130,6 +130,39 @@ module.exports = function (grunt) {
                         dest: BUILD_DIR
                     }
                 ]
+            }
+        },
+
+        notify: {
+            sass: {
+                options: {
+                    title: '<%= pkg.name %>',
+                    message: 'SASS Completed'
+                }
+            },
+            sass_admin: {
+                options: {
+                    title: '<%= pkg.name %>',
+                    message: 'SASS Admin Completed'
+                }
+            },
+            js: {
+                options: {
+                    title: '<%= pkg.name %>',
+                    message: 'JS Completed'
+                }
+            },
+            js_admin: {
+                options: {
+                    title: '<%= pkg.name %>',
+                    message: 'JS Admin Completed'
+                }
+            },
+            js_tinymce: {
+                options: {
+                    title: '<%= pkg.name %>',
+                    message: 'JS tinymce Completed'
+                }
             }
         }
     });

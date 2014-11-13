@@ -1,5 +1,9 @@
 <?php
 
+// TODO Have entire visual editor show a loading image while I use AJAX to generate all visual shortcodes (instead of requiring it to be done via JS)
+
+// TODO allow turning off of visual editor shortcode rendering
+
 /**
  * Class USL_tinymce
  *
@@ -27,6 +31,8 @@ class USL_tinymce extends USL {
 
 		add_action( 'after_setup_theme', array( __CLASS__, 'add_tinymce_style' ) );
 
+		add_action( 'wp_ajax_usl_render_shortcode', array( __CLASS__, 'render_shortcode' ) );
+
 		include_once( self::$path . 'core/modal.php' );
 		new USL_Modal();
 	}
@@ -45,7 +51,7 @@ class USL_tinymce extends USL {
 	public static function modify_tinymce_init( $mceinit ) {
 
 		$mceinit['noneditable_noneditable_class'] = 'usl-tinymce-shortcode-wrapper';
-		$mceinit['noneditable_editable_class'] = 'usl-tinymce-shortcode-content';
+//		$mceinit['noneditable_editable_class'] = 'usl-tinymce-shortcode-content';
 		$mceinit['extended_valid_elements'] = 'span[*]';
 		return $mceinit;
 	}
@@ -67,6 +73,7 @@ class USL_tinymce extends USL {
 
 		$plugins['usl'] = self::$url . '/assets/js/includes/tinymce-plugins/usl/plugin.min.js';
 		$plugins['noneditable'] = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
+//		$plugins['jquery'] =
 
 		return $plugins;
 	}
@@ -85,6 +92,11 @@ class USL_tinymce extends USL {
 		array_push( $buttons, 'usl' );
 
 		return $buttons;
+	}
+
+	public static function render_shortcode() {
+		echo do_shortcode( $_POST['shortcode'] );
+		die();
 	}
 }
 

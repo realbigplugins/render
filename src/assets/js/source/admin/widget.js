@@ -35,10 +35,11 @@ var USL_Widget;
 
         open: function ($e) {
 
-            active_widget = $e.closest('.widget-content');
+            var active_widget = $e.closest('.widget-content'),
+                container = active_widget.find('.usl-widget-shortcode');
 
-            if (active_widget.find('.usl-widget-shortcode').text().trim().toLowerCase() !== 'no shortcode yet') {
-                USL_Modal.modify(active_widget.find('.usl-widget-shortcode').text());
+            if (container.text().trim().toLowerCase() !== 'no shortcode yet') {
+                USL_Modal.modify(container.text());
             } else {
                 USL_Modal.open();
             }

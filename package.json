@@ -15,6 +15,7 @@
     "grunt-contrib-watch": "~0.6",
     "grunt-contrib-sass": "~0.8",
     "grunt-contrib-copy": "~0.6",
+    "grunt-notify": "~0.4",
     "matchdep": "~0.3"
   }
 }

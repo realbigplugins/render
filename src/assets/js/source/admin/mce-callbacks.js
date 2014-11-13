@@ -32,13 +32,13 @@ var USL_MCECallbacks;
             return '</span>';
         },
 
-        _parseVisualContent: function (object, content) {
+        _convertLiteralToRendered: function (object, content) {
 
             // Finds ALL of the shortcodes (GI: global, ignore case)
-            var reGI = new RegExp('(<p>)?(\\[' + object.shortcode + '.*].*\\[\/' + object.shortcode + '])(<\\/p>)?', 'gi');
+            var reGI = new RegExp('(<p>)?(\\[' + object.shortcode + '.*?].*?\\[\/' + object.shortcode + '])(<\\/p>)?', 'gi');
 
             // Finds the first shortcode (I: ignore case)
-            var reI = new RegExp('(<p>)?(\\[' + object.shortcode + '.*].*\\[\/' + object.shortcode + '])(<\\/p>)?', 'i');
+            var reI = new RegExp('(<p>)?(\\[' + object.shortcode + '.*?].*?\\[\/' + object.shortcode + '])(<\\/p>)?', 'i');
 
             if (content.indexOf('[' + object.shortcode) !== -1) {
 
@@ -66,7 +66,7 @@ var USL_MCECallbacks;
             return content;
         },
 
-        _parseTextContent: function (object, content) {
+        _convertRenderedToLiteral: function (object, content) {
 
             // Finds ALL of the shortcodes (GI: global, ignore case)
             var reGI = new RegExp('<span class="usl-tinymce-shortcode-wrapper.*?>'
@@ -82,24 +82,7 @@ var USL_MCECallbacks;
 
                 for (var i = 0; i < shortcodes.length; i++) {
 
-                    var atts = USL_MCECallbacks._getVisualAtts(shortcodes[i]),
-                        shortcode_content = USL_MCECallbacks._getVisualContent(shortcodes[i]),
-                        code = USL_MCECallbacks._getVisualCode(shortcodes[i]),
-                        output = '[' + code;
-
-                    if (atts) {
-                        $.each(atts, function (name, value) {
-                            if (value.length) {
-                                output += ' ' + name + '="' + value + '"';
-                            }
-                        });
-                    }
-
-                    output += ']';
-
-                    if (shortcode_content.length) {
-                        output += shortcode_content + '[/' + code + ']';
-                    }
+                    var output = USL_tinymce.visualToLiteral(shortcodes[i]);
 
                     content = content.replace(reI, output);
                 }
@@ -139,23 +122,6 @@ var USL_MCECallbacks;
             return matches !== null ? matches[1] : '';
         },
 
-        _interaction: function (object) {
-
-            var output = '';
-
-            output += '<span class="usl-tinymce-shortcode-interaction">';
-
-            if (typeof object.interaction !== 'undefined') {
-                object.interaction();
-            } else {
-
-                output += '<span class="usl-tinymce-shortcode-interaction-edit"></span>';
-                output += '<span class="usl-tinymce-shortcode-interaction-remove"></span>';
-            }
-
-            output += '</span>';
-        },
-
         _getVisualAtts: function (shortcode) {
             var atts = shortcode.match(/<span class="usl-tinymce-shortcode-atts.*?data-atts="(.*?), ".*?<\/span>/i);
             return JSON.parse('{' + atts[1].replace(/&quot;/ig, '"') + '}');
@@ -190,7 +156,7 @@ USL_MCECallbacks.callbacks.button = {
     },
 
     default_args: {
-        link: '#',
+        link: '',
         size: 'medium',
         color: '#bada55',
         color_hover: '#84A347',
