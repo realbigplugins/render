@@ -8,5 +8,6 @@ Author URI: http://realbigmarketing.com
 */
 
 define( 'USL_DEVELOPMENT', true );
+define( 'SCRIPT_DEBUG', true );
 
 include_once( 'src/ultimate-shortcodes-library.php' );

@@ -17,7 +17,7 @@ var USL_Modal;
         shortcodes = {},
         usl_modal_open = false,
         editing = false,
-        selection, _search_timeout, search_loading;
+        _search_timeout, search_loading;
 
     USL_Modal = {
 
@@ -48,6 +48,7 @@ var USL_Modal;
             elements.backdrop = $('#usl-modal-backdrop');
             elements.cancel = elements.wrap.find('.usl-modal-cancel');
             elements.close = elements.wrap.find('.usl-modal-close');
+            elements.remove = $('#usl-modal-remove');
             elements.title = elements.wrap.find('.usl-modal-title');
             elements.search = elements.wrap.find('.usl-modal-search');
             elements.categories = elements.wrap.find('.usl-modal-categories');
@@ -68,6 +69,11 @@ var USL_Modal;
             elements.submit.off('click').click(function (event) {
                 event.preventDefault();
                 USL_Modal.update();
+            });
+
+            // Remove button
+           elements.remove.click(function () {
+                $(document).trigger('usl-modal-remove');
             });
 
             // Close the form
@@ -338,6 +344,14 @@ var USL_Modal;
                 - elements.footer.outerHeight(true);
 
             elements.list.height(height);
+        },
+
+        showRemoveButton: function () {
+            elements.remove.show();
+        },
+
+        hideRemoveButton: function () {
+            elements.remove.hide();
         },
 
         modify: function (code, _selection) {

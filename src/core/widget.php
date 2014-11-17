@@ -21,7 +21,6 @@ class USL_Widget extends WP_Widget {
 		}
 
 		add_filter( 'usl_att_pre_loop', array( __CLASS__, 'add_content_to_atts' ), 10, 3 );
-		add_action( 'usl_modal_action_area', array( __CLASS__, 'add_remove_button' ) );
 	}
 
 	public static function add_content_to_atts( $atts, $wrapping ) {
@@ -39,12 +38,6 @@ class USL_Widget extends WP_Widget {
 		}
 
 		return $atts;
-	}
-
-	public static function add_remove_button() {
-		?>
-		<input type="submit" value="Remove Shortcode" class="button-secondary delete" id="usl-modal-remove" />
-		<?php
 	}
 
 	public function widget( $args, $instance ) {

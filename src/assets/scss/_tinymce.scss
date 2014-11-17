@@ -10,35 +10,6 @@
     user-select: none;
   }
 
-  &:hover {
-    .usl-tinymce-shortcode-interaction {
-      top: -50px;
-      opacity: 1;
-    }
-  }
-
-  .usl-tinymce-shortcode-interaction {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    padding: 10px;
-    opacity: 0;
-    transition: all 500ms;
-    color: #333;
-
-    .usl-tinymce-shortcode-interaction-edit, .usl-tinymce-shortcode-interaction-remove{
-      cursor: pointer;
-      text-shadow: 2px 2px 5px rgba(#000, 0.3);
-      margin: 0 2px;
-
-      .dashicons {
-        font-size: 25px;
-      }
-    }
-  }
-
   .usl-tinymce-shortcode-atts, .usl-tinymce-shortcode-code {
     display: none;
   }

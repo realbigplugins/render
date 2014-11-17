@@ -5,3 +5,27 @@ i.mce-i-usl-mce-icon {
     content: "\f475";
   }
 }
+
+#usl-tinymce-loader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+
+  &.hide {
+    visibility: hidden;
+    opacity: 0;
+    transition: 300ms all;
+  }
+
+  .spinner {
+    position: absolute;
+    left: 50%;
+    margin-left: -10px;
+    top: 50%;
+    margin-top: 4px; // In between toolbar and bottom toolbar
+    display: block;
+  }
+}

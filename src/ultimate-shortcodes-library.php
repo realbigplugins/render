@@ -236,6 +236,8 @@ if ( ! class_exists( 'USL' ) ) {
 		 */
 		public static function _admin_enqueue_files() {
 
+			wp_localize_script( 'common', 'USL_Data', apply_filters( 'usl_localized_data', array()) );
+
 			wp_enqueue_script( 'usl-admin' );
 			wp_enqueue_style( 'usl-admin' );
 		}

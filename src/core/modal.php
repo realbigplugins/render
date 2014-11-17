@@ -4,7 +4,7 @@ class USL_Modal {
 
 	public function __construct() {
 
-		add_action( 'admin_head', array( __CLASS__, 'localize_shortcodes' ), 9999 );
+		add_action( 'usl_localized_data', array( __CLASS__, 'localize_shortcodes' ) );
 
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_scripts' ) );
 
@@ -29,13 +29,13 @@ class USL_Modal {
 		);
 	}
 
-	public static function localize_shortcodes() {
+	public static function localize_shortcodes( $data ) {
 
 		$all_shortcodes = _usl_get_merged_shortcodes();
 
 		$data['all_shortcodes'] = $all_shortcodes;
 
-		wp_localize_script( 'common', 'USL_Data', $data );
+		return $data;
 	}
 
 	private static function atts_loop( $shortcode_atts, $advanced = false, $wrapping = false ) {
@@ -258,6 +258,7 @@ class USL_Modal {
 					<input type="submit" value="Add Shortcode" class="button button-primary" id="usl-modal-submit"
 					       name="usl-modal-submit">
 
+					<input type="submit" value="Remove Shortcode" class="button-secondary delete" id="usl-modal-remove" />
 					<?php do_action( 'usl_modal_action_area' ); ?>
 				</div>
 			</div>

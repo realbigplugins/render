@@ -13,13 +13,20 @@
  */
 var USL_tinymce;
 (function ($) {
-    var editor;
+    var editor, $texteditor, $editor, $loader, submitted = false;
 
     USL_tinymce = {
 
         init: function () {
+
             this.add_to_tinymce();
             this.binds();
+
+            $editor = $('#wp-content-editor-container');
+            $texteditor = $editor.find('.wp-editor-area');
+
+            $editor.append('<div id="usl-tinymce-loader" class="hide"><div class="spinner"></div></div>');
+            $loader = $('#usl-tinymce-loader');
         },
 
         binds: function () {
@@ -31,6 +38,14 @@ var USL_tinymce;
             $(document).on('usl-modal-update', function () {
                 USL_tinymce.update();
             });
+
+            $(document).on('usl-modal-remove', function () {
+                USL_tinymce.removeShortcode();
+            });
+
+            $('#post').submit(function (event) {
+                USL_tinymce.submit(event, $(this));
+            });
         },
 
         // REMOVE If not still in use
@@ -38,7 +53,7 @@ var USL_tinymce;
 
             editor.on('click', function (event) {
 
-                // Remove shortcode button
+                // Show shortcode toolbar
                 //if (event.target.className.indexOf('usl-tinymce-shortcode-interaction-remove') !== -1) {
                 //    editor.execCommand('uslRemoveShortcode', false, event.target);
                 //}
@@ -55,17 +70,10 @@ var USL_tinymce;
                 // REMOVE If not still in use
                 USL_tinymce.editorBinds();
 
-                // This is used to activate our shortcode (< >) button whenever the user selects a shortcode within the
-                // visual editor
-                function setState( button, node ) {
-                    button.active(node.className.indexOf('usl-tinymce-shortcode-wrapper') !== -1);
-                }
-
                 editor.addButton('usl', {
 
                     // Establishes an icon class for the button with the prefix "mce-i-"
                     icon: 'usl-mce-icon',
-
                     cmd: 'usl-open',
 
                     onPostRender: function () {
@@ -74,19 +82,6 @@ var USL_tinymce;
                         editor.on('nodechange', function (event) {
                             setState(usl_button, event.element);
                         });
-                    }
-                });
-
-                // This helps with editing content around rendered shortcodes
-                editor.on('keyup', function (e) {
-
-                    var ndThis = editor.selection.getNode(),
-                        $this = $(ndThis);
-
-                    if ($this.attr('id') === 'mce_noneditablecaret' && $this.attr('data-mce-bogus')) {
-
-                        // FIXME First character after shortcode causes "caret" to fall back into the shortcode
-                        $this.replaceWith(ndThis.childNodes);
                     }
                 });
 
@@ -103,39 +98,76 @@ var USL_tinymce;
                             container_html = $('<div />').append($node.clone()).html(),
                             shortcode = USL_tinymce.visualToLiteral(container_html);
 
+                        USL_Modal.showRemoveButton();
                         USL_Modal.modify(shortcode, content);
                     } else {
+                        USL_Modal.hideRemoveButton();
                         USL_Modal.open(selection);
                     }
                 });
 
-                // Renders literal shortcodes into visual shortcodes (Text -> Visual)
-                editor.on('BeforeSetContent', function (e) {
+                // This is used to activate our shortcode (< >) button whenever the user selects a shortcode within the
+                // visual editor
+                function setState(button, node) {
+                    button.active(node.className.indexOf('usl-tinymce-shortcode-wrapper') !== -1);
+                }
 
-                    if (e.content) {
-                        $.each(USL_MCECallbacks.callbacks, function (callback) {
-                            e.content = USL_MCECallbacks._convertLiteralToRendered(USL_MCECallbacks.callbacks[callback], e.content);
-                        });
+                // This helps with editing content around rendered shortcodes
+                editor.on('keyup', function (e) {
+
+                    var ndThis = editor.selection.getNode(),
+                        $this = $(ndThis);
+
+                    if ($this.attr('id') === 'mce_noneditablecaret' && $this.attr('data-mce-bogus')) {
+
+                        // FIXME First character after shortcode causes "caret" to fall back into the shortcode
+                        $this.replaceWith(ndThis.childNodes);
                     }
                 });
 
-                // Converts rendered shortcodes into literal shortcodes (Visual -> Text)
-                editor.on('PostProcess', function (e) {
-                    if (e.get) {
+                editor.on('init show undo redo', USL_tinymce.loadVisual);
+                $(document).on('usl-modal-update', USL_tinymce.loadVisual);
 
-                        $.each(USL_MCECallbacks.callbacks, function (callback) {
-                            e.content = USL_MCECallbacks._convertRenderedToLiteral(USL_MCECallbacks.callbacks[callback], e.content);
-                        });
-                    }
+                editor.on('hide', function () {
+                    var content = editor.getContent();
+                    $texteditor.val(window.switchEditors.pre_wpautop(USL_tinymce.loadText(content)));
                 });
             });
         },
 
+
+        // Renders literal shortcodes into visual shortcodes (Text -> Visual)
+        loadVisual: function () {
+
+            var content = editor.getContent();
+
+            USL_MCECallbacks.visualLoadCounter.count = 0;
+            USL_MCECallbacks.visualLoadCounter.total = 0;
+
+            if (content.length && USL_Data.rendered_shortcodes) {
+                for (var i = 0; i < USL_Data.rendered_shortcodes.length; i++) {
+                    USL_MCECallbacks.convertLiteralToRendered(USL_Data.rendered_shortcodes[i], content, editor);
+                }
+            }
+        },
+
+        // Converts rendered shortcodes into literal shortcodes (Visual -> Text)
+        loadText: function (content) {
+
+            if (content.length && USL_Data.rendered_shortcodes) {
+                for (var i = 0; i < USL_Data.rendered_shortcodes.length; i++) {
+                    content = USL_MCECallbacks.convertRenderedToLiteral(USL_Data.rendered_shortcodes[i], content, $texteditor);
+                }
+            }
+
+            return content;
+        },
+
         visualToLiteral: function (shortcode) {
 
-            var atts = USL_MCECallbacks._getVisualAtts(shortcode),
-                shortcode_content = USL_MCECallbacks._getVisualContent(shortcode),
-                code = USL_MCECallbacks._getVisualCode(shortcode),
+            var atts = USL_MCECallbacks.getVisualAtts(shortcode),
+                shortcode_content = USL_MCECallbacks.getVisualContent(shortcode),
+                code = USL_MCECallbacks.getVisualCode(shortcode),
                 output = '[' + code;
 
             if (atts) {
@@ -163,8 +195,35 @@ var USL_tinymce;
             editor.insertContent(USL_Modal.output);
         },
 
-        removeShortcode: function ($e) {
-            $e.closest('.usl-tinymce-shortcode-wrapper').remove();
+        removeShortcode: function () {
+            editor.selection.setContent('');
+            USL_Modal.close();
+        },
+
+        loading: function (loading) {
+
+            if (loading) {
+                $loader.removeClass('hide');
+            } else {
+                $loader.addClass('hide');
+            }
+        },
+
+        submit: function (event, $e) {
+
+            if (!submitted) {
+
+                submitted = true;
+
+                event.preventDefault();
+                var content = editor.getContent();
+
+                editor.on('PostProcess', function (e) {
+                    e.content = USL_tinymce.loadText(content);
+                });
+
+                $e.submit();
+            }
         }
     };
 

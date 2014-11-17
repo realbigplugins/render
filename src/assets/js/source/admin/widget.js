@@ -28,7 +28,7 @@ var USL_Widget;
                 USL_Widget.update();
             });
 
-            $('#usl-modal-remove').click(function () {
+            $(document).on('usl-modal-remove', function () {
                 USL_Widget.remove();
             });
         },

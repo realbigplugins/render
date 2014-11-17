@@ -43,6 +43,14 @@ function usl_add_shortcode( $args ) {
 	}
 }
 
+function usl_shortcode_content( $content ) {
+	return "<span class='usl-tinymce-shortcode-content'>$content</span>";
+}
+
+function usl_add_shortcode_preview( $shortcode ) {
+
+}
+
 /**
  * Merges the WP global shortcode array with the USL array.
  *

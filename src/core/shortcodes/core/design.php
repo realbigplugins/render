@@ -146,6 +146,7 @@ new USL_CoreShortcodes_Design();
  * @return string The button HTML.
  */
 function _usl_sc_button( $atts = array(), $content = null ) {
+
 	$atts = shortcode_atts( array(
 		'link'  => '#',
 		'size'  => 'medium',
@@ -165,7 +166,9 @@ function _usl_sc_button( $atts = array(), $content = null ) {
 	$output .= '>';
 	$output .= "<span class='hover' style='background: $atts[color_hover]'></span>";
 	$output .= ! empty( $atts['icon'] ) ? "<span class='icon dashicons $atts[icon]'></span>" : '';
-	$output .= "<span class='content'>$content</span>";
+	$output .= '<span class="content">';
+	$output .= usl_shortcode_content( $content );
+	$output .= '</span>';
 	$output .= '</a>';
 
 	return $output;

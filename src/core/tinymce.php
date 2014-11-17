@@ -16,24 +16,41 @@
  */
 class USL_tinymce extends USL {
 
+	public $rendered_shortcodes = array(
+		'usl_day_week',
+		'usl_button',
+		'usl_title',
+	);
+
+	public $render_data = array();
+
 	function __construct() {
 
 		// TODO make this only load where needed
-		self::init();
+		$this->init();
 	}
 
-	public static function init() {
+	public function init() {
 
 		add_filter( 'mce_external_plugins', array( __CLASS__, 'add_tinymce_plugins' ) );
 		add_filter( 'mce_buttons', array( __CLASS__, 'register_tinymce_buttons' ) );
 
+		add_action( 'admin_init', array( $this, 'set_render_data' ) );
+
+		add_action( 'usl_render_ajax', array( __CLASS__, 'render_ajax' ) );
+
 		add_filter( 'tiny_mce_before_init', array( __CLASS__, 'modify_tinymce_init' ) );
+
+		add_action( 'usl_localized_data', array( $this, 'rendering_data' ) );
 
 		add_action( 'after_setup_theme', array( __CLASS__, 'add_tinymce_style' ) );
 
 		add_action( 'wp_ajax_usl_render_shortcode', array( __CLASS__, 'render_shortcode' ) );
 
 		include_once( self::$path . 'core/modal.php' );
+
+		$this->rendered_shortcodes = apply_filters( 'usl_rendered_shortcodes', $this->rendered_shortcodes );
+
 		new USL_Modal();
 	}
 
@@ -56,8 +73,22 @@ class USL_tinymce extends USL {
 		return $mceinit;
 	}
 
+	public function set_render_data() {
+
+		$this->render_data['post'] = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
+
+		$this->render_data = apply_filters( 'usl_render_data', $this->render_data );
+	}
+
 	public static function add_tinymce_style() {
 		add_editor_style( self::$url . "/assets/css/ultimate-shortcodes-library.min.css" );
+	}
+
+	public function rendering_data( $data ) {
+
+		$data['rendered_shortcodes'] = $this->rendered_shortcodes;
+		$data['render_data'] = $this->render_data;
+		return $data;
 	}
 
 	/**
@@ -73,7 +104,6 @@ class USL_tinymce extends USL {
 
 		$plugins['usl'] = self::$url . '/assets/js/includes/tinymce-plugins/usl/plugin.min.js';
 		$plugins['noneditable'] = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
-//		$plugins['jquery'] =
 
 		return $plugins;
 	}
@@ -94,9 +124,31 @@ class USL_tinymce extends USL {
 		return $buttons;
 	}
 
+	public static function render_ajax() {
+
+		global $post;
+
+		if ( isset( $_REQUEST['post'] ) ) {
+			$post = get_post( $_REQUEST['post'] );
+		}
+	}
+
 	public static function render_shortcode() {
-		echo do_shortcode( $_POST['shortcode'] );
-		die();
+
+		do_action( 'usl_render_ajax' );
+
+		$response = array();
+
+		// The quotes will be escaped, so we need to strip the escaping
+		$response['output'] = do_shortcode( stripslashes_deep( $_POST['shortcode'] ) );
+
+		if ( isset( $_POST['atts'] ) ) {
+			$response['atts'] = $_POST['atts'];
+		}
+
+		$response['shortcode'] = stripslashes_deep( $_POST['shortcode'] );
+
+		wp_send_json( $response );
 	}
 }
 
