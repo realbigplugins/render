@@ -566,7 +566,7 @@ var USL_Modal;
                         // Validate for many different types
                         switch (type) {
 
-                            // Url validation and sanitation
+                            // Url validation
                             case 'url':
 
                                 var url_pattern = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig;
@@ -575,6 +575,18 @@ var USL_Modal;
                                     att_valid = false;
                                     validated = false;
                                     attObj.setInvalid('Please enter a valid URL');
+                                }
+                                break;
+
+                            // Email validation
+                            case 'email':
+
+                                var email_pattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ig;
+
+                                if (!att_value.match(email_pattern)) {
+                                    att_valid = false;
+                                    validated = false;
+                                    attObj.setInvalid('Please enter a valid Email');
                                 }
                                 break;
 

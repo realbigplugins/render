@@ -1,5 +1,6 @@
 var USL_MCECallbacks;
 (function ($) {
+    var editor;
     USL_MCECallbacks = {
 
         visualLoadCounter: {
@@ -32,10 +33,6 @@ var USL_MCECallbacks;
         /**
          * Closes the wrapper for a USL shortcode.
          *
-         * Note the nbsp. This is an invisible character with zero width. It's used so that when clicking
-         * after the shortcode in the editor, you can insert the caret after the shortcode. Otherwise, it would default
-         * to inside the shortcode.
-         *
          * @since USL 1.0.0
          *
          * @param {string} tag Either a div or a span.
@@ -44,11 +41,13 @@ var USL_MCECallbacks;
         postShortcode: function (tag) {
 
             tag = typeof tag === 'undefined' ? 'span' : tag;
-            //&#8203;
-            return '<span class="usl-tinymce-shortcode-wrapper-end"></span></' + tag + '>&nbsp;';
+            return '<span class="usl-tinymce-shortcode-wrapper-end"></span></' + tag + '>&#8203;';
+            //return '<span class="usl-tinymce-shortcode-wrapper-end"></span></' + tag + '>';
         },
 
-        convertLiteralToRendered: function (_content, editor) {
+        convertLiteralToRendered: function (_content, _editor) {
+
+            editor = _editor;
 
             var regExpAllCodes = new RegExp('\\[.*?](.*?\\[\\/.*?])?', 'gi'),
                 matches = _content.match(regExpAllCodes);
@@ -69,7 +68,10 @@ var USL_MCECallbacks;
                     atts = this.getAtts(current_code),
                     _shortcode = matches[i].match(/\[(.*?)(?=\s|])/),
                     shortcode = _shortcode ? _shortcode[1] : false,
+                    shortcode_content = this.getShortcodeContent(current_code),
                     data = {};
+
+                console.log(shortcode_content);
 
                 if (!shortcode) {
                     this.updateCounter();
@@ -137,6 +139,8 @@ var USL_MCECallbacks;
 
                     output += USL_MCECallbacks.preShortcode(shortcode);
                     output += shortcode;
+                    output += shortcode_content ? ' - "<span class="usl-tinymce-shortcode-content">' +
+                    shortcode_content +'</span>"' : '';
                     output += USL_MCECallbacks.postShortcode();
 
                     editor.setContent(content.replace(reG, output));
@@ -182,8 +186,11 @@ var USL_MCECallbacks;
         },
 
         updateCounter: function () {
+
             this.visualLoadCounter.count++;
             if (this.visualLoadCounter.count == this.visualLoadCounter.total) {
+                var content = editor.getContent({format: 'raw'});
+                editor.setContent(content.replace(/(&#8203;)+/g, '&#8203;'));
                 USL_tinymce.loading(false);
             }
         },

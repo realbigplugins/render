@@ -18,7 +18,7 @@ class USL_CoreShortcodes_Design {
 			'title'       => 'Button',
 			'description' => 'Creates a sweet button',
 			'atts'        => array(
-				'link'  => array(
+				'link'        => array(
 					'validate' => array(
 						'url:',
 					),
@@ -26,40 +26,39 @@ class USL_CoreShortcodes_Design {
 						'url:',
 					),
 				),
-				'color' => array(
+				'color'       => array(
 					'colorpicker' => array(),
-					'default' => '#bada55',
+					'default'     => '#bada55',
 				),
 				'color_hover' => array(
 					'colorpicker' => array(),
-					'advanced' => true,
-					'default' => '#84A347',
+					'default'     => '#84A347',
 				),
-				'font_color' => array(
+				'font_color'  => array(
 					'colorpicker' => array(),
-					'default' => '#fff',
+					'default'     => '#fff',
 				),
-				'size'  => array(
+				'size'        => array(
 					'selectbox' => array(
 						'large',
 						'medium',
 						'small'
 					),
 				),
-				'shape' => array(
+				'shape'       => array(
 					'selectbox' => array(
 						'square',
 						'rounded',
 						'circle',
 					),
 				),
-				'icon' => array(),
+				'icon'        => array(),
 			),
 			'example'     => '[usl_button link="#" size="large" color="blue" shape="round"]Click here[/usl_button]',
 			'wrapping'    => true,
 			'render'      => array(
 				'noStyle' => true,
-			)
+			),
 		),
 		// Box
 		array(
@@ -69,12 +68,10 @@ class USL_CoreShortcodes_Design {
 			'description' => 'Creates a nice box for your content.',
 			'atts'        => array(
 				'color'   => array(
-					'selectbox' => array(
-						'red',
-						'blue',
-						'green',
-						'orange',
-					)
+					'colorpicker' => '',
+				),
+				'font_color'   => array(
+					'colorpicker' => '',
 				),
 				'shape'   => array(
 					'accepted_values' => array(
@@ -86,6 +83,10 @@ class USL_CoreShortcodes_Design {
 				'heading' => array(),
 			),
 			'wrapping'    => true,
+			'render'      => array(
+				'displayBlock' => true,
+				'noStyle'      => true,
+			),
 			'example'     => '[usl_box color="blue" shape="round" heading="About me"]Lorem ipsum...[/usl_box]',
 		),
 		// Column 2
@@ -96,6 +97,10 @@ class USL_CoreShortcodes_Design {
 			'description' => 'Creates a nice column that is half the width of the container.',
 			'wrapping'    => true,
 			'example'     => '[usl_column_two]Lorem ipsum...[/usl_column_two]',
+			'render'      => array(
+				'noStyle'      => true,
+				'displayBlock' => true,
+			),
 		),
 		// Column 3
 		array(
@@ -151,13 +156,13 @@ new USL_CoreShortcodes_Design();
 function _usl_sc_button( $atts = array(), $content = null ) {
 
 	$atts = shortcode_atts( array(
-		'link'  => '#',
-		'size'  => 'medium',
-		'color' => '#bada55',
+		'link'        => '#',
+		'size'        => 'medium',
+		'color'       => '#bada55',
 		'color_hover' => '#84A347',
-		'font_color' => '#fff',
-		'shape' => '',
-		'icon' => '',
+		'font_color'  => '#fff',
+		'shape'       => '',
+		'icon'        => '',
 	), $atts );
 
 	$class = 'usl-button';
@@ -191,12 +196,23 @@ function _usl_sc_button( $atts = array(), $content = null ) {
  */
 function _usl_sc_box( $atts, $content = null ) {
 	$atts = shortcode_atts( array(
-		'color'   => 'red',
+		'color'   => '#bada55',
 		'shape'   => 'rounded',
+		'font_color' => '#222',
 		'heading' => ''
 	), $atts );
 
-	return "<div class='usl-$atts[color] usl-$atts[shape] usl-box'><h3>$atts[heading]</h3>" . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
+	$class = 'usl-box';
+	$class .= ! empty( $atts['shape'] ) ? "-$atts[shape]" : '';
+
+	$output = "<div class='$class'";
+	$output .= " style='background: $atts[color]; color: $atts[font_color]'";
+	$output .= '>';
+	$output .= ! empty( $atts['heading'] ) ? "<h3>$atts[heading]</h3>" : '';
+	$output .= usl_shortcode_content( do_shortcode( $content ) );
+	$output .= '</div>';
+
+	return $output;
 }
 
 

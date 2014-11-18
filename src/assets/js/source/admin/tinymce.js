@@ -141,7 +141,6 @@ var USL_tinymce;
         loadVisual: function () {
 
             var content = editor.getContent();
-
             USL_MCECallbacks.convertLiteralToRendered(content, editor);
         },
 
@@ -150,7 +149,10 @@ var USL_tinymce;
          */
         loadText: function (content) {
 
+            // FIXME Find way to clean up &#8203;
+
             content = USL_MCECallbacks.convertRenderedToLiteral(content, editor);
+            content = content.replace(/&#8203;/g, '');
 
             return content;
         },
@@ -184,6 +186,8 @@ var USL_tinymce;
         },
 
         update: function () {
+            // TODO Support for nested shortcodes
+            this.removeShortcode();
             editor.insertContent(USL_Modal.output);
         },
 

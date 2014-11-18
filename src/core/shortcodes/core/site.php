@@ -26,6 +26,7 @@ class USL_CoreShortcodes_Site {
 				'info' => array(),
 			),
 			'example' => '[usl_site info="description"]',
+			'render' => true,
 		),
 		// Site Title
 		array(
@@ -33,6 +34,7 @@ class USL_CoreShortcodes_Site {
 			'function' => '_usl_sc_site_title',
 			'title' => 'Site Title',
 			'description' => 'Gets the title of the current site.',
+			'render' => true,
 		),
 		// Site Tagline
 		array(
@@ -40,6 +42,7 @@ class USL_CoreShortcodes_Site {
 			'function' => '_usl_sc_site_tagline',
 			'title' => 'Site Tagline',
 			'description' => 'Gets the tagline of the current site.',
+			'render' => true,
 		),
 		// Site Admin Email
 		array(
@@ -47,6 +50,7 @@ class USL_CoreShortcodes_Site {
 			'function' => '_usl_sc_site_admin_email',
 			'title' => 'Site Admin Email',
 			'description' => 'Gets the admin email the current site.',
+			'render' => true,
 		),
 	);
 

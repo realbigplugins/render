@@ -16,6 +16,7 @@ class USL_CoreShortcodes_Time {
 			'function' => '_usl_sc_custom_date',
 			'title' => 'Custom Date',
 			'description' => 'Outputs the current date in a custom format.',
+			'render' => true,
 		),
 		// Month
 		array(
@@ -23,6 +24,7 @@ class USL_CoreShortcodes_Time {
 			'function' => '_usl_sc_month',
 			'title' => 'Current Month',
 			'description' => 'Outputs the current month.',
+			'render' => true,
 		),
 		// Year
 		array(
@@ -30,6 +32,7 @@ class USL_CoreShortcodes_Time {
 			'function' => '_usl_sc_year',
 			'title' => 'Current Year',
 			'description' => 'Outputs the current year.',
+			'render' => true,
 		),
 		// Day of Month
 		array(
@@ -37,6 +40,7 @@ class USL_CoreShortcodes_Time {
 			'function' => '_usl_sc_day_month',
 			'title' => 'Current Day of the Month',
 			'description' => 'Outputs the current day of the month.',
+			'render' => true,
 		),
 		// Day of Week
 		array(
@@ -44,6 +48,7 @@ class USL_CoreShortcodes_Time {
 			'function' => '_usl_sc_day_week',
 			'title' => 'Current Day of the Week',
 			'description' => 'Outputs the current day of the week.',
+			'render' => true,
 		),
 		// Day of Year
 		array(
@@ -51,6 +56,7 @@ class USL_CoreShortcodes_Time {
 			'function' => '_usl_sc_day_year',
 			'title' => 'Current Day of the Year',
 			'description' => 'Outputs the current day of the year.',
+			'render' => true,
 		),
 	);
 

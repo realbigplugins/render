@@ -22,6 +22,7 @@ class USL_CoreShortcodes_User {
 				),
 			),
 			'example' => '[usl_user property="first_name"]',
+			'render' => true,
 		),
 		// Full Name
 		array(
@@ -29,6 +30,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_full_name',
 			'title' => 'Current User Full Name',
 			'description' => 'Get the full name of the current user.',
+			'render' => true,
 		),
 		// First Name
 		array(
@@ -36,6 +38,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_first_name',
 			'title' => 'Current User First Name',
 			'description' => 'Get the first name of the current user.',
+			'render' => true,
 		),
 		// Last Name
 		array(
@@ -43,13 +46,15 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_last_name',
 			'title' => 'Current User Last Name',
 			'description' => 'Get the last name of the current user.',
+			'render' => true,
 		),
 		// Username
 		array(
 			'code' => 'usl_user_username',
-			'function' => '_usl_sc_user_username',
+			'function' => '_usl_sc_user_login',
 			'title' => 'Current User Username',
 			'description' => 'Get the username of the current user.',
+			'render' => true,
 		),
 		// Email
 		array(
@@ -57,6 +62,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_email',
 			'title' => 'Current User Email',
 			'description' => 'Get the email of the current user.',
+			'render' => true,
 		),
 		// Display Name
 		array(
@@ -64,6 +70,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_display_name',
 			'title' => 'Current User Display Name',
 			'description' => 'Get the display name of the current user.',
+			'render' => true,
 		),
 		// ID
 		array(
@@ -71,6 +78,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_id',
 			'title' => 'Current User ID',
 			'description' => 'Get the ID of the current user.',
+			'render' => true,
 		),
 		// Author URL
 		array(
@@ -78,6 +86,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_url',
 			'title' => 'Current User URL',
 			'description' => 'Get the author URL of the current user.',
+			'render' => true,
 		),
 		// Registered Date
 		array(
@@ -85,6 +94,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_registered_date',
 			'title' => 'Current User Registered Date',
 			'description' => 'Get the date the current user registered.',
+			'render' => true,
 		),
 		// Description
 		array(
@@ -92,6 +102,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_description',
 			'title' => 'Current User Description',
 			'description' => 'Get the description of the current user.',
+			'render' => true,
 		),
 		// Role
 		array(
@@ -99,6 +110,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_role',
 			'title' => 'Current User Role',
 			'description' => 'Get the role of the current user.',
+			'render' => true,
 		),
 		// Capabilities
 		array(
@@ -106,6 +118,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_capabilities',
 			'title' => 'Current User Capabilities',
 			'description' => 'Get the capabilities of the current user.',
+			'render' => true,
 		),
 		// Admin Theme
 		array(
@@ -113,6 +126,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_admin_theme',
 			'title' => 'Current User Admin Theme',
 			'description' => 'Get the admin theme of the current user.',
+			'render' => true,
 		),
 		// Primary Blog
 		array(
@@ -120,6 +134,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_primary_blog',
 			'title' => 'Current User Primary Blog',
 			'description' => 'Get the primary blog of the current user.',
+			'render' => true,
 		),
 		// Source Domain
 		array(
@@ -127,6 +142,7 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_source_domain',
 			'title' => 'Current User Source Domain',
 			'description' => 'Get the source domain of the current user.',
+			'render' => true,
 		),
 	);
 
@@ -401,7 +417,7 @@ function _usl_sc_user_role() {
  *
  * @return string The the current user capabilities.
  */
-function _usl_sc_user_caps() {
+function _usl_sc_user_capabilities() {
 
 	$current_user = wp_get_current_user();
 
@@ -414,8 +430,10 @@ function _usl_sc_user_caps() {
 	$caps = $current_user->allcaps;
 	$output = '';
 	if ( $caps ) {
+		$i = 0;
 		foreach ( $caps as $cap => $val ) {
-			$output .= $cap. '<br/>';
+			$i++;
+			$output .= $cap . ($i < count( $caps ) ? ', ' : '');
 		}
 	}
 	return $output;
