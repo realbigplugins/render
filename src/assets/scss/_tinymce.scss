@@ -1,16 +1,53 @@
 .usl-tinymce-shortcode-wrapper {
   position: relative;
+  transition: 300ms padding;
+  display: inline-block;
 
-  * {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  &.nostyle {
+    background: #f5f5f5;
+    padding: 2px;
+    border: 1px solid #dedede;
+  }
+
+  &.active {
+    border: 2px dashed rgba(#000, 0.1);
+    padding: 5px;
   }
 
   .usl-tinymce-shortcode-atts, .usl-tinymce-shortcode-code {
     display: none;
+  }
+}
+
+// Specific shortcodes
+.usl-tinymce-shortcode-wrapper {
+
+  &[class*="usl_column_"] {
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+
+    &[class*="_two"] {
+      width: 50%;
+    }
+
+    &[class*="_three"] {
+      width: 33.333%;
+    }
+
+    &[class*="_four"] {
+      width: 25%;
+    }
+
+    &[class*="_five"] {
+      width: 20%;
+    }
+
+    // Override
+    [class*="usl-column-"] {
+      display: block;
+      width: auto;
+      box-sizing: inherit;
+    }
   }
 }

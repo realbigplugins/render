@@ -13,13 +13,13 @@
  */
 var USL_tinymce;
 (function ($) {
-    var editor, $texteditor, $editor, $loader, submitted = false;
+    var editor, $texteditor, $editor, $loader, submitted = false, $lastNode = '';
 
     USL_tinymce = {
 
         init: function () {
 
-            this.add_to_tinymce();
+            this.addToTinymce();
             this.binds();
 
             $editor = $('#wp-content-editor-container');
@@ -60,7 +60,7 @@ var USL_tinymce;
             });
         },
 
-        add_to_tinymce: function () {
+        addToTinymce: function () {
 
             tinymce.PluginManager.add('usl', function (_editor) {
 
@@ -76,25 +76,43 @@ var USL_tinymce;
                     icon: 'usl-mce-icon',
                     cmd: 'usl-open',
 
+                    // Make the < > button active when cursor is inside a shortcode
                     onPostRender: function () {
                         var usl_button = this;
 
                         editor.on('nodechange', function (event) {
-                            setState(usl_button, event.element);
+
+                            var $node = $(event.element).hasClass('usl-tinymce-shortcode-wrapper') ?
+                                $(event.element) :
+                                $(event.element).closest('.usl-tinymce-shortcode-wrapper'),
+                                is_usl = $node.length ? true : false;
+
+                            if ($lastNode.length) {
+                                $lastNode.removeClass('active');
+                            }
+
+                            if (is_usl) {
+                                $lastNode = $node;
+                                $lastNode.addClass('active');
+                            }
+
+                            usl_button.active(is_usl);
                         });
                     }
                 });
 
-                // Fires when clicking the shortcode (< >) Button in the tinymce toolbar
+                // Fires when clicking the shortcode < > button in the tinymce toolbar
                 editor.addCommand('usl-open', function () {
 
                     var selection = editor.selection.getContent(),
-                        node = editor.selection.getNode(),
-                        $node = $(node);
+                        node = editor.selection.getNode();
 
-                    if ($node.hasClass('usl-tinymce-shortcode-wrapper')) {
+                    if ($(node).closest('.usl-tinymce-shortcode-wrapper').length || $(node).hasClass('usl-tinymce-shortcode-wrapper')) {
 
-                        var content = $node.find('.usl-tinymce-shortcode-content').html(),
+                        var $node = $(node).hasClass('usl-tinymce-shortcode-wrapper') ?
+                                $(node) :
+                                $(node).closest('.usl-tinymce-shortcode-wrapper'),
+                            content = $node.find('.usl-tinymce-shortcode-content').html(),
                             container_html = $('<div />').append($node.clone()).html(),
                             shortcode = USL_tinymce.visualToLiteral(container_html);
 
@@ -103,25 +121,6 @@ var USL_tinymce;
                     } else {
                         USL_Modal.hideRemoveButton();
                         USL_Modal.open(selection);
-                    }
-                });
-
-                // This is used to activate our shortcode (< >) button whenever the user selects a shortcode within the
-                // visual editor
-                function setState(button, node) {
-                    button.active(node.className.indexOf('usl-tinymce-shortcode-wrapper') !== -1);
-                }
-
-                // This helps with editing content around rendered shortcodes
-                editor.on('keyup', function (e) {
-
-                    var ndThis = editor.selection.getNode(),
-                        $this = $(ndThis);
-
-                    if ($this.attr('id') === 'mce_noneditablecaret' && $this.attr('data-mce-bogus')) {
-
-                        // FIXME First character after shortcode causes "caret" to fall back into the shortcode
-                        $this.replaceWith(ndThis.childNodes);
                     }
                 });
 
@@ -136,7 +135,9 @@ var USL_tinymce;
         },
 
 
-        // Renders literal shortcodes into visual shortcodes (Text -> Visual)
+        /**
+         * Renders literal shortcodes into visual shortcodes (Text -> Visual).
+         */
         loadVisual: function () {
 
             var content = editor.getContent();
@@ -145,19 +146,21 @@ var USL_tinymce;
             USL_MCECallbacks.visualLoadCounter.total = 0;
 
             if (content.length && USL_Data.rendered_shortcodes) {
-                for (var i = 0; i < USL_Data.rendered_shortcodes.length; i++) {
-                    USL_MCECallbacks.convertLiteralToRendered(USL_Data.rendered_shortcodes[i], content, editor);
-                }
+                $.each(USL_Data.rendered_shortcodes, function (name, props) {
+                    USL_MCECallbacks.convertLiteralToRendered(name, content, editor);
+                });
             }
         },
 
-        // Converts rendered shortcodes into literal shortcodes (Visual -> Text)
+        /**
+         * Converts rendered shortcodes into literal shortcodes (Visual -> Text).
+         */
         loadText: function (content) {
 
             if (content.length && USL_Data.rendered_shortcodes) {
-                for (var i = 0; i < USL_Data.rendered_shortcodes.length; i++) {
-                    content = USL_MCECallbacks.convertRenderedToLiteral(USL_Data.rendered_shortcodes[i], content, $texteditor);
-                }
+                $.each(USL_Data.rendered_shortcodes, function (name, props) {
+                    content = USL_MCECallbacks.convertRenderedToLiteral(name, content, editor);
+                });
             }
 
             return content;
@@ -196,11 +199,19 @@ var USL_tinymce;
         },
 
         removeShortcode: function () {
-            editor.selection.setContent('');
+
+            var node = editor.selection.getNode(),
+                $node = $(node).hasClass('usl-tinymce-shortcode-wrapper') ?
+                    $(node) :
+                    $(node).closest('.usl-tinymce-shortcode-wrapper');
+
+            $node.remove();
             USL_Modal.close();
         },
 
         loading: function (loading) {
+
+            // TODO Disable all toolbar items until loading complete
 
             if (loading) {
                 $loader.removeClass('hide');

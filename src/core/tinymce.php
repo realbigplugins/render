@@ -17,9 +17,14 @@
 class USL_tinymce extends USL {
 
 	public $rendered_shortcodes = array(
-		'usl_day_week',
-		'usl_button',
-		'usl_title',
+		'usl_day_week' => array(
+			'classes' => 'nostyle',
+		),
+		'usl_button' => '',
+		'usl_title' => '',
+		'usl_column_two' => array(
+			'displayBlock' => true,
+		),
 	);
 
 	public $render_data = array();
@@ -68,7 +73,7 @@ class USL_tinymce extends USL {
 	public static function modify_tinymce_init( $mceinit ) {
 
 		$mceinit['noneditable_noneditable_class'] = 'usl-tinymce-shortcode-wrapper';
-//		$mceinit['noneditable_editable_class'] = 'usl-tinymce-shortcode-content';
+		$mceinit['noneditable_editable_class'] = 'usl-tinymce-shortcode-content';
 		$mceinit['extended_valid_elements'] = 'span[*]';
 		return $mceinit;
 	}
@@ -147,6 +152,7 @@ class USL_tinymce extends USL {
 		}
 
 		$response['shortcode'] = stripslashes_deep( $_POST['shortcode'] );
+		$response['code'] = $_POST['code'];
 
 		wp_send_json( $response );
 	}

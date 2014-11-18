@@ -7,7 +7,7 @@ var USL_MCECallbacks;
             total: 0
         },
 
-        preShortcode: function (_shortcode, _atts) {
+        preShortcode: function (_shortcode, _atts, tag, classes) {
 
             var atts = '',
                 shortcode = '<span class="usl-tinymce-shortcode-code" data-code="' + _shortcode + '"></span>';
@@ -20,11 +20,23 @@ var USL_MCECallbacks;
                 atts += '\'></span>';
             }
 
-            return '<span class="usl-tinymce-shortcode-wrapper">' + atts + shortcode;
+            return '<' + tag + ' class="usl-tinymce-shortcode-wrapper ' + _shortcode + ' ' + classes + '">' + atts + shortcode;
         },
 
-        postShortcode: function () {
-            return '<span class="usl-tinymce-shortcode-wrapper-end"></span></span>';
+        /**
+         * Closes the wrapper for a USL shortcode.
+         *
+         * Note the unicode character. This is an invisible character with zero width. It's used so that when clicking
+         * after the shortcode in the editor, you can insert the caret after the shortcode. Otherwise, it would default
+         * to inside the shortcode.
+         *
+         * @since USL 1.0.0
+         *
+         * @param {string} tag Either a div or a span.
+         * @returns {string} The ending of the wrapper.
+         */
+        postShortcode: function (tag) {
+            return '<span class="usl-tinymce-shortcode-wrapper-end"></span></' + tag + '>&#8203;';
         },
 
         convertLiteralToRendered: function (shortcode, content, editor) {
@@ -54,6 +66,7 @@ var USL_MCECallbacks;
                 data.action = 'usl_render_shortcode';
                 data.shortcode = current_code;
                 data.atts = atts;
+                data.code = shortcode;
                 data.total = matches.length;
 
                 $.post(
@@ -63,14 +76,19 @@ var USL_MCECallbacks;
 
                         var output = '',
                             content = editor.getContent(),
-                            reG = response.shortcode;
+                            reG = response.shortcode,
+                            tag = USL_Data.rendered_shortcodes[response.code].displayBlock ? 'div' : 'span',
+                            classes = USL_Data.rendered_shortcodes[response.code].classes ?
+                                USL_Data.rendered_shortcodes[response.code].classes :
+                                '';
 
                         // Escape the string for RegExp()
+                        // From https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex/6969486#6969486
                         reG = reG.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
-                        output += USL_MCECallbacks.preShortcode(shortcode, response.atts);
+                        output += USL_MCECallbacks.preShortcode(shortcode, response.atts, tag, classes);
                         output += response.output;
-                        output += USL_MCECallbacks.postShortcode();
+                        output += USL_MCECallbacks.postShortcode(tag);
 
                         editor.setContent(content.replace(new RegExp(reG, 'g'), output));
 
@@ -85,7 +103,8 @@ var USL_MCECallbacks;
 
         convertRenderedToLiteral: function (shortcode, content) {
 
-            var re_all_codes = new RegExp('<span\\s*?class="usl-tinymce-shortcode-wrapper".*?(data-atts="(.*?)")?.*?data-code="(.*?)".*?(<span class="usl-tinymce-shortcode-content">(.*?)<\/span>)?.*?usl-tinymce-shortcode-wrapper-end"><\/span><\/span>', 'gi'),
+            var tag = USL_Data.rendered_shortcodes[shortcode].displayBlock ? 'div' : 'span',
+                re_all_codes = new RegExp('<' + tag + '\\s*?class="usl-tinymce-shortcode-wrapper.*?(data-atts="(.*?)")?.*?data-code="(.*?)".*?(<span class="usl-tinymce-shortcode-content">(.*?)<\\/span>)?.*?usl-tinymce-shortcode-wrapper-end"><\\/span><\\/' + tag + '>', 'gi'),
                 matches = content.match(re_all_codes);
 
             if (!matches) {
@@ -114,7 +133,6 @@ var USL_MCECallbacks;
                 }
 
                 content = content.replace(new RegExp(current_code, 'g'), output);
-                //texteditor.val(current_content.replace(new RegExp(current_code, 'g'), output));
             }
 
             return content;

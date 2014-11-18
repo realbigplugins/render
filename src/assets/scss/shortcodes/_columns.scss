@@ -1,0 +1,21 @@
+[class*="usl-column-"]{
+  display: inline-block;
+  vertical-align: top;
+  box-sizing: border-box;
+
+  &[class*="-two"] {
+    width: 50%;
+  }
+
+  &[class*="-three"] {
+    width: 33.333%;
+  }
+
+  &[class*="-four"] {
+    width: 25%;
+  }
+
+  &[class*="-five"] {
+    width: 20%;
+  }
+}

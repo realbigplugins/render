@@ -193,7 +193,7 @@ function _usl_sc_box( $atts, $content = null ) {
 		'heading' => ''
 	), $atts );
 
-	return "<div class='usl-$atts[color] usl-$atts[shape] usl-box'><h3>$atts[heading]</h3>" . do_shortcode( $atts['content'] ) . '</div>';
+	return "<div class='usl-$atts[color] usl-$atts[shape] usl-box'><h3>$atts[heading]</h3>" . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
 }
 
 
@@ -210,7 +210,7 @@ function _usl_sc_box( $atts, $content = null ) {
  */
 function _usl_sc_column_two( $atts, $content = null ) {
 
-	return '<div class="usl-column-2">' . do_shortcode( $content ) . '</div>';
+	return '<div class="usl-column-2">' . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
 }
 
 
@@ -227,7 +227,7 @@ function _usl_sc_column_two( $atts, $content = null ) {
  */
 function _usl_sc_column_three( $atts, $content = null ) {
 
-	return '<div class="usl-column-3">' . do_shortcode( $content ) . '</div>';
+	return '<div class="usl-column-3">' . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
 }
 
 
@@ -244,7 +244,7 @@ function _usl_sc_column_three( $atts, $content = null ) {
  */
 function _usl_sc_column_four( $atts, $content = null ) {
 
-	return '<div class="usl-column-4">' . do_shortcode( $content ) . '</div>';
+	return '<div class="usl-column-4">' . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
 }
 
 
@@ -261,5 +261,5 @@ function _usl_sc_column_four( $atts, $content = null ) {
  */
 function _usl_sc_column_five( $atts, $content = null ) {
 
-	return '<div class="usl-column-5">' . do_shortcode( $content ) . '</div>';
+	return '<div class="usl-column-5">' . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
 }
