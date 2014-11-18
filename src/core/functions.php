@@ -39,16 +39,13 @@ function usl_add_shortcode( $args ) {
 			'example'     => $args['example'],
 			'category'    => $args['category'],
 			'wrapping'    => $args['wrapping'],
+			'render'      => $args['render'],
 		);
 	}
 }
 
 function usl_shortcode_content( $content ) {
 	return "<span class='usl-tinymce-shortcode-content'>$content</span>";
-}
-
-function usl_add_shortcode_preview( $shortcode ) {
-
 }
 
 /**

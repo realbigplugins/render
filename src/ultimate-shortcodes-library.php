@@ -64,18 +64,19 @@ if ( ! class_exists( 'USL' ) ) {
 		 * @var array
 		 */
 		public static $shortcode_defaults = array(
-				'code' => '',
-				'function' => '',
-				'title' => '',
-				'description' => '',
-				'category' => 'other',
-				'atts' => array(),
-				'example' => '',
-				'wrapping' => false,
+			'code'        => '',
+			'function'    => '',
+			'title'       => '',
+			'description' => '',
+			'category'    => 'other',
+			'atts'        => array(),
+			'example'     => '',
+			'wrapping'    => false,
+			'render'      => false,
 		);
 
 		private static $_shortcodes_extensions = array(
-			'core' => array(
+			'core'      => array(
 				'design',
 				'meta',
 				'site',
@@ -162,9 +163,9 @@ if ( ! class_exists( 'USL' ) ) {
 		public static function _shortcodes_init() {
 
 			// Cycle through all USL categories and shortcodes, requiring category files and adding each shortcode
-			foreach ( self::$_shortcodes_extensions as $type => $categories) {
+			foreach ( self::$_shortcodes_extensions as $type => $categories ) {
 				foreach ( $categories as $category ) {
-					require_once( self::$path . "core/shortcodes/$type/$category.php");
+					require_once( self::$path . "core/shortcodes/$type/$category.php" );
 				}
 			}
 		}
@@ -236,7 +237,7 @@ if ( ! class_exists( 'USL' ) ) {
 		 */
 		public static function _admin_enqueue_files() {
 
-			wp_localize_script( 'common', 'USL_Data', apply_filters( 'usl_localized_data', array()) );
+			wp_localize_script( 'common', 'USL_Data', apply_filters( 'usl_localized_data', array() ) );
 
 			wp_enqueue_script( 'usl-admin' );
 			wp_enqueue_style( 'usl-admin' );

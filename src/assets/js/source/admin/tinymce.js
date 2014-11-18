@@ -142,14 +142,7 @@ var USL_tinymce;
 
             var content = editor.getContent();
 
-            USL_MCECallbacks.visualLoadCounter.count = 0;
-            USL_MCECallbacks.visualLoadCounter.total = 0;
-
-            if (content.length && USL_Data.rendered_shortcodes) {
-                $.each(USL_Data.rendered_shortcodes, function (name, props) {
-                    USL_MCECallbacks.convertLiteralToRendered(name, content, editor);
-                });
-            }
+            USL_MCECallbacks.convertLiteralToRendered(content, editor);
         },
 
         /**
@@ -157,11 +150,7 @@ var USL_tinymce;
          */
         loadText: function (content) {
 
-            if (content.length && USL_Data.rendered_shortcodes) {
-                $.each(USL_Data.rendered_shortcodes, function (name, props) {
-                    content = USL_MCECallbacks.convertRenderedToLiteral(name, content, editor);
-                });
-            }
+            content = USL_MCECallbacks.convertRenderedToLiteral(content, editor);
 
             return content;
         },

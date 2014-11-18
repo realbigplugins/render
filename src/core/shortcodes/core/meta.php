@@ -16,6 +16,7 @@ class USL_CoreShortcodes_Meta {
 			'function' => '_usl_sc_id',
 			'title' => 'Post ID',
 			'description' => 'Displays the ID of the current post.',
+			'render' => true,
 		),
 		// Author
 		array(
@@ -23,6 +24,7 @@ class USL_CoreShortcodes_Meta {
 			'function' => '_usl_sc_author',
 			'title' => 'Post Author',
 			'description' => 'Displays the author of the current post.',
+			'render' => true,
 		),
 		// Title
 		array(
@@ -30,6 +32,7 @@ class USL_CoreShortcodes_Meta {
 			'function' => '_usl_sc_title',
 			'title' => 'Post Title',
 			'description' => 'Displays the title of the current post.',
+			'render' => true,
 		),
 		// Published date
 		array(
@@ -37,6 +40,7 @@ class USL_CoreShortcodes_Meta {
 			'function' => '_usl_sc_published',
 			'title' => 'Post Published',
 			'description' => 'Displays the published date of the current post.',
+			'render' => true,
 		),
 		// Status
 		array(
@@ -44,6 +48,7 @@ class USL_CoreShortcodes_Meta {
 			'function' => '_usl_sc_status',
 			'title' => 'Post Status',
 			'description' => 'Displays the status of the current post.',
+			'render' => true,
 		),
 		// Type
 		array(
@@ -58,6 +63,7 @@ class USL_CoreShortcodes_Meta {
 			'function' => '_usl_sc_excerpt',
 			'title' => 'Post Excerpt',
 			'description' => 'Displays the excerpt of the current post.',
+			'render' => true,
 		),
 	);
 

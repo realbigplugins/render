@@ -16,16 +16,7 @@
  */
 class USL_tinymce extends USL {
 
-	public $rendered_shortcodes = array(
-		'usl_day_week' => array(
-			'classes' => 'nostyle',
-		),
-		'usl_button' => '',
-		'usl_title' => '',
-		'usl_column_two' => array(
-			'displayBlock' => true,
-		),
-	);
+	public $rendered_shortcodes = array();
 
 	public $render_data = array();
 
@@ -53,8 +44,6 @@ class USL_tinymce extends USL {
 		add_action( 'wp_ajax_usl_render_shortcode', array( __CLASS__, 'render_shortcode' ) );
 
 		include_once( self::$path . 'core/modal.php' );
-
-		$this->rendered_shortcodes = apply_filters( 'usl_rendered_shortcodes', $this->rendered_shortcodes );
 
 		new USL_Modal();
 	}
@@ -91,7 +80,15 @@ class USL_tinymce extends USL {
 
 	public function rendering_data( $data ) {
 
-		$data['rendered_shortcodes'] = $this->rendered_shortcodes;
+		global $USL;
+
+		$rendered = array();
+		foreach ( $USL->shortcodes as $code => $shortcode ) {
+			if ( $shortcode['render'] ) {
+				$rendered[ $code ] = $shortcode['render'];
+			}
+		}
+		$data['rendered_shortcodes'] = $rendered;
 		$data['render_data'] = $this->render_data;
 		return $data;
 	}
@@ -158,4 +155,4 @@ class USL_tinymce extends USL {
 	}
 }
 
-new USL_tinymce();
+$USL_tinymce = new USL_tinymce();

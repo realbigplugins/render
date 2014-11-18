@@ -57,6 +57,9 @@ class USL_CoreShortcodes_Design {
 			),
 			'example'     => '[usl_button link="#" size="large" color="blue" shape="round"]Click here[/usl_button]',
 			'wrapping'    => true,
+			'render'      => array(
+				'noStyle' => true,
+			)
 		),
 		// Box
 		array(
