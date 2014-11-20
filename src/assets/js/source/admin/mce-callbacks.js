@@ -65,13 +65,11 @@ var USL_MCECallbacks;
             for (var i = 0; i < matches.length; i++) {
 
                 var current_code = matches[i],
-                    atts = this.getAtts(current_code),
+                    atts = this.getLiteralAtts(current_code),
                     _shortcode = matches[i].match(/\[(.*?)(?=\s|])/),
                     shortcode = _shortcode ? _shortcode[1] : false,
-                    shortcode_content = this.getShortcodeContent(current_code),
+                    shortcode_content = this.getLiteralContent(current_code),
                     data = {};
-
-                console.log(shortcode_content);
 
                 if (!shortcode) {
                     this.updateCounter();
@@ -102,10 +100,32 @@ var USL_MCECallbacks;
                         data,
                         function (response) {
 
-                            var output = '',
+                            var reG = response.shortcode,
                                 content = editor.getContent(),
-                                reG = response.shortcode,
-                                tag = USL_Data.rendered_shortcodes[response.code].displayBlock ? 'div' : 'span',
+                                output = '';
+
+                            // Escape the string for RegExp()
+                            // From https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex/6969486#6969486
+                            reG = reG.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+                            reG = new RegExp(reG, 'g');
+
+                            // Something went wrong
+                            if (typeof response.output === 'undefined') {
+
+                                console.log(response);
+
+                                output += USL_MCECallbacks.preShortcode('error');
+                                output += 'error';
+                                output += USL_MCECallbacks.postShortcode();
+
+                                editor.setContent(content.replace(reG, output));
+
+                                USL_MCECallbacks.updateCounter();
+
+                                return;
+                            }
+
+                            var tag = USL_Data.rendered_shortcodes[response.code].displayBlock ? 'div' : 'span',
                                 classes = USL_Data.rendered_shortcodes[response.code].classes ?
                                     USL_Data.rendered_shortcodes[response.code].classes :
                                     '',
@@ -113,16 +133,11 @@ var USL_MCECallbacks;
                                     USL_Data.rendered_shortcodes[response.code].noStyle :
                                     '';
 
-
-                            // Escape the string for RegExp()
-                            // From https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex/6969486#6969486
-                            reG = reG.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-
                             output += USL_MCECallbacks.preShortcode(response.code, response.atts, tag, classes, nostyle);
                             output += response.output;
                             output += USL_MCECallbacks.postShortcode(tag);
 
-                            editor.setContent(content.replace(new RegExp(reG, 'g'), output));
+                            editor.setContent(content.replace(reG, output));
 
                             USL_MCECallbacks.updateCounter();
                         }
@@ -189,13 +204,13 @@ var USL_MCECallbacks;
 
             this.visualLoadCounter.count++;
             if (this.visualLoadCounter.count == this.visualLoadCounter.total) {
-                var content = editor.getContent({format: 'raw'});
+                var content = editor.getContent({format: 'numeric'});
                 editor.setContent(content.replace(/(&#8203;)+/g, '&#8203;'));
                 USL_tinymce.loading(false);
             }
         },
 
-        getAtts: function (content, default_args) {
+        getLiteralAtts: function (content, default_args) {
 
             var _atts = content.match(/\s.*?(?==)/g),
                 values = content.match(/"([^"]+)"/g),
@@ -219,11 +234,18 @@ var USL_MCECallbacks;
             return atts;
         },
 
-        getShortcodeContent: function (content) {
+        getLiteralContent: function (shortcode) {
 
-            var matches = content.match(/\](.*)\[/);
+            var matches = shortcode.match(/\](.*)\[/);
 
-            return matches !== null ? matches[1] : '';
+            return matches !== null ? matches[1] : false;
+        },
+
+        getLiteralCode: function (shortcode) {
+
+            var matches = shortcode.match(/\[(.*?)(?=\s|])/);
+
+            return matches !== null ? matches[1] : false;
         },
 
         getVisualAtts: function (shortcode) {

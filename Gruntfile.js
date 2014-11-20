@@ -1,10 +1,6 @@
 'use strict';
 module.exports = function (grunt) {
 
-    var SOURCE_DIR = 'src/',
-        BUILD_DIR = 'build/',
-        VERSION = grunt.file.readJSON('package.json').version;
-
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
@@ -19,19 +15,19 @@ module.exports = function (grunt) {
                 livereload: true
             },
             sass: {
-                files: [SOURCE_DIR + 'assets/scss/**/*.scss', '!src/assets/scss/admin/**/*.scss'],
+                files: ['src/assets/scss/**/*.scss', '!src/assets/scss/admin/**/*.scss'],
                 tasks: ['sass:src', 'autoprefixer', 'notify:sass']
             },
             sass_admin: {
-                files: [SOURCE_DIR + 'assets/scss/admin/**/*.scss'],
+                files: ['src/assets/scss/admin/**/*.scss'],
                 tasks: ['sass:admin', 'autoprefixer', 'notify:sass_admin']
             },
             js: {
-                files: [SOURCE_DIR + 'assets/js/source/*.js'],
+                files: ['src/assets/js/source/*.js'],
                 tasks: ['uglify:src', 'notify:js']
             },
             js_admin: {
-                files: [SOURCE_DIR + 'assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js'],
+                files: ['src/assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js'],
                 tasks: ['uglify:admin', 'notify:js_admin']
             },
             js_tinymce: {
@@ -40,31 +36,11 @@ module.exports = function (grunt) {
             },
             livereload: {
                 files: [
-                    SOURCE_DIR + '**/*.html',
-                    SOURCE_DIR + '**/*.php',
-                    SOURCE_DIR + 'assets/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
-                    SOURCE_DIR + '!**/*ajax.php'
+                    'src/**/*.html',
+                    'src/**/*.php',
+                    'src/assets/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
+                    'src/!**/*ajax.php'
                 ]
-            }
-        },
-
-
-        // Ruby
-        // To use, make sure that the grunt-contrib-sass falls after grunt-sass and inside of foundation->_functions.scss
-        // change false to null.
-        sass: {
-            options: {
-                style: 'compressed'
-            },
-            src: {
-                files: {
-                    'src/assets/css/ultimate-shortcodes-library.min.css': 'src/assets/scss/main.scss'
-                }
-            },
-            admin: {
-                files: {
-                    'src/assets/css/ultimate-shortcodes-library-admin.min.css': 'src/assets/scss/admin/admin.scss'
-                }
             }
         },
 
@@ -90,6 +66,23 @@ module.exports = function (grunt) {
             }
         },
 
+        // Transpile SASS to CSS
+        sass: {
+            options: {
+                style: 'compressed'
+            },
+            src: {
+                files: {
+                    'src/assets/css/ultimate-shortcodes-library.min.css': 'src/assets/scss/main.scss'
+                }
+            },
+            admin: {
+                files: {
+                    'src/assets/css/ultimate-shortcodes-library-admin.min.css': 'src/assets/scss/admin/admin.scss'
+                }
+            }
+        },
+
         // Prefix the minified CSS
         autoprefixer: {
             options: {
@@ -97,8 +90,8 @@ module.exports = function (grunt) {
             },
             src: {
                 expand: true,
-                cwd: SOURCE_DIR,
-                dest: SOURCE_DIR,
+                cwd: 'src/',
+                dest: 'src/',
                 src: [
                     'assets/css/*.css'
                 ]
@@ -120,14 +113,14 @@ module.exports = function (grunt) {
                     {
                         dot: true,
                         expand: true,
-                        cwd: SOURCE_DIR,
+                        cwd: 'src/',
                         src: [
                             '**',
                             '!**/.{svn,git}/**', // Ignore VCS settings
                             '!**/.{idea}/**', // Ignore .idea project settings
                             '!**/*.map' // No maps
                         ],
-                        dest: BUILD_DIR
+                        dest: 'build/'
                     }
                 ]
             }

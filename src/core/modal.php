@@ -1,5 +1,4 @@
 <?php
-// TODO Collapse / Expand animation for shortcodes
 class USL_Modal {
 
 	public function __construct() {
@@ -8,7 +7,7 @@ class USL_Modal {
 
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_scripts' ) );
 
-		add_action( 'admin_print_footer_scripts', array( __CLASS__, 'output' ) );
+		add_action( 'admin_footer', array( __CLASS__, 'output' ) );
 	}
 
 	public static function admin_scripts() {
@@ -18,6 +17,7 @@ class USL_Modal {
 
 		// Allow WP accordion functionality for our shortcode list
 		wp_enqueue_script( 'jquery-ui-slider' );
+		wp_enqueue_script( 'jquery-effects-shake' );
 		wp_enqueue_script( 'wp-color-picker' );
 
 		wp_enqueue_style( 'wp-color-picker' );
@@ -123,12 +123,14 @@ class USL_Modal {
 						<?php
 						elseif ( isset( $att['textarea'] ) ) : ?>
 
-							<textarea class="usl-modal-att-input" name="<?php echo $att_name; ?>"><?php echo isset( $att['default_value'] ) ? $att['default_value'] : ''; ?></textarea>
+							<textarea class="usl-modal-att-input" name="<?php echo $att_name; ?>"><?php echo isset( $att['default'] ) ? $att['default_value'] : ''; ?></textarea>
 
 						<?php
 						else: ?>
 
-							<input type="text" class="usl-modal-att-input" value='' name="<?php echo $att_name; ?>"/>
+							<input type="text" class="usl-modal-att-input"
+							       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+							       name="<?php echo $att_name; ?>"/>
 
 						<?php endif; ?>
 
@@ -139,7 +141,7 @@ class USL_Modal {
 		<?php endforeach;
 	}
 
-	public function output() {
+	public static function output() {
 
 		$all_shortcodes = _usl_get_merged_shortcodes();
 
@@ -154,6 +156,16 @@ class USL_Modal {
 				$categories[] = $shortcode['category'];
 			}
 		}
+
+		$category_icons = apply_filters( 'usl_modal_category_icons', array(
+			'all' => 'dashicons-admin-generic',
+			'design' => 'dashicons-admin-appearance',
+			'meta' => 'dashicons-admin-post',
+			'site' => 'dashicons-admin-home',
+			'time' => 'dashicons-clock',
+			'user' => 'dashicons-admin-users',
+			'media' => 'dashicons-admin-media',
+		) );
 		?>
 		<div id="usl-modal-backdrop"></div>
 		<div id="usl-modal-wrap" style="display: none;">
@@ -168,23 +180,24 @@ class USL_Modal {
 				<div class="usl-modal-search">
 					<input type="text" name="usl-modal-search" placeholder="Search"/>
 					<span class="dashicons dashicons-search"></span>
+					<div class="usl-modal-invalidsearch" style="display: none;">Sorry, but you can't search for that.</div>
 				</div>
 
 				<div class="usl-modal-categories">
+					<div class="usl-modal-categories-left dashicons dashicons-arrow-left-alt2"></div>
 					<ul>
 						<?php if ( ! empty( $categories ) ) : ?>
 							<?php foreach ( $categories as $category ) : ?>
 								<li data-category="<?php echo $category; ?>">
-									<?php // TODO unique icons ?>
-									<span class="dashicons dashicons-admin-generic"></span>
+									<span class="dashicons <?php echo isset( $category_icons[ $category ] ) ? $category_icons[ $category ] : 'dashicons-admin-generic'; ?>"></span>
 									<br/>
 									<?php echo ucwords( $category ); ?>
 								</li>
 							<?php endforeach; ?>
 						<?php endif; ?>
 					</ul>
+					<div class="usl-modal-categories-right dashicons dashicons-arrow-right-alt2"></div>
 				</div>
-				<p class="dashicons dashicons-leftright"></p>
 
 				<div class="usl-modal-shortcodes-container">
 

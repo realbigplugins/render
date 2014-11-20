@@ -57,7 +57,7 @@ class USL_CoreShortcodes_Site {
 	function __construct() {
 
 		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'Site';
+			$shortcode['category'] = 'site';
 			usl_add_shortcode( $shortcode );
 		}
 	}

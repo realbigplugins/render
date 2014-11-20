@@ -94,6 +94,11 @@ class USL_CoreShortcodes_User {
 			'function' => '_usl_sc_user_registered_date',
 			'title' => 'Current User Registered Date',
 			'description' => 'Get the date the current user registered.',
+			'atts' => array(
+				'format' => array(
+					'default' => 'F jS, Y',
+				),
+			),
 			'render' => true,
 		),
 		// Description
@@ -149,13 +154,15 @@ class USL_CoreShortcodes_User {
 	function __construct() {
 
 		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'User';
+			$shortcode['category'] = 'user';
 			usl_add_shortcode( $shortcode );
 		}
 	}
 }
 
 new USL_CoreShortcodes_User();
+
+// TODO Make all of these apply to current user by default, but allow a user ID or name to be used instead
 
 /**
  * Gets specified current user property.
@@ -346,9 +353,11 @@ function _usl_sc_user_url() {
  *
  * @return string The the date the current user registered.
  */
-function _usl_sc_user_registered_date() {
+function _usl_sc_user_registered_date( $atts ) {
 
-	// TODO Allow atts to be passed to customize the date format, also use a date format!
+	$atts = shortcode_atts( array(
+		'format' => 'F jS, Y',
+	), $atts );
 
 	$current_user = wp_get_current_user();
 
@@ -356,7 +365,9 @@ function _usl_sc_user_registered_date() {
 		return 'Cannot get current user';
 	}
 
-	return $current_user->user_registered;
+	$user_data = get_userdata( $current_user->ID );
+
+	return date( $atts['format'], strtotime( $user_data->user_registered ) );
 }
 
 /**

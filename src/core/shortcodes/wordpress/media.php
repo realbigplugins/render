@@ -50,7 +50,7 @@ class USL_WordPressShortcodes {
 				'width' => array(),
 			),
 			'wrapping'    => true,
-			'example'     => '[caption id="attachment_6" align="alignright" width="300"]<img src="http://localhost/wp-content/uploads/2010/07/800px-Great_Wave_off_Kanagawa2-300x205.jpg" alt="Kanagawa" title="The Great Wave" width="300" height="205" class="size-medium wp-image-6" /> The Great Wave[/caption]',
+			'example'     => '[caption id="attachment_6" align="alignright" width="300"]&lt;img src="my-image.jpg" /&gt; Awesome Image[/caption]',
 		),
 		// Gallery
 		array(
@@ -232,7 +232,7 @@ class USL_WordPressShortcodes {
 	function __construct() {
 
 		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'WordPress';
+			$shortcode['category'] = 'media';
 			usl_add_shortcode( $shortcode );
 		}
 	}

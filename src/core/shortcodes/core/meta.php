@@ -70,7 +70,7 @@ class USL_CoreShortcodes_Meta {
 	function __construct() {
 
 		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'Meta';
+			$shortcode['category'] = 'meta';
 			usl_add_shortcode( $shortcode );
 		}
 	}

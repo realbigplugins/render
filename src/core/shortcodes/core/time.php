@@ -15,6 +15,11 @@ class USL_CoreShortcodes_Time {
 			'code' => 'usl_date',
 			'function' => '_usl_sc_custom_date',
 			'title' => 'Custom Date',
+			'atts' => array(
+				'format' => array(
+					'default' => 'F jS, Y',
+				)
+			),
 			'description' => 'Outputs the current date in a custom format.',
 			'render' => true,
 		),
@@ -63,7 +68,7 @@ class USL_CoreShortcodes_Time {
 	function __construct() {
 
 		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'Time';
+			$shortcode['category'] = 'time';
 			usl_add_shortcode( $shortcode );
 		}
 	}

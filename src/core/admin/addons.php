@@ -1,15 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kylemaurer
- * Date: 9/9/14
- * Time: 10:40 PM
- */
-
-if ( is_admin() ) {
-	$usladdons = new USL_Addons();
-}
-
 class USL_Addons {
 
 	public function __construct() {
@@ -34,6 +23,11 @@ class USL_Addons {
 	 * Contents of the addons submenu
 	 */
 	public function display() {
+
+		if ( ! current_user_can('manage_options') ) {
+			wp_die( __('You do not have sufficient permissions to access this page.') );
+		}
+
 		// Activate/Deactivate plugins
 		if ( isset( $_GET['usl_activate'] ) ) {
 			activate_plugin( $_GET['usl_activate'] );
@@ -83,4 +77,6 @@ class USL_Addons {
 			echo '</div>';
 		}
 	}
-} // END class
+}
+
+new USL_Addons();

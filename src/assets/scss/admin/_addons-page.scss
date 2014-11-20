@@ -1,34 +1,4 @@
-/*
-Admin page styles
-*/
-.postbox-container {
-  width: 100%;
-}
-.postbox {
-  width: 31%;
-  float: left;
-  margin: 0 10px 5px 0;
-}
-.usl_codes {
-  border: 1px solid #DADADA;
-  margin: 0 0 8px 0;
-}
-.usl_codes h4 {
-  margin: 0;
-  padding: 4px;
-  background-color: #DADADA;
-  font-size: 1.1em;
-}
-.usl_codes p {
-  padding: 5px;
-  margin: 0;
-}
-.hndle {
-  padding: 7px;
-}
-.post-title strong {
-  text-transform: capitalize;
-}
+
 /* Addons page */
 [class^="usl-col-"], [class*=" usl-col-"] {
   display: inline-block;

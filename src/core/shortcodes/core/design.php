@@ -134,7 +134,7 @@ class USL_CoreShortcodes_Design {
 	function __construct() {
 
 		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'Design';
+			$shortcode['category'] = 'design';
 			usl_add_shortcode( $shortcode );
 		}
 	}

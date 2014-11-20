@@ -13,11 +13,17 @@
  */
 var USL_tinymce;
 (function ($) {
-    var editor, $texteditor, $editor, $loader, submitted = false, $lastNode = '';
+    var editor, $texteditor, $editor, $loader,
+        min_load_time = false,
+        last_message = 0,
+        submitted = false,
+        $lastNode = '';
 
     USL_tinymce = {
 
         init: function () {
+
+            // TODO Shortcode drag and drop
 
             this.addToTinymce();
             this.binds();
@@ -25,8 +31,7 @@ var USL_tinymce;
             $editor = $('#wp-content-editor-container');
             $texteditor = $editor.find('.wp-editor-area');
 
-            $editor.append('<div id="usl-tinymce-loader" class="hide"><div class="spinner"></div></div>');
-            $loader = $('#usl-tinymce-loader');
+            this.createLoader();
         },
 
         binds: function () {
@@ -48,18 +53,6 @@ var USL_tinymce;
             });
         },
 
-        // REMOVE If not still in use
-        editorBinds: function () {
-
-            editor.on('click', function (event) {
-
-                // Show shortcode toolbar
-                //if (event.target.className.indexOf('usl-tinymce-shortcode-interaction-remove') !== -1) {
-                //    editor.execCommand('uslRemoveShortcode', false, event.target);
-                //}
-            });
-        },
-
         addToTinymce: function () {
 
             tinymce.PluginManager.add('usl', function (_editor) {
@@ -67,8 +60,8 @@ var USL_tinymce;
                 // Set the active editor
                 editor = _editor;
 
-                // REMOVE If not still in use
-                USL_tinymce.editorBinds();
+                // WP default shortcut
+                editor.addShortcut( 'alt+shift+s', '', 'usl-open' );
 
                 editor.addButton('usl', {
 
@@ -128,28 +121,33 @@ var USL_tinymce;
                 $(document).on('usl-modal-update', USL_tinymce.loadVisual);
 
                 editor.on('hide', function () {
-                    var content = editor.getContent();
+                    var content = editor.getContent({format: 'numeric'});
                     $texteditor.val(window.switchEditors.pre_wpautop(USL_tinymce.loadText(content)));
                 });
             });
         },
 
+        createLoader: function () {
+
+            $editor.append('<div id="usl-tinymce-loader" class="hide"><div class="spinner"></div><div class="text">></div></div>');
+            $loader = $('#usl-tinymce-loader');
+        },
 
         /**
          * Renders literal shortcodes into visual shortcodes (Text -> Visual).
          */
         loadVisual: function () {
 
-            var content = editor.getContent();
-            USL_MCECallbacks.convertLiteralToRendered(content, editor);
+            if (USL_Data.do_render) {
+                var content = editor.getContent();
+                USL_MCECallbacks.convertLiteralToRendered(content, editor);
+            }
         },
 
         /**
          * Converts rendered shortcodes into literal shortcodes (Visual -> Text).
          */
         loadText: function (content) {
-
-            // FIXME Find way to clean up &#8203;
 
             content = USL_MCECallbacks.convertRenderedToLiteral(content, editor);
             content = content.replace(/&#8203;/g, '');
@@ -188,7 +186,7 @@ var USL_tinymce;
         update: function () {
             // TODO Support for nested shortcodes
             this.removeShortcode();
-            editor.insertContent(USL_Modal.output);
+            editor.insertContent(USL_Modal.output.all);
         },
 
         removeShortcode: function () {
@@ -204,12 +202,48 @@ var USL_tinymce;
 
         loading: function (loading) {
 
-            // TODO Disable all toolbar items until loading complete
-
             if (loading) {
+
+                // Makes sure the the loader stays for a minimum time
+                min_load_time = true;
+                setTimeout(function () {
+                    min_load_time = false;
+                }, 1500);
+
+                // Get a random loading message
+                var loading_messages = USL_Data.loading_messages,
+                    random_message = Math.floor(Math.random() * (loading_messages.length));
+
+                // Make sure it's not the same message as last time (that's boring!)
+                if (random_message == last_message) {
+                    while (random_message == last_message) {
+                        random_message = Math.floor(Math.random() * (loading_messages.length))
+                    }
+                }
+
+                last_message = random_message;
+
+                $loader.find('.text').html(loading_messages[random_message]);
                 $loader.removeClass('hide');
+                $('#content-html').prop('disabled', true);
+                $('#content-tmce').prop('disabled', true);
+                $('#wp-content-media-buttons').addClass('disabled');
             } else {
+                waitMinimumLoadingTime();
+            }
+
+            function waitMinimumLoadingTime () {
+
+                // Don't remove the loader until the minimum load time has passed
+                if (min_load_time) {
+                    setTimeout(waitMinimumLoadingTime, 50);
+                    return;
+                }
+
                 $loader.addClass('hide');
+                $('#content-html').prop('disabled', false);
+                $('#content-tmce').prop('disabled', false);
+                $('#wp-content-media-buttons').removeClass('disabled');
             }
         },
 

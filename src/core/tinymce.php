@@ -1,9 +1,4 @@
 <?php
-
-// TODO Have entire visual editor show a loading image while I use AJAX to generate all visual shortcodes (instead of requiring it to be done via JS)
-
-// TODO allow turning off of visual editor shortcode rendering
-
 /**
  * Class USL_tinymce
  *
@@ -22,30 +17,18 @@ class USL_tinymce extends USL {
 
 	function __construct() {
 
-		// TODO make this only load where needed
-		$this->init();
-	}
+		include_once( self::$path . 'core/modal.php' );
+		new USL_Modal();
 
-	public function init() {
+		$this->set_render_data();
+		self::add_tinymce_style();
 
 		add_filter( 'mce_external_plugins', array( __CLASS__, 'add_tinymce_plugins' ) );
 		add_filter( 'mce_buttons', array( __CLASS__, 'register_tinymce_buttons' ) );
-
-		add_action( 'admin_init', array( $this, 'set_render_data' ) );
-
-		add_action( 'usl_render_ajax', array( __CLASS__, 'render_ajax' ) );
-
 		add_filter( 'tiny_mce_before_init', array( __CLASS__, 'modify_tinymce_init' ) );
 
+		add_action( 'usl_localized_data', array( __CLASS__, 'loading_messages' ) );
 		add_action( 'usl_localized_data', array( $this, 'rendering_data' ) );
-
-		add_action( 'after_setup_theme', array( __CLASS__, 'add_tinymce_style' ) );
-
-		add_action( 'wp_ajax_usl_render_shortcode', array( __CLASS__, 'render_shortcode' ) );
-
-		include_once( self::$path . 'core/modal.php' );
-
-		new USL_Modal();
 	}
 
 	/**
@@ -64,7 +47,30 @@ class USL_tinymce extends USL {
 		$mceinit['noneditable_noneditable_class'] = 'usl-tinymce-shortcode-wrapper';
 		$mceinit['noneditable_editable_class'] = 'usl-tinymce-shortcode-content';
 		$mceinit['extended_valid_elements'] = 'span[*]';
+		$mceinit['entity_encoding'] = 'numeric';
 		return $mceinit;
+	}
+
+	public static function loading_messages( $data ) {
+
+		$data['loading_messages'] = apply_filters( 'usl_loading_messages', array(
+			'Awesome-ifying your content...',
+			'Cleaning up the bathroom...',
+			'Making a cup of coffee for your content...',
+			'Playing catch with the WYSIWYG...',
+			'Taking your content to the next level...',
+			'Making your dreams come true...',
+			'Reducing synchronized load caching errors...',
+			'Taking out the trash (you\'re welcome!)...',
+			'Sending your content to the moon, and back...',
+			'Giving your content a bubble bath...',
+			'Taking your content to a classy restaurant...',
+			'Showing your content a good time...',
+			'Playing cards with the Automattic team...',
+			'Strapping a jetpack onto your content...',
+		) );
+
+		return $data;
 	}
 
 	public function set_render_data() {
@@ -90,6 +96,9 @@ class USL_tinymce extends USL {
 		}
 		$data['rendered_shortcodes'] = $rendered;
 		$data['render_data'] = $this->render_data;
+
+		$data['do_render'] = get_option( 'usl_render_visual', true );
+
 		return $data;
 	}
 
@@ -155,4 +164,19 @@ class USL_tinymce extends USL {
 	}
 }
 
-$USL_tinymce = new USL_tinymce();
+add_action( 'current_screen', '_usl_init_tinymce' );
+
+// Always add the AJAX
+add_action( 'usl_render_ajax', array( 'USL_tinymce', 'render_ajax' ) );
+add_action( 'wp_ajax_usl_render_shortcode', array( 'USL_tinymce', 'render_shortcode' ) );
+
+function _usl_init_tinymce( $screen ) {
+
+	$allowed_screens = apply_filters( 'usl_tinymce_allowed_screens', array(
+		'post',
+	), $screen->base, $screen );
+
+	if ( in_array( $screen->base, $allowed_screens ) ) {
+		new USL_tinymce();
+	}
+}

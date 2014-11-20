@@ -1,5 +1,3 @@
-// TODO Don't initialize each attribute's data object until needed
-
 /**
  * Functionality for the USL modal.
  *
@@ -10,13 +8,14 @@
  * @package USL
  * @subpackage Modal
  */
-
 var USL_Modal;
 (function ($) {
     var elements = {},
         shortcodes = {},
+        selection,
+        slide_transition = 150,
+        categories_sliding = false,
         usl_modal_open = false,
-        editing = false,
         _search_timeout, search_loading;
 
     USL_Modal = {
@@ -28,7 +27,6 @@ var USL_Modal;
             this.establishElements();
             this.binds();
             this.keyboardShortcuts();
-            this.attsInit();
             this.preventWindowScroll();
             this.search();
             this.slidersInit();
@@ -54,8 +52,9 @@ var USL_Modal;
             elements.categories = elements.wrap.find('.usl-modal-categories');
             elements.footer = elements.wrap.find('.usl-modal-footer');
             elements.list = elements.wrap.find('.usl-modal-shortcodes');
-            elements.active_shortcode = '';
             elements.search_input = elements.wrap.find('input[name="usl-modal-search"]');
+            elements.active_shortcode = false;
+            elements.last_active_shortcode = false;
         },
 
         binds: function () {
@@ -72,7 +71,7 @@ var USL_Modal;
             });
 
             // Remove button
-           elements.remove.click(function () {
+            elements.remove.click(function () {
                 $(document).trigger('usl-modal-remove');
             });
 
@@ -96,12 +95,13 @@ var USL_Modal;
                 USL_Modal.toggleAdvancedAtts($(this));
                 return false;
             });
+
+            // Move categories left and right
+            elements.categories.find('.usl-modal-categories-left').click(USL_Modal.moveCategoriesLeft);
+            elements.categories.find('.usl-modal-categories-right').click(USL_Modal.moveCategoriesRight);
         },
 
         keyboardShortcuts: function () {
-
-            // TODO Allow complete navigation with keyboard
-            // TODO  - Tab from search to open first result
 
             $(document).keyup(function (e) {
 
@@ -109,11 +109,12 @@ var USL_Modal;
                     return;
                 }
 
-                // Enter
                 switch (e.which) {
 
                     // Enter
                     case 13:
+
+                        e.preventDefault();
                         USL_Modal.update();
                         break;
 
@@ -122,39 +123,155 @@ var USL_Modal;
                         USL_Modal.close();
                         break;
 
+                    // Tab
+                    case 9:
+
+                        if (elements.search.find('input[type="text"]').is(':focus')) {
+
+                            e.preventDefault();
+
+                            if (elements.active_shortcode) {
+                                elements.active_shortcode.find('.usl-modal-att-row').first().focus();
+                            } else {
+
+                                elements.list.find('li').each(function () {
+
+                                    if ($(this).is(':visible')) {
+
+                                        var $first = $(this);
+                                        if ($next.length && $next.is(':visible')) {
+
+                                            elements.active_shortcode = $first;
+                                            USL_Modal.openShortcode();
+                                        }
+                                        return false;
+                                    }
+                                });
+                            }
+                        }
+                        break;
+
                     // Down arrow
                     case 40:
 
-                        var $next = elements.active_shortcode.next();
+                        e.preventDefault();
 
-                        if ($next.length) {
-                            USL_Modal.closeShortcode();
-                            elements.active_shortcode = $next;
-                            USL_Modal.openShortcode();
+                        var $next;
+                        if (!elements.active_shortcode) {
+
+                            elements.list.find('li').each(function () {
+
+                                if ($(this).is(':visible')) {
+
+                                    $next = $(this);
+                                    if ($next.length && $next.is(':visible')) {
+
+                                        elements.active_shortcode = $next;
+                                        USL_Modal.openShortcode();
+                                    }
+                                    return false;
+                                }
+                            });
+                        } else {
+                            $next = elements.active_shortcode.next();
+
+                            if ($next.length && $next.is(':visible')) {
+
+                                USL_Modal.closeShortcode();
+                                elements.active_shortcode = $next;
+                                USL_Modal.openShortcode();
+                            } else {
+                                elements.active_shortcode.effect('shake', {
+                                    distance: 10
+                                }, 200);
+                            }
                         }
                         break;
 
                     // Up arrow
                     case 38:
 
-                        var $prev = elements.active_shortcode.prev();
+                        e.preventDefault();
 
-                        if ($prev.length) {
-                            USL_Modal.closeShortcode();
-                            elements.active_shortcode = $prev;
-                            USL_Modal.openShortcode();
+                        var $prev;
+                        if (!elements.active_shortcode) {
+
+                            $(elements.list.find('li').get().reverse()).each(function () {
+                                //elements.list.find('li').each(function () {
+
+                                if ($(this).is(':visible')) {
+
+                                    $prev = $(this);
+                                    if ($prev.length && $prev.is(':visible')) {
+
+                                        elements.active_shortcode = $prev;
+                                        USL_Modal.openShortcode();
+                                    }
+                                    return false;
+                                }
+                            });
+                        } else {
+                            $prev = elements.active_shortcode.prev();
+
+                            if ($prev.length && $prev.is(':visible')) {
+
+                                USL_Modal.closeShortcode();
+                                elements.active_shortcode = $prev;
+                                USL_Modal.openShortcode();
+                            } else {
+                                elements.active_shortcode.effect('shake', {
+                                    distance: 10
+                                }, 200);
+                            }
                         }
                         break;
                     default:
-                }
-                if (e.which == 13) {
+                        return;
                 }
             });
         },
 
-        attsInit: function () {
+        moveCategoriesLeft: function () {
 
-            elements.list.find('.usl-modal-att-row').each(function () {
+            var $list = elements.categories.find('ul'),
+                individual_width = elements.categories.find('li').width(),
+                current_offset = $list.css('left') != 'auto' ? parseInt($list.css('left')) : 0;
+
+            if (current_offset < 0 && !categories_sliding) {
+                categories_sliding = true;
+                $list.animate({left: current_offset + individual_width}, {
+                    duration: 300,
+                    complete: function () {
+                        categories_sliding = false;
+                    }
+                });
+            }
+        },
+
+        moveCategoriesRight: function () {
+
+            var $list = elements.categories.find('ul'),
+                individual_width = elements.categories.find('li').width(),
+                total_width = elements.categories.find('li').length * individual_width,
+                visible_width = 5 * individual_width,
+                max_offset = (total_width - visible_width) * -1,
+                current_offset = $list.css('left') != 'auto' ? parseInt($list.css('left')) : 0;
+
+            if (current_offset > max_offset && !categories_sliding) {
+                categories_sliding = true;
+
+                $list.animate({left: current_offset + (individual_width * -1)}, {
+                    duration: 300,
+                    complete: function () {
+                        categories_sliding = false;
+                    }
+                });
+            }
+        },
+
+        initAtts: function () {
+
+            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
                 var att_type = $(this).attr('data-att-type'),
                     attObj;
 
@@ -211,30 +328,41 @@ var USL_Modal;
 
             elements.search_input.on('keyup', function (e) {
 
-                if (e.which == 13 || e.which == 27 || e.which == 40 || e.which == 38) {
+                // Don't search for certain keys
+                if (e.which == 9 || e.which == 13 || e.which == 40 || e.which == 38) {
                     return;
                 }
 
-                var search_query = $(this).val();
+                var search_query = $(this).val(),
+                    matches = search_query.match(/[a-zA-Z0-9\s]/g);
+
+                // Don't search if the query isn't allowed characters
+                if (search_query.length && (matches === null || matches.length !== search_query.length)) {
+                    USL_Modal.invalidSearch(true);
+                    return;
+                } else {
+                    USL_Modal.invalidSearch(false);
+                }
+
+                // Don't search if empty
+                if (!search_query.length) {
+                    USL_Modal.clearSearch(search_fade);
+                    return;
+                }
 
                 if (!search_loading) {
-                    elements.list.animate({opacity: 0}, search_fade);
+                    elements.list.stop().animate({opacity: 0}, search_fade);
                 }
 
                 search_loading = true;
 
-                if (search_query === '') {
-                    _search_delay = search_fade;
-                } else {
-                    _search_delay = search_delay;
-                }
-
                 clearTimeout(_search_timeout);
                 _search_timeout = setTimeout(function () {
+                    console.log('bam');
 
                     search_loading = false;
-                    elements.list.animate({opacity: 1}, search_fade);
-
+                    elements.list.stop().animate({opacity: 1}, search_fade);
+                    elements.list.scrollTop(0);
                     USL_Modal.closeShortcode();
 
                     elements.list.find('.usl-modal-shortcode').each(function () {
@@ -249,16 +377,30 @@ var USL_Modal;
                             $(this).show();
                         }
                     });
-                }, _search_delay);
+                }, search_delay);
             });
         },
 
-        clearSearch: function () {
+        clearSearch: function (time) {
+
+            time = typeof time === 'undefined' ? 0 : time;
             elements.search_input.val('');
             elements.list.find('.usl-modal-shortcode').show();
             clearTimeout(_search_timeout);
-            elements.list.css('opacity', 1);
+            this.closeShortcode();
+            elements.list.stop().animate({opacity: 1}, time);
             search_loading = false;
+        },
+
+        invalidSearch: function (invalid) {
+
+            var $invalidsearch = elements.wrap.find('.usl-modal-invalidsearch');
+
+            if (invalid) {
+                $invalidsearch.show();
+            } else {
+                $invalidsearch.hide();
+            }
         },
 
         activateShortcode: function ($e) {
@@ -315,7 +457,9 @@ var USL_Modal;
                 e_active = elements.list.find('li.active');
 
             // Clear previously activated and opened items and clear forms
-            this.refresh(e_active);
+            this.refresh();
+            this.closeShortcode();
+            elements.active_shortcode = false;
 
             if (category === 'all') {
                 shortcodes.show();
@@ -368,7 +512,7 @@ var USL_Modal;
             var atts = code.match(/\s.*?(?==)/g),
                 values = code.match(/"([^"]+)"/g),
                 _shortcode = code.match(/\[(.*?)[\s|\]]/),
-                shortcode = _shortcode[1] !== null ? _shortcode[1].trim() : '',
+                shortcode = _shortcode !== null ? _shortcode[1].trim() : '',
                 _content = code.match(/\](.*)\[/),
                 content = _content !== null ? _content[1] : '',
                 pairs = {};
@@ -386,11 +530,11 @@ var USL_Modal;
                 }
             }
 
-            this.populateShortcode(pairs);
-
             this.open();
 
             this.openShortcode();
+
+            this.populateShortcode(pairs);
         },
 
         setActiveShortcode: function (shortcode) {
@@ -418,29 +562,49 @@ var USL_Modal;
 
         closeShortcode: function () {
 
-            if (elements.active_shortcode.length) {
+            if (elements.active_shortcode) {
 
-                elements.active_shortcode.removeClass('active open');
+                elements.active_shortcode.removeClass('active');
+                elements.active_shortcode.find('.accordion-section-content').slideUp(slide_transition);
                 USL_Modal.hideAdvancedAtts(elements.active_shortcode.find('.usl-modal-show-advanced-atts'));
                 USL_Modal.refresh();
+                elements.last_active_shortcode = elements.active_shortcode;
+                elements.active_shortcode = false;
             }
         },
 
         openShortcode: function () {
 
-            if (elements.active_shortcode.length) {
+            if (elements.active_shortcode) {
 
-                // Activate it (also open it if it's an accordion)
+                // Activate it
                 elements.active_shortcode.addClass('active');
 
+                // Init the atts
+                if (!elements.active_shortcode.data('attsInit')) {
+                    this.initAtts();
+                    elements.active_shortcode.data('attsInit', true);
+                }
+
+                // Open it if it's an accordion
                 if (elements.active_shortcode.hasClass('accordion-section')) {
-                    elements.active_shortcode.addClass('open');
+                    elements.active_shortcode.find('.accordion-section-content').slideDown(slide_transition);
                 }
 
                 // Scroll it into view
                 var shortcode_offset = elements.active_shortcode.position(),
                     scrollTop = elements.list.scrollTop(),
                     offset = shortcode_offset.top + scrollTop;
+
+
+                // If the last activated shortcode was an accordion AND that element was above this, we need to
+                // compensate the scroll for it
+                if (elements.last_active_shortcode &&
+                    elements.active_shortcode.position().top > elements.last_active_shortcode.position().top &&
+                    elements.last_active_shortcode.hasClass('accordion-section')
+                ) {
+                    offset = offset - elements.last_active_shortcode.find('.accordion-section-content').outerHeight();
+                }
 
                 elements.list.stop().animate({
                     scrollTop: offset
@@ -485,9 +649,9 @@ var USL_Modal;
 
         update: function () {
 
-            var e_active = elements.list.find('li.active');
+            var $active = elements.list.find('li.active');
 
-            if (e_active.length === 0) {
+            if ($active.length === 0) {
                 return;
             }
 
@@ -497,8 +661,9 @@ var USL_Modal;
 
             this.sanitize();
 
-            var atts = e_active.find('.usl-modal-shortcode-form').serializeArray(),
-                code = e_active.attr('data-code'),
+            var atts = $active.find('.usl-modal-shortcode-form').serializeArray(),
+                code = $active.attr('data-code'),
+                title = $active.find('.usl-modal-shortcode-title').html(),
                 props, output;
 
             props = USL_Data.all_shortcodes[code];
@@ -530,7 +695,12 @@ var USL_Modal;
 
             this.close();
 
-            this.output = output;
+            this.output = {
+                all: output,
+                code: code,
+                atts: atts,
+                title: title
+            };
 
             $(document).trigger('usl-modal-update');
         },
@@ -581,7 +751,7 @@ var USL_Modal;
                             // Email validation
                             case 'email':
 
-                                var email_pattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ig;
+                                var email_pattern = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig;
 
                                 if (!att_value.match(email_pattern)) {
                                     att_valid = false;
@@ -681,11 +851,17 @@ var USL_Modal;
 
         refresh: function () {
 
-            // TODO Causing error with tinymce when using ESC to close
-            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
-                var attObj = $(this).data('attObj');
-                attObj._revert();
-            });
+            if (elements.active_shortcode) {
+
+                elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+
+                    var attObj = $(this).data('attObj');
+
+                    if (typeof attObj !== 'undefined') {
+                        attObj._revert();
+                    }
+                });
+            }
         },
 
         _stringToObject: function (string) {

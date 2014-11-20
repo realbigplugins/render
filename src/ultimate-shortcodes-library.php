@@ -84,7 +84,7 @@ if ( ! class_exists( 'USL' ) ) {
 				'user',
 			),
 			'wordpress' => array(
-				'wordpress',
+				'media',
 			),
 		);
 
@@ -115,6 +115,7 @@ if ( ! class_exists( 'USL' ) ) {
 			// Initialize functions
 			$this->_require_files();
 			$this->_add_actions();
+			$this->_admin();
 		}
 
 		private final function __clone() {
@@ -149,10 +150,33 @@ if ( ! class_exists( 'USL' ) ) {
 		 */
 		private function _require_files() {
 
-			require_once( self::$path . 'core/functions.php' );
 			require_once( self::$path . 'core/tinymce.php' );
-			require_once( self::$path . 'core/admin/admin.php' );
+			require_once( self::$path . 'core/functions.php' );
 			require_once( self::$path . 'core/widget.php' );
+		}
+
+		private function _admin() {
+
+			if ( is_admin() ) {
+
+				add_action( 'admin_menu', 'admin_page' );
+
+				function admin_page() {
+					add_menu_page(
+						'Shortcodes',
+						'Shortcodes',
+						'manage_options',
+						'usl-view-all-shortcodes',
+						null,
+						'dashicons-editor-code',
+						82.9
+					);
+				}
+
+				include_once( self::$path . 'core/admin/shortcodes.php' );
+				include_once( self::$path . 'core/admin/options.php' );
+				include_once( self::$path . 'core/admin/addons.php' );
+			}
 		}
 
 		/**
@@ -237,7 +261,7 @@ if ( ! class_exists( 'USL' ) ) {
 		 */
 		public static function _admin_enqueue_files() {
 
-			wp_localize_script( 'common', 'USL_Data', apply_filters( 'usl_localized_data', array() ) );
+			wp_localize_script( 'usl-admin', 'USL_Data', apply_filters( 'usl_localized_data', array() ) );
 
 			wp_enqueue_script( 'usl-admin' );
 			wp_enqueue_style( 'usl-admin' );
