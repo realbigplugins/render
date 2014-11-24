@@ -228,6 +228,13 @@ if ( ! class_exists( 'USL' ) ) {
 				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
 			);
 
+			wp_register_style(
+				'usl-chosen',
+				self::$url . '/includes/chosen/chosen.min.css',
+				null,
+				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
+			);
+
 			wp_register_script(
 				'usl',
 				self::$url . "/assets/js/ultimate-shortcodes-library.min.js",
@@ -238,6 +245,13 @@ if ( ! class_exists( 'USL' ) ) {
 			wp_register_script(
 				'usl-admin',
 				self::$url . "/assets/js/ultimate-shortcodes-library-admin.min.js",
+				array( 'jquery' ),
+				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
+			);
+
+			wp_register_script(
+				'usl-chosen',
+				self::$url . '/includes/chosen/chosen.jquery.js',
 				array( 'jquery' ),
 				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
 			);

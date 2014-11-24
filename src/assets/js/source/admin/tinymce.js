@@ -12,7 +12,6 @@
  * @subpackage Modal
  */
 var USL_tinymce;
-// TODO When in a shortcode, don't show "p>>span>>a>>span>>span" at the bottom, show "p>>shortcode"
 (function ($) {
     var editor, $texteditor, $editor, $loader, no_selected,
         min_load_time = false,

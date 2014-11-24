@@ -216,7 +216,7 @@ $usl-modal-height: 800px;
       position: relative;
       z-index: 2;
 
-      li {
+      > li {
         display: block;
         cursor: pointer;
         border: 1px solid transparent;
@@ -254,7 +254,17 @@ $usl-modal-height: 800px;
       .accordion-section-content {
         padding: 0;
         border-top: 1px solid darken(#fff, 30%);
+
+        // Fix Chosen selectbox cutting off
+        overflow: visible;
       }
+
+      // Fix Chosen "Select one" cutting off
+      .chosen-container {
+        min-width: 200px;
+      }
+
+
 
       .usl-modal-att-row {
         padding: 10px;
@@ -278,6 +288,10 @@ $usl-modal-height: 800px;
           float: left;
           width: 75%;
           position: relative;
+
+          input[type="text"] {
+            width: 100%;
+          }
           
           .usl-modal-att-errormsg {
             display: none;

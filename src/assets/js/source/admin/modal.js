@@ -279,6 +279,7 @@ var USL_Modal;
                 switch (att_type) {
                     case 'selectbox':
                         attObj = new Selectbox($(this));
+                        $(this).find('.chosen').chosen();
                         break;
                     case 'colorpicker':
                         attObj = new Colorpicker($(this));
@@ -370,7 +371,7 @@ var USL_Modal;
                             code = $(this).attr('data-code'),
                             search_string = title + description + code;
 
-                        if (search_string.indexOf(search_query) < 0) {
+                        if (search_string.toLowerCase().indexOf(search_query.toLowerCase()) < 0) {
                             $(this).hide();
                         } else {
                             $(this).show();
@@ -580,15 +581,15 @@ var USL_Modal;
                 // Activate it
                 elements.active_shortcode.addClass('active');
 
-                // Init the atts
-                if (!elements.active_shortcode.data('attsInit')) {
-                    this.initAtts();
-                    elements.active_shortcode.data('attsInit', true);
-                }
-
                 // Open it if it's an accordion
                 if (elements.active_shortcode.hasClass('accordion-section')) {
                     elements.active_shortcode.find('.accordion-section-content').slideDown(slide_transition);
+                }
+
+                // Init the atts (needs to be after the accordion opening to render Chosen properly)
+                if (!elements.active_shortcode.data('attsInit')) {
+                    this.initAtts();
+                    elements.active_shortcode.data('attsInit', true);
                 }
 
                 // Scroll it into view

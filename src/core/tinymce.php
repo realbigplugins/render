@@ -152,7 +152,6 @@ class USL_tinymce extends USL {
 
 		do_action( 'usl_render_ajax' );
 
-		// FIXME Getting numeric unicode, and also multiple non-space chars
 		$content            = stripslashes( $_POST['content'] );
 		$usl_shortcode_data = $_POST['shortcode_data'];
 

@@ -40,16 +40,20 @@ class USL_CoreShortcodes_Design {
 				),
 				'size'        => array(
 					'selectbox' => array(
-						'large',
-						'medium',
-						'small'
+						'options' => array(
+							'large',
+							'medium',
+							'small',
+						),
 					),
 				),
 				'shape'       => array(
 					'selectbox' => array(
-						'square',
-						'rounded',
-						'circle',
+						'options' => array(
+							'square',
+							'rounded',
+							'circle',
+						),
 					),
 				),
 				'icon'        => array(),
@@ -91,13 +95,13 @@ class USL_CoreShortcodes_Design {
 		),
 		// Column 2
 		array(
-			'code'         => 'usl_column_two',
-			'function'     => '_usl_sc_column_two',
-			'title'        => 'Column 2',
-			'description'  => 'Creates a nice column that is half the width of the container.',
-			'example'      => '[usl_column_two]Lorem ipsum...[/usl_column_two]',
-			'wrapping'     => true,
-			'render'       => array(
+			'code'        => 'usl_column_two',
+			'function'    => '_usl_sc_column_two',
+			'title'       => 'Column 2',
+			'description' => 'Creates a nice column that is half the width of the container.',
+			'example'     => '[usl_column_two]Lorem ipsum...[/usl_column_two]',
+			'wrapping'    => true,
+			'render'      => array(
 				'noStyle'      => true,
 				'displayBlock' => true,
 				'allowNesting' => true,
@@ -111,7 +115,7 @@ class USL_CoreShortcodes_Design {
 			'description' => 'Creates a nice column that is a third the width of the container.',
 			'example'     => '[usl_column_three]Lorem ipsum...[/usl_column_three]',
 			'wrapping'    => true,
-			'render'       => array(
+			'render'      => array(
 				'noStyle'      => true,
 				'displayBlock' => true,
 				'allowNesting' => true,
@@ -125,7 +129,7 @@ class USL_CoreShortcodes_Design {
 			'description' => 'Creates a nice column that is a quarter the width of the container.',
 			'example'     => '[usl_column_four]Lorem ipsum...[/usl_column_four]',
 			'wrapping'    => true,
-			'render'       => array(
+			'render'      => array(
 				'noStyle'      => true,
 				'displayBlock' => true,
 				'allowNesting' => true,
@@ -139,7 +143,7 @@ class USL_CoreShortcodes_Design {
 			'description' => 'Creates a nice column that is a fifth the width of the container.',
 			'example'     => '[usl_column_five]Lorem ipsum...[/usl_column_five]',
 			'wrapping'    => true,
-			'render'       => array(
+			'render'      => array(
 				'noStyle'      => true,
 				'displayBlock' => true,
 				'allowNesting' => true,

@@ -19,7 +19,9 @@ class USL_Modal {
 		wp_enqueue_script( 'jquery-ui-slider' );
 		wp_enqueue_script( 'jquery-effects-shake' );
 		wp_enqueue_script( 'wp-color-picker' );
+		wp_enqueue_script( 'usl-chosen' );
 
+		wp_enqueue_style( 'usl-chosen' );
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_style(
 			'jquery-ui',
@@ -110,9 +112,11 @@ class USL_Modal {
 						<?php
 						elseif ( isset( $att['selectbox'] ) ) : ?>
 
-							<select name="<?php echo $att_name; ?>" class="usl-modal-att-input">
-								<option value="">Select One</option>
-								<?php foreach ( $att['selectbox'] as $att_value ) : ?>
+							<select name="<?php echo $att_name; ?>"
+							        data-placeholder="<?php echo isset( $att['selectbox']['default'] ) ? $att['selectbox']['default'] : 'Select one'; ?>"
+							        class="usl-modal-att-input <?php echo ! isset( $att['selectbox']['disableChosen'] ) ? 'chosen' : ''; ?>">
+								<option></option>
+								<?php foreach ( $att['selectbox']['options'] as $att_value ) : ?>
 									<option
 										value="<?php echo $att_value; ?>">
 										<?php echo ucfirst( $att_value ); ?>
@@ -129,6 +133,7 @@ class USL_Modal {
 						else: ?>
 
 							<input type="text" class="usl-modal-att-input"
+							       <?php echo isset( $att['textbox']['placeholder'] ) ? "placeholder='{$att['textbox']['placeholder']}'" : ''; ?>
 							       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
 							       name="<?php echo $att_name; ?>"/>
 

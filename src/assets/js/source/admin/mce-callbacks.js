@@ -22,6 +22,8 @@ var USL_MCECallbacks;
                 ajaxurl,
                 data,
                 function (response) {
+
+                    response = response.replace(/(&#8203;)+/g, "$1");
                     editor.setContent(response);
                     USL_tinymce.loading(false);
                 }

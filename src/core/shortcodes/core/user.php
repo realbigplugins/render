@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Contains all USL packaged shortcodes within the User category.
  *
@@ -10,144 +11,265 @@
 class USL_CoreShortcodes_User {
 
 	private $_shortcodes = array(
-		// Custom User Info
-		array(
-			'code' => 'usl_user',
-			'function' => '_usl_sc_user',
-			'title' => 'Current User',
-			'description' => 'Get a property of the current user.',
-			'atts' => array(
-				'property' => array(
-					'required' => true,
-				),
-			),
-			'example' => '[usl_user property="first_name"]',
-			'render' => true,
-		),
 		// Full Name
 		array(
-			'code' => 'usl_user_full_name',
-			'function' => '_usl_sc_user_full_name',
-			'title' => 'Current User Full Name',
-			'description' => 'Get the full name of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_full_name',
+			'function'    => '_usl_sc_user_full_name',
+			'title'       => 'User Full Name',
+			'description' => 'Get the full name of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// First Name
 		array(
-			'code' => 'usl_user_first_name',
-			'function' => '_usl_sc_user_first_name',
-			'title' => 'Current User First Name',
-			'description' => 'Get the first name of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_first_name',
+			'function'    => '_usl_sc_user_first_name',
+			'title'       => 'User First Name',
+			'description' => 'Get the first name of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Last Name
 		array(
-			'code' => 'usl_user_last_name',
-			'function' => '_usl_sc_user_last_name',
-			'title' => 'Current User Last Name',
-			'description' => 'Get the last name of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_last_name',
+			'function'    => '_usl_sc_user_last_name',
+			'title'       => 'User Last Name',
+			'description' => 'Get the last name of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Username
 		array(
-			'code' => 'usl_user_username',
-			'function' => '_usl_sc_user_login',
-			'title' => 'Current User Username',
-			'description' => 'Get the username of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_username',
+			'function'    => '_usl_sc_user_login',
+			'title'       => 'User Username',
+			'description' => 'Get the username of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Email
 		array(
-			'code' => 'usl_user_email',
-			'function' => '_usl_sc_user_email',
-			'title' => 'Current User Email',
-			'description' => 'Get the email of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_email',
+			'function'    => '_usl_sc_user_email',
+			'title'       => 'User Email',
+			'description' => 'Get the email of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Display Name
 		array(
-			'code' => 'usl_user_display_name',
-			'function' => '_usl_sc_user_display_name',
-			'title' => 'Current User Display Name',
-			'description' => 'Get the display name of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_display_name',
+			'function'    => '_usl_sc_user_display_name',
+			'title'       => 'User Display Name',
+			'description' => 'Get the display name of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// ID
 		array(
-			'code' => 'usl_user_id',
-			'function' => '_usl_sc_user_id',
-			'title' => 'Current User ID',
-			'description' => 'Get the ID of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_id',
+			'function'    => '_usl_sc_user_id',
+			'title'       => 'User ID',
+			'description' => 'Get the ID of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Author URL
 		array(
-			'code' => 'usl_user_url',
-			'function' => '_usl_sc_user_url',
-			'title' => 'Current User URL',
-			'description' => 'Get the author URL of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_url',
+			'function'    => '_usl_sc_user_url',
+			'title'       => 'User URL',
+			'description' => 'Get the author URL of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Registered Date
 		array(
-			'code' => 'usl_user_registered_date',
-			'function' => '_usl_sc_user_registered_date',
-			'title' => 'Current User Registered Date',
-			'description' => 'Get the date the current user registered.',
-			'atts' => array(
+			'code'        => 'usl_user_registered_date',
+			'function'    => '_usl_sc_user_registered_date',
+			'title'       => 'User Registered Date',
+			'description' => 'Get the date the specified user registered.',
+			'atts'        => array(
+				'user'   => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
 				'format' => array(
 					'default' => 'F jS, Y',
 				),
 			),
-			'render' => true,
+			'render'      => true,
 		),
 		// Description
 		array(
-			'code' => 'usl_user_description',
-			'function' => '_usl_sc_user_description',
-			'title' => 'Current User Description',
-			'description' => 'Get the description of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_description',
+			'function'    => '_usl_sc_user_description',
+			'title'       => 'User Description',
+			'description' => 'Get the description of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Role
 		array(
-			'code' => 'usl_user_role',
-			'function' => '_usl_sc_user_role',
-			'title' => 'Current User Role',
-			'description' => 'Get the role of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_role',
+			'function'    => '_usl_sc_user_role',
+			'title'       => 'User Role',
+			'description' => 'Get the role of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Capabilities
 		array(
-			'code' => 'usl_user_capabilities',
-			'function' => '_usl_sc_user_capabilities',
-			'title' => 'Current User Capabilities',
-			'description' => 'Get the capabilities of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_capabilities',
+			'function'    => '_usl_sc_user_capabilities',
+			'title'       => 'User Capabilities',
+			'description' => 'Get the capabilities of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Admin Theme
 		array(
-			'code' => 'usl_user_admin_theme',
-			'function' => '_usl_sc_user_admin_theme',
-			'title' => 'Current User Admin Theme',
-			'description' => 'Get the admin theme of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_admin_theme',
+			'function'    => '_usl_sc_user_admin_theme',
+			'title'       => 'User Admin Theme',
+			'description' => 'Get the admin theme of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Primary Blog
 		array(
-			'code' => 'usl_user_primary_blog',
-			'function' => '_usl_sc_user_primary_blog',
-			'title' => 'Current User Primary Blog',
-			'description' => 'Get the primary blog of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_primary_blog',
+			'function'    => '_usl_sc_user_primary_blog',
+			'title'       => 'User Primary Blog',
+			'description' => 'Get the primary blog of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
 		),
 		// Source Domain
 		array(
-			'code' => 'usl_user_source_domain',
-			'function' => '_usl_sc_user_source_domain',
-			'title' => 'Current User Source Domain',
-			'description' => 'Get the source domain of the current user.',
-			'render' => true,
+			'code'        => 'usl_user_source_domain',
+			'function'    => '_usl_sc_user_source_domain',
+			'title'       => 'User Source Domain',
+			'description' => 'Get the source domain of the specified user.',
+			'atts'        => array(
+				'user' => array(
+					'required' => true,
+					'textbox' => array(
+						'placeholder' => 'Defaults to the current user',
+					),
+				),
+			),
+			'render'      => true,
+		),
+		// Custom User Info
+		array(
+			'code'        => 'usl_user',
+			'function'    => '_usl_sc_user',
+			'title'       => 'Custom User Information',
+			'description' => 'Get a custom property of the specified user.',
+			'atts'        => array(
+				'user'     => array(
+					'required' => true,
+				),
+				'property' => array(
+					'required' => true,
+				),
+			),
+			'example'     => '[usl_user property="first_name"]',
+			'render'      => true,
 		),
 	);
 
@@ -162,8 +284,6 @@ class USL_CoreShortcodes_User {
 
 new USL_CoreShortcodes_User();
 
-// TODO Make all of these apply to current user by default, but allow a user ID or name to be used instead
-
 /**
  * Gets specified current user property.
  *
@@ -176,18 +296,19 @@ new USL_CoreShortcodes_User();
  */
 function _usl_sc_user( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
-
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
 	// Get all of the set properties (if any)
 	if ( ! empty( $atts['property'] ) ) {
-
-		$output = $current_user->{$atts['property']};
+		$output = $user->{$atts['property']};
 	} else {
 		$output = 'No property set.';
+	}
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
 	}
 
 	return $output;
@@ -199,17 +320,25 @@ function _usl_sc_user( $atts = array() ) {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The current user full name.
  */
-function _usl_sc_user_full_name() {
+function _usl_sc_user_full_name( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	return "$current_user->user_firstname $current_user->user_lastname";
+	$output = "$user->user_firstname $user->user_lastname";
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -218,17 +347,25 @@ function _usl_sc_user_full_name() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user first name.
  */
-function _usl_sc_user_first_name() {
+function _usl_sc_user_first_name( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	return $current_user->user_firstname;
+	$output = $user->user_firstname;
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -237,17 +374,25 @@ function _usl_sc_user_first_name() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user last name.
  */
-function _usl_sc_user_last_name() {
+function _usl_sc_user_last_name( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	return $current_user->user_lastname;
+	$output = $user->user_lastname;
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -256,17 +401,25 @@ function _usl_sc_user_last_name() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user username.
  */
-function _usl_sc_user_login() {
+function _usl_sc_user_login( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	return $current_user->user_login;
+	$output = $user->user_login;
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -275,17 +428,25 @@ function _usl_sc_user_login() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user email.
  */
-function _usl_sc_user_email() {
+function _usl_sc_user_email( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	return $current_user->user_email;
+	$output = $user->user_email;
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -294,17 +455,25 @@ function _usl_sc_user_email() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user display name.
  */
-function _usl_sc_user_display_name() {
+function _usl_sc_user_display_name( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	return $current_user->display_name;
+	$output = $user->display_name;
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -313,17 +482,25 @@ function _usl_sc_user_display_name() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user ID.
  */
-function _usl_sc_user_id() {
+function _usl_sc_user_id( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	return $current_user->ID;
+	$output = $user->ID;
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -332,17 +509,25 @@ function _usl_sc_user_id() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user author url.
  */
-function _usl_sc_user_url() {
+function _usl_sc_user_url( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	return get_author_posts_url( $current_user->ID );
+	$output = get_author_posts_url( $user->ID );
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -351,23 +536,31 @@ function _usl_sc_user_url() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the date the current user registered.
  */
 function _usl_sc_user_registered_date( $atts ) {
+
+	// TODO Test
 
 	$atts = shortcode_atts( array(
 		'format' => 'F jS, Y',
 	), $atts );
 
-	$current_user = wp_get_current_user();
-
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	$user_data = get_userdata( $current_user->ID );
+	$output = $user->user_registered;
 
-	return date( $atts['format'], strtotime( $user_data->user_registered ) );
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	$output = date( $atts['format'], strtotime( $output ) );
+
+	return $output;
 }
 
 /**
@@ -376,19 +569,25 @@ function _usl_sc_user_registered_date( $atts ) {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user description.
  */
-function _usl_sc_user_description() {
+function _usl_sc_user_description( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	$current_user = get_userdata( $current_user->ID );
+	$output = $user->description;
 
-	return $current_user->description;
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -397,19 +596,19 @@ function _usl_sc_user_description() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user role.
  */
-function _usl_sc_user_role() {
+function _usl_sc_user_role( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	$current_user = get_userdata( $current_user->ID );
-
-	$roles = $current_user->roles;
+	$roles = $user->roles;
 
 	$output = '';
 	if ( $roles ) {
@@ -417,6 +616,11 @@ function _usl_sc_user_role() {
 			$output .= $role;
 		}
 	}
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
 	return $output;
 }
 
@@ -426,27 +630,32 @@ function _usl_sc_user_role() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user capabilities.
  */
-function _usl_sc_user_capabilities() {
+function _usl_sc_user_capabilities( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	$current_user = get_userdata( $current_user->ID );
-
-	$caps = $current_user->allcaps;
+	$caps   = $user->allcaps;
 	$output = '';
 	if ( $caps ) {
 		$i = 0;
 		foreach ( $caps as $cap => $val ) {
-			$i++;
-			$output .= $cap . ($i < count( $caps ) ? ', ' : '');
+			$i ++;
+			$output .= $cap . ( $i < count( $caps ) ? ', ' : '' );
 		}
 	}
+
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
 	return $output;
 }
 
@@ -456,19 +665,25 @@ function _usl_sc_user_capabilities() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user admin theme.
  */
-function _usl_sc_user_admin_theme() {
+function _usl_sc_user_admin_theme( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	$current_user = get_userdata( $current_user->ID );
+	$output = $user->admin_color;
 
-	return $current_user->admin_color;
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -477,19 +692,25 @@ function _usl_sc_user_admin_theme() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user primary blog.
  */
-function _usl_sc_user_primary_blog() {
+function _usl_sc_user_primary_blog( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	$current_user = get_userdata( $current_user->ID );
+	$output = $user->primary_blog;
 
-	return $current_user->primary_blog;
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
 }
 
 /**
@@ -498,17 +719,48 @@ function _usl_sc_user_primary_blog() {
  * @since USL 0.1.0
  * @access Private
  *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
  * @return string The the current user domain.
  */
-function _usl_sc_user_source_domain() {
+function _usl_sc_user_source_domain( $atts = array() ) {
 
-	$current_user = wp_get_current_user();
+	// TODO Test
 
-	if ( ! ( $current_user instanceof WP_User) ) {
-		return 'Cannot get current user';
+	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
+		return 'Cannot find specified user.';
 	}
 
-	$current_user = get_userdata( $current_user->ID );
+	$output = $user->source_domain;
 
-	return $current_user->source_domain;
+	if ( empty( $output ) ) {
+		return 'Cannot get user data.';
+	}
+
+	return $output;
+}
+
+/**
+ * Helper function for getting the user data
+ *
+ * @since USL 0.1.0
+ * @access Private
+ *
+ * @param null|array $atts The attributes sent to the shortcode.
+ *
+ * @return bool|WP_User The user object on success and false on failure.
+ */
+function _usl_sc_user_get_userdata( $atts ) {
+
+	$atts = shortcode_atts( array(
+		'user' => get_current_user_id(),
+	), $atts );
+
+	$user = get_userdata( $atts['user'] );
+
+	if ( ! ( $user instanceof WP_User ) ) {
+		return false;
+	}
+
+	return $user;
 }

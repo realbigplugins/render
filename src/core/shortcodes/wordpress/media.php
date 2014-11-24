@@ -41,10 +41,12 @@ class USL_WordPressShortcodes {
 				'class' => array(),
 				'align' => array(
 					'selectbox' => array(
-						'alignnone',
-						'aligncenter',
-						'alignright',
-						'alignleft',
+						'options' => array(
+							'alignnone',
+							'aligncenter',
+							'alignright',
+							'alignleft',
+						),
 					),
 				),
 				'width' => array(),
@@ -58,22 +60,26 @@ class USL_WordPressShortcodes {
 			'title'       => 'Gallery',
 			'description' => 'The Gallery feature allows you to add one or more image galleries to your posts and pages',
 			'atts'        => array(
-				'ids'         => array(
+				'ids'        => array(
 					'required' => true,
 				),
 				'orderby'    => array(
 					'selectbox' => array(
-						'menu_order',
-						'title',
-						'post_date',
-						'rand',
-						'ID',
+						'options' => array(
+							'menu_order',
+							'title',
+							'post_date',
+							'rand',
+							'ID',
+						),
 					),
 				),
 				'order'      => array(
 					'selectbox' => array(
-						'ASC',
-						'DSC',
+						'options' => array(
+							'ASC',
+							'DSC',
+						),
 					),
 				),
 				'columns'    => array(),
@@ -107,23 +113,29 @@ class USL_WordPressShortcodes {
 			'atts'        => array(
 				'type'         => array(
 					'selectbox' => array(
-						'audio',
-						'video',
+						'options' => array(
+							'audio',
+							'video',
+						),
 					),
 				),
 				'orderby'      => array(
 					'selectbox' => array(
-						'menu_order',
-						'title',
-						'post_date',
-						'rand',
-						'ID',
+						'options' => array(
+							'menu_order',
+							'title',
+							'post_date',
+							'rand',
+							'ID',
+						),
 					),
 				),
 				'order'        => array(
 					'selectbox' => array(
-						'ASC',
-						'DSC',
+						'options' => array(
+							'ASC',
+							'DSC',
+						),
 					),
 				),
 				'ids'          => array(
@@ -133,32 +145,42 @@ class USL_WordPressShortcodes {
 				'exclude'      => array(),
 				'style'        => array(
 					'selectbox' => array(
-						'light',
-						'dark',
+						'options' => array(
+							'light',
+							'dark',
+						),
 					),
 				),
 				'tracklist'    => array(
 					'selectbox' => array(
-						'true',
-						'false',
+						'options' => array(
+							'true',
+							'false',
+						),
 					),
 				),
 				'tracknumbers' => array(
 					'selectbox' => array(
-						'true',
-						'false',
+						'options' => array(
+							'true',
+							'false',
+						),
 					),
 				),
 				'images'       => array(
 					'selectbox' => array(
-						'true',
-						'false',
+						'options' => array(
+							'true',
+							'false',
+						),
 					),
 				),
 				'artists'      => array(
 					'selectbox' => array(
-						'true',
-						'false',
+						'options' => array(
+							'true',
+							'false',
+						),
 					),
 				),
 			),
@@ -179,15 +201,19 @@ class USL_WordPressShortcodes {
 				),
 				'autoplay' => array(
 					'selectbox' => array(
-						'off',
-						'on',
+						'options' => array(
+							'off',
+							'on',
+						),
 					),
 				),
 				'preload'  => array(
 					'selectbox' => array(
-						'metadata',
-						'none',
-						'auto',
+						'options' => array(
+							'metadata',
+							'none',
+							'auto',
+						),
 					),
 				),
 			),
@@ -205,21 +231,27 @@ class USL_WordPressShortcodes {
 				'poster'   => array(),
 				'loop'     => array(
 					'selectbox' => array(
-						'off',
-						'on',
+						'options' => array(
+							'off',
+							'on',
+						),
 					),
 				),
 				'autoplay' => array(
 					'selectbox' => array(
-						'off',
-						'on',
+						'options' => array(
+							'off',
+							'on',
+						),
 					),
 				),
 				'preload'  => array(
 					'selectbox' => array(
-						'metadata',
-						'none',
-						'auto',
+						'options' => array(
+							'metadata',
+							'none',
+							'auto',
+						),
 					),
 				),
 				'height'   => array(),
