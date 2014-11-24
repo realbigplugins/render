@@ -1,202 +1,90 @@
 var USL_MCECallbacks;
 (function ($) {
-    var editor;
+    var editor,
+        pattern_visual_codes = /<(?:span|div).*?class="usl-tinymce-shortcode-wrapper.*?data-code="([^"]*)".*?data-atts="([^"]*)".*?usl-tinymce-shortcode-content-start"><\/span>(.*?)<span class="usl-tinymce-shortcode-content-end.*?usl-tinymce-shortcode-wrapper-end\s+\1"><\/span><\/(?:span|div)>/g;
     USL_MCECallbacks = {
 
-        visualLoadCounter: {
-            count: 0,
-            total: 0
-        },
-
-        preShortcode: function (_shortcode, _atts, tag, classes, nostyle) {
-
-            tag = !tag ? 'span' : tag;
-            classes = !classes ? '' : classes;
-            nostyle = typeof nostyle === 'undefined' ? false : nostyle;
-
-            var atts = '',
-                shortcode = '<span class="usl-tinymce-shortcode-code" data-code="' + _shortcode + '"></span>';
-
-            classes += nostyle ? '' : 'styled';
-
-            if (_atts) {
-                atts += '<span class="usl-tinymce-shortcode-atts" data-atts=\'';
-                $.each(_atts, function (name, value) {
-                    atts += '"' + name + '": "' + value + '", ';
-                });
-                atts += '\'></span>';
-            }
-
-            return '<' + tag + ' class="usl-tinymce-shortcode-wrapper ' + _shortcode + ' ' + classes + '">' + atts + shortcode;
-        },
-
-        /**
-         * Closes the wrapper for a USL shortcode.
-         *
-         * @since USL 1.0.0
-         *
-         * @param {string} tag Either a div or a span.
-         * @returns {string} The ending of the wrapper.
-         */
-        postShortcode: function (tag) {
-
-            tag = typeof tag === 'undefined' ? 'span' : tag;
-            return '<span class="usl-tinymce-shortcode-wrapper-end"></span></' + tag + '>&#8203;';
-            //return '<span class="usl-tinymce-shortcode-wrapper-end"></span></' + tag + '>';
-        },
-
-        convertLiteralToRendered: function (_content, _editor) {
-
-            editor = _editor;
-
-            var regExpAllCodes = new RegExp('\\[.*?](.*?\\[\\/.*?])?', 'gi'),
-                matches = _content.match(regExpAllCodes);
-
-            if (!matches) {
-                return;
-            }
+        convertLiteralToRendered: function (content, editor) {
 
             USL_tinymce.loading(true);
 
-            this.visualLoadCounter.total = matches.length;
-            this.visualLoadCounter.count = 0;
+            var data;
 
-            // Loop through all instances of this shortcode
-            for (var i = 0; i < matches.length; i++) {
-
-                var current_code = matches[i],
-                    atts = this.getLiteralAtts(current_code),
-                    _shortcode = matches[i].match(/\[(.*?)(?=\s|])/),
-                    shortcode = _shortcode ? _shortcode[1] : false,
-                    shortcode_content = this.getLiteralContent(current_code),
-                    data = {};
-
-                if (!shortcode) {
-                    this.updateCounter();
-                    continue;
-                }
-
-                // Is this a shortcode at all?
-                if (!(shortcode in USL_Data.all_shortcodes)) {
-                    this.updateCounter();
-                    continue;
-                }
-
-                // Is this a renderable shortcode?
-                if (shortcode in USL_Data.rendered_shortcodes) {
-
-                    if (typeof USL_Data.render_data !== 'undefined') {
-                        data = USL_Data.render_data;
-                    }
-
-                    data.action = 'usl_render_shortcode';
-                    data.shortcode = current_code;
-                    data.atts = atts;
-                    data.code = shortcode;
-                    data.total = matches.length;
-
-                    $.post(
-                        ajaxurl,
-                        data,
-                        function (response) {
-
-                            var reG = response.shortcode,
-                                content = editor.getContent(),
-                                output = '';
-
-                            // Escape the string for RegExp()
-                            // From https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex/6969486#6969486
-                            reG = reG.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-                            reG = new RegExp(reG, 'g');
-
-                            // Something went wrong
-                            if (typeof response.output === 'undefined') {
-
-                                console.log(response);
-
-                                output += USL_MCECallbacks.preShortcode('error');
-                                output += 'error';
-                                output += USL_MCECallbacks.postShortcode();
-
-                                editor.setContent(content.replace(reG, output));
-
-                                USL_MCECallbacks.updateCounter();
-
-                                return;
-                            }
-
-                            var tag = USL_Data.rendered_shortcodes[response.code].displayBlock ? 'div' : 'span',
-                                classes = USL_Data.rendered_shortcodes[response.code].classes ?
-                                    USL_Data.rendered_shortcodes[response.code].classes :
-                                    '',
-                                nostyle = USL_Data.rendered_shortcodes[response.code].noStyle ?
-                                    USL_Data.rendered_shortcodes[response.code].noStyle :
-                                    '';
-
-                            output += USL_MCECallbacks.preShortcode(response.code, response.atts, tag, classes, nostyle);
-                            output += response.output;
-                            output += USL_MCECallbacks.postShortcode(tag);
-
-                            editor.setContent(content.replace(reG, output));
-
-                            USL_MCECallbacks.updateCounter();
-                        }
-                    )
-                } else {
-
-                    var output = '',
-                        content = editor.getContent();
-
-                    // Escape the string for RegExp()
-                    // From https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex/6969486#6969486
-                    var reG = current_code.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-                    reG = new RegExp(reG, 'g');
-
-                    output += USL_MCECallbacks.preShortcode(shortcode);
-                    output += shortcode;
-                    output += shortcode_content ? ' - "<span class="usl-tinymce-shortcode-content">' +
-                    shortcode_content +'</span>"' : '';
-                    output += USL_MCECallbacks.postShortcode();
-
-                    editor.setContent(content.replace(reG, output));
-                    this.updateCounter();
-                }
+            if (typeof USL_Data.render_data !== 'undefined') {
+                data = USL_Data.render_data;
             }
+
+            data.action = 'usl_render_shortcodes';
+            data.content = content;
+            data.shortcode_data = USL_Data.rendered_shortcodes;
+
+            $.post(
+                ajaxurl,
+                data,
+                function (response) {
+                    editor.setContent(response);
+                    USL_tinymce.loading(false);
+                }
+            );
         },
 
         convertRenderedToLiteral: function (content) {
 
-            var regExpAllCodes = new RegExp('<(span|div)\\s*?class="usl-tinymce-shortcode-wrapper.*?(data-atts="(.*?)")?.*?data-code="(.*?)".*?(<span class="usl-tinymce-shortcode-content">(.*?)<\\/span>)?.*?usl-tinymce-shortcode-wrapper-end"><\\/span><\\/(span|div)>', 'gi'),
-                matches = content.match(regExpAllCodes);
+            var $container = $('<div />').append($(content));
 
-            if (!matches) {
-                return content;
-            }
+            $container.closestChildren('.usl-tinymce-shortcode-wrapper').each(function () {
+                $container = replaceShortcodes($(this), $container);
+            });
 
-            // Loop through all instances of this shortcode
-            for (var i = 0; i < matches.length; i++) {
+            function replaceShortcodes($e, $container) {
 
-                var current_code = matches[i],
-                    atts = this.getVisualAtts(matches[i]),
-                    shortcode_content = this.getVisualContent(matches[i]),
-                    code = this.getVisualCode(matches[i]),
+                $e.closestChildren('.usl-tinymce-shortcode-wrapper').each(function () {
+                    $container = replaceShortcodes($(this), $container);
+                });
+
+                var atts = $e.attr('data-atts'),
+                    code = $e.attr('data-code'),
+                    shortcode_content = $e.closestChildren('.usl-tinymce-shortcode-content').html(),
                     output = '[' + code;
 
                 if (atts) {
+                    atts = JSON.parse(atts);
+                    var _atts = '';
                     $.each(atts, function (name, value) {
-                        output += ' ' + name + '="' + value + '"';
+                        _atts += ' ' + name + '="' + value + '"';
                     });
+                    output += _atts;
                 }
 
                 output += ']';
 
-                if (shortcode_content.length) {
+                if (shortcode_content) {
                     output += shortcode_content + '[/' + code + ']';
                 }
 
-                content = content.replace(new RegExp(current_code, 'g'), output);
+                $e.replaceWith(output);
+                return $container;
             }
 
+            return $container.html();
+        },
+
+        _convertToRaw: function (text) {
+
+            var result = "";
+            for (var i = 0; i < text.length; i++) {
+                if (text.charCodeAt(i) > 1000)
+                    result += "&#" + text.charCodeAt(i) + ";";
+                else
+                    result += text[i];
+            }
+
+            return result;
+        },
+
+        _cleanContent: function (content) {
+
+            content = content.replace(/&#160;/g, '&nbsp;');
             return content;
         },
 
@@ -250,10 +138,10 @@ var USL_MCECallbacks;
 
         getVisualAtts: function (shortcode) {
 
-            var atts = shortcode.match(/<span class="usl-tinymce-shortcode-atts.*?data-atts="(.*?), ".*?<\/span>/i);
+            var atts = shortcode.match(/<[span|div].*?class="usl-tinymce-shortcode-wrapper.*?data-atts="(.*?)".*?>/i);
 
-            if (atts) {
-                return JSON.parse('{' + atts[1].replace(/&quot;/ig, '"') + '}');
+            if (atts && atts[1]) {
+                return JSON.parse(atts[1].replace(/&quot;/ig, '"'));
             } else {
                 return false;
             }
@@ -261,7 +149,7 @@ var USL_MCECallbacks;
 
         getVisualContent: function (shortcode) {
 
-            var content = shortcode.match(/<span class="usl-tinymce-shortcode-content.*?>(.*?)<\/span>/i);
+            var content = shortcode.match(/<[span|div].*?class="usl-tinymce-shortcode-wrapper.*?data-content="(.*?)".*?>/i);
 
             if (content) {
                 return content[1];
@@ -271,7 +159,7 @@ var USL_MCECallbacks;
         },
 
         getVisualCode: function (shortcode) {
-            var code = shortcode.match(/<span class="usl-tinymce-shortcode-code.*?data-code="(.*?)".*?<\/span>/i);
+            var code = shortcode.match(/<[span|div].*?class="usl-tinymce-shortcode-wrapper.*?data-code="(.*?)".*?>/i);
             return code[1];
         },
 
@@ -282,4 +170,9 @@ var USL_MCECallbacks;
             return '<span class="usl-tinymce-shortcode-content' + maybe_classes + '">' + content + '</span>';
         }
     };
+
+    // From https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex/6969486#6969486
+    function _reGexPrepare(reG) {
+        return reG.replace(/[\-\[\]\/\{}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
 })(jQuery);

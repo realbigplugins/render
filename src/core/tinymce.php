@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class USL_tinymce
  *
@@ -45,9 +46,10 @@ class USL_tinymce extends USL {
 	public static function modify_tinymce_init( $mceinit ) {
 
 		$mceinit['noneditable_noneditable_class'] = 'usl-tinymce-shortcode-wrapper';
-		$mceinit['noneditable_editable_class'] = 'usl-tinymce-shortcode-content';
-		$mceinit['extended_valid_elements'] = 'span[*]';
-		$mceinit['entity_encoding'] = 'numeric';
+		$mceinit['noneditable_editable_class']    = 'usl-tinymce-shortcode-content';
+		$mceinit['extended_valid_elements']       = 'span[*]';
+		$mceinit['entity_encoding']               = 'numeric';
+
 		return $mceinit;
 	}
 
@@ -95,7 +97,7 @@ class USL_tinymce extends USL {
 			}
 		}
 		$data['rendered_shortcodes'] = $rendered;
-		$data['render_data'] = $this->render_data;
+		$data['render_data']         = $this->render_data;
 
 		$data['do_render'] = get_option( 'usl_render_visual', true );
 
@@ -113,7 +115,7 @@ class USL_tinymce extends USL {
 	 */
 	public static function add_tinymce_plugins( $plugins ) {
 
-		$plugins['usl'] = self::$url . '/assets/js/includes/tinymce-plugins/usl/plugin.min.js';
+		$plugins['usl']         = self::$url . '/assets/js/includes/tinymce-plugins/usl/plugin.min.js';
 		$plugins['noneditable'] = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
 
 		return $plugins;
@@ -144,31 +146,72 @@ class USL_tinymce extends USL {
 		}
 	}
 
-	public static function render_shortcode() {
+	public static function render_shortcodes() {
+
+		global $usl_shortcode_data;
 
 		do_action( 'usl_render_ajax' );
 
-		$response = array();
+		// FIXME Getting numeric unicode, and also multiple non-space chars
+		$content            = stripslashes( $_POST['content'] );
+		$usl_shortcode_data = $_POST['shortcode_data'];
 
-		// The quotes will be escaped, so we need to strip the escaping
-		$response['output'] = do_shortcode( stripslashes_deep( $_POST['shortcode'] ) );
+		$pattern = get_shortcode_regex();
+		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $content );
 
-		if ( isset( $_POST['atts'] ) ) {
-			$response['atts'] = $_POST['atts'];
+		echo $content;
+
+		die();
+	}
+
+	public static function replace_shortcodes( $matches ) {
+
+		global $usl_shortcode_data;
+
+		// "Extract" some of the found matches
+		$entire_code = $matches[0];
+		$code = $matches[2];
+		$atts = $matches[3];
+		$content = $matches[5];
+
+		// Search again for any nested shortcodes (loops infinitely)
+		$pattern = get_shortcode_regex();
+		$_content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $content );
+
+		// Replace the content with the new content
+		if ( ! empty( $_content ) ) {
+			$entire_code = str_replace( $content, $_content, $entire_code );
 		}
 
-		$response['shortcode'] = stripslashes_deep( $_POST['shortcode'] );
-		$response['code'] = $_POST['code'];
+		// Get the type of tag needed and whether or not to style the code
+		$tag     = isset( $usl_shortcode_data[ $code ]['displayBlock'] ) ? 'div' : 'span';
+		$nostyle = isset( $usl_shortcode_data[ $code ]['noStyle'] ) ? '' : ' styled';
 
-		wp_send_json( $response );
+		// Get the atts prepared for JSON
+		$atts = shortcode_parse_atts( $atts );
+		if ( ! empty( $atts ) ) {
+			$atts = json_encode( $atts );
+		}
+
+		// Start the wrapper
+		$output = "<$tag class='usl-tinymce-shortcode-wrapper $code $nostyle' data-code='$code' data-atts='$atts'>";
+
+		$output .= do_shortcode( $entire_code );
+
+		// Close the wrapper
+		$output .= "</$tag>&#8203;";
+
+		return $output;
 	}
 }
 
 add_action( 'current_screen', '_usl_init_tinymce' );
 
+
 // Always add the AJAX
 add_action( 'usl_render_ajax', array( 'USL_tinymce', 'render_ajax' ) );
 add_action( 'wp_ajax_usl_render_shortcode', array( 'USL_tinymce', 'render_shortcode' ) );
+add_action( 'wp_ajax_usl_render_shortcodes', array( 'USL_tinymce', 'render_shortcodes' ) );
 
 function _usl_init_tinymce( $screen ) {
 

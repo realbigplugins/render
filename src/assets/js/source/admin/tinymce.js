@@ -12,8 +12,9 @@
  * @subpackage Modal
  */
 var USL_tinymce;
+// TODO When in a shortcode, don't show "p>>span>>a>>span>>span" at the bottom, show "p>>shortcode"
 (function ($) {
-    var editor, $texteditor, $editor, $loader,
+    var editor, $texteditor, $editor, $loader, no_selected,
         min_load_time = false,
         last_message = 0,
         submitted = false,
@@ -94,11 +95,37 @@ var USL_tinymce;
                     }
                 });
 
+                // When deleting the character &8203;, this should also delete the shortcode node preceding it (because
+                // the character &8203; is not visible to the user, so having to delete that and THEN also deleting the
+                // shortcode would be confusing.
+                editor.onKeyDown.add(function (ed, event) {
+
+                    if (event.keyCode == 8) {
+
+                        var curElm = ed.selection.getRng().startContainer,
+                            range = ed.selection.getBookmark(curElm.textContent).rng;
+
+                        if (typeof range !== 'undefined') {
+                            var caretPos = ed.selection.getBookmark(curElm.textContent).rng.startOffset,
+                                charcode = curElm.textContent.charCodeAt(0);
+
+                            if (charcode === 8203 && caretPos === 1) {
+                                var $curElm = $(curElm),
+                                    $prev = $curElm.prev();
+
+                                $prev.remove();
+                            }
+                        }
+                    }
+                });
+
                 // Fires when clicking the shortcode < > button in the tinymce toolbar
                 editor.addCommand('usl-open', function () {
 
-                    var selection = editor.selection.getContent(),
-                        node = editor.selection.getNode();
+                    var node = editor.selection.getNode();
+
+                    USL_Modal.selection = editor.selection.getContent();
+                    no_selected = false;
 
                     if ($(node).closest('.usl-tinymce-shortcode-wrapper').length || $(node).hasClass('usl-tinymce-shortcode-wrapper')) {
 
@@ -109,11 +136,17 @@ var USL_tinymce;
                             container_html = $('<div />').append($node.clone()).html(),
                             shortcode = USL_tinymce.visualToLiteral(container_html);
 
+                        // If there's no selected text, assume the entire shortcode is being modified
+                        if (!USL_Modal.selection.length) {
+                            USL_Modal.selection = content;
+                            no_selected = true;
+                        }
+
                         USL_Modal.showRemoveButton();
-                        USL_Modal.modify(shortcode, content);
+                        USL_Modal.modify(shortcode);
                     } else {
                         USL_Modal.hideRemoveButton();
-                        USL_Modal.open(selection);
+                        USL_Modal.open();
                     }
                 });
 
@@ -149,7 +182,7 @@ var USL_tinymce;
          */
         loadText: function (content) {
 
-            content = USL_MCECallbacks.convertRenderedToLiteral(content, editor);
+            content = USL_MCECallbacks.convertRenderedToLiteral(content);
             content = content.replace(/&#8203;/g, '');
 
             return content;
@@ -184,8 +217,27 @@ var USL_tinymce;
         },
 
         update: function () {
-            // TODO Support for nested shortcodes
-            this.removeShortcode();
+
+            // Nesting support
+            var old_code = USL_Modal.current_shortcode.code,
+                new_code = USL_Modal.output.code,
+                old_render_obj = USL_Data.rendered_shortcodes[old_code],
+                new_render_obj = USL_Data.rendered_shortcodes[new_code],
+                nesting = false;
+
+            if (old_code && old_code !== new_code) {
+
+                // Only do it if the parent code supports it, the code to be nested doesn't allow it, and there is
+                // some selected content
+                if (old_render_obj.allowNesting && !new_render_obj.allowNesting && USL_Modal.selection.length) {
+                    nesting = true;
+                }
+            }
+
+            if (!nesting) {
+                this.removeShortcode();
+            }
+
             editor.insertContent(USL_Modal.output.all);
         },
 

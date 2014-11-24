@@ -12,7 +12,6 @@ var USL_Modal;
 (function ($) {
     var elements = {},
         shortcodes = {},
-        selection,
         slide_transition = 150,
         categories_sliding = false,
         usl_modal_open = false,
@@ -20,7 +19,9 @@ var USL_Modal;
 
     USL_Modal = {
 
+        current_shortcode: '',
         output: '',
+        selection: '',
 
         init: function () {
 
@@ -322,8 +323,7 @@ var USL_Modal;
 
         search: function () {
 
-            var _search_delay,
-                search_delay = 1000,
+            var search_delay = 300,
                 search_fade = 300;
 
             elements.search_input.on('keyup', function (e) {
@@ -358,7 +358,6 @@ var USL_Modal;
 
                 clearTimeout(_search_timeout);
                 _search_timeout = setTimeout(function () {
-                    console.log('bam');
 
                     search_loading = false;
                     elements.list.stop().animate({opacity: 1}, search_fade);
@@ -498,12 +497,7 @@ var USL_Modal;
             elements.remove.hide();
         },
 
-        modify: function (code, _selection) {
-
-            // Set the selection if it's set manually
-            if (typeof _selection !== 'undefined') {
-                selection = _selection;
-            }
+        modify: function (code) {
 
             // Crop off any whitespace (generally preceding)
             code = code.trim();
@@ -529,6 +523,12 @@ var USL_Modal;
                     pairs[atts[i].trim()] = values[i].substring(1, values[i].length - 1);
                 }
             }
+
+            this.current_shortcode = {
+                all: code,
+                code: shortcode,
+                atts: pairs
+            };
 
             this.open();
 
@@ -612,11 +612,7 @@ var USL_Modal;
             }
         },
 
-        open: function (_selection) {
-
-            if (typeof _selection !== 'undefined') {
-                selection = _selection;
-            }
+        open: function () {
 
             usl_modal_open = true;
 
@@ -643,6 +639,8 @@ var USL_Modal;
             this.closeShortcode();
             this.clearSearch();
             elements.list.find('.usl-mce-shortcode.active').removeClass('active open');
+
+            this.selection = '';
 
             $(document).trigger('usl-modal-close');
         },
@@ -676,7 +674,7 @@ var USL_Modal;
 
                     // Set up the selection to be content if it exists
                     if (atts[i].name === 'content') {
-                        selection = atts[i].value;
+                        this.selection = atts[i].value;
                         continue;
                     }
 
@@ -690,10 +688,8 @@ var USL_Modal;
             output += ']';
 
             if (props.wrapping) {
-                output += selection + '[/' + code + ']';
+                output += this.selection + '[/' + code + ']';
             }
-
-            this.close();
 
             this.output = {
                 all: output,
@@ -703,6 +699,8 @@ var USL_Modal;
             };
 
             $(document).trigger('usl-modal-update');
+
+            this.close();
         },
 
         validate: function () {

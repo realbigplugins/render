@@ -36,7 +36,7 @@ class USL_CoreShortcodes_Design {
 				),
 				'font_color'  => array(
 					'colorpicker' => array(),
-					'default'     => '#fff',
+					'default'     => '#222',
 				),
 				'size'        => array(
 					'selectbox' => array(
@@ -67,20 +67,20 @@ class USL_CoreShortcodes_Design {
 			'title'       => 'Box',
 			'description' => 'Creates a nice box for your content.',
 			'atts'        => array(
-				'color'   => array(
+				'color'      => array(
 					'colorpicker' => '',
 				),
-				'font_color'   => array(
+				'font_color' => array(
 					'colorpicker' => '',
 				),
-				'shape'   => array(
+				'shape'      => array(
 					'accepted_values' => array(
 						'square',
 						'rounded',
 						'round',
 					)
 				),
-				'heading' => array(),
+				'heading'    => array(),
 			),
 			'wrapping'    => true,
 			'render'      => array(
@@ -91,15 +91,16 @@ class USL_CoreShortcodes_Design {
 		),
 		// Column 2
 		array(
-			'code'        => 'usl_column_two',
-			'function'    => '_usl_sc_column_two',
-			'title'       => 'Column 2',
-			'description' => 'Creates a nice column that is half the width of the container.',
-			'wrapping'    => true,
-			'example'     => '[usl_column_two]Lorem ipsum...[/usl_column_two]',
-			'render'      => array(
+			'code'         => 'usl_column_two',
+			'function'     => '_usl_sc_column_two',
+			'title'        => 'Column 2',
+			'description'  => 'Creates a nice column that is half the width of the container.',
+			'example'      => '[usl_column_two]Lorem ipsum...[/usl_column_two]',
+			'wrapping'     => true,
+			'render'       => array(
 				'noStyle'      => true,
 				'displayBlock' => true,
+				'allowNesting' => true,
 			),
 		),
 		// Column 3
@@ -108,8 +109,13 @@ class USL_CoreShortcodes_Design {
 			'function'    => '_usl_sc_column_three',
 			'title'       => 'Column 3',
 			'description' => 'Creates a nice column that is a third the width of the container.',
-			'wrapping'    => true,
 			'example'     => '[usl_column_three]Lorem ipsum...[/usl_column_three]',
+			'wrapping'    => true,
+			'render'       => array(
+				'noStyle'      => true,
+				'displayBlock' => true,
+				'allowNesting' => true,
+			),
 		),
 		// Column 4
 		array(
@@ -117,8 +123,13 @@ class USL_CoreShortcodes_Design {
 			'function'    => '_usl_sc_column_four',
 			'title'       => 'Column 4',
 			'description' => 'Creates a nice column that is a quarter the width of the container.',
-			'wrapping'    => true,
 			'example'     => '[usl_column_four]Lorem ipsum...[/usl_column_four]',
+			'wrapping'    => true,
+			'render'       => array(
+				'noStyle'      => true,
+				'displayBlock' => true,
+				'allowNesting' => true,
+			),
 		),
 		// Column 5
 		array(
@@ -126,8 +137,13 @@ class USL_CoreShortcodes_Design {
 			'function'    => '_usl_sc_column_five',
 			'title'       => 'Column 5',
 			'description' => 'Creates a nice column that is a fifth the width of the container.',
-			'wrapping'    => true,
 			'example'     => '[usl_column_five]Lorem ipsum...[/usl_column_five]',
+			'wrapping'    => true,
+			'render'       => array(
+				'noStyle'      => true,
+				'displayBlock' => true,
+				'allowNesting' => true,
+			),
 		)
 	);
 
@@ -196,10 +212,10 @@ function _usl_sc_button( $atts = array(), $content = null ) {
  */
 function _usl_sc_box( $atts, $content = null ) {
 	$atts = shortcode_atts( array(
-		'color'   => '#bada55',
-		'shape'   => 'rounded',
+		'color'      => '#bada55',
+		'shape'      => 'rounded',
 		'font_color' => '#222',
-		'heading' => ''
+		'heading'    => ''
 	), $atts );
 
 	$class = 'usl-box';
