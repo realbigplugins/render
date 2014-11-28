@@ -15,7 +15,7 @@ var USL;
 		/**
 		 * Toggles the visibility of an element.
 		 *
-		 * @since USL 0.1.0
+		 * @since USL 1.0.0
 		 *
 		 * @param id The ID of the node to target.
 		 */

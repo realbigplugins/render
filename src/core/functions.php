@@ -44,8 +44,8 @@ function usl_add_shortcode( $args ) {
 	}
 }
 
-function usl_shortcode_content( $content ) {
-	return "<span class='usl-tinymce-shortcode-content'>$content</span>";
+function usl_shortcode_content( $content, $tag = 'span' ) {
+	return "<$tag class='usl-tinymce-shortcode-content'>$content</$tag>";
 }
 
 /**
@@ -88,8 +88,8 @@ function _usl_get_categories() {
 	return array_unique( wp_list_pluck( $shortcodes, 'category' ) );
 }
 
-function _usl_translate_id_to_name( $id ) {
-	return ucwords( str_replace( array( ' ', '_' ), ' ', $id ) );
+function usl_translate_id_to_name( $id ) {
+	return ucwords( str_replace( array( ' ', '_', '-' ), ' ', $id ) );
 }
 
 /**

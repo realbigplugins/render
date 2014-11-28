@@ -4,6 +4,10 @@ add_action( 'all', function ( $tag ) {
 
 	global $usl_debug_tags;
 
+	if ( $usl_debug_tags === null ) {
+		$usl_debug_tags = array();
+	}
+
 	if ( in_array( $tag, $usl_debug_tags ) ) {
 		return;
 	}

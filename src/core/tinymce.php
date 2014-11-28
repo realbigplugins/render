@@ -150,6 +150,7 @@ class USL_tinymce extends USL {
 
 		global $usl_shortcode_data;
 
+		define( 'USL_SHORTCODE_RENDERING', true );
 		do_action( 'usl_render_ajax' );
 
 		$content            = stripslashes( $_POST['content'] );

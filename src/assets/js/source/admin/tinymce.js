@@ -224,7 +224,7 @@ var USL_tinymce;
                 new_render_obj = USL_Data.rendered_shortcodes[new_code],
                 nesting = false;
 
-            if (old_code && old_code !== new_code) {
+            if (old_code && old_code !== new_code && new_render_obj && old_render_obj) {
 
                 // Only do it if the parent code supports it, the code to be nested doesn't allow it, and there is
                 // some selected content

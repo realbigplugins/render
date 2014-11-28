@@ -19,9 +19,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the full name of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -35,9 +35,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the first name of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -51,9 +51,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the last name of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -62,14 +62,14 @@ class USL_CoreShortcodes_User {
 		// Username
 		array(
 			'code'        => 'usl_user_username',
-			'function'    => '_usl_sc_user_login',
+			'function'    => '_usl_sc_user_username',
 			'title'       => 'User Username',
 			'description' => 'Get the username of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -83,9 +83,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the email of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -99,9 +99,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the display name of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -115,9 +115,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the ID of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -131,9 +131,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the author URL of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -147,9 +147,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the date the specified user registered.',
 			'atts'        => array(
 				'user'   => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 				'format' => array(
@@ -166,9 +166,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the description of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -182,9 +182,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the role of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -198,9 +198,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the capabilities of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -214,9 +214,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the admin theme of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -230,9 +230,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the primary blog of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -246,9 +246,9 @@ class USL_CoreShortcodes_User {
 			'description' => 'Get the source domain of the specified user.',
 			'atts'        => array(
 				'user' => array(
-					'required' => true,
-					'textbox' => array(
+					'selectbox' => array(
 						'placeholder' => 'Defaults to the current user',
+						'callback' => '_usl_user_dropdown',
 					),
 				),
 			),
@@ -287,7 +287,7 @@ new USL_CoreShortcodes_User();
 /**
  * Gets specified current user property.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -317,7 +317,7 @@ function _usl_sc_user( $atts = array() ) {
 /**
  * Gets the current user full name.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -325,8 +325,6 @@ function _usl_sc_user( $atts = array() ) {
  * @return string The current user full name.
  */
 function _usl_sc_user_full_name( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -344,7 +342,7 @@ function _usl_sc_user_full_name( $atts = array() ) {
 /**
  * Gets the current user first name.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -352,8 +350,6 @@ function _usl_sc_user_full_name( $atts = array() ) {
  * @return string The the current user first name.
  */
 function _usl_sc_user_first_name( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -371,7 +367,7 @@ function _usl_sc_user_first_name( $atts = array() ) {
 /**
  * Gets the current user last name.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -379,8 +375,6 @@ function _usl_sc_user_first_name( $atts = array() ) {
  * @return string The the current user last name.
  */
 function _usl_sc_user_last_name( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -398,16 +392,14 @@ function _usl_sc_user_last_name( $atts = array() ) {
 /**
  * Gets the current user username.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
  *
  * @return string The the current user username.
  */
-function _usl_sc_user_login( $atts = array() ) {
-
-	// TODO Test
+function _usl_sc_user_username( $atts = array() ) {
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -425,7 +417,7 @@ function _usl_sc_user_login( $atts = array() ) {
 /**
  * Gets the current user email.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -433,8 +425,6 @@ function _usl_sc_user_login( $atts = array() ) {
  * @return string The the current user email.
  */
 function _usl_sc_user_email( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -452,7 +442,7 @@ function _usl_sc_user_email( $atts = array() ) {
 /**
  * Gets the current user display name.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -460,8 +450,6 @@ function _usl_sc_user_email( $atts = array() ) {
  * @return string The the current user display name.
  */
 function _usl_sc_user_display_name( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -479,7 +467,7 @@ function _usl_sc_user_display_name( $atts = array() ) {
 /**
  * Gets the current user ID.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -487,8 +475,6 @@ function _usl_sc_user_display_name( $atts = array() ) {
  * @return string The the current user ID.
  */
 function _usl_sc_user_id( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -506,7 +492,7 @@ function _usl_sc_user_id( $atts = array() ) {
 /**
  * Gets the current user author url.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -514,8 +500,6 @@ function _usl_sc_user_id( $atts = array() ) {
  * @return string The the current user author url.
  */
 function _usl_sc_user_url( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -533,7 +517,7 @@ function _usl_sc_user_url( $atts = array() ) {
 /**
  * Gets the date the current user registered.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -541,8 +525,6 @@ function _usl_sc_user_url( $atts = array() ) {
  * @return string The the date the current user registered.
  */
 function _usl_sc_user_registered_date( $atts ) {
-
-	// TODO Test
 
 	$atts = shortcode_atts( array(
 		'format' => 'F jS, Y',
@@ -566,7 +548,7 @@ function _usl_sc_user_registered_date( $atts ) {
 /**
  * Gets the current user description.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -574,8 +556,6 @@ function _usl_sc_user_registered_date( $atts ) {
  * @return string The the current user description.
  */
 function _usl_sc_user_description( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -593,7 +573,7 @@ function _usl_sc_user_description( $atts = array() ) {
 /**
  * Gets the current user role.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -601,8 +581,6 @@ function _usl_sc_user_description( $atts = array() ) {
  * @return string The the current user role.
  */
 function _usl_sc_user_role( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -627,7 +605,7 @@ function _usl_sc_user_role( $atts = array() ) {
 /**
  * Gets the current user capabilities.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -635,8 +613,6 @@ function _usl_sc_user_role( $atts = array() ) {
  * @return string The the current user capabilities.
  */
 function _usl_sc_user_capabilities( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -662,7 +638,7 @@ function _usl_sc_user_capabilities( $atts = array() ) {
 /**
  * Gets the current user admin theme.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -670,8 +646,6 @@ function _usl_sc_user_capabilities( $atts = array() ) {
  * @return string The the current user admin theme.
  */
 function _usl_sc_user_admin_theme( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -689,7 +663,7 @@ function _usl_sc_user_admin_theme( $atts = array() ) {
 /**
  * Gets the current user primary blog.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -697,8 +671,6 @@ function _usl_sc_user_admin_theme( $atts = array() ) {
  * @return string The the current user primary blog.
  */
 function _usl_sc_user_primary_blog( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -716,7 +688,7 @@ function _usl_sc_user_primary_blog( $atts = array() ) {
 /**
  * Gets the current user domain.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -724,8 +696,6 @@ function _usl_sc_user_primary_blog( $atts = array() ) {
  * @return string The the current user domain.
  */
 function _usl_sc_user_source_domain( $atts = array() ) {
-
-	// TODO Test
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -741,9 +711,9 @@ function _usl_sc_user_source_domain( $atts = array() ) {
 }
 
 /**
- * Helper function for getting the user data
+ * Helper function for getting the user data.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -763,4 +733,29 @@ function _usl_sc_user_get_userdata( $atts ) {
 	}
 
 	return $user;
+}
+
+/**
+ * Helper function for populating the user selectbox.
+ *
+ * @since USL 1.0.0
+ * @access Private
+ *
+ * @return bool|array List of registered users.
+ */
+function _usl_user_dropdown() {
+
+	$users = get_users( array(
+		'fields' => array(
+			'ID',
+			'display_name',
+		)
+	));
+
+	$output = array();
+	foreach ( $users as $user ) {
+		$output[ $user->ID ] = $user->display_name;
+	}
+
+	return $output;
 }

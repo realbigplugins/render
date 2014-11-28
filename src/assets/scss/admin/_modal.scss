@@ -174,6 +174,14 @@ $usl-modal-height: 800px;
         width: 20%;
         text-align: center;
         cursor: pointer;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+
+        &.active {
+          border-color: #ddd;
+          padding: 10px 0;
+          background: #F2F2F2;
+        }
 
         .dashicons {
           width: 100%;
@@ -222,7 +230,7 @@ $usl-modal-height: 800px;
         border: 1px solid transparent;
         margin: 0;
 
-        &:nth-child(even) {
+        &.alt {
           background: darken(#fff, 5%);
         }
 
@@ -252,19 +260,48 @@ $usl-modal-height: 800px;
       }
 
       .accordion-section-content {
-        padding: 0;
+        padding: 0 20px 0 0;
         border-top: 1px solid darken(#fff, 30%);
 
         // Fix Chosen selectbox cutting off
         overflow: visible;
       }
 
-      // Fix Chosen "Select one" cutting off
+      // Chosen
       .chosen-container {
-        min-width: 200px;
+        &.allow-custom-input {
+          .no-results {
+            display: none;
+          }
+        }
+
+        .dashicons {
+          vertical-align: middle;
+          margin-right: 10px;
+        }
+
+        .usl-chosen-clear {
+          position: absolute;
+          right: 20px;
+          top: 0;
+          z-index: 1;
+          color: #888;
+          font-size: 16px;
+          line-height: 25px;
+
+          &:before {
+            border-radius: 50%;
+            transition: all 100ms;
+          }
+
+          &:hover {
+            &:before {
+              background: #888;
+              color: #fff;
+            }
+          }
+        }
       }
-
-
 
       .usl-modal-att-row {
         padding: 10px;
@@ -291,6 +328,13 @@ $usl-modal-height: 800px;
 
           input[type="text"] {
             width: 100%;
+          }
+
+          .description {
+            color: #999;
+            font-style: normal;
+            margin-top: 5px;
+            margin-bottom: 0;
           }
           
           .usl-modal-att-errormsg {

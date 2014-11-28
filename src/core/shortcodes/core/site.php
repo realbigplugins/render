@@ -68,7 +68,7 @@ new USL_CoreShortcodes_Site();
 /**
  * Gets info about the current site.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -87,7 +87,7 @@ function _usl_sc_site( $atts ) {
 /**
  * Gets the current site title.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @return string The texturized site title.
@@ -100,7 +100,7 @@ function _usl_sc_site_title() {
 /**
  * Gets the site tag-line.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @return string The texturized site tag-line.
@@ -113,7 +113,7 @@ function _usl_sc_site_tagline() {
 /**
  * Gets the site's admin email.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @return string The site's admin email.

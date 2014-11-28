@@ -42,10 +42,10 @@ class USL_WordPressShortcodes {
 				'align' => array(
 					'selectbox' => array(
 						'options' => array(
-							'alignnone',
-							'aligncenter',
-							'alignright',
-							'alignleft',
+							'alignnone' => 'None',
+							'aligncenter' => 'Center',
+							'alignright' => 'Right',
+							'alignleft' => 'Left',
 						),
 					),
 				),
@@ -66,19 +66,19 @@ class USL_WordPressShortcodes {
 				'orderby'    => array(
 					'selectbox' => array(
 						'options' => array(
-							'menu_order',
-							'title',
-							'post_date',
-							'rand',
-							'ID',
+							'menu_order' => 'Menu Order',
+							'title' => 'Title',
+							'post_date' => 'Post Date',
+							'rand' => 'Random',
+							'ID' => 'ID',
 						),
 					),
 				),
 				'order'      => array(
 					'selectbox' => array(
 						'options' => array(
-							'ASC',
-							'DSC',
+							'ASC' => 'Ascending',
+							'DSC' => 'Descending',
 						),
 					),
 				),
@@ -114,27 +114,27 @@ class USL_WordPressShortcodes {
 				'type'         => array(
 					'selectbox' => array(
 						'options' => array(
-							'audio',
-							'video',
+							'audio' => 'Audio',
+							'video' => 'Video',
 						),
 					),
 				),
 				'orderby'      => array(
 					'selectbox' => array(
 						'options' => array(
-							'menu_order',
-							'title',
-							'post_date',
-							'rand',
-							'ID',
+							'menu_order' => 'Menu Order',
+							'title' => 'Title',
+							'post_date' => 'Post Date',
+							'rand' => 'Random',
+							'ID' => 'ID',
 						),
 					),
 				),
 				'order'        => array(
 					'selectbox' => array(
 						'options' => array(
-							'ASC',
-							'DSC',
+							'ASC' => 'Ascending',
+							'DSC' => 'Descending',
 						),
 					),
 				),
@@ -146,40 +146,40 @@ class USL_WordPressShortcodes {
 				'style'        => array(
 					'selectbox' => array(
 						'options' => array(
-							'light',
-							'dark',
+							'light' => 'Light',
+							'dark' => 'Dark',
 						),
 					),
 				),
 				'tracklist'    => array(
 					'selectbox' => array(
 						'options' => array(
-							'true',
-							'false',
+							'true' => 'True',
+							'false' => 'False',
 						),
 					),
 				),
 				'tracknumbers' => array(
 					'selectbox' => array(
 						'options' => array(
-							'true',
-							'false',
+							'true' => 'True',
+							'false' => 'False',
 						),
 					),
 				),
 				'images'       => array(
 					'selectbox' => array(
 						'options' => array(
-							'true',
-							'false',
+							'true' => 'True',
+							'false' => 'False',
 						),
 					),
 				),
 				'artists'      => array(
 					'selectbox' => array(
 						'options' => array(
-							'true',
-							'false',
+							'true' => 'True',
+							'false' => 'False',
 						),
 					),
 				),
@@ -196,23 +196,27 @@ class USL_WordPressShortcodes {
 					'required' => true,
 				),
 				'loop'     => array(
-					'off',
-					'on',
+					'selectbox' => array(
+						'options' => array(
+							'off' => 'Off',
+							'on' => 'Onf',
+						),
+					),
 				),
 				'autoplay' => array(
 					'selectbox' => array(
 						'options' => array(
-							'off',
-							'on',
+							'off' => 'Off',
+							'on' => 'Onf',
 						),
 					),
 				),
 				'preload'  => array(
 					'selectbox' => array(
 						'options' => array(
-							'metadata',
-							'none',
-							'auto',
+							'metadata' => 'Metadata',
+							'none' => 'None',
+							'auto' => 'Auto',
 						),
 					),
 				),
@@ -232,25 +236,25 @@ class USL_WordPressShortcodes {
 				'loop'     => array(
 					'selectbox' => array(
 						'options' => array(
-							'off',
-							'on',
+							'off' => 'Off',
+							'on' => 'On',
 						),
 					),
 				),
 				'autoplay' => array(
 					'selectbox' => array(
 						'options' => array(
-							'off',
-							'on',
+							'off' => 'Off',
+							'on' => 'Onf',
 						),
 					),
 				),
 				'preload'  => array(
 					'selectbox' => array(
 						'options' => array(
-							'metadata',
-							'none',
-							'auto',
+							'metadata' => 'Metadata',
+							'none' => 'None',
+							'auto' => 'Auto',
 						),
 					),
 				),

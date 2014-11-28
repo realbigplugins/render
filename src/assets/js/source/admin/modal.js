@@ -278,13 +278,112 @@ var USL_Modal;
 
                 switch (att_type) {
                     case 'selectbox':
+
                         attObj = new Selectbox($(this));
-                        $(this).find('.chosen').chosen();
+
+                        // Apply Chosen
+                        var $chosen = $(this).find('.chosen'),
+                            $container = $chosen.closest('.usl-modal-att-field');
+
+                        // Disable search if there are icons present
+                        var icons = false;
+                        $chosen.find('option').each(function () {
+                            if ($(this).attr('data-icon')) {
+                                icons = true;
+                                return false;
+                            }
+                        });
+
+                        $chosen.chosen({
+                            width: '100%',
+                            search_contains: true,
+                            disable_search: icons
+                        });
+
+                        // Fix scroll issue
+                        $container.find('.chosen-results').bind('mousewheel', function (e) {
+                            $(this).scrollTop($(this).scrollTop() - e.originalEvent.wheelDeltaY);
+                            return false;
+                        });
+
+                        // Extend functionality to allow icons
+                        $chosen.on('chosen:showing_dropdown', function () {
+
+                            $(this).find('option').each(function (index) {
+                                var icon = $(this).attr('data-icon');
+
+                                if (icon) {
+                                    console.log(icon);
+                                    $container.find('.chosen-results li').eq(index - 1).prepend(
+                                        '<span class="' + icon + '"></span>'
+                                    )
+                                }
+                            });
+                        });
+
+                        // Extend functionality to allow input to be cleared easily
+                        $container.find('.chosen-container').append(
+                            '<div class="usl-chosen-clear dashicons dashicons-no"></div>'
+                        );
+
+                        $container.find('.usl-chosen-clear').click(function () {
+                            $chosen.val('').trigger('chosen:updated');
+                        });
+
+                        // Extend functionality to allow custom text input (if enabled on input)
+                        // TODO Find a way to allow searching of option values as well as text
+                        if ($chosen.hasClass('allow-custom-input')) {
+
+                            $container.find('.chosen-container').addClass('allow-custom-input');
+
+                            // When hiding the dropdown (submitting the field), use our custom input
+                            $chosen.on('chosen:hiding_dropdown', function () {
+                                var name = $(this).attr('name'),
+                                    $self = $(this),
+                                    $container = $(this).closest('.usl-modal-att-field'),
+                                    custom_val = $container.find('.chosen-search input[type="text"]').val(),
+                                    $custom_input = $container.find('.chosen-custom-input'),
+                                    $placeholder = $container.find('.chosen-container .chosen-single');
+
+                                // An existing value has been selected manually or there was no input
+                                if (!custom_val.length) {
+                                    if ($custom_input.length) {
+                                        $custom_input.remove();
+                                    }
+                                    return;
+                                }
+
+                                // See if value exists in selectbox, and if it does, set chosen to that value
+                                var exists = false;
+                                $(this).find('option').each(function () {
+                                    if ($(this).val() == custom_val) {
+                                        $self.val(custom_val).trigger('chosen:updated');
+                                        exists = true;
+                                        return false;
+                                    }
+                                });
+
+                                if (exists) {
+                                    return;
+                                }
+
+                                if (!$custom_input.length) {
+                                    $container.append('<input type="hidden" class="chosen-custom-input" name="' + name + '" />');
+                                    $custom_input = $container.find('.chosen-custom-input');
+                                }
+
+                                $custom_input.val(custom_val);
+                                $placeholder.removeClass('chosen-default');
+                                $placeholder.find('> span').html(custom_val);
+                            });
+                        }
                         break;
                     case 'colorpicker':
+
                         attObj = new Colorpicker($(this));
                         break;
                     case 'slider':
+
                         attObj = new Slider($(this));
                         break;
                     default:
@@ -451,10 +550,14 @@ var USL_Modal;
             });
         },
 
-        filterByCategory: function (e) {
-            var category = e.attr('data-category'),
-                shortcodes = elements.list.find('li'),
-                e_active = elements.list.find('li.active');
+        filterByCategory: function ($e) {
+
+            var category = $e.attr('data-category'),
+                shortcodes = elements.list.find('li');
+
+            // Set all other categories to inactive, and this one to active
+            elements.categories.find('li').removeClass('active');
+            $e.addClass('active');
 
             // Clear previously activated and opened items and clear forms
             this.refresh();
@@ -472,6 +575,26 @@ var USL_Modal;
                     }
                 });
             }
+
+            this.refreshRows();
+        },
+
+        refreshRows: function () {
+
+            var i = 0;
+            elements.list.find('> li').each(function () {
+
+                if ($(this).css('display') === 'none') {
+                    return true;
+                }
+
+                if (i % 2) {
+                    $(this).addClass('alt');
+                } else {
+                    $(this).removeClass('alt');
+                }
+                i++;
+            })
         },
 
         resetScroll: function () {
@@ -617,8 +740,7 @@ var USL_Modal;
 
             usl_modal_open = true;
 
-            $(document).trigger('usl-modal-open');
-
+            this.refreshRows();
             elements.wrap.show();
             elements.backdrop.show();
 
@@ -639,7 +761,11 @@ var USL_Modal;
             this.resetScroll();
             this.closeShortcode();
             this.clearSearch();
-            elements.list.find('.usl-mce-shortcode.active').removeClass('active open');
+
+            // Refresh categories at top
+            elements.categories.find('.active').removeClass('active');
+            elements.categories.find('li').first().addClass('active');
+            elements.categories.find('> ul').css('left', 0);
 
             this.selection = '';
 
@@ -901,7 +1027,7 @@ var USL_Modal;
 
         this._revert = function () {
 
-            this.$input.val(this.original_value);
+            this.setValue(this.original_value);
             this.setValid();
 
             this.revert();
@@ -958,6 +1084,11 @@ var USL_Modal;
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
+
+        this.setValue = function (value) {
+            this.$input.val(value);
+            this.$input.trigger('chosen:updated');
+        };
 
         this.init($e);
     };

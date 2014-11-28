@@ -79,7 +79,7 @@ new USL_CoreShortcodes_Time();
 /**
  * Gets the specified date format.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
@@ -98,7 +98,7 @@ function _usl_sc_custom_date( $atts ) {
 /**
  * Gets the current month.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @return string The current month.
@@ -111,7 +111,7 @@ function _usl_sc_month() {
 /**
  * Gets the current Year.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @return string The current year.
@@ -124,7 +124,7 @@ function _usl_sc_year() {
 /**
  * Gets the current day of the month.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @return string The current day of the month.
@@ -137,7 +137,7 @@ function _usl_sc_day_month() {
 /**
  * Gets the current day of the week.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @return string The current day of the week.
@@ -150,7 +150,7 @@ function _usl_sc_day_week() {
 /**
  * Gets the current day of hte year.
  *
- * @since USL 0.1.0
+ * @since USL 1.0.0
  * @access Private
  *
  * @return string The current day of hte year.

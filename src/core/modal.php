@@ -1,4 +1,5 @@
 <?php
+
 class USL_Modal {
 
 	public function __construct() {
@@ -47,7 +48,7 @@ class USL_Modal {
 			/**
 			 * Allows the filtering of the current att in the loop.
 			 *
-			 * @since USL 0.1.0
+			 * @since USL 1.0.0
 			 */
 			$att = apply_filters( 'usl_att_loop', $att, $att_name, $advanced, $wrapping );
 
@@ -80,70 +81,168 @@ class USL_Modal {
 				     data-validate="<?php echo $att['validate']; ?>"
 				     data-sanitize="<?php echo $att['sanitize']; ?>">
 					<div class="usl-modal-att-name">
-						<?php echo _usl_translate_id_to_name( $att_name ); ?>
+						<?php echo usl_translate_id_to_name( $att_name ); ?>
 					</div>
 					<div class="usl-modal-att-field">
 
-						<?php if ( isset( $att['slider'] ) ) : ?>
-
-							<?php
-							// Default value support
-							if ( isset( $att['default'] ) ) {
-								$att['slider']['value'] = $att['default'];
-							}
-
-							$data = '';
-							foreach ( $att['slider'] as $data_name => $data_value ) {
-								$data .= " data-$data_name='$data_value'";
-							}
-							?>
-							<input type="text" class="usl-modal-att-slider-value usl-modal-att-input"
-							       value="<?php echo isset( $att['default'] ) ? $att['default'] : '0'; ?>"
-							       name="<?php echo $att_name; ?>"/>
-							<div class="usl-modal-att-slider" <?php echo $data; ?>></div>
-
-						<?php elseif ( isset( $att['colorpicker'] ) ) : ?>
-
-							<input type="text"
-							       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
-							       class="usl-modal-att-colorpicker usl-modal-att-input"
-							       name="<?php echo $att_name; ?>"/>
-
 						<?php
-						elseif ( isset( $att['selectbox'] ) ) : ?>
-
-							<select name="<?php echo $att_name; ?>"
-							        data-placeholder="<?php echo isset( $att['selectbox']['default'] ) ? $att['selectbox']['default'] : 'Select one'; ?>"
-							        class="usl-modal-att-input <?php echo ! isset( $att['selectbox']['disableChosen'] ) ? 'chosen' : ''; ?>">
-								<option></option>
-								<?php foreach ( $att['selectbox']['options'] as $att_value ) : ?>
-									<option
-										value="<?php echo $att_value; ?>">
-										<?php echo ucfirst( $att_value ); ?>
-									</option>
-								<?php endforeach; ?>
-							</select>
-
-						<?php
-						elseif ( isset( $att['textarea'] ) ) : ?>
-
-							<textarea class="usl-modal-att-input" name="<?php echo $att_name; ?>"><?php echo isset( $att['default'] ) ? $att['default_value'] : ''; ?></textarea>
-
-						<?php
-						else: ?>
-
-							<input type="text" class="usl-modal-att-input"
-							       <?php echo isset( $att['textbox']['placeholder'] ) ? "placeholder='{$att['textbox']['placeholder']}'" : ''; ?>
-							       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
-							       name="<?php echo $att_name; ?>"/>
-
-						<?php endif; ?>
+						// Output the att field
+						if ( isset( $att['textarea'] ) ) {
+							self::att_type_textarea( $att_name, $att, $att['textarea'] );
+						} elseif ( isset( $att['selectbox'] ) ) {
+							self::att_type_selectbox( $att_name, $att, $att['selectbox'] );
+						} elseif ( isset( $att['slider'] ) ) {
+							self::att_type_slider( $att_name, $att, $att['slider'] );
+						} elseif ( isset( $att['colorpicker'] ) ) {
+							self::att_type_colorpicker( $att_name, $att, $att['colorpicker'] );
+						} else {
+							self::att_type_textbox( $att_name, $att, isset( $att['textbox'] ) ? $att['textbox'] : array() );
+						}
+						?>
 
 						<div class="usl-modal-att-errormsg"></div>
+
+						<?php if ( isset( $att['description'] ) ) : ?>
+							<p class="description">
+								<?php echo $att['description']; ?>
+							</p>
+						<?php endif; ?>
 					</div>
 				</div>
 			<?php endif; ?>
 		<?php endforeach;
+	}
+
+	private static function att_type_textbox( $att_name, $att, $properties = array() ) {
+		?>
+		<input type="text" class="usl-modal-att-input"
+		       placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : ''; ?>"
+		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+		       name="<?php echo $att_name; ?>"/>
+	<?php
+	}
+
+	private static function att_type_textarea( $att_name, $att, $properties ) {
+		?>
+		<textarea class="usl-modal-att-input" name="<?php echo $att_name; ?>"><?php
+			echo isset( $att['default'] ) ? $att['default_value'] : '';
+			?></textarea>
+	<?php
+	}
+
+	private static function att_type_selectbox( $att_name, $att, $properties ) {
+
+		// If a callback is provided, use that to populate options
+		if ( isset( $properties['callback'] ) && is_callable( $properties['callback'] ) ) {
+			$options = call_user_func( $properties['callback'] );
+		}
+
+		if ( ! empty( $options ) ) {
+			if ( ! empty( $properties['options'] ) ) {
+				$properties['options'] = array_merge( $options, $properties['options'] );
+			} else {
+				$properties['options'] = $options;
+			}
+		}
+
+		if ( empty( $properties['options'] ) ) {
+			echo 'No options!';
+			return;
+		}
+
+		// Chosen support
+		if ( ! isset( $properties['disableChosen'] ) ) {
+			$chosen = 'chosen' . ( isset( $properties['allowCustomInput'] ) ? ' allow-custom-input' : '' );
+		} else {
+			$chosen = '';
+		}
+
+		if ( isset( $properties['allowCustomInput'] ) && ! isset( $att['description'] ) ) {
+			$att['description'] = 'Custom input is allowed.';
+		}
+		?>
+
+		<select name="<?php echo $att_name; ?>"
+		        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select one'; ?>"
+		        class="usl-modal-att-input <?php echo $chosen; ?>">
+
+			<?php // Necessary for starting with nothing selected ?>
+			<option></option>
+
+			<?php
+			// If this array is 2 levels deep, we have optgroups
+			$optgroup = false;
+			foreach ( $properties['options'] as $maybe_optgroup => $vals ) {
+				if ( gettype( $vals ) === 'array' && ! isset( $vals['label'] ) ) {
+					$optgroup = true;
+					break;
+				}
+			}
+
+			// No-optgroup support
+			if ( ! $optgroup ) {
+				$properties['options'] = array(
+					'' => $properties['options'],
+				);
+			}
+			?>
+
+			<?php foreach ( $properties['options'] as $opt_group => $options ) : ?>
+
+				<?php if ( ! empty( $opt_group ) ) : ?>
+					<optgroup label="<?php echo $opt_group; ?>">
+				<?php endif; ?>
+
+				<?php foreach ( $options as $option_value => $option ) : ?>
+					<?php
+					$option_name = gettype( $option ) === 'array' ? $option['label'] : $option;
+					?>
+					<option
+						<?php echo isset( $option['icon'] ) ?
+							"data-icon='$option[icon]'" : ''; ?>
+						value="<?php echo $option_value; ?>"
+						<?php selected( $option_value, isset( $properties['default'] ) ? $properties['default'] : '' ); ?>
+						>
+						<?php echo $option_name; ?>
+					</option>
+				<?php endforeach; ?>
+
+				<?php if ( ! empty( $opt_group ) ) : ?>
+					</optgroup>
+				<?php endif; ?>
+
+			<?php endforeach; ?>
+
+		</select>
+	<?php
+	}
+
+	private static function att_type_slider( $att_name, $att, $properties ) {
+
+		// Default value support
+		if ( isset( $att['default'] ) ) {
+			$properties['value'] = $att['default'];
+		}
+
+		$data = '';
+		foreach ( $properties as $data_name => $data_value ) {
+			$data .= " data-$data_name='$data_value'";
+		}
+		?>
+		<input type="text" class="usl-modal-att-slider-value usl-modal-att-input"
+		       value="<?php echo isset( $att['default'] ) ? $att['default'] : '0'; ?>"
+		       name="<?php echo $att_name; ?>"/>
+		<div class="usl-modal-att-slider" <?php echo $data; ?>></div>
+	<?php
+	}
+
+	private static function att_type_colorpicker( $att_name, $att, $properties ) {
+		?>
+		<input type="text"
+		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+		       class="usl-modal-att-colorpicker usl-modal-att-input"
+		       name="<?php echo $att_name; ?>"/>
+	<?php
 	}
 
 	public static function output() {
@@ -154,6 +253,7 @@ class USL_Modal {
 		$categories = array(
 			'all',
 		);
+
 		foreach ( $all_shortcodes as $shortcode ) {
 
 			// Add a category if it's set, not empty, and doesn't already exist in our $categories array
@@ -163,13 +263,14 @@ class USL_Modal {
 		}
 
 		$category_icons = apply_filters( 'usl_modal_category_icons', array(
-			'all' => 'dashicons-admin-generic',
+			'all'    => 'dashicons-tagcloud',
 			'design' => 'dashicons-admin-appearance',
-			'meta' => 'dashicons-admin-post',
-			'site' => 'dashicons-admin-home',
-			'time' => 'dashicons-clock',
-			'user' => 'dashicons-admin-users',
-			'media' => 'dashicons-admin-media',
+			'post'   => 'dashicons-admin-post',
+			'site'   => 'dashicons-admin-home',
+			'time'   => 'dashicons-clock',
+			'user'   => 'dashicons-admin-users',
+			'media'  => 'dashicons-admin-media',
+			'logic'  => 'dashicons-randomize',
 		) );
 		?>
 		<div id="usl-modal-backdrop"></div>
@@ -185,16 +286,22 @@ class USL_Modal {
 				<div class="usl-modal-search">
 					<input type="text" name="usl-modal-search" placeholder="Search"/>
 					<span class="dashicons dashicons-search"></span>
-					<div class="usl-modal-invalidsearch" style="display: none;">Sorry, but you can't search for that.</div>
+
+					<div class="usl-modal-invalidsearch" style="display: none;">Sorry, but you can't search for that.
+					</div>
 				</div>
 
 				<div class="usl-modal-categories">
 					<div class="usl-modal-categories-left dashicons dashicons-arrow-left-alt2"></div>
 					<ul>
 						<?php if ( ! empty( $categories ) ) : ?>
+							<?php $i = 0; ?>
 							<?php foreach ( $categories as $category ) : ?>
-								<li data-category="<?php echo $category; ?>">
-									<span class="dashicons <?php echo isset( $category_icons[ $category ] ) ? $category_icons[ $category ] : 'dashicons-admin-generic'; ?>"></span>
+								<?php $i ++; ?>
+								<li data-category="<?php echo $category; ?>"
+								    class="<?php echo $i === 1 ? 'active' : ''; ?>">
+									<span class="dashicons <?php echo isset( $category_icons[ $category ] ) ?
+										$category_icons[ $category ] : 'dashicons-admin-generic'; ?>"></span>
 									<br/>
 									<?php echo ucwords( $category ); ?>
 								</li>
@@ -214,24 +321,28 @@ class USL_Modal {
 								/**
 								 * Allows the filtering of the list of atts for the current shortcode.
 								 *
-								 * @since USL 0.1.0
+								 * @since USL 1.0.0
 								 */
 								$shortcode['atts'] = apply_filters( 'usl_att_pre_loop', $shortcode['atts'], $wrapping );
 								?>
-								<li data-category="<?php echo isset( $shortcode['category'] ) ? $shortcode['category'] : 'other'; ?>"
+								<li data-category="<?php echo isset( $shortcode['category'] ) ?
+									$shortcode['category'] : 'other'; ?>"
 								    data-code="<?php echo $code; ?>"
-								    class="<?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : ''; ?> usl-modal-shortcode">
+								    class="<?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : ''; ?>
+								    usl-modal-shortcode">
 
 									<form class="usl-modal-shortcode-form">
 
 										<div
-											class="<?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : 'usl-modal-sc'; ?>-title">
+											class="<?php echo ! empty( $shortcode['atts'] ) ?
+												'accordion-section' : 'usl-modal-sc'; ?>-title">
 											<div class="usl-modal-shortcode-title">
 												<?php echo $shortcode['title']; ?>
 											</div>
 
 											<div class="usl-modal-shortcode-description">
-												<?php echo $shortcode['description'] ? $shortcode['description'] : 'No description'; ?>
+												<?php echo $shortcode['description'] ?
+													$shortcode['description'] : 'No description'; ?>
 											</div>
 											<div style="clear: both; display: table;"></div>
 										</div>
@@ -252,9 +363,10 @@ class USL_Modal {
 												}
 												if ( $advanced ) :
 													?>
-													<a href="#" class="usl-modal-show-advanced-atts">Show advanced options</a>
+													<a href="#" class="usl-modal-show-advanced-atts">Show advanced
+														options</a>
 													<div class="usl-modal-advanced-atts" style="display: none;">
-														<?php self::atts_loop( $shortcode['atts'], true, $wrapping); ?>
+														<?php self::atts_loop( $shortcode['atts'], true, $wrapping ); ?>
 													</div>
 												<?php endif; ?>
 											</div>
@@ -276,7 +388,8 @@ class USL_Modal {
 					<input type="submit" value="Add Shortcode" class="button button-primary" id="usl-modal-submit"
 					       name="usl-modal-submit">
 
-					<input type="submit" value="Remove Shortcode" class="button-secondary delete" id="usl-modal-remove" />
+					<input type="submit" value="Remove Shortcode" class="button-secondary delete"
+					       id="usl-modal-remove"/>
 					<?php do_action( 'usl_modal_action_area' ); ?>
 				</div>
 			</div>

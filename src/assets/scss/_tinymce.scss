@@ -22,6 +22,7 @@
 // Specific shortcodes
 .usl-tinymce-shortcode-wrapper {
 
+  // Columns
   &[class*="usl_column_"] {
     display: inline-block;
     vertical-align: top;
@@ -48,6 +49,17 @@
       display: block;
       width: auto;
       box-sizing: inherit;
+    }
+  }
+
+  // If
+  &.usl_if {
+    .hidden {
+      color: #C60000;
+    }
+
+    .visible {
+      color: #0A7300;
     }
   }
 }

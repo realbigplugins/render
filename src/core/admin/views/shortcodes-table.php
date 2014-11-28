@@ -47,7 +47,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 			<?php foreach ( $categories as $category ) : ?>
 				<option class="level-0" value="<?php echo $category; ?>" <?php selected( $category, $current_cat ); ?>>
-					<?php echo _usl_translate_id_to_name( $category ); ?>
+					<?php echo usl_translate_id_to_name( $category ); ?>
 				</option>
 			<?php endforeach; ?>
 		</select>
@@ -160,7 +160,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 				return $item[ $column_name ];
 
 			case 'usl_col_category':
-				return _usl_translate_id_to_name( $item[ $column_name ] );
+				return usl_translate_id_to_name( $item[ $column_name ] );
 
 			case 'usl_col_attributes':
 

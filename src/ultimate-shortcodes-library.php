@@ -78,10 +78,11 @@ if ( ! class_exists( 'USL' ) ) {
 		private static $_shortcodes_extensions = array(
 			'core'      => array(
 				'design',
-				'meta',
+				'post',
 				'site',
 				'time',
 				'user',
+				'logic',
 			),
 			'wordpress' => array(
 				'media',
