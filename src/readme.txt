@@ -15,7 +15,6 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Ultimate Shortcodes Library seeks to make the management, understanding and implementation of shortcodes significantly simplified. It provides dozens of awesome shortcodes along with a super easy to extend infrastructure where all existing shortcodes for a site can be viewed, documented and implemented.
 
-
 == Installation ==
 
 Using this plugin is very simple. All you have to do is:
