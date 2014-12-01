@@ -1,5 +1,11 @@
 body.usl-shortcodes {
-  .actions.bulkactions {
-    display: none;
+  .wp-list-table.usl_shortcodes_tables {
+    .disabled {
+      background: #FFCBCB;
+
+      td {
+        color: #828282;
+      }
+    }
   }
 }

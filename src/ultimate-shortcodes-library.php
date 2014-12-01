@@ -163,6 +163,13 @@ if ( ! class_exists( 'USL' ) ) {
 			}
 		}
 
+		public static function _disable_shortcodes() {
+
+			foreach ( get_option( 'usl_disabled_shortcodes', array() ) as $shortcode ) {
+				remove_shortcode( $shortcode );
+			}
+		}
+
 		/**
 		 * Adds all USL shortcodes.
 		 *
@@ -189,6 +196,9 @@ if ( ! class_exists( 'USL' ) ) {
 			add_action( 'init', array( __CLASS__, '_register_files' ) );
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_files' ) );
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_admin_enqueue_files' ) );
+
+			// Disabled shortcodes
+			add_action( 'init', array( __CLASS__, '_disable_shortcodes' ) );
 		}
 
 		/**

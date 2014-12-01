@@ -32,10 +32,10 @@ class USL_MenuPage extends USL {
 		add_filter( 'admin_body_class', array( __CLASS__, 'body_class' ) );
 
 		$option = 'per_page';
-		$args = array(
-			'label' => 'Shortcodes',
+		$args   = array(
+			'label'   => 'Shortcodes',
 			'default' => 10,
-			'option' => 'shortcodes_per_page'
+			'option'  => 'shortcodes_per_page'
 		);
 
 		add_screen_option( $option, $args );
@@ -63,8 +63,10 @@ class USL_MenuPage extends USL {
 	 */
 	public function page_output() {
 
-		if ( ! current_user_can('manage_options') ) {
-			wp_die( __('You do not have sufficient permissions to access this page.') );
+		// TODO Sort by disabled shortcodes
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}
 
 		global $USLShortcodesTable;
@@ -81,12 +83,14 @@ class USL_MenuPage extends USL {
 
 			<form method="get">
 				<input type="hidden" name="page" value="<?php echo isset( $_GET['page'] ) ? $_GET['page'] : ''; ?>" />
+
 				<?php $USLShortcodesTable->search_box( 'Search Shortcodes', 'usl_col_name' ); ?>
+
+				<?php $USLShortcodesTable->display(); ?>
 			</form>
 
-			<?php $USLShortcodesTable->display(); ?>
 		</div>
-		<?php
+	<?php
 	}
 }
 

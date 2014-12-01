@@ -13,23 +13,14 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 	public function extra_tablenav( $which ) {
 
-		?>
-		<div class="alignleft actions">
-			<form method="get">
-
-				<?php
-				if ( ! empty( $_GET ) ) {
-					foreach ( $_GET as $name => $value ) {
-						echo "<input type='hidden' name='$name' value='$value' />";
-					}
-				}
-				?>
-
+		if ( $which === 'top' ) :
+			?>
+			<div class="alignleft actions">
 				<?php $this->categories_dropdown(); ?>
 				<input type="submit" id="post-query-submit" class="button" value="Filter">
-			</form>
-		</div>
-	<?php
+			</div>
+		<?php
+		endif;
 	}
 
 	private function categories_dropdown() {
@@ -54,27 +45,73 @@ class USL_ShortcodesTable extends WP_List_Table {
 	<?php
 	}
 
-	public function get_columns() {
-
-		return $columns = array(
-			'usl_col_name'        => 'Name',
-			'usl_col_code'        => 'Code',
-			'usl_col_description' => 'Description',
-			'usl_col_category'    => 'Category',
-			'usl_col_attributes'  => 'Attributes',
-		);
-	}
-
 	public function get_sortable_columns() {
 
 		return $sortable = array(
-			'usl_col_name'     => array( 'name', false ),
-			'usl_col_code'     => array( 'code', false ),
-			'usl_col_category' => array( 'category', false ),
+			'name'     => array( 'name', false ),
+			'code'     => array( 'code', false ),
+			'category' => array( 'category', false ),
 		);
 	}
 
+	public function get_columns() {
+
+		return $columns = array(
+			'cb'          => '<input type="checkbox" />',
+			'name'        => 'Name',
+			'code'        => 'Code',
+			'description' => 'Description',
+			'category'    => 'Category',
+			'attributes'  => 'Attributes',
+		);
+	}
+
+	public function get_bulk_actions() {
+		return $actions = array(
+			'disable' => 'Disable',
+			'enable'  => ' Enable',
+		);
+	}
+
+	public function column_cb( $item ) {
+		return sprintf(
+			'<input type="checkbox" name="shortcodes[]" value="%s" />', $item['code']
+		);
+	}
+
+	public function column_name( $item ) {
+
+		$extra_params = isset( $_REQUEST['category'] ) ? "&category=$_REQUEST[category]" : '';
+
+		$actions = array(
+			'delete' => sprintf(
+				"<a href='?page=%s&action=%s&shortcodes=%s$extra_params'>Disable</a>", $_REQUEST['page'], 'disable', $item['code']
+			),
+			'enable' => sprintf(
+				"<a href='?page=%s&action=%s&shortcodes=%s$extra_params'>Enable</a>", $_REQUEST['page'], 'enable', $item['code']
+			),
+		);
+
+		return sprintf(
+			'%1$s %2$s', $item['name'], $this->row_actions( $actions )
+		);
+	}
+
+	public function single_row( $item ) {
+
+		static $alternate = '';
+		$alternate = ( $alternate == '' ? 'alternate' : '' );
+		$disabled = in_array( $item['code'], $this->shortcodes ) ? 'disabled' : '';
+
+		echo "<tr class='$alternate $disabled'>";
+		$this->single_row_columns( $item );
+		echo '</tr>';
+	}
+
 	public function prepare_items() {
+
+		// Save previous data
+		$this->save_shortcode_options();
 
 		// Setup some basic data
 		$this->_column_headers = $this->get_column_info();
@@ -103,11 +140,11 @@ class USL_ShortcodesTable extends WP_List_Table {
 			}
 
 			array_push( $items, array(
-				'usl_col_name'        => $shortcode['title'],
-				'usl_col_code'        => $code,
-				'usl_col_description' => $shortcode['description'],
-				'usl_col_category'    => $shortcode['category'],
-				'usl_col_attributes'  => $shortcode['atts'],
+				'name'        => $shortcode['title'],
+				'code'        => $code,
+				'description' => $shortcode['description'],
+				'category'    => $shortcode['category'],
+				'attributes'  => $shortcode['atts'],
 			) );
 		}
 
@@ -133,7 +170,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 	public static function usort_reorder( $a, $b ) {
 
 		// If no sort, default to title
-		$orderby = 'usl_col_' . ( ! empty( $_GET['orderby'] ) ? $_GET['orderby'] : 'category' );
+		$orderby = '' . ( ! empty( $_GET['orderby'] ) ? $_GET['orderby'] : 'category' );
 
 		// If no order, default to asc
 		$order = ( ! empty( $_GET['order'] ) ) ? $_GET['order'] : 'asc';
@@ -148,19 +185,19 @@ class USL_ShortcodesTable extends WP_List_Table {
 	public function column_default( $item, $column_name ) {
 
 		switch ( $column_name ) {
-			case 'usl_col_name':
+			case 'name':
 				return $item[ $column_name ];
 
-			case 'usl_col_code':
+			case 'code':
 				return $item[ $column_name ];
 
-			case 'usl_col_description':
+			case 'description':
 				return $item[ $column_name ];
 
-			case 'usl_col_category':
+			case 'category':
 				return usl_translate_id_to_name( $item[ $column_name ] );
 
-			case 'usl_col_attributes':
+			case 'attributes':
 
 				if ( ! empty( $item[ $column_name ] ) ) {
 
@@ -178,6 +215,37 @@ class USL_ShortcodesTable extends WP_List_Table {
 			default:
 				return print_r( $item, true ); //Show the whole array for troubleshooting purposes
 		}
+	}
+
+	public function save_shortcode_options() {
+
+		$shortcodes = get_option( 'usl_disabled_shortcodes', array() );
+
+		if ( ! isset( $_REQUEST['action'] ) ) {
+			return;
+		}
+
+		if ( isset( $_REQUEST['shortcodes'] ) ) {
+
+			$_shortcodes = array();
+			if ( is_array( $_REQUEST['shortcodes'] ) ) {
+				foreach ( $_REQUEST['shortcodes'] as $shortcode ) {
+					$_shortcodes[] = $shortcode;
+				}
+			} else {
+				$_shortcodes[] = $_REQUEST['shortcodes'];
+			}
+
+			if ( $this->current_action() === 'disable' ) {
+				$shortcodes = array_merge( $shortcodes, $_shortcodes );
+			} elseif ( $this->current_action() === 'enable' ) {
+				$shortcodes = array_diff( $shortcodes, $_shortcodes );
+			}
+
+			update_option( 'usl_disabled_shortcodes', array_unique( $shortcodes ) );
+		}
+
+		$this->shortcodes = $shortcodes;
 	}
 
 	public function no_items() {
