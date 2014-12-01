@@ -30,7 +30,7 @@ function usl_add_shortcode( $args ) {
 	}
 
 	// Add the shortcode info to our list if it hasn't yet been added
-	if ( ! empty( $USL->shortcodes ) && ! array_key_exists( $args['code'], $USL->shortcodes ) ) {
+	if ( empty( $USL->shortcodes ) || ! array_key_exists( $args['code'], $USL->shortcodes ) ) {
 
 		$USL->shortcodes[ $args['code'] ] = array(
 			'title'       => $args['title'],
