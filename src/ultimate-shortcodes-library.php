@@ -1,23 +1,6 @@
 <?php
 /*
- * Plugin Name: Ultimate Shortcodes Library
- * Description: This plugin is the only shortcode plugin you will ever need.
- * Version: 1.0.0
- * Author: Kyle Maurer
- * Author URI: http://realbigmarketing.com/staff/kyle
- */
-
-/*
- * Lessons learned from...
- * https://github.com/GavickPro/TinyMCE-4-own-buttons
- * http://stackoverflow.com/questions/24339864/add-a-php-function-to-a-javascript-file-with-ajax-tinymce-wordpress-related
- */
-
-/*
- * This plugin works by defining the $usl_codes array in the main file
- * Then it includes the admin page which displays all the available shortcodes.
- * Then it includes the shortcodes file which includes all the other files where
- * the actual shortcodes are created.
+ * Plugin header will go here.
  */
 
 if ( ! class_exists( 'USL' ) ) {
