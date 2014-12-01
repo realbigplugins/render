@@ -335,6 +335,11 @@ $usl-modal-height: 800px;
 
           input[type="text"] {
             width: 100%;
+
+            // Don't do it to the colorpicker input
+            &.usl-modal-att-colorpicker {
+              width: 65px;
+            }
           }
 
           .description {

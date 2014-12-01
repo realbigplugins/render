@@ -24,6 +24,14 @@ function usl_add_shortcode( $args ) {
 		}
 	}
 
+	// Add the wrapping property to the render data
+	if ( $args['render'] ) {
+		if ( ! is_array( $args['render'] ) ) {
+			$args['render'] = array();
+		}
+		$args['render']['wrapping'] = $args['wrapping'];
+	}
+
 	// Create the actual shortcode if it hasn't yet been created
 	if ( ! array_key_exists( $args['code'], $shortcode_tags ) ) {
 		add_shortcode( $args['code'], $args['function'] );

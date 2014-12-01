@@ -67,6 +67,7 @@ class USL_CoreShortcodes_Design {
 			'wrapping'    => true,
 			'render'      => array(
 				'noStyle' => true,
+				'dummyContent' => 'Button',
 			),
 		),
 		// Box

@@ -61,7 +61,7 @@ var USL_tinymce;
                 editor = _editor;
 
                 // WP default shortcut
-                editor.addShortcut( 'alt+shift+s', '', 'usl-open' );
+                editor.addShortcut('alt+shift+s', '', 'usl-open');
 
                 editor.addButton('usl', {
 
@@ -76,8 +76,8 @@ var USL_tinymce;
                         editor.on('nodechange', function (event) {
 
                             var $node = $(event.element).hasClass('usl-tinymce-shortcode-wrapper') ?
-                                $(event.element) :
-                                $(event.element).closest('.usl-tinymce-shortcode-wrapper'),
+                                    $(event.element) :
+                                    $(event.element).closest('.usl-tinymce-shortcode-wrapper'),
                                 is_usl = $node.length ? true : false;
 
                             if ($lastNode.length) {
@@ -94,20 +94,27 @@ var USL_tinymce;
                     }
                 });
 
-                // When deleting the character &8203;, this should also delete the shortcode node preceding it (because
-                // the character &8203; is not visible to the user, so having to delete that and THEN also deleting the
-                // shortcode would be confusing.
+                // Keydown (ANY key) in the editor
                 editor.onKeyDown.add(function (ed, event) {
 
+                    // Backspace
                     if (event.keyCode == 8) {
 
                         var curElm = ed.selection.getRng().startContainer,
-                            range = ed.selection.getBookmark(curElm.textContent).rng;
+                            range = ed.selection.getBookmark(curElm.textContent).rng,
+                            node = ed.selection.getNode();
 
+                        if (typeof range === 'undefined') {
+                            return;
+                        }
+
+                        var caretPos = range.startOffset,
+                            charcode = curElm.textContent.charCodeAt(0);
+
+                        // When deleting the character &8203;, this should also delete the shortcode node preceding
+                        // it (because the character &8203; is not visible to the user, so having to delete that and
+                        // THEN also deleting the shortcode would be confusing.
                         if (typeof range !== 'undefined') {
-                            var caretPos = ed.selection.getBookmark(curElm.textContent).rng.startOffset,
-                                charcode = curElm.textContent.charCodeAt(0);
-
                             if (charcode === 8203 && caretPos === 1) {
                                 var $curElm = $(curElm),
                                     $prev = $curElm.prev();
@@ -115,6 +122,55 @@ var USL_tinymce;
                                 $prev.remove();
                             }
                         }
+
+                        // If there's no more content, delete the shortcode
+                        if ($(node).html().length <= 1) {
+                            $(node).closest('.usl-tinymce-shortcode-wrapper').remove();
+                        }
+
+                        // Don't allow backspace at beginning of string (inside shortcodes)
+                        if (caretPos === 0 && $(node).hasClass('usl-tinymce-shortcode-content')) {
+                            event.preventDefault();
+                        }
+                    }
+                });
+
+                // Keypress (printable keys) in the editor
+                editor.onKeyPress.add(function (ed, event) {
+
+                    var node = ed.selection.getNode(),
+                        node_content = $(node).html();
+
+                    if (node && !$(node).hasClass('usl-tinymce-shortcode-content')) {
+                        return;
+                    }
+
+                    var curElm = ed.selection.getRng().startContainer,
+                        range = ed.selection.getBookmark(curElm.textContent).rng;
+
+                    if (typeof range === 'undefined') {
+                        return;
+                    }
+
+                    var caretPos = range.startOffset,
+                        char_to_delete = caretPos != 0 ? node_content.slice(caretPos - 1, caretPos) : '';
+
+                    // Convert char codes to literal for counting purposes
+                    var literal_text = $('<div />').html(node_content).text();
+
+                    // Insert char after string to prevent editing outside the shortcode
+                    if (caretPos === literal_text.length) {
+
+                        var newChar = String.fromCharCode(event.charCode);
+
+                        if (newChar === ' ') {
+                            newChar = '&nbsp;';
+                        }
+
+                        event.preventDefault();
+                        $(node).html(literal_text + newChar);
+                        ed.selection.select(node, true);
+                        ed.selection.collapse(false);
                     }
                 });
 
@@ -149,8 +205,7 @@ var USL_tinymce;
                     }
                 });
 
-                editor.on('init show undo redo', USL_tinymce.loadVisual);
-                $(document).on('usl-modal-update', USL_tinymce.loadVisual);
+                editor.on('init show', USL_tinymce.loadVisual);
 
                 editor.on('hide', function () {
                     var content = editor.getContent({format: 'numeric'});
@@ -238,6 +293,7 @@ var USL_tinymce;
             }
 
             editor.insertContent(USL_Modal.output.all);
+            this.loadVisual();
         },
 
         removeShortcode: function () {
@@ -283,7 +339,7 @@ var USL_tinymce;
                 waitMinimumLoadingTime();
             }
 
-            function waitMinimumLoadingTime () {
+            function waitMinimumLoadingTime() {
 
                 // Don't remove the loader until the minimum load time has passed
                 if (min_load_time) {
