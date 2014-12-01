@@ -6,6 +6,17 @@ Ultimate shortcodes library is currently in its first beta release. Please downl
 
 Simply download the master zip (the button on the right that says "Download ZIP"), and use WP to install that zip.
 
+## Key features
+
+Here's a basic rundown of what this plugin does so that you'll know what to look for:
+
+* Includes a sizeable library of very useful, unique shortcodes
+* Provides a live preview of all included shortcodes when used in the visual editor of a post/page (so users never see the shortcodes with their ugly [shortcode] syntax but rather the end result of the shortcode)
+* Creates an intuitive modal for browsing, searching and inserting shortcodes via TinyMCE button
+* Includes ALL registered shortcodes in shortcode directory/modal and not just the ones created by this plugin
+* Creates a widget through which any registered shortcode can be easily inserted into a sidebar
+* Provides a very easy to use developer API for extending the plugin and integrating other shortcodes with this plugin
+
 ## How can you help us?
 
 Please test this plugin thoroughly and whenever you come across a bug, something weird, or just something you think could be done better, go to the issues page of this repository (click the "Issues" button on the right) and log your concern as a new issue. We'll be sure to label it accordingly and respond quickly (and probably implement it!).
