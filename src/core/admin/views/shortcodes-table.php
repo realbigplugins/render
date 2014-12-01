@@ -62,7 +62,6 @@ class USL_ShortcodesTable extends WP_List_Table {
 			'usl_col_description' => 'Description',
 			'usl_col_category'    => 'Category',
 			'usl_col_attributes'  => 'Attributes',
-			'usl_col_example'     => 'Example',
 		);
 	}
 
@@ -109,7 +108,6 @@ class USL_ShortcodesTable extends WP_List_Table {
 				'usl_col_description' => $shortcode['description'],
 				'usl_col_category'    => $shortcode['category'],
 				'usl_col_attributes'  => $shortcode['atts'],
-				'usl_col_example'     => $shortcode['example'],
 			) );
 		}
 
@@ -176,9 +174,6 @@ class USL_ShortcodesTable extends WP_List_Table {
 				}
 
 				return $output;
-
-			case 'usl_col_example':
-				return $item[ $column_name ];
 
 			default:
 				return print_r( $item, true ); //Show the whole array for troubleshooting purposes

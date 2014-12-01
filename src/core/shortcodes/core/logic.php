@@ -66,7 +66,6 @@ class USL_CoreShortcodes_Logic {
 					'description' => 'Used in some conditions to further specify the condition.',
 				),
 			),
-			'example'     => '[usl_if arg1="date" arg2="10/11/12" operator=">"]Some text[/usl_if]',
 			'render'      => array(
 				'displayBlock' => true,
 				'noStyle'      => true,

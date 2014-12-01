@@ -8,11 +8,6 @@
  * @subpackage Shortcodes
  */
 
-// IDEA Site time zone
-// IDEA Site URL
-// IDEA Site login page
-// IDEA Site home page
-// IDEA Site posts page
 class USL_CoreShortcodes_Site {
 
 	private $_shortcodes = array(
@@ -25,7 +20,6 @@ class USL_CoreShortcodes_Site {
 			'atts' => array(
 				'info' => array(),
 			),
-			'example' => '[usl_site info="description"]',
 			'render' => true,
 		),
 		// Site Title

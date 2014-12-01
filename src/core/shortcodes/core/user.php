@@ -268,7 +268,6 @@ class USL_CoreShortcodes_User {
 					'required' => true,
 				),
 			),
-			'example'     => '[usl_user property="first_name"]',
 			'render'      => true,
 		),
 	);

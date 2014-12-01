@@ -52,6 +52,7 @@ function usl_add_shortcode( $args ) {
 	}
 }
 
+// TODO Find a way to eliminate a need for this, this is a must
 function usl_shortcode_content( $content, $tag = 'span' ) {
 	return "<$tag class='usl-tinymce-shortcode-content'>$content</$tag>";
 }

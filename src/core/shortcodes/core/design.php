@@ -63,7 +63,6 @@ class USL_CoreShortcodes_Design {
 					)
 				),
 			),
-			'example'     => '[usl_button link="#" size="large" color="blue" shape="round"]Click here[/usl_button]',
 			'wrapping'    => true,
 			'render'      => array(
 				'noStyle' => true,
@@ -97,7 +96,6 @@ class USL_CoreShortcodes_Design {
 				'displayBlock' => true,
 				'noStyle'      => true,
 			),
-			'example'     => '[usl_box color="blue" shape="round" heading="About me"]Lorem ipsum...[/usl_box]',
 		),
 		// Column 2
 		array(
@@ -105,7 +103,6 @@ class USL_CoreShortcodes_Design {
 			'function'    => '_usl_sc_column_two',
 			'title'       => 'Column 2',
 			'description' => 'Creates a nice column that is half the width of the container.',
-			'example'     => '[usl_column_two]Lorem ipsum...[/usl_column_two]',
 			'wrapping'    => true,
 			'render'      => array(
 				'noStyle'      => true,
@@ -119,7 +116,6 @@ class USL_CoreShortcodes_Design {
 			'function'    => '_usl_sc_column_three',
 			'title'       => 'Column 3',
 			'description' => 'Creates a nice column that is a third the width of the container.',
-			'example'     => '[usl_column_three]Lorem ipsum...[/usl_column_three]',
 			'wrapping'    => true,
 			'render'      => array(
 				'noStyle'      => true,
@@ -133,7 +129,6 @@ class USL_CoreShortcodes_Design {
 			'function'    => '_usl_sc_column_four',
 			'title'       => 'Column 4',
 			'description' => 'Creates a nice column that is a quarter the width of the container.',
-			'example'     => '[usl_column_four]Lorem ipsum...[/usl_column_four]',
 			'wrapping'    => true,
 			'render'      => array(
 				'noStyle'      => true,
@@ -147,7 +142,6 @@ class USL_CoreShortcodes_Design {
 			'function'    => '_usl_sc_column_five',
 			'title'       => 'Column 5',
 			'description' => 'Creates a nice column that is a fifth the width of the container.',
-			'example'     => '[usl_column_five]Lorem ipsum...[/usl_column_five]',
 			'wrapping'    => true,
 			'render'      => array(
 				'noStyle'      => true,

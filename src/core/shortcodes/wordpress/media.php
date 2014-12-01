@@ -28,7 +28,6 @@ class USL_WordPressShortcodes {
 					),
 				),
 			),
-			'example'     => '[embed]http://www.youtube.com/watch?v=dQw4w9WgXcQ[/embed]',
 			'wrapping'    => true,
 		),
 		// Caption
@@ -52,7 +51,6 @@ class USL_WordPressShortcodes {
 				'width' => array(),
 			),
 			'wrapping'    => true,
-			'example'     => '[caption id="attachment_6" align="alignright" width="300"]&lt;img src="my-image.jpg" /&gt; Awesome Image[/caption]',
 		),
 		// Gallery
 		array(
@@ -103,7 +101,6 @@ class USL_WordPressShortcodes {
 					'advanced' => true,
 				),
 			),
-			'example'     => '[gallery ids="729,732,731,720"]',
 		),
 		// Playlist
 		array(
@@ -184,7 +181,6 @@ class USL_WordPressShortcodes {
 					),
 				),
 			),
-			'example'     => '[playlist type="video" ids="123,456,789" style="dark"]',
 		),
 		// Audio
 		array(
@@ -221,7 +217,6 @@ class USL_WordPressShortcodes {
 					),
 				),
 			),
-			'example'     => '[audio src="audio-source.mp3"]',
 		),
 		// Video
 		array(
@@ -261,7 +256,6 @@ class USL_WordPressShortcodes {
 				'height'   => array(),
 				'width'    => array(),
 			),
-			'example'     => '[video src="video-source.mp4"]',
 		)
 	);
 

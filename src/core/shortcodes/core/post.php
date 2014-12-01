@@ -74,7 +74,6 @@ class USL_CoreShortcodes_Post {
 					),
 				),
 			),
-			'example'     => '[usl_word_count]',
 			'wrapping'    => false,
 		),
 		// Published Date
