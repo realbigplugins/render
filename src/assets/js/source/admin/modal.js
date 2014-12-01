@@ -313,12 +313,19 @@ var USL_Modal;
                                 var icon = $(this).attr('data-icon');
 
                                 if (icon) {
-                                    console.log(icon);
                                     $container.find('.chosen-results li').eq(index - 1).prepend(
                                         '<span class="' + icon + '"></span>'
                                     )
                                 }
                             });
+                        });
+
+                        $chosen.on('change', function (e, params) {
+                            var icon = 'dashicons ' + params.selected;
+
+                            $container.find('.chosen-single span').prepend(
+                                '<span class="' + icon + '"></span>'
+                            );
                         });
 
                         // Extend functionality to allow input to be cleared easily

@@ -280,6 +280,13 @@ $usl-modal-height: 800px;
           margin-right: 10px;
         }
 
+        .chosen-single > span {
+          .dashicons {
+            display: inline;
+            vertical-align: -5px;
+          }
+        }
+
         .usl-chosen-clear {
           position: absolute;
           right: 20px;

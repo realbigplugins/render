@@ -539,7 +539,7 @@ function _usl_sc_icon_list() {
 	$output = array();
 	foreach ( $icons as $icon ) {
 		// FIXME Icon not output correct (look on button)
-		$output[ $icon ] = array(
+		$output[ "dashicons-$icon" ] = array(
 			'label' => usl_translate_id_to_name( str_replace( 'admin-', '', $icon ) ),
 			'icon' => "dashicons dashicons-$icon",
 		);
