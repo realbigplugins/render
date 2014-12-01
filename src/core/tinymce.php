@@ -178,6 +178,17 @@ class USL_tinymce extends USL {
 		$pattern = get_shortcode_regex();
 		$_content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $content );
 
+		// If this is a wrapping code, but no content is provided, use dummy content
+		if ( empty( $content ) && isset( $usl_shortcode_data[ $code ]['wrapping'] ) ) {
+			if ( isset( $usl_shortcode_data[ $code ]['dummyContent'] ) ) {
+				$content = $usl_shortcode_data[ $code ]['dummyContent'];
+			} else {
+				$content = 'No content selected.';
+			}
+
+			$entire_code = str_replace( '][', "]{$content}[", $entire_code );
+		}
+
 		// Replace the content with the new content
 		if ( ! empty( $_content ) ) {
 			$entire_code = str_replace( $content, $_content, $entire_code );
