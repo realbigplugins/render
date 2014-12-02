@@ -514,14 +514,17 @@ var USL_Modal;
             var container = $e.closest('.usl-modal-shortcode');
 
             if (container.hasClass('active')) {
+                this.closeShortcode();
+                elements.active_shortcode = false;
+                elements.last_active_shortcode = false;
                 return;
             }
 
-            USL_Modal.closeShortcode();
+            this.closeShortcode();
 
             elements.active_shortcode = container;
 
-            USL_Modal.openShortcode();
+            this.openShortcode();
         },
 
         toggleAdvancedAtts: function ($e) {
@@ -727,7 +730,6 @@ var USL_Modal;
                     scrollTop = elements.list.scrollTop(),
                     offset = shortcode_offset.top + scrollTop;
 
-
                 // If the last activated shortcode was an accordion AND that element was above this, we need to
                 // compensate the scroll for it
                 if (elements.last_active_shortcode &&
@@ -736,6 +738,10 @@ var USL_Modal;
                 ) {
                     offset = offset - elements.last_active_shortcode.find('.accordion-section-content').outerHeight();
                 }
+
+                console.log(shortcode_offset);
+                console.log(scrollTop);
+                console.log(offset);
 
                 elements.list.stop().animate({
                     scrollTop: offset
