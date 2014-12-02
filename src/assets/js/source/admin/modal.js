@@ -739,10 +739,6 @@ var USL_Modal;
                     offset = offset - elements.last_active_shortcode.find('.accordion-section-content').outerHeight();
                 }
 
-                console.log(shortcode_offset);
-                console.log(scrollTop);
-                console.log(offset);
-
                 elements.list.stop().animate({
                     scrollTop: offset
                 });
