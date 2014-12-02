@@ -172,14 +172,14 @@ class USL_tinymce extends USL {
 		$entire_code = $matches[0];
 		$code = $matches[2];
 		$atts = $matches[3];
-		$content = $matches[5];
+		$_content = $matches[5];
 
 		// Search again for any nested shortcodes (loops infinitely)
 		$pattern = get_shortcode_regex();
-		$_content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $content );
+		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $_content );
 
 		// If this is a wrapping code, but no content is provided, use dummy content
-		if ( empty( $content ) && isset( $usl_shortcode_data[ $code ]['wrapping'] ) ) {
+		if ( empty( $content ) && $usl_shortcode_data[ $code ]['wrapping'] === 'true' ) {
 			if ( isset( $usl_shortcode_data[ $code ]['dummyContent'] ) ) {
 				$content = $usl_shortcode_data[ $code ]['dummyContent'];
 			} else {
@@ -189,13 +189,24 @@ class USL_tinymce extends USL {
 			$entire_code = str_replace( '][', "]{$content}[", $entire_code );
 		}
 
-		// Replace the content with the new content
-		if ( ! empty( $_content ) ) {
-			$entire_code = str_replace( $content, $_content, $entire_code );
+		// Match any of all block level elements
+		// https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
+		$block_regex = '/<(address|figcaption|ol|article|figure|output|aside|footer|p|audio|form|pre|blockquote|h[1-6]|section|canvas|header|table|dd|hgroup|tfoot|div|hr|ul|dl|video|fieldset|noscript)/';
+
+		// Properly wrap the content
+		if ( ! empty( $content ) ) {
+
+			// Wrap the content in a special element, but first decide if it needs to be div or span
+			$tag      = preg_match( $block_regex, $content ) ? 'div' : 'span';
+			$content = "<$tag class='usl-tinymce-shortcode-content'>$content</$tag>";
 		}
 
-		// Get the type of tag needed and whether or not to style the code
-		$tag     = isset( $usl_shortcode_data[ $code ]['displayBlock'] ) ? 'div' : 'span';
+		// Replace the content with the new content
+		if ( ! empty( $_content ) ) {
+			$entire_code = str_replace( $_content, $content, $entire_code );
+		}
+
+		// Whether or not to style the code
 		$nostyle = isset( $usl_shortcode_data[ $code ]['noStyle'] ) ? '' : ' styled';
 
 		// Get the atts prepared for JSON
@@ -204,10 +215,16 @@ class USL_tinymce extends USL {
 			$atts = json_encode( $atts );
 		}
 
+		// Get the shortcode output
+		$shortcode_output = do_shortcode( $entire_code );
+
+		// If the output contains any block tags, make sure the wrapper tag is a div
+		$tag = preg_match( $block_regex, $shortcode_output ) ? 'div' : 'span';
+
 		// Start the wrapper
 		$output = "<$tag class='usl-tinymce-shortcode-wrapper $code $nostyle' data-code='$code' data-atts='$atts'>";
 
-		$output .= do_shortcode( $entire_code );
+		$output .= $shortcode_output;
 
 		// Close the wrapper
 		$output .= "</$tag>&#8203;";

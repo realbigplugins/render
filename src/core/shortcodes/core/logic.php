@@ -70,7 +70,6 @@ $_shortcodes = array(
 			),
 		),
 		'render'      => array(
-			'displayBlock' => true,
 			'noStyle'      => true,
 		),
 		'wrapping'    => true,
@@ -205,8 +204,8 @@ function _usl_sc_if( $atts, $content ) {
 
 	// Differ for tinymce output
 	if ( defined( 'USL_SHORTCODE_RENDERING' ) && USL_SHORTCODE_RENDERING ) {
-		return '<div class="' . ( empty( $output ) ? 'hidden' : 'visible' ) . '">' . usl_shortcode_content( $content ) . '</div>';
+		return '<div class="' . ( empty( $output ) ? 'hidden' : 'visible' ) . '">' . $content . '</div>';
 	}
 
-	return usl_shortcode_content( $output );
+	return $output;
 }

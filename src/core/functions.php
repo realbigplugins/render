@@ -53,11 +53,6 @@ function usl_add_shortcode( $args ) {
 	}
 }
 
-// TODO Find a way to eliminate a need for this, this is a must
-function usl_shortcode_content( $content, $tag = 'span' ) {
-	return "<$tag class='usl-tinymce-shortcode-content'>$content</$tag>";
-}
-
 /**
  * Merges the WP global shortcode array with the USL array.
  *
@@ -112,6 +107,10 @@ function usl_translate_id_to_name( $id ) {
 }
 
 function usl_esc_atts( $atts ) {
+
+	if ( empty( $atts ) ) {
+		return $atts;
+	}
 
 	foreach ( $atts as $i => $att ) {
 		$atts[ $i ] = esc_attr( $att );

@@ -87,7 +87,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 		$actions = array(
 			'delete' => sprintf(
-				"<a href='?page=%s&action=%s&shortcodes=%s'>%s</a>",
+				"<a href='?page=%s&action=%s&shortcodes=%s%s'>%s</a>",
 				$_REQUEST['page'],
 				'disable',
 				$item['code'],
@@ -95,7 +95,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 				__( 'Disable', 'USL' )
 			),
 			'enable' => sprintf(
-				"<a href='?page=%s&action=%s&shortcodes=%s'>%s</a>",
+				"<a href='?page=%s&action=%s&shortcodes=%s%s'>%s</a>",
 				$_REQUEST['page'],
 				'enable',
 				$item['code'],

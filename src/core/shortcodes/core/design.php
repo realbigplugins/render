@@ -106,7 +106,6 @@ $_shortcodes = array(
 		),
 		'wrapping'    => true,
 		'render'      => array(
-			'displayBlock' => true,
 			'noStyle'      => true,
 		),
 	),
@@ -119,7 +118,6 @@ $_shortcodes = array(
 		'wrapping'    => true,
 		'render'      => array(
 			'noStyle'      => true,
-			'displayBlock' => true,
 			'allowNesting' => true,
 		),
 	),
@@ -132,7 +130,6 @@ $_shortcodes = array(
 		'wrapping'    => true,
 		'render'      => array(
 			'noStyle'      => true,
-			'displayBlock' => true,
 			'allowNesting' => true,
 		),
 	),
@@ -145,7 +142,6 @@ $_shortcodes = array(
 		'wrapping'    => true,
 		'render'      => array(
 			'noStyle'      => true,
-			'displayBlock' => true,
 			'allowNesting' => true,
 		),
 	),
@@ -158,7 +154,6 @@ $_shortcodes = array(
 		'wrapping'    => true,
 		'render'      => array(
 			'noStyle'      => true,
-			'displayBlock' => true,
 			'allowNesting' => true,
 		),
 	)
@@ -208,7 +203,7 @@ function _usl_sc_button( $atts = array(), $content = null ) {
 	$output .= "<span class='hover' style='background: $atts[color_hover]'></span>";
 	$output .= ! empty( $atts['icon'] ) ? "<span class='icon dashicons $atts[icon]'></span>" : '';
 	$output .= '<span class="content">';
-	$output .= usl_shortcode_content( $content );
+	$output .= do_shortcode( $content );
 	$output .= '</span>';
 	$output .= '</a>';
 
@@ -247,7 +242,7 @@ function _usl_sc_box( $atts, $content = null ) {
 	$output .= " style='background: $atts[color]; color: $atts[font_color]'";
 	$output .= '>';
 	$output .= ! empty( $atts['heading'] ) ? "<h3>$atts[heading]</h3>" : '';
-	$output .= usl_shortcode_content( do_shortcode( $content ) );
+	$output .= do_shortcode( $content );
 	$output .= '</div>';
 
 	return $output;
@@ -269,7 +264,7 @@ function _usl_sc_column_two( $atts, $content = null ) {
 
 	// TODO Test
 
-	return '<div class="usl-column-2">' . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
+	return '<div class="usl-column-2">' . do_shortcode( $content ) . '</div>';
 }
 
 
@@ -288,7 +283,7 @@ function _usl_sc_column_three( $atts, $content = null ) {
 
 	// TODO Test
 
-	return '<div class="usl-column-3">' . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
+	return '<div class="usl-column-3">' . do_shortcode( $content ) . '</div>';
 }
 
 
@@ -307,7 +302,7 @@ function _usl_sc_column_four( $atts, $content = null ) {
 
 	// TODO Test
 
-	return '<div class="usl-column-4">' . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
+	return '<div class="usl-column-4">' . do_shortcode( $content ) . '</div>';
 }
 
 
@@ -326,7 +321,7 @@ function _usl_sc_column_five( $atts, $content = null ) {
 
 	// TODO Test
 
-	return '<div class="usl-column-5">' . usl_shortcode_content( do_shortcode( $content ) ) . '</div>';
+	return '<div class="usl-column-5">' . do_shortcode( $content ) . '</div>';
 }
 
 /**
