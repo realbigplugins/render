@@ -65,6 +65,7 @@ $_shortcodes = array(
 				'label'     => __( 'Icon', 'USL' ),
 				'selectbox' => array(
 					'callback'    => '_usl_sc_icon_list',
+					'allowIcons' => true,
 					'placeholder' => __( 'Select an icon (no icon by default)', 'USL' ),
 				)
 			),
@@ -196,6 +197,7 @@ function _usl_sc_button( $atts = array(), $content = null ) {
 	$class = 'usl-button';
 	$class .= ! empty( $atts['size'] ) ? "-$atts[size]" : '';
 	$class .= ! empty( $atts['shape'] ) ? "-$atts[shape]" : '';
+	$class .= ! empty( $atts['icon'] ) ? "-icon" : '';
 
 	$output = "<a href='$atts[link]' class='$class'";
 	$output .= " style='background: $atts[color]; color: $atts[font_color]'";

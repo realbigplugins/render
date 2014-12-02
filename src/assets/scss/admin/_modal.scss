@@ -192,14 +192,6 @@ $usl-modal-height: 800px;
       }
     }
 
-    .dashicons-leftright {
-      text-align: center;
-      width: 100%;
-      display: block;
-      margin: -8px 0 4px 0;
-      font-size: 30px;
-    }
-
     .usl-modal-shortcodes-container {
       position: relative;
     }
@@ -294,7 +286,7 @@ $usl-modal-height: 800px;
 
         .usl-chosen-clear {
           position: absolute;
-          right: 20px;
+          right: 10px;
           top: 0;
           z-index: 1;
           color: #888;

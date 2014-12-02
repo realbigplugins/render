@@ -1,6 +1,5 @@
-@mixin button-size($size) {
+@mixin button-size($button-padding-base) {
 
-  $button-padding-base: $size;
   $button-padding-vertical: $button-padding-base;
   $button-padding-horizontal: $button-padding-base * 1.5;
 
@@ -11,6 +10,16 @@
 
     .hover {
       border-radius: $button-padding-base;
+    }
+  }
+
+  &[class*='icon'] {
+    .icon {
+      left: $button-padding-base;
+    }
+
+    .content {
+      margin-left: $button-padding-base + 10;
     }
   }
 
@@ -26,6 +35,7 @@
   white-space: nowrap;
   border: none;
   cursor: pointer;
+  transform-style: preserve-3d;
 
   &:hover {
     .hover, .content-hover {
@@ -69,7 +79,11 @@
   }
 
   .icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     margin-right: 5px;
+    font-size: 120%;
   }
 
   .hover {

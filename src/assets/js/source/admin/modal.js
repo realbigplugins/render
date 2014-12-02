@@ -285,19 +285,10 @@ var USL_Modal;
                         var $chosen = $(this).find('.chosen'),
                             $container = $chosen.closest('.usl-modal-att-field');
 
-                        // Disable search if there are icons present
-                        var icons = false;
-                        $chosen.find('option').each(function () {
-                            if ($(this).attr('data-icon')) {
-                                icons = true;
-                                return false;
-                            }
-                        });
-
                         $chosen.chosen({
                             width: '100%',
                             search_contains: true,
-                            disable_search: icons
+                            disable_search: $chosen.hasClass('allow-icons')
                         });
 
                         // Fix scroll issue
@@ -307,26 +298,29 @@ var USL_Modal;
                         });
 
                         // Extend functionality to allow icons
-                        $chosen.on('chosen:showing_dropdown', function () {
+                        if ($chosen.hasClass('allow-icons')) {
 
-                            $(this).find('option').each(function (index) {
-                                var icon = $(this).attr('data-icon');
+                            $chosen.on('chosen:showing_dropdown chosen:updated', function () {
 
-                                if (icon) {
-                                    $container.find('.chosen-results li').eq(index - 1).prepend(
-                                        '<span class="' + icon + '"></span>'
-                                    )
-                                }
+                                $(this).find('option').each(function (index) {
+                                    var icon = $(this).attr('data-icon');
+
+                                    if (icon) {
+                                        $container.find('.chosen-results li').eq(index - 1).prepend(
+                                            '<span class="' + icon + '"></span>'
+                                        )
+                                    }
+                                });
                             });
-                        });
 
-                        $chosen.on('change', function (e, params) {
-                            var icon = 'dashicons ' + params.selected;
+                            $chosen.on('change chosen:updated', function () {
+                                var icon = 'dashicons ' + $chosen.val();
 
-                            $container.find('.chosen-single span').prepend(
-                                '<span class="' + icon + '"></span>'
-                            );
-                        });
+                                $container.find('.chosen-single span').prepend(
+                                    '<span class="' + icon + '"></span>'
+                                );
+                            });
+                        }
 
                         // Extend functionality to allow input to be cleared easily
                         $container.find('.chosen-container').append(

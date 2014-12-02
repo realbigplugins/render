@@ -151,6 +151,7 @@ class USL_Modal {
 		// Chosen support
 		if ( ! isset( $properties['disableChosen'] ) ) {
 			$chosen = 'chosen' . ( isset( $properties['allowCustomInput'] ) ? ' allow-custom-input' : '' );
+			$chosen .= isset( $properties['allowIcons'] ) ? ' allow-icons' : '';
 		} else {
 			$chosen = '';
 		}
