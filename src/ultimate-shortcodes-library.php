@@ -180,7 +180,7 @@ if ( ! class_exists( 'USL' ) ) {
 			// Cycle through all USL categories and shortcodes, requiring category files and adding each shortcode
 			foreach ( self::$_shortcodes_extensions as $type => $categories ) {
 				foreach ( $categories as $category ) {
-					require_once( self::$path . "core/shortcodes/{$type}/{$category}.php" );
+					require_once( self::$path . "core/shortcodes/$type/$category.php" );
 				}
 			}
 		}

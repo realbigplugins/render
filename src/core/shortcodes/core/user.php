@@ -302,6 +302,9 @@ foreach ( $_shortcodes as $shortcode ) {
  */
 function _usl_sc_user( $atts = array() ) {
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
 	}
@@ -332,6 +335,9 @@ function _usl_sc_user( $atts = array() ) {
  */
 function _usl_sc_user_full_name( $atts = array() ) {
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
 	}
@@ -356,6 +362,9 @@ function _usl_sc_user_full_name( $atts = array() ) {
  * @return string The the current user first name.
  */
 function _usl_sc_user_first_name( $atts = array() ) {
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -382,6 +391,9 @@ function _usl_sc_user_first_name( $atts = array() ) {
  */
 function _usl_sc_user_last_name( $atts = array() ) {
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
 	}
@@ -406,6 +418,9 @@ function _usl_sc_user_last_name( $atts = array() ) {
  * @return string The the current user username.
  */
 function _usl_sc_user_username( $atts = array() ) {
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -432,6 +447,9 @@ function _usl_sc_user_username( $atts = array() ) {
  */
 function _usl_sc_user_email( $atts = array() ) {
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
 	}
@@ -456,6 +474,9 @@ function _usl_sc_user_email( $atts = array() ) {
  * @return string The the current user display name.
  */
 function _usl_sc_user_display_name( $atts = array() ) {
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -482,6 +503,9 @@ function _usl_sc_user_display_name( $atts = array() ) {
  */
 function _usl_sc_user_id( $atts = array() ) {
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
 	}
@@ -506,6 +530,9 @@ function _usl_sc_user_id( $atts = array() ) {
  * @return string The the current user author url.
  */
 function _usl_sc_user_url( $atts = array() ) {
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -563,6 +590,9 @@ function _usl_sc_user_registered_date( $atts ) {
  */
 function _usl_sc_user_description( $atts = array() ) {
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
 	}
@@ -587,6 +617,9 @@ function _usl_sc_user_description( $atts = array() ) {
  * @return string The the current user role.
  */
 function _usl_sc_user_role( $atts = array() ) {
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -619,6 +652,9 @@ function _usl_sc_user_role( $atts = array() ) {
  * @return string The the current user capabilities.
  */
 function _usl_sc_user_capabilities( $atts = array() ) {
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
@@ -653,6 +689,9 @@ function _usl_sc_user_capabilities( $atts = array() ) {
  */
 function _usl_sc_user_admin_theme( $atts = array() ) {
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
 	}
@@ -678,6 +717,9 @@ function _usl_sc_user_admin_theme( $atts = array() ) {
  */
 function _usl_sc_user_primary_blog( $atts = array() ) {
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';
 	}
@@ -702,6 +744,9 @@ function _usl_sc_user_primary_blog( $atts = array() ) {
  * @return string The the current user domain.
  */
 function _usl_sc_user_source_domain( $atts = array() ) {
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	if ( ! $user = _usl_sc_user_get_userdata( $atts ) ) {
 		return 'Cannot find specified user.';

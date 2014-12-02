@@ -103,6 +103,9 @@ function _usl_sc_if( $atts, $content ) {
 		'param'    => '',
 	), $atts );
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	$param = $atts['param'];
 
 	// Correctly set arg1 to appropriate function

@@ -87,6 +87,9 @@ function _usl_sc_custom_date( $atts ) {
 		'format' => 'F jS, Y',
 	), $atts );
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	return date( $atts['format'] );
 }
 

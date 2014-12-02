@@ -103,16 +103,11 @@ function usl_translate_id_to_name( $id ) {
 	return ucwords( str_replace( array( ' ', '_', '-' ), ' ', $id ) );
 }
 
-/**
- * @param $a
- * @param $b
- *
- * @return mixed
- */
-function usl_sort_title_asc( $a, $b ) {
-	return strcasecmp( $b['title'], $a['title'] );
-}
+function usl_esc_atts( $atts ) {
 
-function usl_sort_title_desc( $a, $b ) {
-	return strcasecmp( $a['title'], $b['title'] );
+	foreach ( $atts as $i => $att ) {
+		$atts[ $i ] = esc_attr( $att );
+	}
+
+	return $atts;
 }

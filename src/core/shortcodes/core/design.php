@@ -194,6 +194,9 @@ function _usl_sc_button( $atts = array(), $content = null ) {
 		'icon'        => '',
 	), $atts );
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	$class = 'usl-button';
 	$class .= ! empty( $atts['size'] ) ? "-$atts[size]" : '';
 	$class .= ! empty( $atts['shape'] ) ? "-$atts[shape]" : '';
@@ -232,6 +235,9 @@ function _usl_sc_box( $atts, $content = null ) {
 		'font_color' => '#222',
 		'heading'    => ''
 	), $atts );
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	$class = 'usl-box';
 	$class .= ! empty( $atts['shape'] ) ? "-$atts[shape]" : '';

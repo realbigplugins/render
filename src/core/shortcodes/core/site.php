@@ -69,6 +69,9 @@ function _usl_sc_site( $atts ) {
 		'info' => 'name'
 	), $atts );
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	return get_bloginfo( $atts['info'] );
 }
 

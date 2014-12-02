@@ -169,6 +169,12 @@ function _usl_sc_post_id( $atts ) {
 		'post' => get_the_ID(),
 	), $atts );
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	return $atts['post'];
 }
 
@@ -187,6 +193,9 @@ function _usl_sc_author( $atts ) {
 	$atts = shortcode_atts( array(
 		'post' => get_the_ID(),
 	), $atts );
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	$post = get_post( $atts['post'] );
 
@@ -211,6 +220,9 @@ function _usl_sc_title( $atts ) {
 		'post' => get_the_ID(),
 	), $atts );
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	$post = get_post( $atts['post'] );;
 
 	return $post->post_title;
@@ -231,6 +243,9 @@ function _usl_sc_word_count( $atts ) {
 	$atts = shortcode_atts( array(
 		'post' => get_the_ID(),
 	), $atts );
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	$post = get_post( $atts['post'] );;
 
@@ -253,6 +268,9 @@ function _usl_sc_published( $atts ) {
 		'post' => get_the_ID(),
 	), $atts );
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	$post = get_post( $atts['post'] );;
 
 	return $post->post_date;
@@ -273,6 +291,9 @@ function _usl_sc_status( $atts ) {
 	$atts = shortcode_atts( array(
 		'post' => get_the_ID(),
 	), $atts );
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	$post = get_post( $atts['post'] );;
 
@@ -295,6 +316,9 @@ function _usl_sc_type( $atts ) {
 		'post' => get_the_ID(),
 	), $atts );
 
+	// Escape atts
+	usl_esc_atts( $atts );
+
 	$post = get_post( $atts['post'] );;
 
 	return $post->post_type;
@@ -315,6 +339,9 @@ function _usl_sc_excerpt( $atts ) {
 	$atts = shortcode_atts( array(
 		'post' => get_the_ID(),
 	), $atts );
+
+	// Escape atts
+	usl_esc_atts( $atts );
 
 	$post = get_post( $atts['post'] );;
 

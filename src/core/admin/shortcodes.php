@@ -80,7 +80,7 @@ class USL_MenuPage extends USL {
 					<span class="subtitle">
 						<?php printf(
 							__( 'Search results for %s', 'USL' ),
-							'&ldquo;' . $_GET['s'] . '&rdquo;'
+							'&ldquo;<strong>' . esc_html( $_GET['s'] ) . '</strong>&rdquo;'
 						); ?>
 					</span>
 				<?php endif; ?>
