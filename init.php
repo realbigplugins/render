@@ -2,7 +2,7 @@
 /*
 Plugin Name: Ultimate Shortcodes Library DEVELOPMENT
 Description: The development build for Ultimate Shortcodes Library.
-Version: 1.0.0-beta-1
+Version: 1.0.0-beta-4
 Author: Joel Worsham & Kyle Maurer
 Author URI: http://realbigmarketing.com
 */
