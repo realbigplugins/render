@@ -220,9 +220,10 @@ $usl-modal-height: 800px;
       overflow-y: scroll;
       display: block;
       margin: 0;
-      background: #fff;
+      background-color: #fff;
       position: relative;
       z-index: 2;
+      transition: 300ms background-color;
 
       > li {
         display: block;
@@ -231,11 +232,15 @@ $usl-modal-height: 800px;
         margin: 0;
 
         &.alt {
-          background: darken(#fff, 5%);
+          background-color: darken(#fff, 5%);
         }
 
         &:hover {
-          background: darken(#fff, 10%);
+          background-color: darken(#fff, 10%);
+
+          .usl-modal-shortcode-source {
+            opacity: 1;
+          }
         }
 
         &.active {
@@ -251,7 +256,7 @@ $usl-modal-height: 800px;
 
       .accordion-section-title, .usl-modal-sc-title {
         border: none;
-        padding: 10px 5px;
+        padding: 10px 5px 0;
 
         // Down arrow
         &:after {
@@ -367,7 +372,7 @@ $usl-modal-height: 800px;
             cursor: pointer;
           }
 
-          .usl-modal-att-slider-value {
+          input[type="text"].usl-modal-att-slider-value {
             width: 20%;
             text-align: center;
             margin: 0;
@@ -388,12 +393,20 @@ $usl-modal-height: 800px;
       .usl-modal-shortcode-title {
         width: 25%;
         float: left;
+
+        .usl-modal-shortcode-source {
+          font-size: 80%;
+          color: #aaa;
+          opacity: 0;
+          transition: 300ms opacity;
+        }
       }
 
       .usl-modal-shortcode-description {
         width: 75%;
         float: left;
         padding-right: 20px;
+        margin-bottom: 10px;
         box-sizing: border-box;
       }
     }

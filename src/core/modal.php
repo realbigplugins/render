@@ -282,7 +282,8 @@ class USL_Modal {
 
 			<div class="usl-modal-body">
 				<div class="usl-modal-search">
-					<input type="text" name="usl-modal-search" placeholder="<?php _e( 'Search', 'USL' ); ?>"/>
+					<input type="text" name="usl-modal-search"
+					       placeholder="<?php _e( 'Search by name, description, code, category, or source', 'USL' ); ?>"/>
 					<span class="dashicons dashicons-search"></span>
 
 					<div class="usl-modal-invalidsearch" style="display: none;">
@@ -327,6 +328,7 @@ class USL_Modal {
 								<li data-category="<?php echo isset( $shortcode['category'] ) ?
 									$shortcode['category'] : 'other'; ?>"
 								    data-code="<?php echo $code; ?>"
+								    data-source="<?php echo $shortcode['source']; ?>"
 								    class="<?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : ''; ?>
 								    usl-modal-shortcode">
 
@@ -337,6 +339,10 @@ class USL_Modal {
 												'accordion-section' : 'usl-modal-sc'; ?>-title">
 											<div class="usl-modal-shortcode-title">
 												<?php echo $shortcode['title']; ?>
+												<br/>
+												<span class="usl-modal-shortcode-source">
+													<?php echo $shortcode['source']; ?>
+												</span>
 											</div>
 
 											<div class="usl-modal-shortcode-description">

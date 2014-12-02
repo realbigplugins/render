@@ -475,7 +475,8 @@ var USL_Modal;
                         var title = $(this).find('.usl-modal-shortcode-title').text(),
                             description = $(this).find('.description').text(),
                             code = $(this).attr('data-code'),
-                            search_string = title + description + code;
+                            source = $(this).attr('data-source'),
+                            search_string = title + description + code + source;
 
                         if (search_string.toLowerCase().indexOf(search_query.toLowerCase()) < 0) {
                             $(this).hide();

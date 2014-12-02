@@ -43,6 +43,7 @@ function usl_add_shortcode( $args ) {
 		$USL->shortcodes[ $args['code'] ] = array(
 			'title'       => $args['title'],
 			'atts'        => $args['atts'],
+			'source'      => $args['source'],
 			'description' => $args['description'],
 			'example'     => $args['example'],
 			'category'    => $args['category'],
@@ -82,7 +83,7 @@ function _usl_get_merged_shortcodes() {
 
 		$_shortcode_tags[ $code ] = wp_parse_args( array(
 			'function' => $shortcode_func,
-			'title' => usl_translate_id_to_name( $code ),
+			'title'    => usl_translate_id_to_name( $code ),
 		), USL::$shortcode_defaults );
 	}
 

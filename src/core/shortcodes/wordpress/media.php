@@ -309,5 +309,6 @@ $_shortcodes = array(
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'media';
+	$shortcode['source'] = 'WordPress';
 	usl_add_shortcode( $shortcode );
 }

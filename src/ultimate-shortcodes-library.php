@@ -69,6 +69,7 @@ if ( ! class_exists( 'USL' ) ) {
 			'function'    => '',
 			'title'       => '',
 			'description' => '',
+			'source'      => 'Unknown',
 			'category'    => 'other',
 			'atts'        => array(),
 			'example'     => '',
@@ -100,6 +101,9 @@ if ( ! class_exists( 'USL' ) ) {
 			$this->_require_files();
 			$this->_add_actions();
 			$this->_admin();
+
+			// Can't use functions in propertiy declaration
+			self::$shortcode_defaults['source'] = __( 'Unknown', 'USL' );
 		}
 
 		private final function __clone() {

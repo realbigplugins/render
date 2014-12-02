@@ -50,6 +50,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 		return $sortable = array(
 			'name'     => array( 'name', false ),
 			'code'     => array( 'code', false ),
+			'source'   => array( 'source', false ),
 			'category' => array( 'category', false ),
 		);
 	}
@@ -59,10 +60,11 @@ class USL_ShortcodesTable extends WP_List_Table {
 		return $columns = array(
 			'cb'          => '<input type="checkbox" />',
 			'name'        => __( 'Name', 'USL' ),
-			'code'        => __( 'Code', 'USL' ),
 			'description' => __( 'Description', 'USL' ),
 			'category'    => __( 'Category', 'USL' ),
+			'source'      => __( 'Source', 'USL' ),
 			'attributes'  => __( 'Attributes', 'USL' ),
+			'code'        => __( 'Code', 'USL' ),
 		);
 	}
 
@@ -111,7 +113,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 		static $alternate = '';
 		$alternate = ( $alternate == '' ? 'alternate' : '' );
-		$disabled = isset( $this->shortcodes ) && in_array( $item['code'], $this->shortcodes ) ? 'disabled' : '';
+		$disabled  = isset( $this->shortcodes ) && in_array( $item['code'], $this->shortcodes ) ? 'disabled' : '';
 
 		echo "<tr class='$alternate $disabled'>";
 		$this->single_row_columns( $item );
@@ -153,6 +155,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 				'name'        => $shortcode['title'],
 				'code'        => $code,
 				'description' => $shortcode['description'],
+				'source'      => $shortcode['source'],
 				'category'    => $shortcode['category'],
 				'attributes'  => $shortcode['atts'],
 			) );
@@ -199,6 +202,9 @@ class USL_ShortcodesTable extends WP_List_Table {
 				return $item[ $column_name ];
 
 			case 'code':
+				return $item[ $column_name ];
+
+			case 'source':
 				return $item[ $column_name ];
 
 			case 'description':

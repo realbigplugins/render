@@ -287,6 +287,7 @@ $_shortcodes = array(
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'user';
+	$shortcode['source'] = 'Ultimate Shortcodes Library';
 	usl_add_shortcode( $shortcode );
 }
 
