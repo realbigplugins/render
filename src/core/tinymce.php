@@ -30,6 +30,7 @@ class USL_tinymce extends USL {
 
 		add_action( 'usl_localized_data', array( __CLASS__, 'loading_messages' ) );
 		add_action( 'usl_localized_data', array( $this, 'rendering_data' ) );
+		add_action( 'usl_localized_data', array( __CLASS__, 'tinymce_external_scripts' ) );
 	}
 
 	/**
@@ -51,6 +52,12 @@ class USL_tinymce extends USL {
 		$mceinit['entity_encoding']               = 'numeric';
 
 		return $mceinit;
+	}
+
+	public static function tinymce_external_scripts( $data ) {
+
+		$data['tinymceExternalScripts'][] = self::$url . '/assets/js/ultimate-shortcodes-library.min.js';
+		return $data;
 	}
 
 	public static function loading_messages( $data ) {
@@ -115,8 +122,8 @@ class USL_tinymce extends USL {
 	 */
 	public static function add_tinymce_plugins( $plugins ) {
 
-		$plugins['usl']         = self::$url . '/assets/js/includes/tinymce-plugins/usl/plugin.min.js';
-		$plugins['noneditable'] = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
+		$plugins['usl']            = self::$url . '/assets/js/includes/tinymce-plugins/usl/plugin.min.js';
+		$plugins['noneditable']    = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
 
 		return $plugins;
 	}
@@ -170,9 +177,9 @@ class USL_tinymce extends USL {
 
 		// "Extract" some of the found matches
 		$entire_code = $matches[0];
-		$code = $matches[2];
-		$atts = $matches[3];
-		$_content = $matches[5];
+		$code        = $matches[2];
+		$atts        = $matches[3];
+		$_content    = $matches[5];
 
 		// Search again for any nested shortcodes (loops infinitely)
 		$pattern = get_shortcode_regex();
@@ -197,7 +204,7 @@ class USL_tinymce extends USL {
 		if ( ! empty( $content ) ) {
 
 			// Wrap the content in a special element, but first decide if it needs to be div or span
-			$tag      = preg_match( $block_regex, $content ) ? 'div' : 'span';
+			$tag     = preg_match( $block_regex, $content ) ? 'div' : 'span';
 			$content = "<$tag class='usl-tinymce-shortcode-content'>$content</$tag>";
 		}
 
@@ -221,13 +228,19 @@ class USL_tinymce extends USL {
 		// If the output contains any block tags, make sure the wrapper tag is a div
 		$tag = preg_match( $block_regex, $shortcode_output ) ? 'div' : 'span';
 
+		$output = '';
+
 		// Start the wrapper
-		$output = "<$tag class='usl-tinymce-shortcode-wrapper $code $nostyle' data-code='$code' data-atts='$atts'>";
+		if ( ! isset( $usl_shortcode_data[ $code ]['noWrap'] ) ) {
+			$output .= "<$tag class='usl-tinymce-shortcode-wrapper $code $nostyle' data-code='$code' data-atts='$atts'>";
+		}
 
 		$output .= $shortcode_output;
 
 		// Close the wrapper
-		$output .= "</$tag>&#8203;";
+		if ( ! isset( $usl_shortcode_data[ $code ]['noWrap'] ) ) {
+			$output .= "</$tag>&#8203;";
+		}
 
 		return $output;
 	}

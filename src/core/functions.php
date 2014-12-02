@@ -40,6 +40,7 @@ function usl_add_shortcode( $args ) {
 	// Add the shortcode info to our list if it hasn't yet been added
 	if ( empty( $USL->shortcodes ) || ! array_key_exists( $args['code'], $USL->shortcodes ) ) {
 
+		// TODO make this dynamic
 		$USL->shortcodes[ $args['code'] ] = array(
 			'title'       => $args['title'],
 			'atts'        => $args['atts'],
@@ -49,6 +50,7 @@ function usl_add_shortcode( $args ) {
 			'category'    => $args['category'],
 			'wrapping'    => $args['wrapping'],
 			'render'      => $args['render'],
+			'noDisplay'   => $args['noDisplay'],
 		);
 	}
 }
@@ -86,9 +88,9 @@ function _usl_get_merged_shortcodes() {
 	$all_shortcodes = array_merge( $_shortcode_tags, $USL->shortcodes );
 
 	// Sort the array alphabetically by shortcode title
-	uasort( $all_shortcodes, function( $a, $b ) {
-		return strcmp( $a['title'], $b['title']);
-	});
+	uasort( $all_shortcodes, function ( $a, $b ) {
+		return strcmp( $a['title'], $b['title'] );
+	} );
 
 	return $all_shortcodes;
 }

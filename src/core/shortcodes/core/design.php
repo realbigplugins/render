@@ -10,6 +10,36 @@
  */
 
 $_shortcodes = array(
+	// TODO Get this to work (need to get external JS in the tinymce iframe)
+	// Accordion
+	array(
+		'code'        => 'usl_accordion',
+		'function'    => '_usl_sc_accordion',
+		'title'       => __( 'Accordion', 'USL' ),
+		'description' => __( 'Creates a clickable dropdown for your content', 'USL' ),
+		'atts'        => array(
+			'heading' => array(
+				'label'    => __( 'Heading', 'USL' ),
+				'required' => true,
+			),
+		),
+		'wrapping'    => true,
+		'render'      => array(
+			'allowNesting' => true,
+			'noStyle'      => true,
+		),
+		//
+		'noDisplay' => true,
+	),
+	// Accordion section
+	array(
+		'code'      => 'usl_accordion_section',
+		'function'  => '_usl_sc_accordion_section',
+		'noDisplay' => true,
+		'render'    => array(
+			'noWrap' => true,
+		),
+	),
 	// Button
 	array(
 		'code'        => 'usl_button',
@@ -65,7 +95,7 @@ $_shortcodes = array(
 				'label'     => __( 'Icon', 'USL' ),
 				'selectbox' => array(
 					'callback'    => '_usl_sc_icon_list',
-					'allowIcons' => true,
+					'allowIcons'  => true,
 					'placeholder' => __( 'Select an icon (no icon by default)', 'USL' ),
 				)
 			),
@@ -107,7 +137,7 @@ $_shortcodes = array(
 		),
 		'wrapping'    => true,
 		'render'      => array(
-			'noStyle'      => true,
+			'noStyle' => true,
 		),
 	),
 	// Column 2
@@ -162,8 +192,50 @@ $_shortcodes = array(
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'design';
-	$shortcode['source'] = 'Ultimate Shortcodes Library';
+	$shortcode['source']   = 'Ultimate Shortcodes Library';
 	usl_add_shortcode( $shortcode );
+}
+
+/**
+ * Outside wrapper for an accordion.
+ *
+ * @since USL 1.0.0
+ * @access Private
+ *
+ * @param null|array $atts The attributes sent to the shortcode.
+ * @param null|string $content The content inside the shortcode.
+ *
+ * @return string The accordion HTML.
+ */
+function _usl_sc_accordion( $atts = array(), $content = null ) {
+	return '<div class="usl-accordion">' . do_shortcode( $content ) . '</div>';
+}
+
+/**
+ * Accordion sections.
+ *
+ * @since USL 1.0.0
+ * @access Private
+ *
+ * @param null|array $atts The attributes sent to the shortcode.
+ * @param null|string $content The content inside the shortcode.
+ *
+ * @return string The accordion HTML.
+ */
+function _usl_sc_accordion_section( $atts = array(), $content = null ) {
+
+	$atts = shortcode_atts( array(
+		'heading' => 'No heading entered',
+	), $atts );
+
+	$atts = usl_esc_atts( $atts );
+
+	$output = '<div class="usl-accordion-section">';
+	$output .= '<p class="usl-accordion-heading">' . $atts['heading'] . '</p>';
+	$output .= '<div class="usl-accordion-content">' . do_shortcode( $content ) . '</div>';
+	$output .= '</div>';
+
+	return $output;
 }
 
 /**
@@ -544,7 +616,6 @@ function _usl_sc_icon_list() {
 
 	$output = array();
 	foreach ( $icons as $icon ) {
-		// FIXME Icon not output correct (look on button)
 		$output["dashicons-$icon"] = array(
 			'label' => usl_translate_id_to_name( str_replace( 'admin-', '', $icon ) ),
 			'icon'  => "dashicons dashicons-$icon",

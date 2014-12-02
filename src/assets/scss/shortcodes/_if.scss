@@ -1,0 +1,13 @@
+// Tinymce
+.usl-tinymce-shortcode-wrapper {
+
+  &.usl_if {
+    .hidden {
+      color: #C60000;
+    }
+
+    .visible {
+      color: #0A7300;
+    }
+  }
+}

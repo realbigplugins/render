@@ -211,6 +211,18 @@ var USL_tinymce;
                     var content = editor.getContent({format: 'numeric'});
                     $texteditor.val(window.switchEditors.pre_wpautop(USL_tinymce.loadText(content)));
                 });
+
+                // Custom external scripts
+                if (USL_Data.tinymceExternalScripts) {
+                    for (var i = 0; i < USL_Data.tinymceExternalScripts.length; i++) {
+                        //tinymce.ScriptLoader.load(USL_Data.tinymceExternalScripts[i]);
+                        //
+                        //var loader = new tinymce.dom.ScriptLoader();
+                        //loader.load(USL_Data.tinymceExternalScripts[i]);
+
+                        tinymce.PluginManager.load( 'myplugin', USL_Data.tinymceExternalScripts[i]);
+                    }
+                }
             });
         },
 

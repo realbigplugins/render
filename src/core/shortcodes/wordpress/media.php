@@ -1,5 +1,4 @@
 <?php
-// FIXME WP Core shortcodes are poopy
 /**
  * Contains all USL packaged shortcodes within the Design category.
  *

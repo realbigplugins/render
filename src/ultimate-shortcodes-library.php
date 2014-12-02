@@ -75,6 +75,7 @@ if ( ! class_exists( 'USL' ) ) {
 			'example'     => '',
 			'wrapping'    => false,
 			'render'      => false,
+			'noDisplay'   => false,
 		);
 
 		private static $_shortcodes_extensions = array(

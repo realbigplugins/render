@@ -325,6 +325,10 @@ class USL_Modal {
 								 * @since USL 1.0.0
 								 */
 								$shortcode['atts'] = apply_filters( 'usl_att_pre_loop', $shortcode['atts'], $wrapping );
+
+								if ( $shortcode['noDisplay'] ) {
+									continue;
+								}
 								?>
 								<li data-category="<?php echo isset( $shortcode['category'] ) ?
 									$shortcode['category'] : 'other'; ?>"
