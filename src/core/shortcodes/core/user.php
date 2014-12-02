@@ -154,12 +154,14 @@ $_shortcodes = array(
 		'description' => __( 'Get the date the specified user registered.', 'USL' ),
 		'atts'        => array(
 			'user'   => array(
+				'label' => __( 'User', 'USL' ),
 				'selectbox' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
 			),
 			'format' => array(
+				'label' => __( 'Format', 'USL' ),
 				'default' => 'F jS, Y',
 			),
 		),
@@ -274,10 +276,15 @@ $_shortcodes = array(
 		'title'       => __( 'Custom User Information', 'USL' ),
 		'description' => __( 'Get a custom property of the specified user.', 'USL' ),
 		'atts'        => array(
-			'user'     => array(
-				'required' => true,
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
+				),
 			),
 			'property' => array(
+				'label' => __( 'Property', 'USL' ),
 				'required' => true,
 			),
 		),

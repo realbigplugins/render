@@ -162,7 +162,20 @@ class USL_ShortcodesTable extends WP_List_Table {
 		}
 
 		// Sort them by the defined order
-		usort( $items, array( __CLASS__, 'usort_reorder' ) );
+		uasort( $items, function( $a, $b ) {
+
+			// If no sort, default to title
+			$orderby = '' . ( ! empty( $_GET['orderby'] ) ? $_GET['orderby'] : 'name' );
+
+			// If no order, default to asc
+			$order = ( ! empty( $_GET['order'] ) ) ? $_GET['order'] : 'asc';
+
+			// Determine sort order
+			$result = strcmp( $a[ $orderby ], $b[ $orderby ] );
+
+			// Send final sort direction to usort
+			return ( $order === 'asc' ) ? $result : - $result;
+		});
 
 		// Pagination
 		$per_page     = $this->get_items_per_page( 'shortcodes_per_page', 10 );
@@ -178,21 +191,6 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 		// Finally, output the items
 		$this->items = $this->found_data;
-	}
-
-	public static function usort_reorder( $a, $b ) {
-
-		// If no sort, default to title
-		$orderby = '' . ( ! empty( $_GET['orderby'] ) ? $_GET['orderby'] : 'category' );
-
-		// If no order, default to asc
-		$order = ( ! empty( $_GET['order'] ) ) ? $_GET['order'] : 'asc';
-
-		// Determine sort order
-		$result = strcmp( $a[ $orderby ], $b[ $orderby ] );
-
-		// Send final sort direction to usort
-		return ( $order === 'asc' ) ? $result : - $result;
 	}
 
 	public function column_default( $item, $column_name ) {

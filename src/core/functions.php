@@ -87,8 +87,15 @@ function _usl_get_merged_shortcodes() {
 		), USL::$shortcode_defaults );
 	}
 
-	// Merge WP shortcodes with USL shortcodes
-	return array_merge( $_shortcode_tags, $USL->shortcodes );
+	// Merge Other shortcodes with USL shortcodes
+	$all_shortcodes = array_merge( $_shortcode_tags, $USL->shortcodes );
+
+	// Sort the array alphabetically by shortcode title
+	uasort( $all_shortcodes, function( $a, $b ) {
+		return strcmp( $a['title'], $b['title']);
+	});
+
+	return $all_shortcodes;
 }
 
 function _usl_get_categories() {
