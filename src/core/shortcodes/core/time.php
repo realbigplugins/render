@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Contains all USL packaged shortcodes within the Time category.
  *
@@ -7,74 +8,68 @@
  * @package USL
  * @subpackage Shortcodes
  */
-class USL_CoreShortcodes_Time {
 
-	private $_shortcodes = array(
-		// Custom Date
-		array(
-			'code' => 'usl_date',
-			'function' => '_usl_sc_custom_date',
-			'title' => 'Custom Date',
-			'atts' => array(
-				'format' => array(
-					'default' => 'F jS, Y',
-				)
-			),
-			'description' => 'Outputs the current date in a custom format.',
-			'render' => true,
+$_shortcodes = array(
+	// Custom Date
+	array(
+		'code'        => 'usl_date',
+		'function'    => '_usl_sc_custom_date',
+		'title'       => __( 'Custom Date', 'USL' ),
+		'description' => __( 'Outputs the current date in a custom format.', 'USL' ),
+		'atts'        => array(
+			'format' => array(
+				'label' => __( 'Format', 'USL' ),
+				'default' => 'F jS, Y',
+			)
 		),
-		// Month
-		array(
-			'code' => 'usl_month',
-			'function' => '_usl_sc_month',
-			'title' => 'Current Month',
-			'description' => 'Outputs the current month.',
-			'render' => true,
-		),
-		// Year
-		array(
-			'code' => 'usl_year',
-			'function' => '_usl_sc_year',
-			'title' => 'Current Year',
-			'description' => 'Outputs the current year.',
-			'render' => true,
-		),
-		// Day of Month
-		array(
-			'code' => 'usl_day_month',
-			'function' => '_usl_sc_day_month',
-			'title' => 'Current Day of the Month',
-			'description' => 'Outputs the current day of the month.',
-			'render' => true,
-		),
-		// Day of Week
-		array(
-			'code' => 'usl_day_week',
-			'function' => '_usl_sc_day_week',
-			'title' => 'Current Day of the Week',
-			'description' => 'Outputs the current day of the week.',
-			'render' => true,
-		),
-		// Day of Year
-		array(
-			'code' => 'usl_day_year',
-			'function' => '_usl_sc_day_year',
-			'title' => 'Current Day of the Year',
-			'description' => 'Outputs the current day of the year.',
-			'render' => true,
-		),
-	);
+		'render'      => true,
+	),
+	// Month
+	array(
+		'code'        => 'usl_month',
+		'function'    => '_usl_sc_month',
+		'title'       => __( 'Current Month', 'USL' ),
+		'description' => __( 'Outputs the current month.', 'USL' ),
+		'render'      => true,
+	),
+	// Year
+	array(
+		'code'        => 'usl_year',
+		'function'    => '_usl_sc_year',
+		'title'       => __( 'Current Year', 'USL' ),
+		'description' => __( 'Outputs the current year.', 'USL' ),
+		'render'      => true,
+	),
+	// Day of Month
+	array(
+		'code'        => 'usl_day_month',
+		'function'    => '_usl_sc_day_month',
+		'title'       => __( 'Current Day of the Month', 'USL' ),
+		'description' => __( 'Outputs the current day of the month.', 'USL' ),
+		'render'      => true,
+	),
+	// Day of Week
+	array(
+		'code'        => 'usl_day_week',
+		'function'    => '_usl_sc_day_week',
+		'title'       => __( 'Current Day of the Week', 'USL' ),
+		'description' => __( 'Outputs the current day of the week.', 'USL' ),
+		'render'      => true,
+	),
+	// Day of Year
+	array(
+		'code'        => 'usl_day_year',
+		'function'    => '_usl_sc_day_year',
+		'title'       => __( 'Current Day of the Year', 'USL' ),
+		'description' => __( 'Outputs the current day of the year.', 'USL' ),
+		'render'      => true,
+	),
+);
 
-	function __construct() {
-
-		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'time';
-			usl_add_shortcode( $shortcode );
-		}
-	}
+foreach ( $_shortcodes as $shortcode ) {
+	$shortcode['category'] = 'time';
+	usl_add_shortcode( $shortcode );
 }
-
-new USL_CoreShortcodes_Time();
 
 /**
  * Gets the specified date format.

@@ -56,20 +56,20 @@ class USL_tinymce extends USL {
 	public static function loading_messages( $data ) {
 
 		$data['loading_messages'] = apply_filters( 'usl_loading_messages', array(
-			'Awesome-ifying your content...',
-			'Cleaning up the bathroom...',
-			'Making a cup of coffee for your content...',
-			'Playing catch with the WYSIWYG...',
-			'Taking your content to the next level...',
-			'Making your dreams come true...',
-			'Reducing synchronized load caching errors...',
-			'Taking out the trash (you\'re welcome!)...',
-			'Sending your content to the moon, and back...',
-			'Giving your content a bubble bath...',
-			'Taking your content to a classy restaurant...',
-			'Showing your content a good time...',
-			'Playing cards with the Automattic team...',
-			'Strapping a jetpack onto your content...',
+			__( 'Awesome-ifying your content...', 'USL' ),
+			__( 'Cleaning up the bathroom...', 'USL' ),
+			__( 'Making a cup of coffee for your content...', 'USL' ),
+			__( 'Playing catch with the WYSIWYG...', 'USL' ),
+			__( 'Taking your content to the next level...', 'USL' ),
+			__( 'Making your dreams come true...', 'USL' ),
+			__( 'Reducing synchronized load caching errors...', 'USL' ),
+			__( 'Taking out the trash (you\'re welcome!)...', 'USL' ),
+			__( 'Sending your content to the moon, and back...', 'USL' ),
+			__( 'Giving your content a bubble bath...', 'USL' ),
+			__( 'Taking your content to a classy restaurant...', 'USL' ),
+			__( 'Showing your content a good time...', 'USL' ),
+			__( 'Playing cards with the Automattic team...', 'USL' ),
+			__( 'Strapping a jetpack onto your content...', 'USL' ),
 		) );
 
 		return $data;

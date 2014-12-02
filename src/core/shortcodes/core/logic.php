@@ -8,82 +8,80 @@
  * @package USL
  * @subpackage Shortcodes
  */
-class USL_CoreShortcodes_Logic {
 
-	private $_shortcodes = array(
-		array(
-			'code'        => 'usl_if',
-			'function'    => '_usl_sc_if',
-			'title'       => 'If',
-			'description' => 'Allows for the use of conditional statements for showing content.',
-			'atts'        => array(
-				'arg1'     => array(
-					'selectbox' => array(
-						'allowCustomInput' => true,
-						'options'          => array(
-							'logged_in' => 'User is logged in',
-							'home'      => 'Current page is home page',
-							'comments'  => 'Comments allowed',
-							'single'    => 'Is single post',
-							'page'      => 'Is page',
-							'category'  => 'Is category page',
-							'tag'       => 'Is tag page',
-							'tax'       => 'Is taxonomy page',
-							'author'    => 'Is archive of specific author',
-							'archive'   => 'Current page is an archive page',
-							'search'    => 'Current page is a search results page',
-							'404'       => 'Current page is a 404',
-						),
+$_shortcodes = array(
+	array(
+		'code'        => 'usl_if',
+		'function'    => '_usl_sc_if',
+		'title'       => __( 'If', 'USL' ),
+		'description' => __( 'Allows for the use of conditional statements for showing content.', 'USL' ),
+		'atts'        => array(
+			'arg1'     => array(
+				'label' => __( 'Argument One', 'USL' ),
+				'selectbox' => array(
+					'allowCustomInput' => true,
+					'options'          => array(
+						'logged_in' => __( 'User is logged in', 'USL' ),
+						'home'      => __( 'Current page is home page', 'USL' ),
+						'comments'  => __( 'Comments allowed', 'USL' ),
+						'single'    => __( 'Is single post', 'USL' ),
+						'page'      => __( 'Is page', 'USL' ),
+						'category'  => __( 'Is category page', 'USL' ),
+						'tag'       => __( 'Is tag page', 'USL' ),
+						'tax'       => __( 'Is taxonomy page', 'USL' ),
+						'author'    => __( 'Is archive of specific author', 'USL' ),
+						'archive'   => __( 'Current page is an archive page', 'USL' ),
+						'search'    => __( 'Current page is a search results page', 'USL' ),
+						'404'       => __( 'Current page is a 404', 'USL' ),
 					),
-				),
-				'arg2'     => array(
-					'selectbox' => array(
-						'allowCustomInput' => true,
-						'placeholder' => 'True',
-						'options'          => array(
-							'true'  => 'True',
-							'false' => 'False',
-						),
-					),
-				),
-				'operator' => array(
-					'selectbox' => array(
-						'allowCustomInput' => true,
-						'placeholder' => 'Equals',
-						'options'          => array(
-							'===' => 'Identical',
-							'=='  => 'Equals',
-							'!='  => 'Does not equal',
-							'!==' => 'Not identical',
-							'<'   => 'Less than',
-							'>'   => 'Greater than',
-							'<='  => 'Less than or equal to',
-							'>='  => 'Greater than or equal',
-						),
-					),
-				),
-				'param'    => array(
-					'description' => 'Used in some conditions to further specify the condition.',
 				),
 			),
-			'render'      => array(
-				'displayBlock' => true,
-				'noStyle'      => true,
+			'arg2'     => array(
+				'label' => __( 'Argument Two', 'USL' ),
+				'selectbox' => array(
+					'allowCustomInput' => true,
+					'placeholder'      => __( 'True', 'USL' ),
+					'options'          => array(
+						'true'  => __( 'True', 'USL' ),
+						'false' => __( 'False', 'USL' ),
+					),
+				),
 			),
-			'wrapping'    => true,
+			'operator' => array(
+				'label' => __( 'Operator', 'USL' ),
+				'selectbox' => array(
+					'allowCustomInput' => true,
+					'placeholder'      => __( 'Equals', 'USL' ),
+					'options'          => array(
+						'===' => __( 'Identical', 'USL' ),
+						'=='  => __( 'Equals', 'USL' ),
+						'!='  => __( 'Does not equal', 'USL' ),
+						'!==' => __( 'Not identical', 'USL' ),
+						'<'   => __( 'Less than', 'USL' ),
+						'>'   => __( 'Greater than', 'USL' ),
+						'<='  => __( 'Less than or equal to', 'USL' ),
+						'>='  => __( 'Greater than or equal', 'USL' ),
+					),
+				),
+			),
+			'param'    => array(
+				'label' => __( 'Parameter (optional)', 'USL' ),
+				'description' => __( 'Used in some conditions to further specify the condition.', 'USL' ),
+			),
 		),
-	);
+		'render'      => array(
+			'displayBlock' => true,
+			'noStyle'      => true,
+		),
+		'wrapping'    => true,
+	),
+);
 
-	function __construct() {
 
-		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'logic';
-			usl_add_shortcode( $shortcode );
-		}
-	}
+foreach ( $_shortcodes as $shortcode ) {
+	$shortcode['category'] = 'logic';
+	usl_add_shortcode( $shortcode );
 }
-
-new USL_CoreShortcodes_Logic();
 
 /**
  * Returns the content if the condition is met, otherwise, returns nothing.
@@ -154,7 +152,7 @@ function _usl_sc_if( $atts, $content ) {
 	$arg2 = $atts['arg2'] === 'false' ? false : true;
 
 	// Checks for operator
-	$output = '';
+	$output   = '';
 	$operator = $atts['operator'];
 	switch ( $operator ) {
 		case '===':

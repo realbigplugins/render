@@ -5,9 +5,7 @@ class USL_Modal {
 	public function __construct() {
 
 		add_action( 'usl_localized_data', array( __CLASS__, 'localize_shortcodes' ) );
-
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_scripts' ) );
-
 		add_action( 'admin_footer', array( __CLASS__, 'output' ) );
 	}
 
@@ -43,14 +41,14 @@ class USL_Modal {
 
 	private static function atts_loop( $shortcode_atts, $advanced = false, $wrapping = false ) {
 
-		foreach ( $shortcode_atts as $att_name => $att ) :
+		foreach ( $shortcode_atts as $att_id => $att ) :
 
 			/**
 			 * Allows the filtering of the current att in the loop.
 			 *
 			 * @since USL 1.0.0
 			 */
-			$att = apply_filters( 'usl_att_loop', $att, $att_name, $advanced, $wrapping );
+			$att = apply_filters( 'usl_att_loop', $att, $att_id, $advanced, $wrapping );
 
 			if ( ( ! $advanced && ! isset( $att['advanced'] ) ) || $advanced && isset( $att['advanced'] ) ) :
 				$type = null;
@@ -81,22 +79,22 @@ class USL_Modal {
 				     data-validate="<?php echo $att['validate']; ?>"
 				     data-sanitize="<?php echo $att['sanitize']; ?>">
 					<div class="usl-modal-att-name">
-						<?php echo usl_translate_id_to_name( $att_name ); ?>
+						<?php echo $att['label']; ?>
 					</div>
 					<div class="usl-modal-att-field">
 
 						<?php
 						// Output the att field
 						if ( isset( $att['textarea'] ) ) {
-							self::att_type_textarea( $att_name, $att, $att['textarea'] );
+							self::att_type_textarea( $att_id, $att, $att['textarea'] );
 						} elseif ( isset( $att['selectbox'] ) ) {
-							self::att_type_selectbox( $att_name, $att, $att['selectbox'] );
+							self::att_type_selectbox( $att_id, $att, $att['selectbox'] );
 						} elseif ( isset( $att['slider'] ) ) {
-							self::att_type_slider( $att_name, $att, $att['slider'] );
+							self::att_type_slider( $att_id, $att, $att['slider'] );
 						} elseif ( isset( $att['colorpicker'] ) ) {
-							self::att_type_colorpicker( $att_name, $att, $att['colorpicker'] );
+							self::att_type_colorpicker( $att_id, $att, $att['colorpicker'] );
 						} else {
-							self::att_type_textbox( $att_name, $att, isset( $att['textbox'] ) ? $att['textbox'] : array() );
+							self::att_type_textbox( $att_id, $att, isset( $att['textbox'] ) ? $att['textbox'] : array() );
 						}
 						?>
 
@@ -122,7 +120,7 @@ class USL_Modal {
 	<?php
 	}
 
-	private static function att_type_textarea( $att_name, $att, $properties ) {
+	private static function att_type_textarea( $att_name, $att ) {
 		?>
 		<textarea class="usl-modal-att-input" name="<?php echo $att_name; ?>"><?php
 			echo isset( $att['default'] ) ? $att['default_value'] : '';
@@ -236,7 +234,7 @@ class USL_Modal {
 	<?php
 	}
 
-	private static function att_type_colorpicker( $att_name, $att, $properties ) {
+	private static function att_type_colorpicker( $att_name, $att ) {
 		?>
 		<input type="text"
 		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
@@ -276,18 +274,19 @@ class USL_Modal {
 		<div id="usl-modal-backdrop"></div>
 		<div id="usl-modal-wrap" style="display: none;">
 			<div class="usl-modal-title">
-				Shortcodes
+				<?php _e( 'Shortcodes', 'USL' ); ?>
 				<button type="button" class="usl-modal-close">
-					<span class="screen-reader-text">Close</span>
+					<span class="screen-reader-text"><?php _e( 'Close', 'USL' ); ?></span>
 				</button>
 			</div>
 
 			<div class="usl-modal-body">
 				<div class="usl-modal-search">
-					<input type="text" name="usl-modal-search" placeholder="Search"/>
+					<input type="text" name="usl-modal-search" placeholder="<?php _e( 'Search', 'USL' ); ?>"/>
 					<span class="dashicons dashicons-search"></span>
 
-					<div class="usl-modal-invalidsearch" style="display: none;">Sorry, but you can't search for that.
+					<div class="usl-modal-invalidsearch" style="display: none;">
+						<?php _e( 'Sorry, but you can\'t search for that.', 'USL' ); ?>
 					</div>
 				</div>
 
@@ -353,7 +352,7 @@ class USL_Modal {
 												<?php self::atts_loop( $shortcode['atts'], false, $wrapping ); ?>
 
 												<?php
-												// Figure out if any of the attributes are belong to the advanced section
+												// Figure out if any of the attributes belong to the advanced section
 												$advanced = false;
 												foreach ( $shortcode['atts'] as $_shortcode ) {
 													$advanced = array_key_exists( 'advanced', $_shortcode ) ? true : false;
@@ -363,8 +362,9 @@ class USL_Modal {
 												}
 												if ( $advanced ) :
 													?>
-													<a href="#" class="usl-modal-show-advanced-atts">Show advanced
-														options</a>
+													<a href="#" class="usl-modal-show-advanced-atts">
+														<?php _e( 'Show advanced options', 'USL' ); ?>
+													</a>
 													<div class="usl-modal-advanced-atts" style="display: none;">
 														<?php self::atts_loop( $shortcode['atts'], true, $wrapping ); ?>
 													</div>
@@ -382,13 +382,13 @@ class USL_Modal {
 
 			<div class="usl-modal-footer">
 				<div class="usl-modal-cancel">
-					<a class="submitdelete deletion" href="#">Cancel</a>
+					<a class="submitdelete deletion" href="#"><?php _e( 'Cancel', 'USL' ); ?></a>
 				</div>
 				<div class="usl-modal-update">
-					<input type="submit" value="Add Shortcode" class="button button-primary" id="usl-modal-submit"
-					       name="usl-modal-submit">
+					<input type="submit" value="<?php _e( 'Add Shortcode', 'USL' ); ?>" class="button button-primary"
+					       id="usl-modal-submit" name="usl-modal-submit">
 
-					<input type="submit" value="Remove Shortcode" class="button-secondary delete"
+					<input type="submit" value="<?php _e( 'Remove Shortcode', 'USL' ); ?>" class="button-secondary delete"
 					       id="usl-modal-remove"/>
 					<?php do_action( 'usl_modal_action_area' ); ?>
 				</div>

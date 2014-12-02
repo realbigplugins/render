@@ -8,264 +8,306 @@
  * @package USL
  * @subpackage Shortcodes
  */
-class USL_WordPressShortcodes {
 
-	private $_shortcodes = array(
-		// Embed
-		array(
-			'code'        => 'embed',
-			'title'       => 'Embed',
-			'description' => 'It\'s super easy to embed videos, images, tweets, audio, and other content into your WordPress site',
-			'atts'        => array(
-				'width'  => array(
-					'slider' => array(
-						'max' => 2000,
-					),
-				),
-				'height' => array(
-					'slider' => array(
-						'max' => 2000,
-					),
+$_shortcodes = array(
+	// Embed
+	array(
+		'code'        => 'embed',
+		'title'       => __( 'Embed', 'USL' ),
+		'description' => __( 'It\'s super easy to embed videos, images, tweets, audio, and other content into your WordPress site', 'USL' ),
+		'atts'        => array(
+			'width'  => array(
+				'label'  => __( 'Width', 'USL' ),
+				'slider' => array(
+					'max' => 2000,
 				),
 			),
-			'wrapping'    => true,
-		),
-		// Caption
-		array(
-			'code'        => 'caption',
-			'title'       => 'Caption',
-			'description' => 'The Caption feature allows you to wrap captions around content. This is primarily used with individual images.',
-			'atts'        => array(
-				'id'    => array(),
-				'class' => array(),
-				'align' => array(
-					'selectbox' => array(
-						'options' => array(
-							'alignnone' => 'None',
-							'aligncenter' => 'Center',
-							'alignright' => 'Right',
-							'alignleft' => 'Left',
-						),
-					),
-				),
-				'width' => array(),
-			),
-			'wrapping'    => true,
-		),
-		// Gallery
-		array(
-			'code'        => 'gallery',
-			'title'       => 'Gallery',
-			'description' => 'The Gallery feature allows you to add one or more image galleries to your posts and pages',
-			'atts'        => array(
-				'ids'        => array(
-					'required' => true,
-				),
-				'orderby'    => array(
-					'selectbox' => array(
-						'options' => array(
-							'menu_order' => 'Menu Order',
-							'title' => 'Title',
-							'post_date' => 'Post Date',
-							'rand' => 'Random',
-							'ID' => 'ID',
-						),
-					),
-				),
-				'order'      => array(
-					'selectbox' => array(
-						'options' => array(
-							'ASC' => 'Ascending',
-							'DSC' => 'Descending',
-						),
-					),
-				),
-				'columns'    => array(),
-				'size'       => array(),
-				'include'    => array(
-					'advanced' => true,
-				),
-				'exclude'    => array(
-					'advanced' => true,
-				),
-				'itemtag'    => array(
-					'advanced' => true,
-				),
-				'icontag'    => array(
-					'advanced' => true,
-				),
-				'captiontag' => array(
-					'advanced' => true,
-				),
-				'link'       => array(
-					'advanced' => true,
+			'height' => array(
+				'label'  => __( 'Height', 'USL' ),
+				'slider' => array(
+					'max' => 2000,
 				),
 			),
 		),
-		// Playlist
-		array(
-			'code'        => 'playlist',
-			'title'       => 'Playlist',
-			'description' => 'The playlist shortcode implements the functionality of displaying a collection of WordPress audio or video files in a post',
-			'atts'        => array(
-				'type'         => array(
-					'selectbox' => array(
-						'options' => array(
-							'audio' => 'Audio',
-							'video' => 'Video',
-						),
-					),
-				),
-				'orderby'      => array(
-					'selectbox' => array(
-						'options' => array(
-							'menu_order' => 'Menu Order',
-							'title' => 'Title',
-							'post_date' => 'Post Date',
-							'rand' => 'Random',
-							'ID' => 'ID',
-						),
-					),
-				),
-				'order'        => array(
-					'selectbox' => array(
-						'options' => array(
-							'ASC' => 'Ascending',
-							'DSC' => 'Descending',
-						),
-					),
-				),
-				'ids'          => array(
-					'required' => true,
-				),
-				'include'      => array(),
-				'exclude'      => array(),
-				'style'        => array(
-					'selectbox' => array(
-						'options' => array(
-							'light' => 'Light',
-							'dark' => 'Dark',
-						),
-					),
-				),
-				'tracklist'    => array(
-					'selectbox' => array(
-						'options' => array(
-							'true' => 'True',
-							'false' => 'False',
-						),
-					),
-				),
-				'tracknumbers' => array(
-					'selectbox' => array(
-						'options' => array(
-							'true' => 'True',
-							'false' => 'False',
-						),
-					),
-				),
-				'images'       => array(
-					'selectbox' => array(
-						'options' => array(
-							'true' => 'True',
-							'false' => 'False',
-						),
-					),
-				),
-				'artists'      => array(
-					'selectbox' => array(
-						'options' => array(
-							'true' => 'True',
-							'false' => 'False',
-						),
+		'wrapping'    => true,
+	),
+	// Caption
+	array(
+		'code'        => 'caption',
+		'title'       => __( 'Caption', 'USL' ),
+		'description' => __( 'The Caption feature allows you to wrap captions around content. This is primarily used with individual images.', 'USL' ),
+		'atts'        => array(
+			'id'    => array(
+				'label' => __( 'ID', 'USL' ),
+			),
+			'class' => array(
+				'label' => __( 'Class', 'USL' ),
+			),
+			'align' => array(
+				'label'     => __( 'Align', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'alignnone'   => __( 'None', 'USL' ),
+						'aligncenter' => __( 'Center', 'USL' ),
+						'alignright'  => __( 'Right', 'USL' ),
+						'alignleft'   => __( 'Left', 'USL' ),
 					),
 				),
 			),
+			'width' => array(
+				'label' => __( 'Width', 'USL' ),
+			),
 		),
-		// Audio
-		array(
-			'code'        => 'audio',
-			'title'       => 'Audio',
-			'description' => 'The Audio feature allows you to embed audio files and play them back',
-			'atts'        => array(
-				'src'      => array(
-					'required' => true,
-				),
-				'loop'     => array(
-					'selectbox' => array(
-						'options' => array(
-							'off' => 'Off',
-							'on' => 'Onf',
-						),
+		'wrapping'    => true,
+	),
+	// Gallery
+	array(
+		'code'        => 'gallery',
+		'title'       => __( 'Gallery', 'USL' ),
+		'description' => __( 'The Gallery feature allows you to add one or more image galleries to your posts and pages', 'USL' ),
+		'atts'        => array(
+			'ids'        => array(
+				'label'    => __( 'IDs', 'USL' ),
+				'required' => true,
+			),
+			'orderby'    => array(
+				'label'     => __( 'Order By', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'menu_order' => __( 'Menu Order', 'USL' ),
+						'title'      => __( 'Title', 'USL' ),
+						'post_date'  => __( 'Post Date', 'USL' ),
+						'rand'       => __( 'Random', 'USL' ),
+						'ID'         => __( 'ID', 'USL' ),
 					),
 				),
-				'autoplay' => array(
-					'selectbox' => array(
-						'options' => array(
-							'off' => 'Off',
-							'on' => 'Onf',
-						),
+			),
+			'order'      => array(
+				'label'     => __( 'Order', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'ASC' => __( 'Ascending', 'USL' ),
+						'DSC' => __( 'Descending', 'USL' ),
 					),
 				),
-				'preload'  => array(
-					'selectbox' => array(
-						'options' => array(
-							'metadata' => 'Metadata',
-							'none' => 'None',
-							'auto' => 'Auto',
-						),
+			),
+			'columns'    => array(
+				'label' => __( 'Columns', 'USL' ),
+			),
+			'size'       => array(
+				'label' => __( 'Size', 'USL' ),
+			),
+			'include'    => array(
+				'label'    => __( 'Include', 'USL' ),
+				'advanced' => true,
+			),
+			'exclude'    => array(
+				'label'    => __( 'Exclude', 'USL' ),
+				'advanced' => true,
+			),
+			'itemtag'    => array(
+				'label'    => __( 'Item Tag', 'USL' ),
+				'advanced' => true,
+			),
+			'icontag'    => array(
+				'label'    => __( 'Icon Tag', 'USL' ),
+				'advanced' => true,
+			),
+			'captiontag' => array(
+				'label'    => __( 'Caption Tag', 'USL' ),
+				'advanced' => true,
+			),
+			'link'       => array(
+				'label'    => __( 'Link', 'USL' ),
+				'advanced' => true,
+			),
+		),
+	),
+	// Playlist
+	array(
+		'code'        => 'playlist',
+		'title'       => __( 'Playlist', 'USL' ),
+		'description' => __( 'The playlist shortcode implements the functionality of displaying a collection of WordPress audio or video files in a post', 'USL' ),
+		'atts'        => array(
+			'type'         => array(
+				'label'     => __( 'Type', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'audio' => __( 'Audio', 'USL' ),
+						'video' => __( 'Video', 'USL' ),
+					),
+				),
+			),
+			'orderby'      => array(
+				'label'     => __( 'Order By', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'menu_order' => __( 'Menu Order', 'USL' ),
+						'title'      => __( 'Title', 'USL' ),
+						'post_date'  => __( 'Post Date', 'USL' ),
+						'rand'       => __( 'Random', 'USL' ),
+						'ID'         => __( 'ID', 'USL' ),
+					),
+				),
+			),
+			'order'        => array(
+				'label'     => __( 'Order', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'ASC' => __( 'Ascending', 'USL' ),
+						'DSC' => __( 'Descending', 'USL' ),
+					),
+				),
+			),
+			'ids'          => array(
+				'label'    => __( 'IDs', 'USL' ),
+				'required' => true,
+			),
+			'include'      => array(
+				'label' => __( 'Include', 'USL' ),
+			),
+			'exclude'      => array(
+				'label' => __( 'Exclude', 'USL' ),
+			),
+			'style'        => array(
+				'label'     => __( 'Style', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'light' => __( 'Light', 'USL' ),
+						'dark'  => __( 'Dark', 'USL' ),
+					),
+				),
+			),
+			'tracklist'    => array(
+				'label'     => __( 'Track List', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'true'  => __( 'True', 'USL' ),
+						'false' => __( 'False', 'USL' ),
+					),
+				),
+			),
+			'tracknumbers' => array(
+				'label'     => __( 'Track Numbers', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'true'  => __( 'True', 'USL' ),
+						'false' => __( 'False', 'USL' ),
+					),
+				),
+			),
+			'images'       => array(
+				'label'     => __( 'Images', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'true'  => __( 'True', 'USL' ),
+						'false' => __( 'False', 'USL' ),
+					),
+				),
+			),
+			'artists'      => array(
+				'label'     => __( 'Artists', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'true'  => __( 'True', 'USL' ),
+						'false' => __( 'False', 'USL' ),
 					),
 				),
 			),
 		),
-		// Video
-		array(
-			'code'        => 'video',
-			'title'       => 'Video',
-			'description' => 'The Video feature allows you to embed video files and play them back',
-			'atts'        => array(
-				'src'      => array(
-					'required' => true,
-				),
-				'poster'   => array(),
-				'loop'     => array(
-					'selectbox' => array(
-						'options' => array(
-							'off' => 'Off',
-							'on' => 'On',
-						),
-					),
-				),
-				'autoplay' => array(
-					'selectbox' => array(
-						'options' => array(
-							'off' => 'Off',
-							'on' => 'Onf',
-						),
-					),
-				),
-				'preload'  => array(
-					'selectbox' => array(
-						'options' => array(
-							'metadata' => 'Metadata',
-							'none' => 'None',
-							'auto' => 'Auto',
-						),
-					),
-				),
-				'height'   => array(),
-				'width'    => array(),
+	),
+	// Audio
+	array(
+		'code'        => 'audio',
+		'title'       => __( 'Audio', 'USL' ),
+		'description' => __( 'The Audio feature allows you to embed audio files and play them back', 'USL' ),
+		'atts'        => array(
+			'src'      => array(
+				'label'    => __( 'Source', 'USL' ),
+				'required' => true,
 			),
-		)
-	);
+			'loop'     => array(
+				'label'     => __( 'Loop', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'off' => __( 'Off', 'USL' ),
+						'on'  => __( 'Onf', 'USL' ),
+					),
+				),
+			),
+			'autoplay' => array(
+				'label'     => __( 'Autoplay', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'off' => __( 'Off', 'USL' ),
+						'on'  => __( 'Onf', 'USL' ),
+					),
+				),
+			),
+			'preload'  => array(
+				'label'     => __( 'Pre Load', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'metadata' => __( 'Metadata', 'USL' ),
+						'none'     => __( 'None', 'USL' ),
+						'auto'     => __( 'Auto', 'USL' ),
+					),
+				),
+			),
+		),
+	),
+	// Video
+	array(
+		'code'        => 'video',
+		'title'       => __( 'Video', 'USL' ),
+		'description' => __( 'The Video feature allows you to embed video files and play them back', 'USL' ),
+		'atts'        => array(
+			'src'      => array(
+				'label'    => __( 'Source', 'USL' ),
+				'required' => true,
+			),
+			'poster'   => array(
+				'label' => __( 'Poster', 'USL' ),
+			),
+			'loop'     => array(
+				'label'     => __( 'Loop', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'off' => __( 'Off', 'USL' ),
+						'on'  => __( 'On', 'USL' ),
+					),
+				),
+			),
+			'autoplay' => array(
+				'label'     => __( 'Auto Play', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'off' => __( 'Off', 'USL' ),
+						'on'  => __( 'On', 'USL' ),
+					),
+				),
+			),
+			'preload'  => array(
+				'label'     => __( 'Pre Load', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'metadata' => __( 'Metadata', 'USL' ),
+						'none'     => __( 'None', 'USL' ),
+						'auto'     => __( 'Auto', 'USL' ),
+					),
+				),
+			),
+			'height'   => array(
+				'label' => __( 'Height', 'USL' ),
+			),
+			'width'    => array(
+				'label' => __( 'Width', 'USL' ),
+			),
+		),
+	)
+);
 
-	function __construct() {
-
-		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'media';
-			usl_add_shortcode( $shortcode );
-		}
-	}
+foreach ( $_shortcodes as $shortcode ) {
+	$shortcode['category'] = 'media';
+	usl_add_shortcode( $shortcode );
 }
-
-new USL_WordPressShortcodes();

@@ -17,7 +17,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 			?>
 			<div class="alignleft actions">
 				<?php $this->categories_dropdown(); ?>
-				<input type="submit" id="post-query-submit" class="button" value="Filter">
+				<input type="submit" id="post-query-submit" class="button" value="<?php _e( 'Filter', 'USL' ); ?>">
 			</div>
 		<?php
 		endif;
@@ -30,11 +30,11 @@ class USL_ShortcodesTable extends WP_List_Table {
 		?>
 
 		<label for="filter-by-category" class="screen-reader-text">
-			Filter by category
+			<?php _e( 'Filter by category', 'USL' ); ?>
 		</label>
 
 		<select name="category" id="filter-by-category" class="postform">
-			<option value="0">All categories</option>
+			<option value="0"><?php _e( 'All categories', 'USL' ); ?></option>
 
 			<?php foreach ( $categories as $category ) : ?>
 				<option class="level-0" value="<?php echo $category; ?>" <?php selected( $category, $current_cat ); ?>>
@@ -58,18 +58,18 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 		return $columns = array(
 			'cb'          => '<input type="checkbox" />',
-			'name'        => 'Name',
-			'code'        => 'Code',
-			'description' => 'Description',
-			'category'    => 'Category',
-			'attributes'  => 'Attributes',
+			'name'        => __( 'Name', 'USL' ),
+			'code'        => __( 'Code', 'USL' ),
+			'description' => __( 'Description', 'USL' ),
+			'category'    => __( 'Category', 'USL' ),
+			'attributes'  => __( 'Attributes', 'USL' ),
 		);
 	}
 
 	public function get_bulk_actions() {
 		return $actions = array(
-			'disable' => 'Disable',
-			'enable'  => ' Enable',
+			'disable' => __( 'Disable', 'USL' ),
+			'enable'  => __( 'Enable', 'USL' ),
 		);
 	}
 
@@ -85,10 +85,20 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 		$actions = array(
 			'delete' => sprintf(
-				"<a href='?page=%s&action=%s&shortcodes=%s$extra_params'>Disable</a>", $_REQUEST['page'], 'disable', $item['code']
+				"<a href='?page=%s&action=%s&shortcodes=%s'>%s</a>",
+				$_REQUEST['page'],
+				'disable',
+				$item['code'],
+				$extra_params,
+				__( 'Disable', 'USL' )
 			),
 			'enable' => sprintf(
-				"<a href='?page=%s&action=%s&shortcodes=%s$extra_params'>Enable</a>", $_REQUEST['page'], 'enable', $item['code']
+				"<a href='?page=%s&action=%s&shortcodes=%s'>%s</a>",
+				$_REQUEST['page'],
+				'enable',
+				$item['code'],
+				$extra_params,
+				__( 'Enable', 'USL' )
 			),
 		);
 
@@ -101,7 +111,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 		static $alternate = '';
 		$alternate = ( $alternate == '' ? 'alternate' : '' );
-		$disabled = in_array( $item['code'], $this->shortcodes ) ? 'disabled' : '';
+		$disabled = isset( $this->shortcodes ) && in_array( $item['code'], $this->shortcodes ) ? 'disabled' : '';
 
 		echo "<tr class='$alternate $disabled'>";
 		$this->single_row_columns( $item );
@@ -202,12 +212,12 @@ class USL_ShortcodesTable extends WP_List_Table {
 				if ( ! empty( $item[ $column_name ] ) ) {
 
 					$atts = array();
-					foreach ( $item[ $column_name ] as $name => $value ) {
-						$atts[] = $name;
+					foreach ( $item[ $column_name ] as $att ) {
+						$atts[] = $att['label'];
 					}
 					$output = implode( ', ', $atts );
 				} else {
-					$output = 'No attributes.';
+					$output = 'None';
 				}
 
 				return $output;
@@ -249,6 +259,6 @@ class USL_ShortcodesTable extends WP_List_Table {
 	}
 
 	public function no_items() {
-		echo 'Sorry, couldn\'t find any shortcodes.';
+		_e( 'Sorry, couldn\'t find any shortcodes.', 'USL' );
 	}
 }

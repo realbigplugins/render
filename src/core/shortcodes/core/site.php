@@ -8,56 +8,50 @@
  * @subpackage Shortcodes
  */
 
-class USL_CoreShortcodes_Site {
-
-	private $_shortcodes = array(
-		// Site Info
-		array(
-			'code' => 'usl_site',
-			'function' => '_usl_sc_site',
-			'title' => 'Site Information',
-			'description' => 'Gets specified info about the current site.',
-			'atts' => array(
-				'info' => array(),
+$_shortcodes = array(
+	// Site Info
+	array(
+		'code'        => 'usl_site',
+		'function'    => '_usl_sc_site',
+		'title'       => __( 'Site Information', 'USL' ),
+		'description' => __( 'Gets specified info about the current site.', 'USL' ),
+		'atts'        => array(
+			'info' => array(
+				'label' => __( 'Info', 'USL' ),
 			),
-			'render' => true,
 		),
-		// Site Title
-		array(
-			'code' => 'usl_site_title',
-			'function' => '_usl_sc_site_title',
-			'title' => 'Site Title',
-			'description' => 'Gets the title of the current site.',
-			'render' => true,
-		),
-		// Site Tagline
-		array(
-			'code' => 'usl_site_tagline',
-			'function' => '_usl_sc_site_tagline',
-			'title' => 'Site Tagline',
-			'description' => 'Gets the tagline of the current site.',
-			'render' => true,
-		),
-		// Site Admin Email
-		array(
-			'code' => 'usl_site_admin_email',
-			'function' => '_usl_sc_site_admin_email',
-			'title' => 'Site Admin Email',
-			'description' => 'Gets the admin email the current site.',
-			'render' => true,
-		),
-	);
+		'render'      => true,
+	),
+	// Site Title
+	array(
+		'code'        => 'usl_site_title',
+		'function'    => '_usl_sc_site_title',
+		'title'       => __( 'Site Title', 'USL' ),
+		'description' => __( 'Gets the title of the current site.', 'USL' ),
+		'render'      => true,
+	),
+	// Site Tagline
+	array(
+		'code'        => 'usl_site_tagline',
+		'function'    => '_usl_sc_site_tagline',
+		'title'       => __( 'Site Tagline', 'USL' ),
+		'description' => __( 'Gets the tagline of the current site.', 'USL' ),
+		'render'      => true,
+	),
+	// Site Admin Email
+	array(
+		'code'        => 'usl_site_admin_email',
+		'function'    => '_usl_sc_site_admin_email',
+		'title'       => __( 'Site Admin Email', 'USL' ),
+		'description' => __( 'Gets the admin email the current site.', 'USL' ),
+		'render'      => true,
+	),
+);
 
-	function __construct() {
-
-		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'site';
-			usl_add_shortcode( $shortcode );
-		}
-	}
+foreach ( $_shortcodes as $shortcode ) {
+	$shortcode['category'] = 'site';
+	usl_add_shortcode( $shortcode );
 }
-
-new USL_CoreShortcodes_Site();
 
 /**
  * Gets info about the current site.

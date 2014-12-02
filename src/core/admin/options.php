@@ -52,9 +52,10 @@ class USL_OptionsPage extends USL {
 		}
 
 		$render_visual = get_option( 'usl_render_visual', '1' );
+		require(ABSPATH . 'wp-admin/options-head.php');
 		?>
 		<div class="wrap">
-			<h2>Ultimate Shortcode Library Options</h2>
+			<h2><?php _e( 'Ultimate Shortcode Library Options', 'USL' ); ?></h2>
 
 			<form method="post" action="options.php">
 
@@ -63,12 +64,12 @@ class USL_OptionsPage extends USL {
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row">
-							Use the magical visual renderer?
+							<?php _e( 'Use the magical visual renderer?', 'USL' ); ?>
 						</th>
 						<td>
 							<input type="checkbox" id="usl_render_visual"
 							       name="usl_render_visual" value="1" <?php checked( '1', $render_visual ); ?> />
-							<label for="usl_render_visual">Heck Yes!</label>
+							<label for="usl_render_visual"><?php _e( 'Heck Yes!', 'USL' ); ?></label>
 						</td>
 					</tr>
 				</table>

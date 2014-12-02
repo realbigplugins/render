@@ -8,280 +8,287 @@
  * @package USL
  * @subpackage Shortcodes
  */
-class USL_CoreShortcodes_User {
 
-	private $_shortcodes = array(
-		// Full Name
-		array(
-			'code'        => 'usl_user_full_name',
-			'function'    => '_usl_sc_user_full_name',
-			'title'       => 'User Full Name',
-			'description' => 'Get the full name of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+$_shortcodes = array(
+	// Full Name
+	array(
+		'code'        => 'usl_user_full_name',
+		'function'    => '_usl_sc_user_full_name',
+		'title'       => __( 'User Full Name', 'USL' ),
+		'description' => __( 'Get the full name of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// First Name
-		array(
-			'code'        => 'usl_user_first_name',
-			'function'    => '_usl_sc_user_first_name',
-			'title'       => 'User First Name',
-			'description' => 'Get the first name of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// First Name
+	array(
+		'code'        => 'usl_user_first_name',
+		'function'    => '_usl_sc_user_first_name',
+		'title'       => __( 'User First Name', 'USL' ),
+		'description' => __( 'Get the first name of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Last Name
-		array(
-			'code'        => 'usl_user_last_name',
-			'function'    => '_usl_sc_user_last_name',
-			'title'       => 'User Last Name',
-			'description' => 'Get the last name of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Last Name
+	array(
+		'code'        => 'usl_user_last_name',
+		'function'    => '_usl_sc_user_last_name',
+		'title'       => __( 'User Last Name', 'USL' ),
+		'description' => __( 'Get the last name of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Username
-		array(
-			'code'        => 'usl_user_username',
-			'function'    => '_usl_sc_user_username',
-			'title'       => 'User Username',
-			'description' => 'Get the username of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Username
+	array(
+		'code'        => 'usl_user_username',
+		'function'    => '_usl_sc_user_username',
+		'title'       => __( 'User Username', 'USL' ),
+		'description' => __( 'Get the username of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Email
-		array(
-			'code'        => 'usl_user_email',
-			'function'    => '_usl_sc_user_email',
-			'title'       => 'User Email',
-			'description' => 'Get the email of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Email
+	array(
+		'code'        => 'usl_user_email',
+		'function'    => '_usl_sc_user_email',
+		'title'       => __( 'User Email', 'USL' ),
+		'description' => __( 'Get the email of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Display Name
-		array(
-			'code'        => 'usl_user_display_name',
-			'function'    => '_usl_sc_user_display_name',
-			'title'       => 'User Display Name',
-			'description' => 'Get the display name of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Display Name
+	array(
+		'code'        => 'usl_user_display_name',
+		'function'    => '_usl_sc_user_display_name',
+		'title'       => __( 'User Display Name', 'USL' ),
+		'description' => __( 'Get the display name of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// ID
-		array(
-			'code'        => 'usl_user_id',
-			'function'    => '_usl_sc_user_id',
-			'title'       => 'User ID',
-			'description' => 'Get the ID of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// ID
+	array(
+		'code'        => 'usl_user_id',
+		'function'    => '_usl_sc_user_id',
+		'title'       => __( 'User ID', 'USL' ),
+		'description' => __( 'Get the ID of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Author URL
-		array(
-			'code'        => 'usl_user_url',
-			'function'    => '_usl_sc_user_url',
-			'title'       => 'User URL',
-			'description' => 'Get the author URL of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Author URL
+	array(
+		'code'        => 'usl_user_url',
+		'function'    => '_usl_sc_user_url',
+		'title'       => __( 'User URL', 'USL' ),
+		'description' => __( 'Get the author URL of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Registered Date
-		array(
-			'code'        => 'usl_user_registered_date',
-			'function'    => '_usl_sc_user_registered_date',
-			'title'       => 'User Registered Date',
-			'description' => 'Get the date the specified user registered.',
-			'atts'        => array(
-				'user'   => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
-				),
-				'format' => array(
-					'default' => 'F jS, Y',
+		'render'      => true,
+	),
+	// Registered Date
+	array(
+		'code'        => 'usl_user_registered_date',
+		'function'    => '_usl_sc_user_registered_date',
+		'title'       => __( 'User Registered Date', 'USL' ),
+		'description' => __( 'Get the date the specified user registered.', 'USL' ),
+		'atts'        => array(
+			'user'   => array(
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
+			'format' => array(
+				'default' => 'F jS, Y',
+			),
 		),
-		// Description
-		array(
-			'code'        => 'usl_user_description',
-			'function'    => '_usl_sc_user_description',
-			'title'       => 'User Description',
-			'description' => 'Get the description of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Description
+	array(
+		'code'        => 'usl_user_description',
+		'function'    => '_usl_sc_user_description',
+		'title'       => __( 'User Description', 'USL' ),
+		'description' => __( 'Get the description of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Role
-		array(
-			'code'        => 'usl_user_role',
-			'function'    => '_usl_sc_user_role',
-			'title'       => 'User Role',
-			'description' => 'Get the role of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Role
+	array(
+		'code'        => 'usl_user_role',
+		'function'    => '_usl_sc_user_role',
+		'title'       => __( 'User Role', 'USL' ),
+		'description' => __( 'Get the role of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Capabilities
-		array(
-			'code'        => 'usl_user_capabilities',
-			'function'    => '_usl_sc_user_capabilities',
-			'title'       => 'User Capabilities',
-			'description' => 'Get the capabilities of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Capabilities
+	array(
+		'code'        => 'usl_user_capabilities',
+		'function'    => '_usl_sc_user_capabilities',
+		'title'       => __( 'User Capabilities', 'USL' ),
+		'description' => __( 'Get the capabilities of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Admin Theme
-		array(
-			'code'        => 'usl_user_admin_theme',
-			'function'    => '_usl_sc_user_admin_theme',
-			'title'       => 'User Admin Theme',
-			'description' => 'Get the admin theme of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Admin Theme
+	array(
+		'code'        => 'usl_user_admin_theme',
+		'function'    => '_usl_sc_user_admin_theme',
+		'title'       => __( 'User Admin Theme', 'USL' ),
+		'description' => __( 'Get the admin theme of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Primary Blog
-		array(
-			'code'        => 'usl_user_primary_blog',
-			'function'    => '_usl_sc_user_primary_blog',
-			'title'       => 'User Primary Blog',
-			'description' => 'Get the primary blog of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Primary Blog
+	array(
+		'code'        => 'usl_user_primary_blog',
+		'function'    => '_usl_sc_user_primary_blog',
+		'title'       => __( 'User Primary Blog', 'USL' ),
+		'description' => __( 'Get the primary blog of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Source Domain
-		array(
-			'code'        => 'usl_user_source_domain',
-			'function'    => '_usl_sc_user_source_domain',
-			'title'       => 'User Source Domain',
-			'description' => 'Get the source domain of the specified user.',
-			'atts'        => array(
-				'user' => array(
-					'selectbox' => array(
-						'placeholder' => 'Defaults to the current user',
-						'callback' => '_usl_user_dropdown',
-					),
+		'render'      => true,
+	),
+	// Source Domain
+	array(
+		'code'        => 'usl_user_source_domain',
+		'function'    => '_usl_sc_user_source_domain',
+		'title'       => __( 'User Source Domain', 'USL' ),
+		'description' => __( 'Get the source domain of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user' => array(
+				'label' => __( 'User', 'USL' ),
+				'selectbox' => array(
+					'placeholder' => __( 'Defaults to the current user', 'USL' ),
+					'callback'    => '_usl_user_dropdown',
 				),
 			),
-			'render'      => true,
 		),
-		// Custom User Info
-		array(
-			'code'        => 'usl_user',
-			'function'    => '_usl_sc_user',
-			'title'       => 'Custom User Information',
-			'description' => 'Get a custom property of the specified user.',
-			'atts'        => array(
-				'user'     => array(
-					'required' => true,
-				),
-				'property' => array(
-					'required' => true,
-				),
+		'render'      => true,
+	),
+	// Custom User Info
+	array(
+		'code'        => 'usl_user',
+		'function'    => '_usl_sc_user',
+		'title'       => __( 'Custom User Information', 'USL' ),
+		'description' => __( 'Get a custom property of the specified user.', 'USL' ),
+		'atts'        => array(
+			'user'     => array(
+				'required' => true,
 			),
-			'render'      => true,
+			'property' => array(
+				'required' => true,
+			),
 		),
-	);
+		'render'      => true,
+	),
+);
 
-	function __construct() {
-
-		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'user';
-			usl_add_shortcode( $shortcode );
-		}
-	}
+foreach ( $_shortcodes as $shortcode ) {
+	$shortcode['category'] = 'user';
+	usl_add_shortcode( $shortcode );
 }
-
-new USL_CoreShortcodes_User();
 
 /**
  * Gets specified current user property.
@@ -749,7 +756,7 @@ function _usl_user_dropdown() {
 			'ID',
 			'display_name',
 		)
-	));
+	) );
 
 	$output = array();
 	foreach ( $users as $user ) {

@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin header will go here.
+ * Plugin header will go here (don't forget the text domain, and the domain path!)
  */
 
 if ( ! class_exists( 'USL' ) ) {
@@ -28,7 +28,25 @@ if ( ! class_exists( 'USL' ) ) {
 		 *
 		 * @var string
 		 */
-		public static $version = '1.0.0';
+		CONST VERSION = '1.0.0';
+
+		/**
+		 * The path to the main plugin file.
+		 *
+		 * @since USL 1.0.0
+		 *
+		 * @var string
+		 */
+		public static $path;
+
+		/**
+		 * The url to the main plugin file.
+		 *
+		 * @since USL 1.0.0
+		 *
+		 * @var string
+		 */
+		public static $url;
 
 		/**
 		 * This is where ALL shortcodes will exist.
@@ -71,24 +89,6 @@ if ( ! class_exists( 'USL' ) ) {
 				'media',
 			),
 		);
-
-		/**
-		 * The path to the main plugin file.
-		 *
-		 * @since USL 1.0.0
-		 *
-		 * @var string
-		 */
-		public static $path;
-
-		/**
-		 * The url to the main plugin file.
-		 *
-		 * @since USL 1.0.0
-		 *
-		 * @var string
-		 */
-		public static $url;
 
 		private function __construct() {
 
@@ -180,7 +180,7 @@ if ( ! class_exists( 'USL' ) ) {
 			// Cycle through all USL categories and shortcodes, requiring category files and adding each shortcode
 			foreach ( self::$_shortcodes_extensions as $type => $categories ) {
 				foreach ( $categories as $category ) {
-					require_once( self::$path . "core/shortcodes/$type/$category.php" );
+					require_once( self::$path . "core/shortcodes/{$type}/{$category}.php" );
 				}
 			}
 		}
@@ -199,6 +199,9 @@ if ( ! class_exists( 'USL' ) ) {
 
 			// Disabled shortcodes
 			add_action( 'init', array( __CLASS__, '_disable_shortcodes' ) );
+
+			// Translations
+			add_action( 'init', array( __CLASS__, 'i18n' ) );
 		}
 
 		/**
@@ -212,42 +215,42 @@ if ( ! class_exists( 'USL' ) ) {
 				'usl',
 				self::$url . "/assets/css/ultimate-shortcodes-library.min.css",
 				null,
-				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
+				defined( 'USL_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_style(
 				'usl-admin',
 				self::$url . "/assets/css/ultimate-shortcodes-library-admin.min.css",
 				null,
-				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
+				defined( 'USL_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_style(
 				'usl-chosen',
 				self::$url . '/includes/chosen/chosen.min.css',
 				null,
-				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
+				defined( 'USL_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_script(
 				'usl',
 				self::$url . "/assets/js/ultimate-shortcodes-library.min.js",
 				array( 'jquery' ),
-				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
+				defined( 'USL_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_script(
 				'usl-admin',
 				self::$url . "/assets/js/ultimate-shortcodes-library-admin.min.js",
 				array( 'jquery' ),
-				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
+				defined( 'USL_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_script(
 				'usl-chosen',
 				self::$url . '/includes/chosen/chosen.jquery.js',
 				array( 'jquery' ),
-				defined( 'USL_DEVELOPMENT' ) ? time() : self::$version
+				defined( 'USL_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 		}
 
@@ -273,6 +276,10 @@ if ( ! class_exists( 'USL' ) ) {
 
 			wp_enqueue_script( 'usl-admin' );
 			wp_enqueue_style( 'usl-admin' );
+		}
+
+		public static function i18n() {
+			load_plugin_textdomain( 'USL', false, self::$path . 'languages' );
 		}
 	}
 

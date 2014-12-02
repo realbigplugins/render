@@ -1,12 +1,13 @@
 <?php
+
 class USL_Widget extends WP_Widget {
 
 	function __construct() {
 		parent::__construct(
 			'usl_widget',
-			'Shortcode',
+			__( 'Shortcode', 'USL' ),
 			array(
-				'description' => 'Adds a shortcode to your sidebar.'
+				'description' => __( 'Adds a shortcode to your sidebar.', 'USL' ),
 			)
 		);
 	}
@@ -38,7 +39,7 @@ class USL_Widget extends WP_Widget {
 		<div class="usl-widget">
 			<p>
 				<label for="<?php echo $this->get_field_id( 'title' ); ?>">
-					Title:
+					<?php _e( 'Title', 'USL' ); ?>:
 				</label>
 				<br/>
 				<input type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" class="widefat"
@@ -47,18 +48,22 @@ class USL_Widget extends WP_Widget {
 			</p>
 
 			<p class="usl-widget-shortcode-preview">
-				<?php echo ! empty( $shortcode_title ) ? $shortcode_title : 'No shortcode yet'; ?>
+				<?php echo ! empty( $shortcode_title ) ? $shortcode_title : __( 'No shortcode yet', 'USL' ); ?>
 			</p>
 
 			<p class="usl-widget-add-shortcode-container">
 			<span class="usl-widget-add-shortcode button">
-				<?php echo empty( $code ) ? 'Add Shortcode' : 'Modify / Remove Shortcode'; ?>
+				<?php echo empty( $code ) ? __( 'Add Shortcode', 'USL' ) : __( 'Modify / Remove Shortcode', 'USL' ); ?>
 			</span>
 			</p>
 
 			<p class="usl-widget-customizer-message" style="display: none;">
-				In order to see a live preview, please use the <a
-					href="/wp-admin/customize.php?return=%2Fwp-admin%2Fwidgets.php">customizer</a>.
+				<?php
+				printf(
+					__( ' In order to see a live preview, please use the %s.', 'USL' ),
+					'<a href="/wp-admin/customize.php?return=%2Fwp-admin%2Fwidgets.php">customizer</a>'
+				);
+				?>
 			</p>
 
 			<input type="hidden" class="usl-widget-shortcode"

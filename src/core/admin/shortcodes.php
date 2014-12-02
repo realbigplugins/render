@@ -75,9 +75,14 @@ class USL_MenuPage extends USL {
 		?>
 		<div class="wrap">
 			<h2>
-				Shortcodes
+				<?php _e( 'Shortcodes', 'USL' ); ?>
 				<?php if ( ! empty( $_GET['s'] ) ) : ?>
-					<span class="subtitle">Search results for &ldquo;<?php echo $_GET['s']; ?>&rdquo;</span>
+					<span class="subtitle">
+						<?php printf(
+							__( 'Search results for %s', 'USL' ),
+							'&ldquo;' . $_GET['s'] . '&rdquo;'
+						); ?>
+					</span>
 				<?php endif; ?>
 			</h2>
 

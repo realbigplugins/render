@@ -1,4 +1,5 @@
 <?php
+// TODO Re-do this page
 class USL_Addons {
 
 	public function __construct() {
@@ -11,8 +12,8 @@ class USL_Addons {
 	public function menu() {
 		add_submenu_page(
 			'view-all-shortcodes',
-			'Shortcode Addons',
-			'Addons',
+			__( 'Shortcode Addons', 'USL' ),
+			__( 'Addons', 'USL' ),
 			'manage_options',
 			'shortcodes-addons',
 			array( $this, 'display' )
@@ -31,12 +32,12 @@ class USL_Addons {
 		// Activate/Deactivate plugins
 		if ( isset( $_GET['usl_activate'] ) ) {
 			activate_plugin( $_GET['usl_activate'] );
-			$this->update_nag( 'Extension activated! Refresh for changes to take effect.' );
+//			$this->update_nag( 'Extension activated! Refresh for changes to take effect.' );
 		}
 
 		if ( isset( $_GET['usl_deactivate'] ) ) {
 			deactivate_plugins( $_GET['usl_deactivate'] );
-			$this->update_nag( 'Extension deactivated! Refresh for changes to take effect.' );
+//			$this->update_nag( 'Extension deactivated! Refresh for changes to take effect.' );
 		}
 
 		// Declare addons

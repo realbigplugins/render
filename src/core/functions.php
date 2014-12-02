@@ -82,7 +82,7 @@ function _usl_get_merged_shortcodes() {
 
 		$_shortcode_tags[ $code ] = wp_parse_args( array(
 			'function' => $shortcode_func,
-			'title' => ucwords( str_replace( '_', ' ', $code ) ),
+			'title' => usl_translate_id_to_name( $code ),
 		), USL::$shortcode_defaults );
 	}
 
@@ -91,10 +91,12 @@ function _usl_get_merged_shortcodes() {
 }
 
 function _usl_get_categories() {
-
-	$shortcodes = _usl_get_merged_shortcodes();
-
-	return array_unique( wp_list_pluck( $shortcodes, 'category' ) );
+	return array_unique(
+		wp_list_pluck(
+			_usl_get_merged_shortcodes(),
+			'category'
+		)
+	);
 }
 
 function usl_translate_id_to_name( $id ) {

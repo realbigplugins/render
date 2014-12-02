@@ -8,159 +8,166 @@
  * @package USL
  * @subpackage Shortcodes
  */
-class USL_CoreShortcodes_Design {
 
-	private $_shortcodes = array(
-		// Button
-		array(
-			'code'        => 'usl_button',
-			'function'    => '_usl_sc_button',
-			'title'       => 'Button',
-			'description' => 'Creates a sweet button',
-			'atts'        => array(
-				'color'       => array(
-					'colorpicker' => array(),
-					'default'     => '#bada55',
-				),
-				'color_hover' => array(
-					'colorpicker' => array(),
-					'default'     => '#84A347',
-				),
-				'font_color'  => array(
-					'colorpicker' => array(),
-					'default'     => '#222',
-				),
-				'size'        => array(
-					'selectbox' => array(
-						'options' => array(
-							'large' => 'Large',
-							'medium' => 'Medium',
-							'small' => 'Small',
-						),
+$_shortcodes = array(
+	// Button
+	array(
+		'code'        => 'usl_button',
+		'function'    => '_usl_sc_button',
+		'title'       => __( 'Button', 'USL' ),
+		'description' => __( 'Creates a sweet button', 'USL' ),
+		'atts'        => array(
+			'color'       => array(
+				'label'       => __( 'Color', 'USL' ),
+				'colorpicker' => array(),
+				'default'     => '#bada55',
+			),
+			'color_hover' => array(
+				'label'       => __( 'Color Hover', 'USL' ),
+				'colorpicker' => array(),
+				'default'     => '#84A347',
+			),
+			'font_color'  => array(
+				'label'       => __( 'Font Color', 'USL' ),
+				'colorpicker' => array(),
+				'default'     => '#222',
+			),
+			'size'        => array(
+				'label'     => __( 'Size', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'large'  => __( 'Large', 'USL' ),
+						'medium' => __( 'Medium', 'USL' ),
+						'small'  => __( 'Small', 'USL' ),
 					),
 				),
-				'shape'       => array(
-					'selectbox' => array(
-						'options' => array(
-							'square' => 'Square',
-							'rounded' => 'Rounded',
-							'circle' => 'Circle',
-						),
+			),
+			'shape'       => array(
+				'label'     => __( 'Shape', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'square'  => __( 'Square', 'USL' ),
+						'rounded' => __( 'Rounded', 'USL' ),
+						'circle'  => __( 'Circle', 'USL' ),
 					),
 				),
-				'link'        => array(
-					'validate' => array(
-						'url:',
+			),
+			'link'        => array(
+				'label'    => __( 'Link', 'USL' ),
+				'validate' => array(
+					'url:',
+				),
+				'sanitize' => array(
+					'url:',
+				),
+			),
+			'icon'        => array(
+				'label'     => __( 'Icon', 'USL' ),
+				'selectbox' => array(
+					'callback'    => '_usl_sc_icon_list',
+					'placeholder' => __( 'Select an icon (no icon by default)', 'USL' ),
+				)
+			),
+		),
+		'wrapping'    => true,
+		'render'      => array(
+			'noStyle'      => true,
+			'dummyContent' => __( 'Button', 'USL' ),
+		),
+	),
+	// Box
+	array(
+		'code'        => 'usl_box',
+		'function'    => '_usl_sc_box',
+		'title'       => __( 'Box', 'USL' ),
+		'description' => __( 'Creates a nice box for your content.', 'USL' ),
+		'atts'        => array(
+			'color'      => array(
+				'label'       => __( 'Color', 'USL' ),
+				'colorpicker' => '',
+			),
+			'font_color' => array(
+				'label'       => __( 'Font Color', 'USL' ),
+				'colorpicker' => '',
+			),
+			'shape'      => array(
+				'label'     => __( 'Shape', 'USL' ),
+				'selectbox' => array(
+					'options' => array(
+						'square'  => __( 'Square', 'USL' ),
+						'rounded' => __( 'Rounded', 'USL' ),
+						'circle'  => __( 'Circle', 'USL' ),
 					),
-					'sanitize' => array(
-						'url:',
-					),
-				),
-				'icon'        => array(
-					'selectbox' => array(
-						'callback' => '_usl_sc_icon_list',
-						'placeholder' => 'Select an icon (no icon by default)',
-					)
 				),
 			),
-			'wrapping'    => true,
-			'render'      => array(
-				'noStyle' => true,
-				'dummyContent' => 'Button',
+			'heading'    => array(
+				'label' => __( 'Heading', 'USL' ),
 			),
 		),
-		// Box
-		array(
-			'code'        => 'usl_box',
-			'function'    => '_usl_sc_box',
-			'title'       => 'Box',
-			'description' => 'Creates a nice box for your content.',
-			'atts'        => array(
-				'color'      => array(
-					'colorpicker' => '',
-				),
-				'font_color' => array(
-					'colorpicker' => '',
-				),
-				'shape'      => array(
-					'accepted_values' => array(
-						'square',
-						'rounded',
-						'round',
-					)
-				),
-				'heading'    => array(),
-			),
-			'wrapping'    => true,
-			'render'      => array(
-				'displayBlock' => true,
-				'noStyle'      => true,
-			),
+		'wrapping'    => true,
+		'render'      => array(
+			'displayBlock' => true,
+			'noStyle'      => true,
 		),
-		// Column 2
-		array(
-			'code'        => 'usl_column_two',
-			'function'    => '_usl_sc_column_two',
-			'title'       => 'Column 2',
-			'description' => 'Creates a nice column that is half the width of the container.',
-			'wrapping'    => true,
-			'render'      => array(
-				'noStyle'      => true,
-				'displayBlock' => true,
-				'allowNesting' => true,
-			),
+	),
+	// Column 2
+	array(
+		'code'        => 'usl_column_two',
+		'function'    => '_usl_sc_column_two',
+		'title'       => __( 'Column 2', 'USL' ),
+		'description' => __( 'Creates a nice column that is half the width of the container.', 'USL' ),
+		'wrapping'    => true,
+		'render'      => array(
+			'noStyle'      => true,
+			'displayBlock' => true,
+			'allowNesting' => true,
 		),
-		// Column 3
-		array(
-			'code'        => 'usl_column_three',
-			'function'    => '_usl_sc_column_three',
-			'title'       => 'Column 3',
-			'description' => 'Creates a nice column that is a third the width of the container.',
-			'wrapping'    => true,
-			'render'      => array(
-				'noStyle'      => true,
-				'displayBlock' => true,
-				'allowNesting' => true,
-			),
+	),
+	// Column 3
+	array(
+		'code'        => 'usl_column_three',
+		'function'    => '_usl_sc_column_three',
+		'title'       => __( 'Column 3', 'USL' ),
+		'description' => __( 'Creates a nice column that is a third the width of the container.', 'USL' ),
+		'wrapping'    => true,
+		'render'      => array(
+			'noStyle'      => true,
+			'displayBlock' => true,
+			'allowNesting' => true,
 		),
-		// Column 4
-		array(
-			'code'        => 'usl_column_four',
-			'function'    => '_usl_sc_column_four',
-			'title'       => 'Column 4',
-			'description' => 'Creates a nice column that is a quarter the width of the container.',
-			'wrapping'    => true,
-			'render'      => array(
-				'noStyle'      => true,
-				'displayBlock' => true,
-				'allowNesting' => true,
-			),
+	),
+	// Column 4
+	array(
+		'code'        => 'usl_column_four',
+		'function'    => '_usl_sc_column_four',
+		'title'       => __( 'Column 4', 'USL' ),
+		'description' => __( 'Creates a nice column that is a quarter the width of the container.', 'USL' ),
+		'wrapping'    => true,
+		'render'      => array(
+			'noStyle'      => true,
+			'displayBlock' => true,
+			'allowNesting' => true,
 		),
-		// Column 5
-		array(
-			'code'        => 'usl_column_five',
-			'function'    => '_usl_sc_column_five',
-			'title'       => 'Column 5',
-			'description' => 'Creates a nice column that is a fifth the width of the container.',
-			'wrapping'    => true,
-			'render'      => array(
-				'noStyle'      => true,
-				'displayBlock' => true,
-				'allowNesting' => true,
-			),
-		)
-	);
+	),
+	// Column 5
+	array(
+		'code'        => 'usl_column_five',
+		'function'    => '_usl_sc_column_five',
+		'title'       => __( 'Column 5', 'USL' ),
+		'description' => __( 'Creates a nice column that is a fifth the width of the container.', 'USL' ),
+		'wrapping'    => true,
+		'render'      => array(
+			'noStyle'      => true,
+			'displayBlock' => true,
+			'allowNesting' => true,
+		),
+	)
+);
 
-	function __construct() {
-
-		foreach ( $this->_shortcodes as $shortcode ) {
-			$shortcode['category'] = 'design';
-			usl_add_shortcode( $shortcode );
-		}
-	}
+foreach ( $_shortcodes as $shortcode ) {
+	$shortcode['category'] = 'design';
+	usl_add_shortcode( $shortcode );
 }
-
-new USL_CoreShortcodes_Design();
 
 /**
  * Wraps the content within a styled button.
@@ -534,9 +541,9 @@ function _usl_sc_icon_list() {
 	$output = array();
 	foreach ( $icons as $icon ) {
 		// FIXME Icon not output correct (look on button)
-		$output[ "dashicons-$icon" ] = array(
+		$output["dashicons-$icon"] = array(
 			'label' => usl_translate_id_to_name( str_replace( 'admin-', '', $icon ) ),
-			'icon' => "dashicons dashicons-$icon",
+			'icon'  => "dashicons dashicons-$icon",
 		);
 	}
 
