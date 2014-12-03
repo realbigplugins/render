@@ -85,7 +85,7 @@ if ( ! class_exists( 'USL' ) ) {
 				'site',
 				'time',
 				'user',
-				'logic',
+				'visibility',
 			),
 			'wordpress' => array(
 				'media',

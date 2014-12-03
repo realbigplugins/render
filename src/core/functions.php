@@ -120,3 +120,42 @@ function usl_esc_atts( $atts ) {
 
 	return $atts;
 }
+
+function usl_associative_atts( $atts, $keyname ) {
+
+	$output = array();
+
+	// Cycle through all atts
+	foreach ( $atts as $name => $value ) {
+
+		// Skip if not a keyname
+		if ( $name !== $keyname ) {
+			continue;
+		}
+
+		// Decode our fields into an array
+		$fields = json_decode( $value, true );
+
+		// Cycle through each field and get the total count and make them arrays
+		$count = 0;
+		foreach ( $fields as $field_name => $field_values ) {
+
+			$exploded_values       = explode( ',', $field_values );
+			$fields[ $field_name ] = $exploded_values;
+			$count                 = count( $exploded_values );
+		}
+
+		// Cycle through the total count (number of fields) and build each field's value array
+		for ( $i = 0; $i < $count; $i ++ ) {
+
+			$array = array();
+			foreach ( $fields as $field_name => $field_values ) {
+				$array[ $field_name ] = $field_values[ $i ];
+			}
+
+			$output[] = $array;
+		}
+	}
+
+	return $output;
+}

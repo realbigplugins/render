@@ -256,15 +256,17 @@ var USL_tinymce;
 
         visualToLiteral: function (shortcode) {
 
-            var atts = USL_MCECallbacks.getVisualAtts(shortcode),
-                shortcode_content = USL_MCECallbacks.getVisualContent(shortcode),
-                code = USL_MCECallbacks.getVisualCode(shortcode),
-                output = '[' + code;
+            var code = $(shortcode).attr('data-code'),
+                atts = $(shortcode).attr('data-atts'),
+                shortcode_content = $(shortcode).find('.usl-tinymce-shortcode-content').html();
+
+            var output = '[' + code;
 
             if (atts) {
+                atts = JSON.parse(atts.replace(/&quot;/g, '"'));
                 $.each(atts, function (name, value) {
                     if (value.length) {
-                        output += ' ' + name + '="' + value + '"';
+                        output += ' ' + name + '=\'' + value + '\'';
                     }
                 });
             }

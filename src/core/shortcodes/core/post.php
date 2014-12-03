@@ -18,8 +18,9 @@ $_shortcodes = array(
 		'description' => __( 'Displays the ID of the post.', 'USL' ),
 		'atts'        => array(
 			'post' => array(
-				'label' => __( 'Post', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Post', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'callback'    => '_usl_sc_post_list',
 					'placeholder' => __( 'Defaults to the current post.', 'USL' ),
 				),
@@ -35,8 +36,9 @@ $_shortcodes = array(
 		'description' => __( 'Displays the author of the post.', 'USL' ),
 		'atts'        => array(
 			'post' => array(
-				'label' => __( 'Post', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Post', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'callback'    => '_usl_sc_post_list',
 					'placeholder' => __( 'Defaults to the current post.', 'USL' ),
 				),
@@ -52,8 +54,9 @@ $_shortcodes = array(
 		'description' => __( 'Displays the title of the post.', 'USL' ),
 		'atts'        => array(
 			'post' => array(
-				'label' => __( 'Post', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Post', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'callback'    => '_usl_sc_post_list',
 					'placeholder' => __( 'Defaults to the current post.', 'USL' ),
 				),
@@ -69,7 +72,7 @@ $_shortcodes = array(
 		'description' => __( 'Outputs the total word count for the post.', 'USL' ),
 		'atts'        => array(
 			'post' => array(
-				'label' => __( 'Post', 'USL' ),
+				'label'       => __( 'Post', 'USL' ),
 				'description' => __( 'NOTE: To update the word count, update the post.', 'USL' ),
 				'selectbox'   => array(
 					'callback'    => '_usl_sc_post_list',
@@ -87,8 +90,9 @@ $_shortcodes = array(
 		'description' => __( 'Displays the published date of the post.', 'USL' ),
 		'atts'        => array(
 			'post' => array(
-				'label' => __( 'Post', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Post', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'callback'    => '_usl_sc_post_list',
 					'placeholder' => __( 'Defaults to the current post.', 'USL' ),
 				),
@@ -104,8 +108,9 @@ $_shortcodes = array(
 		'description' => __( 'Displays the status of the post.', 'USL' ),
 		'atts'        => array(
 			'post' => array(
-				'label' => __( 'Post', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Post', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'callback'    => '_usl_sc_post_list',
 					'placeholder' => __( 'Defaults to the current post.', 'USL' ),
 				),
@@ -121,8 +126,9 @@ $_shortcodes = array(
 		'description' => __( 'Displays the type of the post.', 'USL' ),
 		'atts'        => array(
 			'post' => array(
-				'label' => __( 'Post', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Post', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'callback'    => '_usl_sc_post_list',
 					'placeholder' => __( 'Defaults to the current post.', 'USL' ),
 				),
@@ -137,8 +143,9 @@ $_shortcodes = array(
 		'description' => __( 'Displays the excerpt of the post.', 'USL' ),
 		'atts'        => array(
 			'post' => array(
-				'label' => __( 'Post', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Post', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'callback'    => '_usl_sc_post_list',
 					'placeholder' => __( 'Defaults to the current post.', 'USL' ),
 				),
@@ -150,7 +157,7 @@ $_shortcodes = array(
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'post';
-	$shortcode['source'] = 'Ultimate Shortcodes Library';
+	$shortcode['source']   = 'Ultimate Shortcodes Library';
 	usl_add_shortcode( $shortcode );
 }
 

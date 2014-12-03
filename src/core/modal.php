@@ -2,6 +2,16 @@
 
 class USL_Modal {
 
+	public static $types = array(
+		'textbox',
+		'textarea',
+		'checkbox',
+		'selectbox',
+		'slider',
+		'colorpicker',
+		'repeater',
+	);
+
 	public function __construct() {
 
 		add_action( 'usl_localized_data', array( __CLASS__, 'localize_shortcodes' ) );
@@ -51,16 +61,8 @@ class USL_Modal {
 			$att = apply_filters( 'usl_att_loop', $att, $att_id, $advanced, $wrapping );
 
 			if ( ( ! $advanced && ! isset( $att['advanced'] ) ) || $advanced && isset( $att['advanced'] ) ) :
-				$type = null;
-				if ( isset( $att['slider'] ) ) {
-					$type = 'slider';
-				} elseif ( isset( $att['colorpicker'] ) ) {
-					$type = 'colorpicker';
-				} elseif ( isset( $att['selectbox'] ) ) {
-					$type = 'selectbox';
-				} else {
-					$type = 'textbox';
-				}
+
+				$type = isset( $att['type'] ) ? $att['type'] : 'textbox';
 
 				// Validation
 				if ( ! isset( $att['validate'] ) ) {
@@ -85,23 +87,22 @@ class USL_Modal {
 
 						<?php
 						// Output the att field
-						if ( isset( $att['textarea'] ) ) {
-							self::att_type_textarea( $att_id, $att, $att['textarea'] );
-						} elseif ( isset( $att['selectbox'] ) ) {
-							self::att_type_selectbox( $att_id, $att, $att['selectbox'] );
-						} elseif ( isset( $att['slider'] ) ) {
-							self::att_type_slider( $att_id, $att, $att['slider'] );
-						} elseif ( isset( $att['colorpicker'] ) ) {
-							self::att_type_colorpicker( $att_id, $att, $att['colorpicker'] );
+						if ( is_callable( array( __CLASS__, "att_type_$type" ) ) ) {
+							call_user_func(
+								array( __CLASS__, "att_type_$type" ),
+								$att_id,
+								$att,
+								isset( $att['properties'] ) ? $att['properties'] : array()
+							);
 						} else {
-							self::att_type_textbox( $att_id, $att, isset( $att['textbox'] ) ? $att['textbox'] : array() );
+							echo 'ERROR: Not a valid attribute type!';
 						}
 						?>
 
 						<div class="usl-modal-att-errormsg"></div>
 
 						<?php if ( isset( $att['description'] ) ) : ?>
-							<p class="description">
+							<p class="usl-modal-att-description">
 								<?php echo $att['description']; ?>
 							</p>
 						<?php endif; ?>
@@ -111,24 +112,24 @@ class USL_Modal {
 		<?php endforeach;
 	}
 
-	private static function att_type_textbox( $att_name, $att, $properties = array() ) {
+	private static function att_type_textbox( $att_id, $att, $properties = array() ) {
 		?>
 		<input type="text" class="usl-modal-att-input"
 		       placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : ''; ?>"
 		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
-		       name="<?php echo $att_name; ?>"/>
+		       name="<?php echo $att_id; ?>"/>
 	<?php
 	}
 
-	private static function att_type_textarea( $att_name, $att ) {
+	private static function att_type_textarea( $att_id, $att ) {
 		?>
-		<textarea class="usl-modal-att-input" name="<?php echo $att_name; ?>"><?php
+		<textarea class="usl-modal-att-input" name="<?php echo $att_id; ?>"><?php
 			echo isset( $att['default'] ) ? $att['default_value'] : '';
 			?></textarea>
 	<?php
 	}
 
-	private static function att_type_selectbox( $att_name, $att, $properties ) {
+	private static function att_type_selectbox( $att_id, $att, $properties ) {
 
 		// If a callback is provided, use that to populate options
 		if ( isset( $properties['callback'] ) && is_callable( $properties['callback'] ) ) {
@@ -145,6 +146,7 @@ class USL_Modal {
 
 		if ( empty( $properties['options'] ) ) {
 			echo 'No options!';
+
 			return;
 		}
 
@@ -161,9 +163,10 @@ class USL_Modal {
 		}
 		?>
 
-		<select name="<?php echo $att_name; ?>"
+		<select name="<?php echo $att_id; ?>"
 		        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select one'; ?>"
-		        class="usl-modal-att-input <?php echo $chosen; ?>">
+		        class="usl-modal-att-input <?php echo $chosen; ?>"
+			<?php echo isset( $properties['multi'] ) ? 'multiple' : ''; ?>>
 
 			<?php // Necessary for starting with nothing selected ?>
 			<option></option>
@@ -216,7 +219,7 @@ class USL_Modal {
 	<?php
 	}
 
-	private static function att_type_slider( $att_name, $att, $properties ) {
+	private static function att_type_slider( $att_id, $att, $properties ) {
 
 		// Default value support
 		if ( isset( $att['default'] ) ) {
@@ -230,18 +233,100 @@ class USL_Modal {
 		?>
 		<input type="text" class="usl-modal-att-slider-value usl-modal-att-input"
 		       value="<?php echo isset( $att['default'] ) ? $att['default'] : '0'; ?>"
-		       name="<?php echo $att_name; ?>"/>
+		       name="<?php echo $att_id; ?>"/>
 		<div class="usl-modal-att-slider" <?php echo $data; ?>></div>
 	<?php
 	}
 
-	private static function att_type_colorpicker( $att_name, $att ) {
+	private static function att_type_colorpicker( $att_id, $att ) {
 		?>
 		<input type="text"
 		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
 		       class="usl-modal-att-colorpicker usl-modal-att-input"
-		       name="<?php echo $att_name; ?>"/>
+		       name="<?php echo $att_id; ?>"/>
 	<?php
+	}
+
+	private static function att_type_counter( $att_id, $att, $properties ) {
+		?>
+		<div class="usl-modal-counter-container">
+			<div class="usl-modal-counter-down usl-modal-button dashicons dashicons-minus"></div>
+
+			<input type="text"
+			       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+			       class="usl-modal-att-counter usl-modal-att-input"
+			       name="<?php echo $att_id; ?>"
+			       data-min="<?php echo isset( $properties['min'] ) ? $properties['min'] : 0; ?>"
+			       data-max="<?php echo isset( $properties['max'] ) ? $properties['max'] : 1000; ?>"
+			       data-step="<?php echo isset( $properties['step'] ) ? $properties['step'] : 1; ?>"
+			       data-shift-step="<?php echo isset( $properties['shift_step'] ) ? $properties['shift_step'] : 10; ?>"
+				/>
+
+			<div class="usl-modal-counter-up usl-modal-button dashicons dashicons-plus"></div>
+		</div>
+	<?php
+	}
+
+	private static function att_type_repeater( $att_id, $att, $properties ) {
+
+		// Setup defaults
+		$defaults   = array(
+			'fields'    => false,
+			'startWith' => 1,
+		);
+		$properties = wp_parse_args( $properties, $defaults );
+
+		if ( ! $properties['fields'] ) {
+			echo 'ERROR: No fields set!';
+
+			return;
+		}
+
+		for ( $i = 0; $i < intval( $properties['startWith'] ); $i ++ ) :
+			?>
+			<div class="usl-modal-repeater-field">
+				<div class="usl-modal-repeater-inputs">
+					<?php
+					foreach ( $properties['fields'] as $_att_id => $_att ) :
+
+						// Defaults for the att
+						$_defaults = array(
+							'type' => 'textbox',
+						);
+						$_att      = wp_parse_args( $_att, $_defaults );
+
+						if ( $_att['type'] === 'repeater' ) {
+							echo 'ERROR: Repeaters cannot be nested inside repeaters!';
+							continue;
+						}
+
+						if ( isset( $_att['label'] ) ) :
+							?>
+							<p class="usl-modal-repeater-label">
+								<?php echo $_att['label']; ?>
+							</p>
+						<?php
+						endif;
+
+						// Output the att field
+						call_user_func(
+							array( __CLASS__, "att_type_$_att[type]" ),
+							"[{$att_id}][{$_att_id}]:repeater",
+							$_att,
+							isset( $_att['properties'] ) ? $_att['properties'] : array()
+						);
+					endforeach;
+					?>
+				</div>
+
+				<div class="usl-modal-repeater-actions">
+						<span
+							class="usl-modal-repeater-remove usl-modal-button dashicons dashicons-minus <?php echo $i == 0 ? 'hidden' : ''; ?>"></span>
+					<span class="usl-modal-repeater-add usl-modal-button dashicons dashicons-plus"></span>
+				</div>
+			</div>
+		<?php
+		endfor;
 	}
 
 	public static function output() {
@@ -262,14 +347,14 @@ class USL_Modal {
 		}
 
 		$category_icons = apply_filters( 'usl_modal_category_icons', array(
-			'all'    => 'dashicons-tagcloud',
-			'design' => 'dashicons-admin-appearance',
-			'post'   => 'dashicons-admin-post',
-			'site'   => 'dashicons-admin-home',
-			'time'   => 'dashicons-clock',
-			'user'   => 'dashicons-admin-users',
-			'media'  => 'dashicons-admin-media',
-			'logic'  => 'dashicons-randomize',
+			'all'        => 'dashicons-tagcloud',
+			'design'     => 'dashicons-admin-appearance',
+			'post'       => 'dashicons-admin-post',
+			'site'       => 'dashicons-admin-home',
+			'time'       => 'dashicons-clock',
+			'user'       => 'dashicons-admin-users',
+			'media'      => 'dashicons-admin-media',
+			'visibility' => 'dashicons-visibility',
 		) );
 		?>
 		<div id="usl-modal-backdrop"></div>
@@ -399,7 +484,8 @@ class USL_Modal {
 					<input type="submit" value="<?php _e( 'Add Shortcode', 'USL' ); ?>" class="button button-primary"
 					       id="usl-modal-submit" name="usl-modal-submit">
 
-					<input type="submit" value="<?php _e( 'Remove Shortcode', 'USL' ); ?>" class="button-secondary delete"
+					<input type="submit" value="<?php _e( 'Remove Shortcode', 'USL' ); ?>"
+					       class="button-secondary delete"
 					       id="usl-modal-remove"/>
 					<?php do_action( 'usl_modal_action_area' ); ?>
 				</div>

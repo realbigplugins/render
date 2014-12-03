@@ -16,14 +16,16 @@ $_shortcodes = array(
 		'description' => __( 'It\'s super easy to embed videos, images, tweets, audio, and other content into your WordPress site', 'USL' ),
 		'atts'        => array(
 			'width'  => array(
-				'label'  => __( 'Width', 'USL' ),
-				'slider' => array(
+				'label'      => __( 'Width', 'USL' ),
+				'type'       => 'slider',
+				'properties' => array(
 					'max' => 2000,
 				),
 			),
 			'height' => array(
-				'label'  => __( 'Height', 'USL' ),
-				'slider' => array(
+				'label'      => __( 'Height', 'USL' ),
+				'type'       => 'slider',
+				'properties' => array(
 					'max' => 2000,
 				),
 			),
@@ -43,8 +45,9 @@ $_shortcodes = array(
 				'label' => __( 'Class', 'USL' ),
 			),
 			'align' => array(
-				'label'     => __( 'Align', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Align', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'alignnone'   => __( 'None', 'USL' ),
 						'aligncenter' => __( 'Center', 'USL' ),
@@ -70,8 +73,9 @@ $_shortcodes = array(
 				'required' => true,
 			),
 			'orderby'    => array(
-				'label'     => __( 'Order By', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Order By', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'menu_order' => __( 'Menu Order', 'USL' ),
 						'title'      => __( 'Title', 'USL' ),
@@ -82,8 +86,9 @@ $_shortcodes = array(
 				),
 			),
 			'order'      => array(
-				'label'     => __( 'Order', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Order', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'ASC' => __( 'Ascending', 'USL' ),
 						'DSC' => __( 'Descending', 'USL' ),
@@ -130,7 +135,7 @@ $_shortcodes = array(
 		'atts'        => array(
 			'type'         => array(
 				'label'     => __( 'Type', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'audio' => __( 'Audio', 'USL' ),
 						'video' => __( 'Video', 'USL' ),
@@ -139,7 +144,7 @@ $_shortcodes = array(
 			),
 			'orderby'      => array(
 				'label'     => __( 'Order By', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'menu_order' => __( 'Menu Order', 'USL' ),
 						'title'      => __( 'Title', 'USL' ),
@@ -151,7 +156,7 @@ $_shortcodes = array(
 			),
 			'order'        => array(
 				'label'     => __( 'Order', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties'=> array(
 					'options' => array(
 						'ASC' => __( 'Ascending', 'USL' ),
 						'DSC' => __( 'Descending', 'USL' ),
@@ -170,7 +175,7 @@ $_shortcodes = array(
 			),
 			'style'        => array(
 				'label'     => __( 'Style', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'light' => __( 'Light', 'USL' ),
 						'dark'  => __( 'Dark', 'USL' ),
@@ -179,7 +184,7 @@ $_shortcodes = array(
 			),
 			'tracklist'    => array(
 				'label'     => __( 'Track List', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'true'  => __( 'True', 'USL' ),
 						'false' => __( 'False', 'USL' ),
@@ -188,7 +193,7 @@ $_shortcodes = array(
 			),
 			'tracknumbers' => array(
 				'label'     => __( 'Track Numbers', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'true'  => __( 'True', 'USL' ),
 						'false' => __( 'False', 'USL' ),
@@ -197,7 +202,7 @@ $_shortcodes = array(
 			),
 			'images'       => array(
 				'label'     => __( 'Images', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'true'  => __( 'True', 'USL' ),
 						'false' => __( 'False', 'USL' ),
@@ -206,7 +211,7 @@ $_shortcodes = array(
 			),
 			'artists'      => array(
 				'label'     => __( 'Artists', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'true'  => __( 'True', 'USL' ),
 						'false' => __( 'False', 'USL' ),
@@ -227,7 +232,7 @@ $_shortcodes = array(
 			),
 			'loop'     => array(
 				'label'     => __( 'Loop', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'off' => __( 'Off', 'USL' ),
 						'on'  => __( 'Onf', 'USL' ),
@@ -236,7 +241,7 @@ $_shortcodes = array(
 			),
 			'autoplay' => array(
 				'label'     => __( 'Autoplay', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'off' => __( 'Off', 'USL' ),
 						'on'  => __( 'Onf', 'USL' ),
@@ -245,7 +250,7 @@ $_shortcodes = array(
 			),
 			'preload'  => array(
 				'label'     => __( 'Pre Load', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'metadata' => __( 'Metadata', 'USL' ),
 						'none'     => __( 'None', 'USL' ),
@@ -270,7 +275,7 @@ $_shortcodes = array(
 			),
 			'loop'     => array(
 				'label'     => __( 'Loop', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'off' => __( 'Off', 'USL' ),
 						'on'  => __( 'On', 'USL' ),
@@ -279,7 +284,7 @@ $_shortcodes = array(
 			),
 			'autoplay' => array(
 				'label'     => __( 'Auto Play', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'propreties' => array(
 					'options' => array(
 						'off' => __( 'Off', 'USL' ),
 						'on'  => __( 'On', 'USL' ),
@@ -288,7 +293,7 @@ $_shortcodes = array(
 			),
 			'preload'  => array(
 				'label'     => __( 'Pre Load', 'USL' ),
-				'selectbox' => array(
+				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'metadata' => __( 'Metadata', 'USL' ),
 						'none'     => __( 'None', 'USL' ),
@@ -308,6 +313,6 @@ $_shortcodes = array(
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'media';
-	$shortcode['source'] = 'WordPress';
+	$shortcode['source']   = 'WordPress';
 	usl_add_shortcode( $shortcode );
 }

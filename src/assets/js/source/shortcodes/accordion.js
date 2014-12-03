@@ -10,7 +10,6 @@ var USL_Accordion;
 (function ($) {
     USL_Accordion = {
         init: function () {
-alert ('ya!');
             $('.usl-accordion-heading').click(function () {
 
                 var $content = $(this).siblings('.usl-accordion-content'),

@@ -53,7 +53,7 @@ var USL_MCECallbacks;
                     atts = JSON.parse(atts);
                     var _atts = '';
                     $.each(atts, function (name, value) {
-                        _atts += ' ' + name + '="' + value + '"';
+                        _atts += ' ' + name + '=\'' + value + '\'';
                     });
                     output += _atts;
                 }
@@ -136,33 +136,6 @@ var USL_MCECallbacks;
             var matches = shortcode.match(/\[(.*?)(?=\s|])/);
 
             return matches !== null ? matches[1] : false;
-        },
-
-        getVisualAtts: function (shortcode) {
-
-            var atts = shortcode.match(/<[span|div].*?class="usl-tinymce-shortcode-wrapper.*?data-atts="(.*?)".*?>/i);
-
-            if (atts && atts[1]) {
-                return JSON.parse(atts[1].replace(/&quot;/ig, '"'));
-            } else {
-                return false;
-            }
-        },
-
-        getVisualContent: function (shortcode) {
-
-            var content = shortcode.match(/<[span|div].*?class="usl-tinymce-shortcode-wrapper.*?data-content="(.*?)".*?>/i);
-
-            if (content) {
-                return content[1];
-            } else {
-                return false;
-            }
-        },
-
-        getVisualCode: function (shortcode) {
-            var code = shortcode.match(/<[span|div].*?class="usl-tinymce-shortcode-wrapper.*?data-code="(.*?)".*?>/i);
-            return code[1];
         },
 
         showContent: function (content, classes) {

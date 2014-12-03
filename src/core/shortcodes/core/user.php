@@ -18,8 +18,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the full name of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -35,8 +36,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the first name of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -52,8 +54,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the last name of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -69,8 +72,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the username of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -86,8 +90,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the email of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -103,8 +108,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the display name of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -120,8 +126,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the ID of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -137,8 +144,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the author URL of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -154,14 +162,15 @@ $_shortcodes = array(
 		'description' => __( 'Get the date the specified user registered.', 'USL' ),
 		'atts'        => array(
 			'user'   => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
 			),
 			'format' => array(
-				'label' => __( 'Format', 'USL' ),
+				'label'   => __( 'Format', 'USL' ),
 				'default' => 'F jS, Y',
 			),
 		),
@@ -175,8 +184,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the description of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -192,8 +202,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the role of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -209,8 +220,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the capabilities of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -226,8 +238,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the admin theme of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -243,8 +256,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the primary blog of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -260,8 +274,9 @@ $_shortcodes = array(
 		'description' => __( 'Get the source domain of the specified user.', 'USL' ),
 		'atts'        => array(
 			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
@@ -276,15 +291,16 @@ $_shortcodes = array(
 		'title'       => __( 'Custom User Information', 'USL' ),
 		'description' => __( 'Get a custom property of the specified user.', 'USL' ),
 		'atts'        => array(
-			'user' => array(
-				'label' => __( 'User', 'USL' ),
-				'selectbox' => array(
+			'user'     => array(
+				'label'      => __( 'User', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'placeholder' => __( 'Defaults to the current user', 'USL' ),
 					'callback'    => '_usl_user_dropdown',
 				),
 			),
 			'property' => array(
-				'label' => __( 'Property', 'USL' ),
+				'label'    => __( 'Property', 'USL' ),
 				'required' => true,
 			),
 		),
@@ -294,7 +310,7 @@ $_shortcodes = array(
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'user';
-	$shortcode['source'] = 'Ultimate Shortcodes Library';
+	$shortcode['source']   = 'Ultimate Shortcodes Library';
 	usl_add_shortcode( $shortcode );
 }
 

@@ -29,7 +29,7 @@ $_shortcodes = array(
 			'noStyle'      => true,
 		),
 		//
-		'noDisplay' => true,
+		'noDisplay'   => true,
 	),
 	// Accordion section
 	array(
@@ -48,24 +48,26 @@ $_shortcodes = array(
 		'description' => __( 'Creates a sweet button', 'USL' ),
 		'atts'        => array(
 			'color'       => array(
-				'label'       => __( 'Color', 'USL' ),
-				'colorpicker' => array(),
-				'default'     => '#bada55',
+				'label'   => __( 'Color', 'USL' ),
+				'type'    => 'colorpicker',
+				'default' => '#bada55',
 			),
 			'color_hover' => array(
-				'label'       => __( 'Color Hover', 'USL' ),
-				'colorpicker' => array(),
-				'default'     => '#84A347',
+				'label'   => __( 'Color Hover', 'USL' ),
+				'type'    => 'colorpicker',
+				'default' => '#84A347',
 			),
 			'font_color'  => array(
-				'label'       => __( 'Font Color', 'USL' ),
-				'colorpicker' => array(),
-				'default'     => '#222',
+				'label'   => __( 'Font Color', 'USL' ),
+				'type'    => 'colorpicker',
+				'default' => '#222',
 			),
 			'size'        => array(
-				'label'     => __( 'Size', 'USL' ),
-				'selectbox' => array(
-					'options' => array(
+				'label'      => __( 'Size', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
+					'placeholder' => __( 'Medium', 'USL' ),
+					'options'     => array(
 						'large'  => __( 'Large', 'USL' ),
 						'medium' => __( 'Medium', 'USL' ),
 						'small'  => __( 'Small', 'USL' ),
@@ -73,9 +75,11 @@ $_shortcodes = array(
 				),
 			),
 			'shape'       => array(
-				'label'     => __( 'Shape', 'USL' ),
-				'selectbox' => array(
-					'options' => array(
+				'label'      => __( 'Shape', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
+					'placeholder' => __( 'Square', 'USL' ),
+					'options'     => array(
 						'square'  => __( 'Square', 'USL' ),
 						'rounded' => __( 'Rounded', 'USL' ),
 						'circle'  => __( 'Circle', 'USL' ),
@@ -92,8 +96,9 @@ $_shortcodes = array(
 				),
 			),
 			'icon'        => array(
-				'label'     => __( 'Icon', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Icon', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'callback'    => '_usl_sc_icon_list',
 					'allowIcons'  => true,
 					'placeholder' => __( 'Select an icon (no icon by default)', 'USL' ),
@@ -114,16 +119,17 @@ $_shortcodes = array(
 		'description' => __( 'Creates a nice box for your content.', 'USL' ),
 		'atts'        => array(
 			'color'      => array(
-				'label'       => __( 'Color', 'USL' ),
-				'colorpicker' => '',
+				'label' => __( 'Color', 'USL' ),
+				'type'  => 'colorpicker',
 			),
 			'font_color' => array(
-				'label'       => __( 'Font Color', 'USL' ),
-				'colorpicker' => '',
+				'label' => __( 'Font Color', 'USL' ),
+				'type'  => 'colorpicker',
 			),
 			'shape'      => array(
-				'label'     => __( 'Shape', 'USL' ),
-				'selectbox' => array(
+				'label'      => __( 'Shape', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'square'  => __( 'Square', 'USL' ),
 						'rounded' => __( 'Rounded', 'USL' ),

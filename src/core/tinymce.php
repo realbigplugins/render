@@ -31,6 +31,7 @@ class USL_tinymce extends USL {
 		add_action( 'usl_localized_data', array( __CLASS__, 'loading_messages' ) );
 		add_action( 'usl_localized_data', array( $this, 'rendering_data' ) );
 		add_action( 'usl_localized_data', array( __CLASS__, 'tinymce_external_scripts' ) );
+		add_action( 'usl_localized_data', array( __CLASS__, 'shortcode_regex' ) );
 	}
 
 	/**
@@ -57,6 +58,12 @@ class USL_tinymce extends USL {
 	public static function tinymce_external_scripts( $data ) {
 
 		$data['tinymceExternalScripts'][] = self::$url . '/assets/js/ultimate-shortcodes-library.min.js';
+		return $data;
+	}
+
+	public static function shortcode_regex( $data ) {
+
+		$data['shortcode_regex'] = get_shortcode_regex();
 		return $data;
 	}
 

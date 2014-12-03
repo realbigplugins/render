@@ -276,6 +276,7 @@ var USL_Modal;
                 var att_type = $(this).attr('data-att-type'),
                     attObj;
 
+                // Initialize each type of att (this is as big one!)
                 switch (att_type) {
                     case 'selectbox':
 
@@ -288,6 +289,7 @@ var USL_Modal;
                         $chosen.chosen({
                             width: '100%',
                             search_contains: true,
+                            allow_single_deselect: true,
                             disable_search: $chosen.hasClass('allow-icons')
                         });
 
@@ -321,15 +323,6 @@ var USL_Modal;
                                 );
                             });
                         }
-
-                        // Extend functionality to allow input to be cleared easily
-                        $container.find('.chosen-container').append(
-                            '<div class="usl-chosen-clear dashicons dashicons-no"></div>'
-                        );
-
-                        $container.find('.usl-chosen-clear').click(function () {
-                            $chosen.val('').trigger('chosen:updated');
-                        });
 
                         // Extend functionality to allow custom text input (if enabled on input)
                         // TODO Find a way to allow searching of option values as well as text
@@ -387,7 +380,92 @@ var USL_Modal;
 
                         attObj = new Slider($(this));
                         break;
+
+                    case 'counter':
+
+                        attObj = new Counter($(this));
+
+                        var shift_down = false,
+                            $input = $(this).find('.usl-modal-att-counter'),
+                            $button_up = $(this).find('.usl-modal-counter-up'),
+                            $button_down = $(this).find('.usl-modal-counter-down'),
+                            min = parseInt($input.attr('data-min')),
+                            max = parseInt($input.attr('data-max')),
+                            step = parseInt($input.attr('data-step')),
+                            shift_step = parseInt($input.attr('data-shift-step'));
+
+                        // If holding shift, let us know so we can use the shift_step later
+                        $(document).keydown(function (e) {
+                            if (e.which === 16) {
+                                shift_down = true;
+                            }
+                        });
+
+                        $(document).keyup(function (e) {
+                            if (e.which === 16) {
+                                shift_down = false;
+                            }
+                        });
+
+                        // Click on the "+"
+                        $(this).find('.usl-modal-counter-up').click(function () {
+                            $input.val(parseInt($input.val()) + (shift_down ? shift_step : step));
+                            $input.change();
+                        });
+
+                        // Click on the "-"
+                        $(this).find('.usl-modal-counter-down').click(function () {
+                            $input.val(parseInt($input.val()) - (shift_down ? shift_step : step));
+                            $input.change();
+                        });
+
+                        // Keep the number within its limits
+                        $input.change(function () {
+
+                            if (parseInt($(this).val()) > max) {
+
+                                $(this).val(max);
+                                $button_up.addClass('disabled');
+                                $button_down.removeClass('disabled');
+                            } else if (parseInt($(this).val()) < min) {
+
+                                $(this).val(min);
+                                $button_down.addClass('disabled');
+                                $button_up.removeClass('disabled');
+                            } else {
+                                $button_up.removeClass('disabled');
+                                $button_down.removeClass('disabled');
+                            }
+                        });
+
+                        break;
+
+                    case 'repeater':
+
+                        attObj = new Repeater($(this));
+
+                        $container = $(this).find('.usl-modal-att-field');
+
+                        // Add a new field after on pressing the "+"
+                        $container.find('.usl-modal-repeater-add').click(function () {
+
+                            var $field = $(this).closest('.usl-modal-repeater-field'),
+                                $clone = $field.clone(true);
+
+                            $clone.find('.usl-modal-att-input').val('');
+                            $clone.find('.usl-modal-repeater-remove.hidden').removeClass('hidden');
+
+                            $field.after($clone);
+                        });
+
+                        // Delete the field on pressing the "-"
+                        $container.find('.usl-modal-repeater-remove').click(function () {
+                            $(this).closest('.usl-modal-repeater-field').remove();
+                        });
+
+                        break;
                     default:
+
                         attObj = new Textbox($(this));
                         break;
                 }
@@ -626,44 +704,49 @@ var USL_Modal;
             elements.remove.hide();
         },
 
-        modify: function (code) {
+        modify: function (shortcode) {
 
             // Crop off any whitespace (generally preceding)
-            code = code.trim();
+            shortcode = shortcode.trim();
 
-            // Use some regex to get our atts and values (needs to be separately), and our shortcode
-            var atts = code.match(/\s.*?(?==)/g),
-                values = code.match(/"([^"]+)"/g),
-                _shortcode = code.match(/\[(.*?)[\s|\]]/),
-                shortcode = _shortcode !== null ? _shortcode[1].trim() : '',
-                _content = code.match(/\](.*)\[/),
-                content = _content !== null ? _content[1] : '',
-                pairs = {};
+            // Get our shortcode regex (localized)
+            var shortcode_regex = USL_Data.shortcode_regex;
 
-            if (content.length) {
-                pairs.content = content;
+            // Make it compatible with JS (originally in PHP)
+            shortcode_regex = shortcode_regex.replace(/\*\+/g, '*');
+
+            // Turn it into executable regex and use it on our code
+            var matches = new RegExp(shortcode_regex).exec(shortcode),
+                code = matches[2],
+                _atts = matches[3], atts = {},
+                content = matches[5];
+
+            // Get our att pairs
+            var attRegEx = /(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/g,
+                match;
+
+            while (match = attRegEx.exec(_atts)) {
+                atts[match[3]] = match[4];
             }
 
-            this.setActiveShortcode(shortcode);
-
-            // Create the key => value pairs (after trimming off whitespace from the atts, and the quotes from the values)
-            if (atts !== null) {
-                for (var i = 0; i < atts.length; i++) {
-                    pairs[atts[i].trim()] = values[i].substring(1, values[i].length - 1);
-                }
+            // Add on the content
+            if (content) {
+                atts.content = content;
             }
+
+            this.setActiveShortcode(code);
 
             this.current_shortcode = {
-                all: code,
-                code: shortcode,
-                atts: pairs
+                all: shortcode,
+                code: code,
+                atts: atts
             };
 
             this.open();
 
             this.openShortcode();
 
-            this.populateShortcode(pairs);
+            this.populateShortcode(atts);
         },
 
         setActiveShortcode: function (shortcode) {
@@ -683,6 +766,7 @@ var USL_Modal;
                 var attObj = $(this).data('attObj'),
                     name = attObj.$input.attr('name');
 
+                console.log(name);
                 if (typeof pairs[name] !== 'undefined') {
                     attObj.setValue(pairs[name]);
                 }
@@ -790,37 +874,93 @@ var USL_Modal;
 
             this.sanitize();
 
-            var atts = $active.find('.usl-modal-shortcode-form').serializeArray(),
+            var _atts = $active.find('.usl-modal-shortcode-form').serializeArray(),
                 code = $active.attr('data-code'),
                 title = $active.find('.usl-modal-shortcode-title').html(),
-                props, output;
+                props, output, atts = {}, selection = this.selection;
 
             props = USL_Data.all_shortcodes[code];
 
             output = '[' + code;
 
             // Add on atts if they exist
-            if (atts.length) {
-                for (i = 0; i < atts.length; i++) {
+            if (_atts.length) {
+
+                // Turn it into an associative array
+                for (var i = 0; i < _atts.length; i++) {
+
+                    if (_atts[i].name.match(/:repeater/)) {
+
+                        /*
+                         Repeaters:
+                         */
+
+                        // Get the parent and child names from the input name
+                        var regex = /(?:\[)([^\]]*)/g,
+                            matches = [],
+                            match;
+
+                        while (match = regex.exec(_atts[i].name)) {
+                            matches.push(match[1]);
+                        }
+
+                        var parent = matches[0],
+                            child = matches[1];
+
+                        // If the parent is not yet an object, create it
+                        if (!atts[parent]) {
+                            atts[parent] = {};
+                        }
+
+                        if (atts[parent][child]) {
+                            atts[parent][child] += ',' + _atts[i].value;
+                        } else {
+                            atts[parent][child] = _atts[i].value;
+                        }
+
+                    } else {
+
+                        /*
+                        Everything else:
+                         */
+
+                        if (atts[_atts[i].name]) {
+                            // For multi-selects
+                            atts[_atts[i].name] += ',' + _atts[i].value;
+                        } else {
+                            atts[_atts[i].name] = _atts[i].value;
+                        }
+                    }
+                }
+
+                $.each(atts, function (name, value) {
 
                     // Set up the selection to be content if it exists
-                    if (atts[i].name === 'content') {
-                        this.selection = atts[i].value;
-                        continue;
+                    if (name === 'content') {
+                        selection = value;
+                        return true; // Continue $.each
+                    }
+
+                    // Repeaters pass objects
+                    if (typeof value === 'object') {
+                        value = JSON.stringify(value);
                     }
 
                     // Add the att to the shortcode output
-                    if (atts[i].value.length) {
-                        output += ' ' + atts[i].name + '="' + atts[i].value + '"';
+                    if (value.length) {
+                        output += ' ' + name + '=\'' + value + '\'';
                     }
-                }
+                });
             }
 
             output += ']';
 
             if (props.wrapping) {
-                output += this.selection + '[/' + code + ']';
+                output += selection + '[/' + code + ']';
             }
+
+            console.log(output);
+
 
             this.output = {
                 all: output,
@@ -832,7 +972,8 @@ var USL_Modal;
             $(document).trigger('usl-modal-update');
 
             this.close();
-        },
+        }
+        ,
 
         validate: function () {
 
@@ -946,19 +1087,17 @@ var USL_Modal;
             });
 
             return validated;
-        },
+        }
+        ,
 
         sanitize: function () {
+
             elements.active_shortcode.find('.usl-modal-att-row').each(function () {
                 var sanitize = USL_Modal._stringToObject($(this).attr('data-sanitize')),
                     attObj = $(this).data('attObj'),
                     att_value = attObj.getValue();
 
-                if (!att_value.length) {
-                    return true; // continue $.each iteration
-                }
-
-                if (sanitize) {
+                if (sanitize && att_value !== null && att_value.length) {
                     $.each(sanitize, function (type, value) {
 
                         switch (type) {
@@ -976,7 +1115,8 @@ var USL_Modal;
                     });
                 }
             });
-        },
+        }
+        ,
 
         refresh: function () {
 
@@ -991,7 +1131,8 @@ var USL_Modal;
                     }
                 });
             }
-        },
+        }
+        ,
 
         _stringToObject: function (string) {
 
@@ -1129,6 +1270,39 @@ var USL_Modal;
 
         this.init($e);
         this.$slider = this.$container.find('.usl-modal-att-slider');
+    };
+
+    var Counter = function ($e) {
+
+        // Extends the AttAPI object
+        AttAPI.apply(this, arguments);
+
+        this.init($e);
+    };
+
+    var Repeater = function ($e) {
+
+        // Extends the AttAPI object
+        AttAPI.apply(this, arguments);
+
+        this.revert = function () {
+
+            var $fields = this.$container.find('.usl-modal-repeater-field');
+
+            $fields.find('.usl-modal-att-input').val('');
+
+            $fields.each(function () {
+                if ($(this).index() !== 0) {
+                    $(this).remove();
+                }
+            });
+        };
+
+        this.setValue = function (value) {
+            console.log(value);
+        };
+
+        this.init($e);
     };
 
     $(function () {
