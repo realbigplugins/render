@@ -51,7 +51,7 @@ class USL_Modal {
 
 	private static function atts_loop( $shortcode_atts, $advanced = false, $wrapping = false ) {
 
-		foreach ( $shortcode_atts as $att_id => $att ) :
+		foreach ( $shortcode_atts as $att_id => $att ) {
 
 			/**
 			 * Allows the filtering of the current att in the loop.
@@ -60,7 +60,7 @@ class USL_Modal {
 			 */
 			$att = apply_filters( 'usl_att_loop', $att, $att_id, $advanced, $wrapping );
 
-			if ( ( ! $advanced && ! isset( $att['advanced'] ) ) || $advanced && isset( $att['advanced'] ) ) :
+			if ( ( ! $advanced && ! isset( $att['advanced'] ) ) || $advanced && isset( $att['advanced'] ) ) {
 
 				$type = isset( $att['type'] ) ? $att['type'] : 'textbox';
 
@@ -75,41 +75,53 @@ class USL_Modal {
 					$att['sanitize'] = array();
 				}
 				$att['sanitize'] = implode( ',', $att['sanitize'] );
-				?>
-				<div class="usl-modal-att-row" data-att-type="<?php echo $type; ?>"
-				     data-required="<?php echo $att['required']; ?>"
-				     data-validate="<?php echo $att['validate']; ?>"
-				     data-sanitize="<?php echo $att['sanitize']; ?>">
-					<div class="usl-modal-att-name">
-						<?php echo $att['label']; ?>
-					</div>
-					<div class="usl-modal-att-field">
 
-						<?php
-						// Output the att field
-						if ( is_callable( array( __CLASS__, "att_type_$type" ) ) ) {
-							call_user_func(
-								array( __CLASS__, "att_type_$type" ),
-								$att_id,
-								$att,
-								isset( $att['properties'] ) ? $att['properties'] : array()
-							);
-						} else {
-							echo 'ERROR: Not a valid attribute type!';
-						}
-						?>
+				self::att_content( $att_id, $att, $type );
+			}
+		}
+	}
 
-						<div class="usl-modal-att-errormsg"></div>
+	private static function att_content( $att_id, $att, $type ) {
+		?>
+		<div class="usl-modal-att-row"
+		     data-att-name="<?php echo $att_id; ?>"
+		     data-att-type="<?php echo $type; ?>"
+		     data-required="<?php echo $att['required']; ?>"
+		     data-validate="<?php echo $att['validate']; ?>"
+		     data-sanitize="<?php echo $att['sanitize']; ?>">
 
-						<?php if ( isset( $att['description'] ) ) : ?>
-							<p class="usl-modal-att-description">
-								<?php echo $att['description']; ?>
-							</p>
-						<?php endif; ?>
-					</div>
+			<?php if ( isset( $att['label'] ) ) : ?>
+				<div class="usl-modal-att-name">
+					<?php echo $att['label']; ?>
 				</div>
 			<?php endif; ?>
-		<?php endforeach;
+
+			<div class="usl-modal-att-field">
+
+				<?php
+				// Output the att field
+				if ( is_callable( array( __CLASS__, "att_type_$type" ) ) ) {
+					call_user_func(
+						array( __CLASS__, "att_type_$type" ),
+						$att_id,
+						$att,
+						isset( $att['properties'] ) ? $att['properties'] : array()
+					);
+				} else {
+					echo 'ERROR: Not a valid attribute type!';
+				}
+				?>
+
+				<div class="usl-modal-att-errormsg"></div>
+
+				<?php if ( isset( $att['description'] ) ) : ?>
+					<p class="usl-modal-att-description">
+						<?php echo $att['description']; ?>
+					</p>
+				<?php endif; ?>
+			</div>
+		</div>
+	<?php
 	}
 
 	private static function att_type_textbox( $att_id, $att, $properties = array() ) {
@@ -287,35 +299,38 @@ class USL_Modal {
 			<div class="usl-modal-repeater-field">
 				<div class="usl-modal-repeater-inputs">
 					<?php
-					foreach ( $properties['fields'] as $_att_id => $_att ) :
-
-						// Defaults for the att
-						$_defaults = array(
-							'type' => 'textbox',
-						);
-						$_att      = wp_parse_args( $_att, $_defaults );
-
-						if ( $_att['type'] === 'repeater' ) {
-							echo 'ERROR: Repeaters cannot be nested inside repeaters!';
-							continue;
-						}
-
-						if ( isset( $_att['label'] ) ) :
-							?>
-							<p class="usl-modal-repeater-label">
-								<?php echo $_att['label']; ?>
-							</p>
-						<?php
-						endif;
-
-						// Output the att field
-						call_user_func(
-							array( __CLASS__, "att_type_$_att[type]" ),
-							"[{$att_id}][{$_att_id}]:repeater",
-							$_att,
-							isset( $_att['properties'] ) ? $_att['properties'] : array()
-						);
-					endforeach;
+					self::atts_loop( $properties['fields'] );
+					//					foreach ( $properties['fields'] as $_att_id => $_att ) :
+					//
+					//						// Defaults for the att
+					//						$_defaults = array(
+					//							'type' => 'textbox',
+					//						);
+					//						$_att      = wp_parse_args( $_att, $_defaults );
+					//
+					//						if ( $_att['type'] === 'repeater' ) {
+					//							echo 'ERROR: Repeaters cannot be nested inside repeaters!';
+					//							continue;
+					//						}
+					//
+					//						if ( isset( $_att['label'] ) ) :
+					//
+					?>
+					<!--							<p class="usl-modal-repeater-label">-->
+					<!--								--><?php //echo $_att['label'];
+					?>
+					<!--							</p>-->
+					<!--						--><?php
+					//						endif;
+					//
+					//						// Output the att field
+					//						call_user_func(
+					//							array( __CLASS__, "att_type_$_att[type]" ),
+					//							"[{$att_id}][{$_att_id}]:repeater",
+					//							$_att,
+					//							isset( $_att['properties'] ) ? $_att['properties'] : array()
+					//						);
+					//					endforeach;
 					?>
 				</div>
 

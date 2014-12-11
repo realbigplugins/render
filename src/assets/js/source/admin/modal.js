@@ -763,12 +763,10 @@ var USL_Modal;
 
             elements.active_shortcode.find('.usl-modal-att-row').each(function () {
 
-                var attObj = $(this).data('attObj'),
-                    name = attObj.$input.attr('name');
+                var attObj = $(this).data('attObj');
 
-                console.log(name);
-                if (typeof pairs[name] !== 'undefined') {
-                    attObj.setValue(pairs[name]);
+                if (typeof pairs[attObj.name] !== 'undefined') {
+                    attObj.setValue(pairs[attObj.name]);
                 }
             });
         },
@@ -959,9 +957,6 @@ var USL_Modal;
                 output += selection + '[/' + code + ']';
             }
 
-            console.log(output);
-
-
             this.output = {
                 all: output,
                 code: code,
@@ -1147,6 +1142,7 @@ var USL_Modal;
 
     function AttAPI() {
 
+        this.name = null;
         this.original_value = null;
         this.fieldname = null;
         this.shortcode = null;
@@ -1157,6 +1153,7 @@ var USL_Modal;
 
             this.$container = $e;
             this.$input = this.$container.find('.usl-modal-att-input');
+            this.name = $e.attr('data-att-name');
             this.fieldname = this.$container.find('.usl-modal-att-name').text().trim();
             this.shortcode = this.$container.closest('.usl-modal-shortcode').attr('data-code');
 
@@ -1282,6 +1279,8 @@ var USL_Modal;
 
     var Repeater = function ($e) {
 
+        // FIXME Just changed markup of repeating fields to have the same markup as parent atts. Need to accomodate for this wherever it shows up
+
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
@@ -1298,8 +1297,57 @@ var USL_Modal;
             });
         };
 
-        this.setValue = function (value) {
-            console.log(value);
+        this.setValue = function (value_s) {
+
+            if (value_s.length) {
+
+                // If there are values to set
+                var _values = JSON.parse(value_s),
+                    values = {}, count = 0, all_values = [];
+
+                $.each(_values, function (field_name, field_values) {
+                    values[field_name] = field_values.split(',');
+                    count = values[field_name].length;
+                });
+
+                for (var i = 0; i < count; i++) {
+
+                    var fields = {};
+                    $.each(values, function (field_name, field_values) {
+                        fields[field_name] = field_values[i];
+                    });
+                    all_values.push(fields);
+                }
+
+                if (all_values.length) {
+
+                    var att_name = this.$container.attr('data-att-name');
+
+                    for (i = 0; i < all_values.length; i++) {
+
+                        var $field = this.$container.find('.usl-modal-repeater-field').first().clone(true);
+
+                        $.each(all_values[i], function (field, value) {
+                            $field.find('.usl-modal-att-input[name="[' + att_name + '][' + field + ']:repeater"]').val(value);
+                        });
+
+                        // Show the button on all but the first
+                        if (i > 0) {
+                            $field.find('.usl-modal-repeater-remove.hidden').removeClass('hidden');
+                        }
+
+                        this.$container.find('.usl-modal-att-field .usl-modal-att-errormsg').before($field);
+                    }
+
+                    // Delete the first (empty) field
+                    this.$container.find('.usl-modal-repeater-field').first().remove();
+                }
+            } else {
+
+                // If there are no values (we are erasing)
+                this.$container.find('.usl-modal-repeater-field').first().find('.usl-modal-att-input').val('');
+                this.$container.find('.usl-modal-repeater-field').not(':first').remove();
+            }
         };
 
         this.init($e);

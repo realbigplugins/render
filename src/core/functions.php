@@ -145,7 +145,7 @@ function usl_associative_atts( $atts, $keyname ) {
 			$count                 = count( $exploded_values );
 		}
 
-		// Cycle through the total count (number of fields) and build each field's value array
+		// Cycle through the total count (number of fields) and build each fields'
 		for ( $i = 0; $i < $count; $i ++ ) {
 
 			$array = array();
