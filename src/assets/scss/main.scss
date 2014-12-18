@@ -1,13 +1,4 @@
-@mixin clearfix {
-  &:after {
-    content: ' ';
-    display: table;
-    clear: both;
-  }
-}
-
 @import 'tinymce';
-@import 'shortcodes';
 @import 'shortcodes/button';
 @import 'shortcodes/box';
 @import 'shortcodes/columns';

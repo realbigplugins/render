@@ -17,6 +17,7 @@ function usl_add_shortcode( $args ) {
 
 		$defaults = array(
 			'required' => '0',
+			'disabled' => false,
 		);
 
 		foreach ( $args['atts'] as $i => $att ) {
@@ -121,6 +122,20 @@ function usl_esc_atts( $atts ) {
 	return $atts;
 }
 
+function usl_strip_paragraphs_around_shortcodes( $content ) {
+
+	$array = array(
+		'<p>['                                                                    => '[',
+		']</p>'                                                                   => ']',
+		']<span class="usl-tinymce-divider usl-tinymce-noneditable">&#8203;</span></p>' => ']',
+		']<br />'                                                                 => ']',
+	);
+
+	$content = strtr( $content, $array );
+
+	return $content;
+}
+
 function usl_associative_atts( $atts, $keyname ) {
 
 	$output = array();
@@ -134,13 +149,13 @@ function usl_associative_atts( $atts, $keyname ) {
 		}
 
 		// Decode our fields into an array
-		$fields = json_decode( $value, true );
+		$fields = json_decode( html_entity_decode( $value ), true );
 
 		// Cycle through each field and get the total count and make them arrays
 		$count = 0;
 		foreach ( $fields as $field_name => $field_values ) {
 
-			$exploded_values       = explode( ',', $field_values );
+			$exploded_values       = explode( '::sep::', $field_values );
 			$fields[ $field_name ] = $exploded_values;
 			$count                 = count( $exploded_values );
 		}
@@ -150,7 +165,7 @@ function usl_associative_atts( $atts, $keyname ) {
 
 			$array = array();
 			foreach ( $fields as $field_name => $field_values ) {
-				$array[ $field_name ] = $field_values[ $i ];
+				$array[ $field_name ] = _usl_decode_att( $field_values[ $i ] );
 			}
 
 			$output[] = $array;
@@ -158,4 +173,8 @@ function usl_associative_atts( $atts, $keyname ) {
 	}
 
 	return $output;
+}
+
+function _usl_decode_att( $att ) {
+	return str_replace( array( '::dquot::', '::squot::', '::br::' ), array( '"', '\'', '<br/>' ), $att );
 }

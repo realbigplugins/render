@@ -1,3 +1,13 @@
-[class*="usl-box"] {
+@import "../global";
+
+[class^="usl-box"] {
   padding: 10px;
+
+ &[class*="rounded"] {
+    border-radius: 20px;
+  }
+
+ &[class*="ellipse"] {
+    border-radius: 50%;
+  }
 }

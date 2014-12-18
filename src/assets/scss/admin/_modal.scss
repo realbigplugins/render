@@ -1,3 +1,5 @@
+@import "../global";
+
 $usl-modal-width: 600px;
 $usl-modal-height: 800px;
 
@@ -129,7 +131,8 @@ $usl-modal-height: 800px;
   -ms-user-select: none;
   user-select: none;
 
-  [class*="usl-modal-categories"] {
+  // Right and left arrows
+  [class*="usl-modal-categories-"] {
     position: absolute;
     height: 100%;
     top: 0;
@@ -178,10 +181,8 @@ $usl-modal-height: 800px;
     border: 1px solid transparent;
     box-sizing: border-box;
 
-    &.active {
-      border-color: #ddd;
-      padding: 10px 0;
-      background: #F2F2F2;
+    &.active, &:hover {
+      color: $primary-color;
     }
 
     .dashicons {
@@ -216,20 +217,54 @@ $usl-modal-height: 800px;
   background-color: #fff;
   position: relative;
   z-index: 2;
-  transition: 300ms background-color;
+  transition: $primary-transition background-color;
 
-  > li {
+  .usl-modal-shortcode {
     display: block;
-    cursor: pointer;
     border: 1px solid transparent;
     margin: 0;
+    position: relative;
+    background-color: #fff;
 
     &.alt {
       background-color: darken(#fff, 5%);
     }
 
+    &.disabled {
+      color: #aaa;
+    }
+
+    &.current-shortcode {
+      border-color: $primary-color !important;
+    }
+
+    &.usl-modal-shortcode-error-message {
+      .usl-modal-shortcode-title:before {
+        content: '!';
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        line-height: 10px;
+        text-align: center;
+        border-radius: 50%;
+        border: 2px solid;
+        font-size: 11px;
+        font-weight: bold;
+        color: #ccc;
+        vertical-align: 1px;
+        margin-right: 2px;
+      }
+
+      .usl-modal-shortcode-description {
+        font-weight: bold;
+      }
+    }
+
     &:hover {
-      background-color: darken(#fff, 10%);
+
+      &:not(.disabled) {
+        background-color: darken(#fff, 10%);
+      }
 
       .usl-modal-shortcode-source {
         opacity: 1;
@@ -248,9 +283,87 @@ $usl-modal-height: 800px;
   }
 }
 
+// Shortcode toolbar
+$toolbar-height: 50px;
+.usl-modal-shortcode-toolbar {
+  .usl-modal-shortcode-toolbar-tools {
+    overflow: hidden;
+    height: 0;
+
+    [class^="usl-modal-shortcode-toolbar-button"] {
+      float: left;
+      width: 50%;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      background: #E3E3E3;
+      color: #777777;;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: background 300ms, color 300ms;
+      user-select: none;
+
+      &:hover {
+        background: darken(#E3E3E3, 5%);
+        color: $primary-color;
+      }
+
+      &:active:not(.disabled) {
+        transition: background 0ms;
+        background: darken(#E3E3E3, 10%);
+      }
+
+      &.disabled {
+        color: #bbb;
+      }
+
+      &[class*="restore"] {
+        border-right: 1px solid #fff;
+      }
+
+      &[class*="templates"] {
+        border-left: 1px solid #fff;
+      }
+    }
+  }
+
+  .usl-modal-shortcode-toolbar-toggle {
+    width: 100%;
+    font-size: 40px;
+    color: #aaa;
+    line-height: inherit;
+    margin-top: 18px;
+    cursor: pointer;
+    position: relative;
+    transition: color 300ms;
+
+    &.open {
+      margin-top: 5px;
+
+      .dashicons-admin-generic {
+        top: auto;
+        bottom: -12px;
+      }
+    }
+
+    .dashicons-admin-generic {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -14px;
+      font-size: 18px;
+    }
+
+    &:hover {
+      color: inherit;
+    }
+  }
+}
+
 .accordion-section-title, .usl-modal-sc-title {
   border: none;
   padding: 10px 5px 0;
+  cursor: pointer;
 
   // Down arrow
   &:after {
@@ -258,12 +371,53 @@ $usl-modal-height: 800px;
   }
 }
 
+// Hide down arrow when shortcode is disabled
+.usl-modal-shortcode.disabled {
+  .accordion-section-title:after {
+    display: none;
+  }
+}
+
+// Active
+.usl-modal-shortcode.active {
+  .accordion-section-title, .usl-modal-sc-title {
+    color: #fff;
+    @include background-gradient($primary-color, darken($primary-color, 10%));
+
+    .usl-modal-shortcode-source {
+      color: #ccc;
+    }
+
+    // Down arrow
+    &:after {
+      color: #fff;
+    }
+  }
+}
+
 .accordion-section-content {
-  padding: 0 20px 0 0;
-  border-top: 1px solid darken(#fff, 30%);
+  padding: 0;
 
   // Fix Chosen selectbox cutting off
   overflow: visible;
+
+  .usl-modal-shortcode-atts {
+    padding: 10px 0;
+  }
+}
+
+// Att section break
+.usl-modal-att-section-break {
+  padding: 0 0 10px 10px;
+  margin: 0 0 10px 0;
+  font-weight: bold;
+  font-size: 120%;
+  border-bottom: 1px solid darken(#fff, 30%);
+
+  .usl-modal-att-section-break-description {
+    font-weight: normal;
+    font-size: 80%;
+  }
 }
 
 // Chosen
@@ -283,6 +437,8 @@ $usl-modal-height: 800px;
     .dashicons {
       display: inline;
       vertical-align: -5px;
+      margin-right: 10px;
+      margin-left: 2px;
     }
   }
 }
@@ -293,7 +449,8 @@ $usl-modal-height: 800px;
   @include clearfix;
 
   &.invalid {
-    background: #ffc3bc;
+    background: $error-color;
+    color: #fff;
 
     .usl-modal-att-field .usl-modal-att-errormsg {
       display: block;
@@ -340,40 +497,40 @@ $usl-modal-height: 800px;
     text-align: center;
     border: 1px solid #ddd;
     border-radius: 3px;
-
-    -webkit-user-select: none; /* Chrome all / Safari all */
-    -moz-user-select: none; /* Firefox all */
-    -ms-user-select: none; /* IE 10+ */
-    -o-user-select: none;
+    cursor: pointer;
     user-select: none;
 
-    background: #ffffff;
-    background: -moz-linear-gradient(top, #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(50%, #f1f1f1), color-stop(51%, #e1e1e1), color-stop(100%, #f6f6f6));
-    background: -webkit-linear-gradient(top, #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%);
-    background: -o-linear-gradient(top, #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%);
-    background: -ms-linear-gradient(top, #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%);
-    background: linear-gradient(to bottom, #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6', GradientType=0);
-
+    @include background-gradient-alt(#fff, #f6f6f6);
     &:active {
       border-color: #bbb;
 
       &:not(.disabled) {
-        background: #ffffff;
-        background: -moz-linear-gradient(top, #f6f6f6 0%, #e1e1e1 50%, #f1f1f1 51%, #ffffff 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f6f6f6), color-stop(50%, #e1e1e1), color-stop(51%, #f1f1f1), color-stop(100%, #ffffff));
-        background: -webkit-linear-gradient(top, #f6f6f6 0%, #e1e1e1 50%, #f1f1f1 51%, #ffffff 100%);
-        background: -o-linear-gradient(top, #f6f6f6 0%, #e1e1e1 50%, #f1f1f1 51%, #ffffff 100%);
-        background: -ms-linear-gradient(top, #f6f6f6 0%, #e1e1e1 50%, #f1f1f1 51%, #ffffff 100%);
-        background: linear-gradient(to bottom, #f6f6f6 0%, #e1e1e1 50%, #f1f1f1 51%, #ffffff 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6', GradientType=0);
+        @include background-gradient-alt(#f6f6f6, #fff);
       }
+    }
+
+    &:hover {
+      border-color: #ccc;
     }
 
     &.disabled {
       color: #bbb;
     }
+  }
+
+  // Text Box
+  .usl-modal-att-textbox {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  // Text Area
+  .usl-modal-att-textarea {
+    width: 100%;
+    min-height: 100px;
+    box-sizing: border-box;
+    margin: 0;
   }
 
   // Slider
@@ -383,12 +540,16 @@ $usl-modal-height: 800px;
     transform: translateY(-50%);
     left: 20%;
     right: 0;
-    margin-left: 20px;
+    margin: 0 10px;
   }
 
   .ui-slider-handle {
     outline: none;
     cursor: pointer;
+
+    &:not(.ui-state-active) {
+      transition: left 500ms;
+    }
   }
 
   input[type="text"].usl-modal-att-slider-value {
@@ -398,20 +559,20 @@ $usl-modal-height: 800px;
   }
 
   // Counter
+  $counter-size: 30px;
   .usl-modal-counter-container {
-
-    $counter-size: 30px;
+    float: left;
 
     .dashicons {
       float: left;
     }
 
-    .usl-modal-counter-up {
+    .usl-modal-counter-down {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
     }
 
-    .usl-modal-counter-down {
+    .usl-modal-counter-up {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
@@ -423,17 +584,46 @@ $usl-modal-height: 800px;
       line-height: $counter-size;
       padding: 0;
       text-align: center;
+      transition: height;
+    }
+  }
+
+  .usl-modal-counter-unit {
+    margin-left: 10px;
+    float: left;
+    height: $counter-size;
+
+    .chosen-single {
+      height: 100% !important;
+      line-height: $counter-size;
+
+      // X
+      .search-choice-close {
+        top: 10px;
+      }
+
+      // Down arrow
+      b {
+        top: 4px;
+      }
+    }
+
+    input[type="text"] {
+      width: 50px;
+      text-align: center;
+      height: 100%;
     }
   }
 
   // Repeater
   .usl-modal-repeater-field {
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+    margin-top: 20px;
+    position: relative;
 
     // Top item doesn't need a separator
-    &:first-of-type {
+    &:nth-of-type(2) {
       border-top: none;
       margin-top: 0;
       padding-top: 0;
@@ -456,20 +646,58 @@ $usl-modal-height: 800px;
     .usl-modal-repeater-actions {
       width: 20%;
       float: right;
+      padding-left: 10px;
       box-sizing: border-box;
-      text-align: right;
 
       .usl-modal-repeater-add {
-        display: inline-block;
+        float: left;
       }
 
       .usl-modal-repeater-remove {
-        display: inline-block;
-
-        &.hidden {
-          display: none;
-        }
+        float: right;
       }
+    }
+
+    // Nested attributes
+    .usl-modal-att-row {
+      margin: 10px 0;
+      padding: 5px;
+      border: 1px solid #ddd;
+      box-shadow: 1px 1px 1px rgba(#000, 0.05);
+
+      &:first-of-type {
+        margin-top: 0;
+      }
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      .usl-modal-att-field {
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .usl-modal-att-name {
+        float: none;
+        width: auto;
+        display: inline-block;
+        font-style: italic;
+        padding: 5px 5px 5px 0;
+      }
+    }
+  }
+
+  // Repeater Effect
+  .ui-effects-wrapper {
+    height: auto !important;
+
+    // This would become :first-of-type and cause these properties to be lost, so we have to !important them
+    .usl-modal-repeater-field {
+      border-top: 1px solid #ccc !important;
+      margin-top: 20px !important;
+      padding-top: 20px !important;
     }
   }
 
@@ -481,8 +709,26 @@ $usl-modal-height: 800px;
 }
 
 .usl-modal-show-advanced-atts {
-  padding: 10px;
-  display: inline-block;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  line-height: normal;
+
+  // Override blue outline when focused
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  &.hidden {
+    border-bottom: none;
+  }
+
+  .dashicons {
+    height: auto;
+    line-height: normal;
+    width: auto;
+  }
 }
 
 .usl-modal-shortcode-title {
@@ -493,7 +739,8 @@ $usl-modal-height: 800px;
     font-size: 80%;
     color: #aaa;
     opacity: 0;
-    transition: 300ms opacity;
+    transition: $primary-transition opacity;
+    white-space: nowrap;
   }
 }
 
@@ -524,14 +771,37 @@ $usl-modal-height: 800px;
   }
 }
 
+$submit-height: 28px;
+$submit-transition: 500ms;
 #usl-modal-submit {
   float: right;
   margin-bottom: 0;
+  overflow: hidden;
+  height: $submit-height;
+  text-align: center;
+  box-sizing: content-box;
+
+  [class^="usl-modal-submit-text"] {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    line-height: $submit-height;
+    height: $submit-height;
+
+    &.blur {
+      -webkit-filter: blur(1px);
+      -moz-filter: blur(1px);
+      -o-filter: blur(1px);
+      -ms-filter: blur(1px);
+      filter: blur(1px);
+    }
+  }
 }
 
 #usl-modal-remove {
   float: right;
   margin-right: 20px;
+  height: $submit-height;
   background: $error-color;
   color: #fff;
   border-color: darken($error-color, 25%);

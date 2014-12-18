@@ -11,6 +11,7 @@
 
 $_shortcodes = array(
 	// Custom Date
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_date',
 		'function'    => '_usl_sc_custom_date',
@@ -25,6 +26,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Month
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_month',
 		'function'    => '_usl_sc_month',
@@ -33,6 +35,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Year
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_year',
 		'function'    => '_usl_sc_year',
@@ -41,6 +44,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Day of Month
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_day_month',
 		'function'    => '_usl_sc_day_month',
@@ -49,6 +53,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Day of Week
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_day_week',
 		'function'    => '_usl_sc_day_week',
@@ -57,6 +62,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Day of Year
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_day_year',
 		'function'    => '_usl_sc_day_year',

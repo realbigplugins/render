@@ -47,8 +47,8 @@ class USL_tinymce extends USL {
 	 */
 	public static function modify_tinymce_init( $mceinit ) {
 
-		$mceinit['noneditable_noneditable_class'] = 'usl-tinymce-shortcode-wrapper';
-		$mceinit['noneditable_editable_class']    = 'usl-tinymce-shortcode-content';
+		$mceinit['noneditable_noneditable_class'] = 'usl-tinymce-noneditable';
+		$mceinit['noneditable_editable_class']    = 'usl-tinymce-editable';
 		$mceinit['extended_valid_elements']       = 'span[*]';
 		$mceinit['entity_encoding']               = 'numeric';
 
@@ -171,6 +171,10 @@ class USL_tinymce extends USL {
 		$usl_shortcode_data = $_POST['shortcode_data'];
 
 		$pattern = get_shortcode_regex();
+
+		// FIXME Weird paragraph tags
+		$content = preg_replace( '/<span class="usl-tinymce-divider usl-tinymce-noneditable">.*?<\/span>/', '', $content );
+		$content = usl_strip_paragraphs_around_shortcodes( $content );
 		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $content );
 
 		echo $content;
@@ -212,12 +216,12 @@ class USL_tinymce extends USL {
 
 			// Wrap the content in a special element, but first decide if it needs to be div or span
 			$tag     = preg_match( $block_regex, $content ) ? 'div' : 'span';
-			$content = "<$tag class='usl-tinymce-shortcode-content'>$content</$tag>";
+			$content = "<$tag class='usl-tinymce-shortcode-content usl-tinymce-editable'>$content</$tag>";
 		}
 
 		// Replace the content with the new content
 		if ( ! empty( $_content ) ) {
-			$entire_code = str_replace( $_content, $content, $entire_code );
+			$entire_code = str_replace( "]{$_content}[", "]{$content}[", $entire_code );
 		}
 
 		// Whether or not to style the code
@@ -239,14 +243,16 @@ class USL_tinymce extends USL {
 
 		// Start the wrapper
 		if ( ! isset( $usl_shortcode_data[ $code ]['noWrap'] ) ) {
-			$output .= "<$tag class='usl-tinymce-shortcode-wrapper $code $nostyle' data-code='$code' data-atts='$atts'>";
+			$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
+			$output .= "<$tag class='usl-tinymce-shortcode-wrapper usl-tinymce-noneditable $code $nostyle' data-code='$code' data-atts='$atts'>";
 		}
 
 		$output .= $shortcode_output;
 
 		// Close the wrapper
 		if ( ! isset( $usl_shortcode_data[ $code ]['noWrap'] ) ) {
-			$output .= "</$tag>&#8203;";
+			$divider =  '<span class="usl-tinymce-divider usl-tinymce-noneditable">&#8203;</span>';
+			$output .= "</$tag>$divider";
 		}
 
 		return $output;

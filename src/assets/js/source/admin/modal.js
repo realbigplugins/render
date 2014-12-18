@@ -15,13 +15,16 @@ var USL_Modal;
         slide_transition = 150,
         categories_sliding = false,
         usl_modal_open = false,
-        _search_timeout, search_loading;
+        _search_timeout, search_loading, textbox_focused,
+        error_color = '#ec6750';
 
     USL_Modal = {
 
         current_shortcode: '',
+        active_shortcode: '',
         output: '',
         selection: '',
+        modifying: false,
 
         init: function () {
 
@@ -30,8 +33,6 @@ var USL_Modal;
             this.keyboardShortcuts();
             this.preventWindowScroll();
             this.search();
-            this.slidersInit();
-            this.colorpickersInit();
         },
 
         load: function () {
@@ -63,6 +64,19 @@ var USL_Modal;
             // Active a shortcode
             elements.list.find('.accordion-section-title, .usl-modal-sc-title').click(function () {
                 USL_Modal.activateShortcode($(this));
+            });
+
+            // Shortcode toolbar toggle
+            elements.list.find('.usl-modal-shortcode-toolbar-toggle').click(function () {
+                USL_Modal.shortcodeToolbarTogggle($(this));
+            });
+
+            // Restore shortcode
+            elements.list.find('.usl-modal-shortcode-toolbar-button-restore').click(function () {
+
+                if (!$(this).hasClass('disabled')) {
+                    USL_Modal.restoreShortcode();
+                }
             });
 
             // Submit the form
@@ -116,6 +130,11 @@ var USL_Modal;
                     case 13:
 
                         e.preventDefault();
+
+                        if (textbox_focused) {
+                            break;
+                        }
+
                         USL_Modal.update();
                         break;
 
@@ -273,6 +292,12 @@ var USL_Modal;
         initAtts: function () {
 
             elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+
+                // Skip if already initialized or if set to not initialize
+                if ($(this).data('attObj') || $(this).attr('data-no-init')) {
+                    return true; // Continue $.each
+                }
+
                 var att_type = $(this).attr('data-att-type'),
                     attObj;
 
@@ -305,7 +330,12 @@ var USL_Modal;
                             $chosen.on('chosen:showing_dropdown chosen:updated', function () {
 
                                 $(this).find('option').each(function (index) {
+
                                     var icon = $(this).attr('data-icon');
+
+                                    if (!icon) {
+                                        return true; // Continue &.each
+                                    }
 
                                     if (icon) {
                                         $container.find('.chosen-results li').eq(index - 1).prepend(
@@ -315,70 +345,153 @@ var USL_Modal;
                                 });
                             });
 
-                            $chosen.on('change chosen:updated', function () {
+                            $chosen.on('change', function () {
+
                                 var icon = 'dashicons ' + $chosen.val();
 
-                                $container.find('.chosen-single span').prepend(
-                                    '<span class="' + icon + '"></span>'
-                                );
+                                if (!$chosen.val()) {
+                                    $container.find('.chosen-single .dashicons').remove();
+                                } else {
+                                    $container.find('.chosen-single span').prepend(
+                                        '<span class="' + icon + '"></span>'
+                                    );
+                                }
                             });
                         }
 
                         // Extend functionality to allow custom text input (if enabled on input)
                         // TODO Find a way to allow searching of option values as well as text
                         if ($chosen.hasClass('allow-custom-input')) {
-
-                            $container.find('.chosen-container').addClass('allow-custom-input');
-
-                            // When hiding the dropdown (submitting the field), use our custom input
-                            $chosen.on('chosen:hiding_dropdown', function () {
-                                var name = $(this).attr('name'),
-                                    $self = $(this),
-                                    $container = $(this).closest('.usl-modal-att-field'),
-                                    custom_val = $container.find('.chosen-search input[type="text"]').val(),
-                                    $custom_input = $container.find('.chosen-custom-input'),
-                                    $placeholder = $container.find('.chosen-container .chosen-single');
-
-                                // An existing value has been selected manually or there was no input
-                                if (!custom_val.length) {
-                                    if ($custom_input.length) {
-                                        $custom_input.remove();
-                                    }
-                                    return;
-                                }
-
-                                // See if value exists in selectbox, and if it does, set chosen to that value
-                                var exists = false;
-                                $(this).find('option').each(function () {
-                                    if ($(this).val() == custom_val) {
-                                        $self.val(custom_val).trigger('chosen:updated');
-                                        exists = true;
-                                        return false;
-                                    }
-                                });
-
-                                if (exists) {
-                                    return;
-                                }
-
-                                if (!$custom_input.length) {
-                                    $container.append('<input type="hidden" class="chosen-custom-input" name="' + name + '" />');
-                                    $custom_input = $container.find('.chosen-custom-input');
-                                }
-
-                                $custom_input.val(custom_val);
-                                $placeholder.removeClass('chosen-default');
-                                $placeholder.find('> span').html(custom_val);
-                            });
+                            //$container.find('.chosen-container').addClass('allow-custom-input');
+                            chosen_custom_input($chosen);
                         }
                         break;
                     case 'colorpicker':
 
                         attObj = new Colorpicker($(this));
+
+                        $(this).find('.usl-modal-att-colorpicker').each(function () {
+                            var data = $(this).data();
+                            $(this).wpColorPicker(data);
+                        });
                         break;
+
                     case 'slider':
 
                         attObj = new Slider($(this));
+
+                        $(this).find('.usl-modal-att-slider').each(function () {
+
+                            var $this = $(this),
+                                data = $this.data(),
+                                $input = $this.siblings('.usl-modal-att-slider-value');
+
+                            // Skip if the slider's already been initilaized
+                            if (typeof data.uiSlider !== 'undefined') {
+                                return true; // Continue $.each
+                            }
+
+                            // If the input had a number, and a default isn't set, use it
+                            if ($input.val() && !data.value) {
+                                if (data.range) {
+                                    data.values = $input.val();
+                                } else {
+                                    data.value = $input.val();
+                                }
+                            }
+
+                            // Custom slide callback
+                            if (data.slide) {
+
+                                var slide_callback = data.slide;
+
+                                data.slide = function (event, ui) {
+                                    return window[slide_callback](event, ui, $input);
+                                }
+                            } else {
+                                if (data.range) {
+                                    data.slide = function (event, ui) {
+
+                                        // Prevent overlap
+                                        if (ui.values[0] >= ui.values[1] || ui.values[1] <= ui.values[0]) {
+                                            return false;
+                                        }
+
+                                        // Output the ranges to the text and the input
+                                        var $text = $input.siblings('.usl-modal-att-slider-range-text');
+
+                                        $text.find('.usl-modal-att-slider-range-text-value1').html(ui.values[0]);
+                                        $text.find('.usl-modal-att-slider-range-text-value2').html(ui.values[1]);
+
+                                        $input.val(ui.values[0] + '-' + ui.values[1]);
+                                    };
+                                } else {
+                                    data.slide = function (event, ui) {
+                                        $input.val(ui.value);
+                                    };
+                                }
+                            }
+
+                            // Set the values to an array (if a range slider)
+                            if (data.range) {
+                                data.values = data.values.split('-');
+                            }
+
+                            // Make sure this gets no duplicate handlers
+                            $input.off();
+
+                            // Only numbers (or negative)
+                            $input.keypress(function (e) {
+
+                                if (!String.fromCharCode(e.which).match(/[0-9|-]/)) {
+                                    highlight($(this));
+                                    e.preventDefault();
+                                }
+                            });
+
+                            // Change the slider and keep the numbers in the allowed range
+                            $input.change(function () {
+
+                                var $slider = $(this).siblings('.usl-modal-att-slider');
+
+                                if ($slider.attr('data-range')) {
+
+                                    // Range slider
+                                    var $text = $(this).siblings('.usl-modal-att-slider-range-text'),
+                                        values = $(this).val().split('-');
+
+                                    $text.find('.usl-modal-att-slider-range-text-value1').html(values[0]);
+                                    $text.find('.usl-modal-att-slider-range-text-value2').html(values[1]);
+
+                                    $slider.slider('values', values);
+                                } else {
+
+                                    // Normal slider
+                                    var min = parseInt($slider.attr('data-min')),
+                                        max = parseInt($slider.attr('data-max')),
+                                        val = parseInt($(this).val());
+
+                                    // Set the jQuery UI slider to match the new text value
+                                    $slider.slider('value', $(this).val());
+
+                                    // Keep in range
+                                    if (val < min) {
+                                        highlight($(this));
+                                        $(this).val(min);
+                                    } else if (val > max) {
+                                        highlight($(this));
+                                        $(this).val(max);
+                                    }
+
+                                    // Erase leading zeros
+                                    $(this).val(parseInt($(this).val(), 10));
+                                }
+                            });
+
+                            // Initialize the slider
+                            $this.slider(data);
+                        });
+
                         break;
 
                     case 'counter':
@@ -387,12 +500,25 @@ var USL_Modal;
 
                         var shift_down = false,
                             $input = $(this).find('.usl-modal-att-counter'),
-                            $button_up = $(this).find('.usl-modal-counter-up'),
-                            $button_down = $(this).find('.usl-modal-counter-down'),
+                            $button_down = $input.siblings('.usl-modal-counter-down'),
+                            $button_up = $input.siblings('.usl-modal-counter-up'),
                             min = parseInt($input.attr('data-min')),
                             max = parseInt($input.attr('data-max')),
                             step = parseInt($input.attr('data-step')),
                             shift_step = parseInt($input.attr('data-shift-step'));
+
+                        // Set the "+" and "-" to disabled accordingly
+                        if (parseInt($input.val()) == min) {
+                            $button_down.addClass('disabled');
+                        } else {
+                            $button_down.removeClass('disabled');
+                        }
+
+                        if (parseInt($input.val()) == max) {
+                            $button_up.addClass('disabled');
+                        } else {
+                            $button_up.removeClass('disabled');
+                        }
 
                         // If holding shift, let us know so we can use the shift_step later
                         $(document).keydown(function (e) {
@@ -420,23 +546,49 @@ var USL_Modal;
                         });
 
                         // Keep the number within its limits
-                        $input.change(function () {
+                        $input.off().change(function () {
 
-                            if (parseInt($(this).val()) > max) {
+                            var $button_up = $(this).siblings('.usl-modal-counter-up'),
+                                $button_down = $(this).siblings('.usl-modal-counter-down');
+
+                            if (parseInt($(this).val()) >= max) {
+
+                                if (parseInt($(this).val()) > max) {
+                                    highlight($(this));
+                                }
 
                                 $(this).val(max);
                                 $button_up.addClass('disabled');
                                 $button_down.removeClass('disabled');
-                            } else if (parseInt($(this).val()) < min) {
+                            } else if (parseInt($(this).val()) <= min) {
+
+                                if (parseInt($(this).val()) < min) {
+                                    highlight($(this));
+                                }
 
                                 $(this).val(min);
                                 $button_down.addClass('disabled');
                                 $button_up.removeClass('disabled');
                             } else {
+
                                 $button_up.removeClass('disabled');
                                 $button_down.removeClass('disabled');
                             }
                         });
+
+                        // Units selectbox
+                        var $select = $(this).find('select');
+
+                        if ($select.length) {
+
+                            $select.chosen({
+                                width: '100px',
+                                search_contains: true,
+                                allow_single_deselect: true
+                            });
+
+                            chosen_custom_input($select);
+                        }
 
                         break;
 
@@ -444,59 +596,29 @@ var USL_Modal;
 
                         attObj = new Repeater($(this));
 
-                        $container = $(this).find('.usl-modal-att-field');
-
-                        // Add a new field after on pressing the "+"
-                        $container.find('.usl-modal-repeater-add').click(function () {
-
-                            var $field = $(this).closest('.usl-modal-repeater-field'),
-                                $clone = $field.clone(true);
-
-                            $clone.find('.usl-modal-att-input').val('');
-                            $clone.find('.usl-modal-repeater-remove.hidden').removeClass('hidden');
-
-                            $field.after($clone);
-                        });
-
-                        // Delete the field on pressing the "-"
-                        $container.find('.usl-modal-repeater-remove').click(function () {
-                            $(this).closest('.usl-modal-repeater-field').remove();
-                        });
+                        initRepeaterButtons($(this));
 
                         break;
                     default:
 
                         attObj = new Textbox($(this));
+
+                        $(this).find('.usl-modal-att-input').focusin(function () {
+                            textbox_focused = true;
+                        });
+
+                        $(this).find('.usl-modal-att-input').focusout(function () {
+                            textbox_focused = false;
+                        });
                         break;
                 }
 
                 $(this).data('attObj', attObj);
-            });
-        },
 
-        colorpickersInit: function () {
-            elements.list.find('.usl-modal-att-colorpicker').each(function () {
-                var data = $(this).data();
-                $(this).wpColorPicker(data);
-            });
-        },
-
-        slidersInit: function () {
-
-            elements.list.find('.usl-modal-att-slider').each(function () {
-                var $e = $(this),
-                    data = $e.data(),
-                    indicator = $e.siblings('.usl-modal-att-slider-value');
-
-                data.slide = function (event, ui) {
-                    indicator.val(ui.value);
-                };
-
-                indicator.change(function () {
-                    $e.slider('value', $(this).val());
-                });
-
-                $e.slider(data);
+                // Custom callback
+                if ($(this).attr('data-init-callback')) {
+                    window[$(this).attr('data-init-callback')]($(this), attObj);
+                }
             });
         },
 
@@ -584,24 +706,101 @@ var USL_Modal;
 
         activateShortcode: function ($e) {
 
-            var container = $e.closest('.usl-modal-shortcode');
+            var $container = $e.closest('.usl-modal-shortcode');
 
-            if (container.hasClass('active')) {
+            this.clearShortcodeErrors();
+
+            // Bail if the shortcode is disabled
+            if ($container.hasClass('disabled')) {
+
+                // Error message
+                var $description = $container.find('.usl-modal-shortcode-description');
+                $description.data('shortcodeDescriptionText', $description.html());
+                $description.html('Please select content from the editor to enable this shortcode.');
+
+                $container.addClass('usl-modal-shortcode-error-message');
+
+                highlight($container);
+
+                return;
+            }
+
+            if ($container.hasClass('active')) {
                 this.closeShortcode();
                 elements.active_shortcode = false;
                 elements.last_active_shortcode = false;
+                this.active_shortcode = '';
                 return;
             }
 
             this.closeShortcode();
 
-            elements.active_shortcode = container;
+            elements.active_shortcode = $container;
+            this.active_shortcode = $container.attr('data-code');
+
+            // Change submit button
+            if (this.modifying) {
+
+                if (elements.active_shortcode.hasClass('current-shortcode')) {
+                    this.submitButton('modify');
+                } else {
+                    this.submitButton('change');
+                }
+            } else {
+                this.submitButton('add');
+            }
+
+            // Enable / Disable restore button
+            if (this.modifying && this.active_shortcode === this.current_shortcode.code) {
+                elements.active_shortcode.find('.usl-modal-shortcode-toolbar-button-restore').removeClass('disabled');
+            } else {
+                elements.active_shortcode.find('.usl-modal-shortcode-toolbar-button-restore').addClass('disabled');
+            }
 
             this.openShortcode();
         },
 
+        shortcodeToolbarTogggle: function ($this, force) {
+
+            force = typeof force !== 'undefined' ? force : false;
+
+            var transition = 300,
+                $tools = $this.siblings('.usl-modal-shortcode-toolbar-tools');
+
+            if ($this.hasClass('open') || force === 'close') {
+
+                $this.removeClass('open dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
+
+                $tools.stop().animate({
+                    height: 0
+                }, transition);
+            } else if (!$this.hasClass('open') || force === 'open') {
+
+                $this.addClass('open dashicons-arrow-up-alt2').removeClass('dashicons-arrow-down-alt2');
+
+                $tools.stop().animate({
+                    height: '50px'
+                }, transition);
+            }
+        },
+
+        restoreShortcode: function () {
+            this.populateShortcode(this.current_shortcode.atts);
+        },
+
+        clearShortcodeErrors: function () {
+
+            // Remove any previous error messages
+            elements.list.find('.usl-modal-shortcode.usl-modal-shortcode-error-message').
+                find('.usl-modal-shortcode-description').each(function () {
+                    $(this).html($(this).data('shortcodeDescriptionText'));
+                    $(this).closest('.usl-modal-shortcode').removeClass('usl-modal-shortcode-error-message');
+                });
+        },
+
         toggleAdvancedAtts: function ($e) {
-            if ($e.text() === 'Show advanced options') {
+
+            if ($e.hasClass('hidden')) {
                 this.showAdvancedAtts($e);
             } else {
                 this.hideAdvancedAtts($e);
@@ -610,18 +809,18 @@ var USL_Modal;
 
         showAdvancedAtts: function ($e) {
 
-            var $container = $e.siblings('.usl-modal-advanced-atts');
-
-            $container.show();
-            $e.text('Hide advanced options');
+            $e.removeClass('hidden');
+            $e.siblings('.usl-modal-advanced-atts').show();
+            $e.find('.show-text').hide();
+            $e.find('.hide-text').show();
         },
 
         hideAdvancedAtts: function ($e) {
 
-            var $container = $e.siblings('.usl-modal-advanced-atts');
-
-            $container.hide();
-            $e.text('Show advanced options');
+            $e.addClass('hidden');
+            $e.siblings('.usl-modal-advanced-atts').hide();
+            $e.find('.hide-text').hide();
+            $e.find('.show-text').show();
         },
 
         preventWindowScroll: function () {
@@ -680,10 +879,6 @@ var USL_Modal;
             })
         },
 
-        resetScroll: function () {
-            elements.list.scrollTop(0);
-        },
-
         listHeight: function () {
 
             var height = elements.wrap.innerHeight()
@@ -696,12 +891,71 @@ var USL_Modal;
             elements.list.height(height);
         },
 
-        showRemoveButton: function () {
-            elements.remove.show();
+        removeButton: function (which) {
+
+            which = which.toLowerCase();
+
+            if (which == 'show') {
+                elements.remove.show();
+            } else {
+                elements.remove.hide();
+            }
         },
 
-        hideRemoveButton: function () {
-            elements.remove.hide();
+        submitButton: function (which) {
+
+            var _which = which.toLowerCase();
+
+            function transition($button) {
+
+                var orig_width, width,
+                    $buttons = elements.submit.find('[class^="usl-modal-submit-text"]'),
+                    offset = $button.height() * $button.index('[class^="usl-modal-submit-text"]') * -1;
+
+                orig_width = elements.submit.width();
+                elements.submit.width('auto');
+                width = $button.width();
+                elements.submit.width(orig_width);
+
+                elements.submit.animate({
+                    width: width
+                }, 400);
+
+
+                if (offset != parseInt($button.css('top'))) {
+                    $buttons.addClass('blur').animate({
+                        top: offset
+                    }, {
+                        duration: 200,
+                        complete: function () {
+                            $(this).removeClass('blur');
+                        }
+                    });
+                }
+            }
+
+            switch (_which) {
+                case 'add':
+                    elements.submit.removeClass('disabled');
+                    transition(elements.submit.find('.usl-modal-submit-text-add'));
+
+                    break;
+                case 'modify':
+                    elements.submit.removeClass('disabled');
+                    transition(elements.submit.find('.usl-modal-submit-text-modify'));
+
+                    break;
+                case 'change':
+                    elements.submit.removeClass('disabled');
+                    transition(elements.submit.find('.usl-modal-submit-text-change'));
+
+                    break;
+                case 'disable':
+                    elements.submit.addClass('disabled');
+                    break;
+                default:
+                    throw new Error('USL: submitButton() has no button type "' + which + '"');
+            }
         },
 
         modify: function (shortcode) {
@@ -734,7 +988,11 @@ var USL_Modal;
                 atts.content = content;
             }
 
+            this.modifying = true;
+
             this.setActiveShortcode(code);
+
+            elements.active_shortcode.addClass('current-shortcode');
 
             this.current_shortcode = {
                 all: shortcode,
@@ -744,7 +1002,7 @@ var USL_Modal;
 
             this.open();
 
-            this.openShortcode();
+            this.activateShortcode(elements.active_shortcode);
 
             this.populateShortcode(atts);
         },
@@ -759,14 +1017,14 @@ var USL_Modal;
             });
         },
 
-        populateShortcode: function (pairs) {
+        populateShortcode: function (atts) {
 
-            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+            $.each(atts, function (name, value) {
 
-                var attObj = $(this).data('attObj');
+                var attObj = elements.active_shortcode.find('.usl-modal-att-row[data-att-name="' + name + '"]').data('attObj');
 
-                if (typeof pairs[attObj.name] !== 'undefined') {
-                    attObj.setValue(pairs[attObj.name]);
+                if (attObj) {
+                    attObj.setValue(value);
                 }
             });
         },
@@ -776,11 +1034,21 @@ var USL_Modal;
             if (elements.active_shortcode) {
 
                 elements.active_shortcode.removeClass('active');
+
                 elements.active_shortcode.find('.accordion-section-content').slideUp(slide_transition);
+
                 USL_Modal.hideAdvancedAtts(elements.active_shortcode.find('.usl-modal-show-advanced-atts'));
-                USL_Modal.refresh();
+
+                if (!elements.active_shortcode.hasClass('current-shortcode')) {
+                    USL_Modal.refresh();
+                }
+
+                this.shortcodeToolbarTogggle(elements.active_shortcode.find('.usl-modal-shortcode-toolbar-toggle'), 'close');
+
                 elements.last_active_shortcode = elements.active_shortcode;
                 elements.active_shortcode = false;
+
+                this.submitButton('disable');
             }
         },
 
@@ -826,13 +1094,29 @@ var USL_Modal;
 
             usl_modal_open = true;
 
+            if (!this.selection) {
+                elements.list.find('.usl-modal-shortcode.wrapping').addClass('disabled');
+            } else {
+                elements.list.find('.usl-modal-shortcode.wrapping.disabled').removeClass('disabled');
+            }
+
             this.refreshRows();
+
             elements.wrap.show();
             elements.backdrop.show();
 
             elements.search.find('input[name="usl-modal-search"]').focus();
 
             this.listHeight();
+
+            // Buttons
+            if (this.modifying) {
+                this.submitButton('modify');
+                this.removeButton('show');
+            } else {
+                this.submitButton('add');
+                this.submitButton('disable');
+            }
 
             $(document).trigger('usl-modal-open');
         },
@@ -841,11 +1125,12 @@ var USL_Modal;
 
             usl_modal_open = false;
 
+            elements.list.scrollTop(0);
             elements.wrap.hide();
             elements.backdrop.hide();
 
-            this.resetScroll();
             this.closeShortcode();
+            this.clearShortcodeErrors();
             this.clearSearch();
 
             // Refresh categories at top
@@ -853,6 +1138,14 @@ var USL_Modal;
             elements.categories.find('li').first().addClass('active');
             elements.categories.find('> ul').css('left', 0);
 
+            // Reset buttons
+            elements.remove.hide();
+
+            elements.list.find('.current-shortcode').removeClass('current-shortcode');
+
+            this.modifying = false;
+            this.current_shortcode = false;
+            this.active_shortcode = '';
             this.selection = '';
 
             $(document).trigger('usl-modal-close');
@@ -860,77 +1153,37 @@ var USL_Modal;
 
         update: function () {
 
-            var $active = elements.list.find('li.active');
-
-            if ($active.length === 0) {
-                return;
-            }
-
-            if (!this.validate()) {
+            if (!elements.active_shortcode || !this.validate() || elements.submit.hasClass('disabled')) {
                 return;
             }
 
             this.sanitize();
 
-            var _atts = $active.find('.usl-modal-shortcode-form').serializeArray(),
-                code = $active.attr('data-code'),
-                title = $active.find('.usl-modal-shortcode-title').html(),
+            var code = elements.active_shortcode.attr('data-code'),
+                title = elements.active_shortcode.find('.usl-modal-shortcode-title').html(),
                 props, output, atts = {}, selection = this.selection;
+
+            // Get the atts
+            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+
+                var attObj = $(this).data('attObj');
+
+                // Skip if no attObj
+                if (!attObj) {
+                    return true; // Continue $.each
+                }
+
+                if (!attObj.disabled) {
+                    atts[attObj.name] = attObj.getValue();
+                }
+            });
 
             props = USL_Data.all_shortcodes[code];
 
             output = '[' + code;
 
             // Add on atts if they exist
-            if (_atts.length) {
-
-                // Turn it into an associative array
-                for (var i = 0; i < _atts.length; i++) {
-
-                    if (_atts[i].name.match(/:repeater/)) {
-
-                        /*
-                         Repeaters:
-                         */
-
-                        // Get the parent and child names from the input name
-                        var regex = /(?:\[)([^\]]*)/g,
-                            matches = [],
-                            match;
-
-                        while (match = regex.exec(_atts[i].name)) {
-                            matches.push(match[1]);
-                        }
-
-                        var parent = matches[0],
-                            child = matches[1];
-
-                        // If the parent is not yet an object, create it
-                        if (!atts[parent]) {
-                            atts[parent] = {};
-                        }
-
-                        if (atts[parent][child]) {
-                            atts[parent][child] += ',' + _atts[i].value;
-                        } else {
-                            atts[parent][child] = _atts[i].value;
-                        }
-
-                    } else {
-
-                        /*
-                        Everything else:
-                         */
-
-                        if (atts[_atts[i].name]) {
-                            // For multi-selects
-                            atts[_atts[i].name] += ',' + _atts[i].value;
-                        } else {
-                            atts[_atts[i].name] = _atts[i].value;
-                        }
-                    }
-                }
-
+            if (atts) {
                 $.each(atts, function (name, value) {
 
                     // Set up the selection to be content if it exists
@@ -939,14 +1192,9 @@ var USL_Modal;
                         return true; // Continue $.each
                     }
 
-                    // Repeaters pass objects
-                    if (typeof value === 'object') {
-                        value = JSON.stringify(value);
-                    }
-
                     // Add the att to the shortcode output
                     if (value.length) {
-                        output += ' ' + name + '=\'' + value + '\'';
+                        output += ' ' + name + '=\'' + usl_encode_attr(value, ['\"']) + '\'';
                     }
                 });
             }
@@ -967,16 +1215,22 @@ var USL_Modal;
             $(document).trigger('usl-modal-update');
 
             this.close();
-        }
-        ,
+        },
 
         validate: function () {
 
             var validated = true;
 
             elements.active_shortcode.find('.usl-modal-att-row').each(function () {
-                var attObj = $(this).data('attObj'),
-                    required = attObj.$container.attr('data-required'),
+
+                var attObj = $(this).data('attObj');
+
+                // Skip if no attObj
+                if (!attObj) {
+                    return true; // Continue $.each
+                }
+
+                var required = attObj.$container.attr('data-required'),
                     validate = attObj.$container.attr('data-validate'),
                     att_value = attObj.getValue(),
                     att_valid = true;
@@ -998,15 +1252,20 @@ var USL_Modal;
 
                     $.each(validate, function (type, value) {
 
+                        var regEx,
+                            url_pattern = '[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b' +
+                                '([-a-zA-Z0-9@:%_\\+.~#?&//=]*)',
+                            email_pattern = '\\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\\b';
+
+
                         // Validate for many different types
                         switch (type) {
 
                             // Url validation
                             case 'url':
+                                regEx = new RegExp(url_pattern, 'ig');
 
-                                var url_pattern = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig;
-
-                                if (!att_value.match(url_pattern)) {
+                                if (!att_value.match(regEx)) {
                                     att_valid = false;
                                     validated = false;
                                     attObj.setInvalid('Please enter a valid URL');
@@ -1016,9 +1275,9 @@ var USL_Modal;
                             // Email validation
                             case 'email':
 
-                                var email_pattern = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig;
+                                regEx = new RegExp(email_pattern, 'ig');
 
-                                if (!att_value.match(email_pattern)) {
+                                if (!att_value.match(regEx)) {
                                     att_valid = false;
                                     validated = false;
                                     attObj.setInvalid('Please enter a valid Email');
@@ -1071,7 +1330,7 @@ var USL_Modal;
 
                             // If no matches, throw error
                             default:
-                                throw new Error('USL -> Unsupported validation method "' + type + '" for the shortcode "' + attObj.shortcode + '" at field "' + attObj.fieldname + '"');
+                                throw new Error('USL: Unsupported validation method "' + type + '" for the shortcode "' + attObj.shortcode + '" at field "' + attObj.fieldname + '"');
                         }
                     });
                 }
@@ -1082,14 +1341,20 @@ var USL_Modal;
             });
 
             return validated;
-        }
-        ,
+        },
 
         sanitize: function () {
 
             elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+
+                var attObj = $(this).data('attObj');
+
+                // Skip if no attObj
+                if (!attObj) {
+                    return true; // Continue $.each
+                }
+
                 var sanitize = USL_Modal._stringToObject($(this).attr('data-sanitize')),
-                    attObj = $(this).data('attObj'),
                     att_value = attObj.getValue();
 
                 if (sanitize && att_value !== null && att_value.length) {
@@ -1110,8 +1375,7 @@ var USL_Modal;
                     });
                 }
             });
-        }
-        ,
+        },
 
         refresh: function () {
 
@@ -1126,8 +1390,7 @@ var USL_Modal;
                     }
                 });
             }
-        }
-        ,
+        },
 
         _stringToObject: function (string) {
 
@@ -1156,23 +1419,25 @@ var USL_Modal;
             this.name = $e.attr('data-att-name');
             this.fieldname = this.$container.find('.usl-modal-att-name').text().trim();
             this.shortcode = this.$container.closest('.usl-modal-shortcode').attr('data-code');
-
-            this._storeOriginalValue();
-        };
-
-        this._storeOriginalValue = function () {
-
-            this.original_value = this.$input.val();
+            this.disabled = this.$container.attr('data-disabled') ? true : false;
 
             this.storeOriginalValue();
         };
 
+        this.storeOriginalValue = function () {
+            this.original_value = this.$input.val();
+        };
+
         this._revert = function () {
 
-            this.setValue(this.original_value);
-            this.setValid();
-
             this.revert();
+            this.setValid();
+            this.$input.prop('disabled', false);
+
+        };
+
+        this.revert = function () {
+            this.setValue(this.original_value);
         };
 
         this.getValue = function () {
@@ -1180,12 +1445,14 @@ var USL_Modal;
         };
 
         this.setValue = function (value) {
-            this.$input.val(value);
+            this.$input.val(usl_decode_attr(value));
         };
 
         this.setInvalid = function (msg) {
+
             this.$container.addClass('invalid');
             this.errorMsg(msg);
+            highlight(this.$input);
         };
 
         this.setValid = function () {
@@ -1193,6 +1460,7 @@ var USL_Modal;
         };
 
         this.errorMsg = function (msg) {
+
             if (typeof this.$errormsg === 'undefined') {
                 this.$errormsg = this.$container.find('.usl-modal-att-errormsg');
             }
@@ -1200,9 +1468,7 @@ var USL_Modal;
             this.$errormsg.html(msg);
         };
 
-        this.storeOriginalValue = function () {
-        };
-        this.revert = function () {
+        this.destroy = function () {
         };
     }
 
@@ -1228,8 +1494,14 @@ var USL_Modal;
         AttAPI.apply(this, arguments);
 
         this.setValue = function (value) {
-            this.$input.val(value);
+            this.$input.val(usl_decode_attr(value));
             this.$input.trigger('chosen:updated');
+        };
+
+        this.destroy = function () {
+            this.$input.removeData('chosen');
+            this.$input.show();
+            this.$input.siblings('.chosen-container').remove();
         };
 
         this.init($e);
@@ -1241,11 +1513,19 @@ var USL_Modal;
         AttAPI.apply(this, arguments);
 
         this.revert = function () {
-            this.$input.iris('color', this.original_value);
+            this.setValue(this.original_value);
         };
 
         this.setValue = function (value) {
             this.$input.iris('color', value);
+        };
+
+        this.destroy = function () {
+
+            this.$input.removeData('wpWpColorPicker');
+            this.$input.removeData('a8cIris');
+            this.$container.find('.wp-picker-container').remove();
+            this.$container.find('.usl-modal-att-field').prepend(this.$input);
         };
 
         this.init($e);
@@ -1257,16 +1537,21 @@ var USL_Modal;
         AttAPI.apply(this, arguments);
 
         this.revert = function () {
-            this.$slider.slider('value', this.original_value);
+            this.setValue(this.original_value);
         };
 
         this.setValue = function (value) {
             this.$input.val(value);
-            this.$slider.slider('value', value);
+            this.$input.change();
+        };
+
+        this.destroy = function () {
+            var $slider = this.$container.find('.usl-modal-att-slider');
+            $slider.slider('destroy');
+            $slider.removeData();
         };
 
         this.init($e);
-        this.$slider = this.$container.find('.usl-modal-att-slider');
     };
 
     var Counter = function ($e) {
@@ -1274,79 +1559,133 @@ var USL_Modal;
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
+        this.getValue = function () {
+
+            var value = this.$input.val(),
+                unit = this.$container.find('.usl-modal-counter-unit select').val();
+
+            if (unit) {
+                value += unit;
+            }
+
+            return value;
+        };
+
+        this.setValue = function (value) {
+
+            // Divide value from units
+            var values = value.split(/(\d+)/).filter(Boolean);
+            value = values[0]; // The number
+
+            // Make sure the "+" and "-" buttons have the right classes
+            var min = this.$input.attr('data-min'),
+                max = this.$input.attr('data-max');
+
+            if (value == min) {
+                this.$input.siblings('.usl-modal-counter-down').addClass('disabled');
+            } else {
+                this.$input.siblings('.usl-modal-counter-down').removeClass('disabled');
+            }
+
+            if (value == max) {
+                this.$input.siblings('.usl-modal-counter-up').addClass('disabled');
+            } else {
+                this.$input.siblings('.usl-modal-counter-up').removeClass('disabled');
+            }
+
+            this.$input.val(value);
+
+            // If a unit was found
+            if (values.length > 1) {
+                this.$container.find('.usl-modal-counter-unit-input').val(values[1]); // The unit
+            }
+        };
+
         this.init($e);
     };
 
     var Repeater = function ($e) {
 
-        // FIXME Just changed markup of repeating fields to have the same markup as parent atts. Need to accomodate for this wherever it shows up
-
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
         this.revert = function () {
-
-            var $fields = this.$container.find('.usl-modal-repeater-field');
-
-            $fields.find('.usl-modal-att-input').val('');
-
-            $fields.each(function () {
-                if ($(this).index() !== 0) {
+            this.$container.find('.usl-modal-repeater-field').each(function () {
+                if ($(this).index() > 1) {
                     $(this).remove();
                 }
             });
         };
 
-        this.setValue = function (value_s) {
+        this.getValue = function () {
 
-            if (value_s.length) {
+            var values = {};
 
-                // If there are values to set
-                var _values = JSON.parse(value_s),
-                    values = {}, count = 0, all_values = [];
+            this.$container.find('.usl-modal-att-row').each(function () {
 
-                $.each(_values, function (field_name, field_values) {
-                    values[field_name] = field_values.split(',');
-                    count = values[field_name].length;
-                });
-
-                for (var i = 0; i < count; i++) {
-
-                    var fields = {};
-                    $.each(values, function (field_name, field_values) {
-                        fields[field_name] = field_values[i];
-                    });
-                    all_values.push(fields);
+                // Skip dummy field
+                if ($(this).closest('.usl-modal-repeater-field').hasClass('dummy-field')) {
+                    return true; // Continue $.each
                 }
 
-                if (all_values.length) {
+                var attObj = $(this).data('attObj');
 
-                    var att_name = this.$container.attr('data-att-name');
+                if (values[attObj.name]) {
+                    // Att already set, append new value
+                    values[attObj.name] += '::sep::' + usl_encode_attr(attObj.getValue());
+                } else {
+                    values[attObj.name] = usl_encode_attr(attObj.getValue());
+                }
+            });
 
-                    for (i = 0; i < all_values.length; i++) {
+            return JSON.stringify(values);
+        };
 
-                        var $field = this.$container.find('.usl-modal-repeater-field').first().clone(true);
+        this.setValue = function (object) {
 
-                        $.each(all_values[i], function (field, value) {
-                            $field.find('.usl-modal-att-input[name="[' + att_name + '][' + field + ']:repeater"]').val(value);
-                        });
+            var self = this;
 
-                        // Show the button on all but the first
-                        if (i > 0) {
-                            $field.find('.usl-modal-repeater-remove.hidden').removeClass('hidden');
+            if (object.length) {
+
+                // Turn our string literal into an object
+                object = JSON.parse(object);
+
+                // Construct the fields object
+                var fields = [];
+                $.each(object, function (name, values) {
+
+                    var att_values = values.split('::sep::');
+
+                    for (var i = 0; i < att_values.length; i++) {
+
+                        if (!fields[i]) {
+                            fields[i] = {};
                         }
 
-                        this.$container.find('.usl-modal-att-field .usl-modal-att-errormsg').before($field);
+                        fields[i][name] = att_values[i];
                     }
+                });
 
-                    // Delete the first (empty) field
-                    this.$container.find('.usl-modal-repeater-field').first().remove();
+                // Add as many new fields as necessary
+                for (var i = 1; i < fields.length; i++) {
+
+                    // Fire clicking the "+" button manually in order to create all the fields
+                    this.$container.find('.usl-modal-repeater-field:eq(1)').find('.usl-modal-repeater-add').click();
                 }
-            } else {
 
-                // If there are no values (we are erasing)
-                this.$container.find('.usl-modal-repeater-field').first().find('.usl-modal-att-input').val('');
-                this.$container.find('.usl-modal-repeater-field').not(':first').remove();
+                // Rebuild the new atts attObj data
+                USL_Modal.initAtts();
+
+                // Set the values
+                for (i = 0; i < fields.length; i++) {
+
+                    $.each(fields[i], function (name, value) {
+                        var attObj = self.$container.find('.usl-modal-repeater-field:eq(' + ( i + 1 ) + ')').
+                            find('.usl-modal-att-row[data-att-name="' + name + '"]').data('attObj');
+
+                        attObj.setValue(value);
+                    });
+                }
             }
         };
 
@@ -1364,4 +1703,158 @@ var USL_Modal;
     $(window).resize(function () {
         USL_Modal.resize();
     });
+
+    // Helper functions
+    function initRepeaterButtons($e) {
+
+        var $container = $e.find('.usl-modal-att-field');
+
+        // Add a new field after on pressing the "+"
+        $container.find('.usl-modal-repeater-add').off().click(function () {
+
+            // Clone the dummy field in after the current field
+            var $clone = $(this).closest('.usl-modal-att-field').find('.usl-modal-repeater-field.dummy-field').clone();
+
+            // Modify the clone
+            $clone.show();
+            $clone.find('.usl-modal-att-row').removeAttr('data-no-init');
+            $clone.removeClass('dummy-field');
+
+            $(this).closest('.usl-modal-repeater-field').after($clone);
+
+            // Re-build the attObj data for the newly cloned atts
+            USL_Modal.initAtts();
+
+            // Re-attach button handlers
+            initRepeaterButtons($e);
+        });
+
+        // Delete the field on pressing the "-"
+        $container.find('.usl-modal-repeater-remove').off().click(function () {
+
+            var $field = $(this).closest('.usl-modal-repeater-field');
+
+            // If we're on the second (first visible) field and they're are no more (visible) fields besides this one
+            if ($field.index() == 1 && $(this).closest('.usl-modal-att-row').find('.usl-modal-repeater-field').length <= 2) {
+
+                // Clear the inputs
+                highlight($field);
+                $field.find('.usl-modal-att-row').each(function () {
+                    var attObj = $(this).data('attObj');
+                    attObj.revert();
+                });
+            } else {
+
+                // Remove the field
+                highlight($field);
+                $field.effect('drop', {
+                    duration: 300,
+                    complete: function () {
+                        $(this).remove();
+                    }
+                });
+            }
+        });
+    }
+
+    function highlight($e, color, font_color, transition) {
+
+        color = typeof color !== 'undefined' ? color : error_color;
+        font_color = typeof font_color !== 'undefined' ? font_color : '#fff';
+        transition = typeof transition !== 'undefined' ? transition : 300;
+
+        // Get and store the original color
+        var orig_colors = {};
+        if ($e.data('highlightOriginalColors')) {
+            orig_colors = $e.data('highlightOriginalColors');
+        } else {
+            orig_colors.background = $e.css('backgroundColor');
+            orig_colors.font = $e.css('color');
+            $e.data('highlightOriginalColors', orig_colors);
+        }
+
+        // Animate the color
+        $e.css({
+            backgroundColor: color,
+            color: font_color
+        }).stop().animate({
+            backgroundColor: orig_colors.background,
+            color: orig_colors.font
+        }, {
+            duration: transition,
+            complete: function () {
+                $(this).removeAttr('style');
+            }
+        });
+    }
+
+    function chosen_custom_input($chosen) {
+
+        // When hiding the dropdown (submitting the field), use our custom input
+        $chosen.on('chosen:hiding_dropdown', function () {
+
+            var name = $(this).attr('name'),
+                $self = $(this),
+                $container = $chosen.siblings('.chosen-container'),
+                custom_val = $container.find('.chosen-search input[type="text"]').val(),
+                $placeholder = $container.find('.chosen-single'),
+                $custom_input = $container.parent().find('.chosen-custom-input');
+
+            // An existing value has been selected manually or there was no input
+            if (!custom_val.length) {
+                if ($custom_input.length) {
+                    $custom_input.remove();
+                }
+                return;
+            }
+
+            // See if value exists in selectbox, and if it does, set chosen to that value
+            var exists = false;
+            $(this).find('option').each(function () {
+                if ($(this).val() == custom_val) {
+                    $self.val(custom_val).trigger('chosen:updated');
+                    exists = true;
+                    return false;
+                }
+            });
+
+            if (exists) {
+                return;
+            }
+
+            if (!$custom_input.length) {
+                $container.parent().append('<input type="hidden" class="chosen-custom-input" name="' + name + '" />');
+                $custom_input = $container.parent().find('.chosen-custom-input');
+            }
+
+            $custom_input.val(custom_val);
+            $placeholder.removeClass('chosen-default');
+            $placeholder.find('> span').html(custom_val);
+        });
+    }
+
+    window['usl_encode_attr'] = function (attr, allowed) {
+
+        allowed = typeof allowed !== 'undefined' ? allowed : [];
+
+        return $('<div/>').text(attr.replace(/'|"|\n/g, function (match) {
+            match = match == '\'' && allowed.indexOf('\'') === -1 ? '::squot::' : match;
+            match = match == '"' && allowed.indexOf('"') === -1 ? '::dquot::' : match;
+            match = match == '\n' && allowed.indexOf('\n') === -1 ? '::br::' : match;
+            return match;
+        })).html();
+    };
+
+    window['usl_decode_attr'] = function (attr, ignore) {
+
+        attr = typeof attr !== 'undefined' ? attr : '';
+        ignore = typeof ignore !== 'undefined' ? ignore : [];
+
+        return $('<div/>').text(attr.replace(/(::squot::)|(::dquot::)|(::br::)/g, function (match) {
+            match = match == '::squot::' && ignore.indexOf('::squot::') === -1 ? '\'' : match;
+            match = match == '::dquot::' && ignore.indexOf('::dquot::') === -1 ? '"' : match;
+            match = match == '::br::' && ignore.indexOf('::br::') === -1 ? '\n' : match;
+            return match;
+        })).html();
+    };
 })(jQuery);

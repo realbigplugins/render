@@ -1,3 +1,5 @@
+@import "../global";
+
 i.mce-i-usl-mce-icon {
   font: 400 20px/1 dashicons;
 
@@ -18,7 +20,7 @@ i.mce-i-usl-mce-icon {
   &.hide {
     visibility: hidden;
     opacity: 0;
-    transition: 300ms all;
+    transition: $primary-transition all;
   }
 
   .spinner {

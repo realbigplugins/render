@@ -1,0 +1,38 @@
+// Colors
+$primary-color: #266ba8;
+$secondary-color: #ebdbc1;
+$error-color: #ff5737;
+
+// Transitions
+$primary-transition: 300ms;
+
+// Mixins
+@mixin background-gradient($color1, $color2) {
+  background: $color1;
+  background: -moz-linear-gradient(top, $color1 0%, $color2 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $color1), color-stop(100%, $color2));
+  background: -webkit-linear-gradient(top, $color1 0%, $color2 100%);
+  background: -o-linear-gradient(top, $color1 0%, $color2 100%);
+  background: -ms-linear-gradient(top, $color1 0%, $color2 100%);
+  background: linear-gradient(to bottom, $color1 0%, $color2 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$color1', endColorstr='$color2', GradientType=0);
+}
+
+@mixin background-gradient-alt($color1, $color2) {
+  background: $color1;
+  background: -moz-linear-gradient(top, $color1 0%, darken($color1, 10%) 50%, darken($color2, 10%) 51%, $color2 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $color1), color-stop(50%, darken($color1, 10%)), color-stop(51%, darken($color2, 10%)), color-stop(100%, $color2));
+  background: -webkit-linear-gradient(top, $color1 0%, darken($color1, 10%) 50%, darken($color2, 10%) 51%, $color2 100%);
+  background: -o-linear-gradient(top, $color1 0%, darken($color1, 10%) 50%, darken($color2, 10%) 51%, $color2 100%);
+  background: -ms-linear-gradient(top, $color1 0%, darken($color1, 10%) 50%, darken($color2, 10%) 51%, $color2 100%);
+  background: linear-gradient(to bottom, $color1 0%, darken($color1, 10%) 50%, darken($color2, 10%) 51%, $color2 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$color1', endColorstr='$color2', GradientType=0);
+}
+
+@mixin clearfix {
+  &:after {
+    content: ' ';
+    display: table;
+    clear: both;
+  }
+}

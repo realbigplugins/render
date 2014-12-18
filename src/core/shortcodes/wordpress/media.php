@@ -10,6 +10,7 @@
 
 $_shortcodes = array(
 	// Embed
+	// TODO Test and fix up
 	array(
 		'code'        => 'embed',
 		'title'       => __( 'Embed', 'USL' ),
@@ -33,6 +34,7 @@ $_shortcodes = array(
 		'wrapping'    => true,
 	),
 	// Caption
+	// TODO Test and fix up
 	array(
 		'code'        => 'caption',
 		'title'       => __( 'Caption', 'USL' ),
@@ -63,6 +65,7 @@ $_shortcodes = array(
 		'wrapping'    => true,
 	),
 	// Gallery
+	// TODO Test and fix up
 	array(
 		'code'        => 'gallery',
 		'title'       => __( 'Gallery', 'USL' ),
@@ -128,6 +131,7 @@ $_shortcodes = array(
 		),
 	),
 	// Playlist
+	// TODO Test and fix up
 	array(
 		'code'        => 'playlist',
 		'title'       => __( 'Playlist', 'USL' ),
@@ -221,6 +225,7 @@ $_shortcodes = array(
 		),
 	),
 	// Audio
+	// TODO Test and fix up
 	array(
 		'code'        => 'audio',
 		'title'       => __( 'Audio', 'USL' ),
@@ -261,6 +266,7 @@ $_shortcodes = array(
 		),
 	),
 	// Video
+	// TODO Test and fix up
 	array(
 		'code'        => 'video',
 		'title'       => __( 'Video', 'USL' ),

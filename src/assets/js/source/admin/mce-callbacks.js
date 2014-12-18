@@ -23,9 +23,11 @@ var USL_MCECallbacks;
                 data,
                 function (response) {
 
-                    response = response.replace(/(&#8203;)+/g, "$1");
+                    response = response.replace(/(<span class="usl-tinymce-divider usl-tinymce-noneditable">.*?<\/span>)+/g, "$1");
                     editor.setContent(response);
                     USL_tinymce.loading(false);
+
+                    $(document).trigger('usl-tinymce-post-render');
                 }
             );
         },
@@ -95,7 +97,7 @@ var USL_MCECallbacks;
             this.visualLoadCounter.count++;
             if (this.visualLoadCounter.count == this.visualLoadCounter.total) {
                 var content = editor.getContent({format: 'numeric'});
-                editor.setContent(content.replace(/(&#8203;)+/g, '&#8203;'));
+                editor.setContent(content.replace(/(<span class="usl-tinymce-divider usl-tinymce-noneditable">.*?<\/span>)+/g, '<span class="usl-tinymce-divider usl-tinymce-noneditable">&#8203;</span>'));
                 USL_tinymce.loading(false);
             }
         },

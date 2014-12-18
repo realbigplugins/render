@@ -1,14 +1,5 @@
-@mixin clearfix {
-  &:after {
-    content: ' ';
-    display: table;
-    clear: both;
-  }
-}
-
-$error-color: #ec6750;
-
 @import 'modal';
+@import 'modal-extend';
 @import 'widget';
 @import 'tinymce';
 @import 'addons-page';

@@ -27,6 +27,7 @@ class USL_Modal {
 		// Allow WP accordion functionality for our shortcode list
 		wp_enqueue_script( 'jquery-ui-slider' );
 		wp_enqueue_script( 'jquery-effects-shake' );
+		wp_enqueue_script( 'jquery-effects-drop' );
 		wp_enqueue_script( 'wp-color-picker' );
 		wp_enqueue_script( 'usl-chosen' );
 
@@ -64,6 +65,20 @@ class USL_Modal {
 
 				$type = isset( $att['type'] ) ? $att['type'] : 'textbox';
 
+				// Section breaks
+				if ( $type == 'section_break' ) {
+					?>
+					<p class="usl-modal-att-section-break">
+						<?php echo isset( $att['label'] ) ? $att['label'] : ''; ?>
+
+						<span class="usl-modal-att-section-break-description">
+							<?php echo isset( $att['description'] ) ? $att['description'] : ''; ?>
+						</span>
+					</p>
+					<?php
+					continue;
+				}
+
 				// Validation
 				if ( ! isset( $att['validate'] ) ) {
 					$att['validate'] = array();
@@ -83,12 +98,15 @@ class USL_Modal {
 
 	private static function att_content( $att_id, $att, $type ) {
 		?>
-		<div class="usl-modal-att-row"
+		<div class="usl-modal-att-row <?php echo isset( $att['classes'] ) ? implode( ' ', $att['classes'] ) : ''; ?>"
 		     data-att-name="<?php echo $att_id; ?>"
 		     data-att-type="<?php echo $type; ?>"
-		     data-required="<?php echo $att['required']; ?>"
-		     data-validate="<?php echo $att['validate']; ?>"
-		     data-sanitize="<?php echo $att['sanitize']; ?>">
+		     data-required="<?php echo isset( $att['required'] ) ? $att['required'] : ''; ?>"
+		     data-validate="<?php echo isset( $att['validate'] ) ? $att['validate'] : ''; ?>"
+		     data-sanitize="<?php echo isset( $att['sanitize'] ) ? $att['sanitize'] : ''; ?>"
+		     data-disabled="<?php echo isset( $att['disabled'] ) ? $att['disabled'] : ''; ?>"
+		     data-init-callback="<?php echo isset( $att['initCallback'] ) ? $att['initCallback'] : ''; ?>"
+		     data-no-init="<?php echo isset( $att['noInit'] ) ? $att['noInit'] : ''; ?>">
 
 			<?php if ( isset( $att['label'] ) ) : ?>
 				<div class="usl-modal-att-name">
@@ -100,9 +118,10 @@ class USL_Modal {
 
 				<?php
 				// Output the att field
-				if ( is_callable( array( __CLASS__, "att_type_$type" ) ) ) {
+				$callback = isset( $att['callback'] ) ? $att['callback'] : array( __CLASS__, "att_type_$type" );
+				if ( is_callable( $callback ) ) {
 					call_user_func(
-						array( __CLASS__, "att_type_$type" ),
+						$callback,
 						$att_id,
 						$att,
 						isset( $att['properties'] ) ? $att['properties'] : array()
@@ -126,7 +145,7 @@ class USL_Modal {
 
 	private static function att_type_textbox( $att_id, $att, $properties = array() ) {
 		?>
-		<input type="text" class="usl-modal-att-input"
+		<input type="text" class="usl-modal-att-input usl-modal-att-textbox"
 		       placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : ''; ?>"
 		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
 		       name="<?php echo $att_id; ?>"/>
@@ -135,7 +154,7 @@ class USL_Modal {
 
 	private static function att_type_textarea( $att_id, $att ) {
 		?>
-		<textarea class="usl-modal-att-input" name="<?php echo $att_id; ?>"><?php
+		<textarea class="usl-modal-att-input usl-modal-att-textarea" name="<?php echo $att_id; ?>"><?php
 			echo isset( $att['default'] ) ? $att['default_value'] : '';
 			?></textarea>
 	<?php
@@ -233,50 +252,120 @@ class USL_Modal {
 
 	private static function att_type_slider( $att_id, $att, $properties ) {
 
-		// Default value support
-		if ( isset( $att['default'] ) ) {
-			$properties['value'] = $att['default'];
+		// FIXME range not showing
+
+		// Establish defaults
+		$defaults   = array(
+			'value' => isset( $att['default'] ) ? $att['default'] : 0,
+			'min'   => 0,
+			'max'   => 100,
+			'step'  => 1,
+		);
+		$properties = wp_parse_args( $properties, $defaults );
+
+		// If range slider
+		if ( isset( $properties['range'] ) ) {
+			$properties['values'] = isset( $properties['values'] ) ? $properties['values'] : '0-20';
+			unset( $properties['value'] );
 		}
 
+		// Prepare data for the slider
 		$data = '';
 		foreach ( $properties as $data_name => $data_value ) {
 			$data .= " data-$data_name='$data_value'";
 		}
-		?>
-		<input type="text" class="usl-modal-att-slider-value usl-modal-att-input"
-		       value="<?php echo isset( $att['default'] ) ? $att['default'] : '0'; ?>"
-		       name="<?php echo $att_id; ?>"/>
+
+		if ( isset( $properties['range'] ) ) :
+
+			$values = explode( '-', $properties['values'] );
+			?>
+			<input type="hidden" class="usl-modal-att-slider-value usl-modal-att-input"
+			       value="<?php echo $properties['values']; ?>"
+			       name="<?php echo $att_id; ?>"/>
+
+			<div class="usl-modal-att-slider-range-text">
+				<span class="usl-modal-att-slider-range-text-value1"><?php echo $values[0]; ?></span>
+				&nbsp;-&nbsp;
+				<span class="usl-modal-att-slider-range-text-value2"><?php echo $values[1]; ?></span>
+			</div>
+		<?php else: ?>
+
+			<input type="text" class="usl-modal-att-slider-value usl-modal-att-input"
+			       value="<?php echo isset( $att['default'] ) ? $att['default'] : '0'; ?>"
+			       name="<?php echo $att_id; ?>"/>
+		<?php endif; ?>
 		<div class="usl-modal-att-slider" <?php echo $data; ?>></div>
 	<?php
 	}
 
-	private static function att_type_colorpicker( $att_id, $att ) {
+	private static function att_type_colorpicker( $att_id, $att, $properties ) {
+
 		?>
 		<input type="text"
-		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+		       value="<?php echo isset( $att['default'] ) ? $att['default'] : '#bada55'; ?>"
 		       class="usl-modal-att-colorpicker usl-modal-att-input"
 		       name="<?php echo $att_id; ?>"/>
 	<?php
 	}
 
 	private static function att_type_counter( $att_id, $att, $properties ) {
+
+		// TODO Unit type
+
+		// Establish defaults
+		$defaults   = array(
+			'min'        => 0,
+			'max'        => 1000,
+			'step'       => 1,
+			'shift_step' => 10,
+			'unit'       => false,
+		);
+		$properties = wp_parse_args( $properties, $defaults );
+
+		$default = isset( $att['default'] ) ? $att['default'] : $properties['min'];
 		?>
 		<div class="usl-modal-counter-container">
 			<div class="usl-modal-counter-down usl-modal-button dashicons dashicons-minus"></div>
 
 			<input type="text"
-			       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+			       value="<?php echo $default; ?>"
 			       class="usl-modal-att-counter usl-modal-att-input"
 			       name="<?php echo $att_id; ?>"
-			       data-min="<?php echo isset( $properties['min'] ) ? $properties['min'] : 0; ?>"
-			       data-max="<?php echo isset( $properties['max'] ) ? $properties['max'] : 1000; ?>"
-			       data-step="<?php echo isset( $properties['step'] ) ? $properties['step'] : 1; ?>"
-			       data-shift-step="<?php echo isset( $properties['shift_step'] ) ? $properties['shift_step'] : 10; ?>"
+			       data-min="<?php echo $properties['min']; ?>"
+			       data-max="<?php echo $properties['max']; ?>"
+			       data-step="<?php echo $properties['step']; ?>"
+			       data-shift-step="<?php echo $properties['shift_step']; ?>"
 				/>
 
 			<div class="usl-modal-counter-up usl-modal-button dashicons dashicons-plus"></div>
 		</div>
-	<?php
+
+		<?php if ( ( $unit = $properties['unit'] ) !== false ) : ?>
+
+			<div class="usl-modal-counter-unit">
+
+				<?php if ( isset( $unit['allowed'] ) ) : ?>
+
+					<select data-placeholder="<?php _e( 'Unit', 'USL' ); ?>">
+						<option></option>
+						<?php foreach ( $unit['allowed'] as $unit_value => $unit_label ) :
+							$unit_value = is_int( $unit_value ) ? $unit_label : $unit_value;
+							$selected   = isset( $unit['default'] ) ? selected( $unit_value, $unit['default'], false ) : '';
+							?>
+							<option value="<?php echo $unit_value; ?>" <?php echo $selected; ?>>
+								<?php echo $unit_label; ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+
+				<?php else: ?>
+
+					<input type="text" class="usl-modal-counter-unit-input" name="<?php echo "{$att_id}_unit"; ?>"
+					       value="<?php echo $unit['default']; ?>"/>
+
+				<?php endif; ?>
+			</div>
+		<?php endif;
 	}
 
 	private static function att_type_repeater( $att_id, $att, $properties ) {
@@ -294,50 +383,37 @@ class USL_Modal {
 			return;
 		}
 
-		for ( $i = 0; $i < intval( $properties['startWith'] ); $i ++ ) :
+		foreach ( $properties['fields'] as $field_ID => $field ) {
+			$properties['fields'][ $field_ID ]['disabled'] = true;
+		}
+
+		for ( $i = 0; $i < intval( $properties['startWith'] ) + 1; $i ++ ) :
+
+			// Make sure the dummy field (the first field) doesn't init any atts
+			if ( $i == 0 ) {
+				foreach ( $properties['fields'] as $field_ID => $field ) {
+					$properties['fields'][ $field_ID ]['noInit'] = true;
+				}
+			} else {
+				foreach ( $properties['fields'] as $field_ID => $field ) {
+					unset( $properties['fields'][ $field_ID ]['noInit'] );
+				}
+			}
 			?>
-			<div class="usl-modal-repeater-field">
+			<div class="usl-modal-repeater-field <?php echo $i == 0 ? 'dummy-field' : ''; ?>"
+				<?php echo $i == 0 ? 'style="display:none"' : ''; ?>>
+
+				<?php // Dummy input to trigger field
+				?>
+				<input type="hidden" name="<?php echo $att_id; ?>" class="usl-modal-att-input"/>
+
 				<div class="usl-modal-repeater-inputs">
-					<?php
-					self::atts_loop( $properties['fields'] );
-					//					foreach ( $properties['fields'] as $_att_id => $_att ) :
-					//
-					//						// Defaults for the att
-					//						$_defaults = array(
-					//							'type' => 'textbox',
-					//						);
-					//						$_att      = wp_parse_args( $_att, $_defaults );
-					//
-					//						if ( $_att['type'] === 'repeater' ) {
-					//							echo 'ERROR: Repeaters cannot be nested inside repeaters!';
-					//							continue;
-					//						}
-					//
-					//						if ( isset( $_att['label'] ) ) :
-					//
-					?>
-					<!--							<p class="usl-modal-repeater-label">-->
-					<!--								--><?php //echo $_att['label'];
-					?>
-					<!--							</p>-->
-					<!--						--><?php
-					//						endif;
-					//
-					//						// Output the att field
-					//						call_user_func(
-					//							array( __CLASS__, "att_type_$_att[type]" ),
-					//							"[{$att_id}][{$_att_id}]:repeater",
-					//							$_att,
-					//							isset( $_att['properties'] ) ? $_att['properties'] : array()
-					//						);
-					//					endforeach;
-					?>
+					<?php self::atts_loop( $properties['fields'] ); ?>
 				</div>
 
 				<div class="usl-modal-repeater-actions">
-						<span
-							class="usl-modal-repeater-remove usl-modal-button dashicons dashicons-minus <?php echo $i == 0 ? 'hidden' : ''; ?>"></span>
 					<span class="usl-modal-repeater-add usl-modal-button dashicons dashicons-plus"></span>
+					<span class="usl-modal-repeater-remove usl-modal-button dashicons dashicons-minus"></span>
 				</div>
 			</div>
 		<?php
@@ -375,7 +451,7 @@ class USL_Modal {
 		<div id="usl-modal-backdrop"></div>
 		<div id="usl-modal-wrap" style="display: none;">
 			<div class="usl-modal-title">
-				<?php _e( 'Shortcodes', 'USL' ); ?>
+				Ultimate Shortcodes Library
 				<button type="button" class="usl-modal-close">
 					<span class="screen-reader-text"><?php _e( 'Close', 'USL' ); ?></span>
 				</button>
@@ -434,33 +510,53 @@ class USL_Modal {
 									$shortcode['category'] : 'other'; ?>"
 								    data-code="<?php echo $code; ?>"
 								    data-source="<?php echo $shortcode['source']; ?>"
-								    class="<?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : ''; ?>
-								    usl-modal-shortcode">
+								    class="usl-modal-shortcode
+								    <?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : ''; ?>
+								    <?php echo $shortcode['wrapping'] ? 'wrapping' : ''; ?>">
 
-									<form class="usl-modal-shortcode-form">
-
-										<div
-											class="<?php echo ! empty( $shortcode['atts'] ) ?
-												'accordion-section' : 'usl-modal-sc'; ?>-title">
-											<div class="usl-modal-shortcode-title">
-												<?php echo $shortcode['title']; ?>
-												<br/>
+									<div
+										class="<?php echo ! empty( $shortcode['atts'] ) ?
+											'accordion-section' : 'usl-modal-sc'; ?>-title">
+										<div class="usl-modal-shortcode-title">
+											<?php echo $shortcode['title']; ?>
+											<br/>
 												<span class="usl-modal-shortcode-source">
 													<?php echo $shortcode['source']; ?>
 												</span>
-											</div>
-
-											<div class="usl-modal-shortcode-description">
-												<?php echo $shortcode['description'] ?
-													$shortcode['description'] : 'No description'; ?>
-											</div>
-											<div style="clear: both; display: table;"></div>
 										</div>
 
-										<?php if ( ! empty( $shortcode['atts'] ) ): ?>
-											<div class="accordion-section-content usl-modal-atts">
+										<div class="usl-modal-shortcode-description">
+											<?php echo $shortcode['description'] ?
+												$shortcode['description'] : 'No description'; ?>
+										</div>
+										<div style="clear: both; display: table;"></div>
+									</div>
 
-												<?php self::atts_loop( $shortcode['atts'], false, $wrapping ); ?>
+									<?php if ( ! empty( $shortcode['atts'] ) ): ?>
+										<div class="accordion-section-content usl-modal-atts">
+
+											<div class="usl-modal-shortcode-toolbar">
+												<div class="usl-modal-shortcode-toolbar-tools">
+													<div class="usl-modal-shortcode-toolbar-restore">
+														<div class="usl-modal-shortcode-toolbar-button-restore">
+															<?php _e( 'Restore Shortcode', 'USL' ); ?>
+														</div>
+
+														<div class="usl-modal-shortcode-toolbar-button-templates disabled">
+															<?php _e( 'Templates (coming soon!)', 'USL' ); ?>
+														</div>
+													</div>
+												</div>
+
+												<div class="usl-modal-shortcode-toolbar-toggle dashicons
+													dashicons-arrow-down-alt2">
+													<span class="dashicons-admin-generic"></span>
+												</div>
+											</div>
+
+											<div class="usl-modal-shortcode-atts">
+
+												<?php self::atts_loop( $shortcode['atts'], $advanced = false, $wrapping ); ?>
 
 												<?php
 												// Figure out if any of the attributes belong to the advanced section
@@ -473,16 +569,24 @@ class USL_Modal {
 												}
 												if ( $advanced ) :
 													?>
-													<a href="#" class="usl-modal-show-advanced-atts">
-														<?php _e( 'Show advanced options', 'USL' ); ?>
+													<a href="#"
+													   class="usl-modal-att-section-break usl-modal-show-advanced-atts hidden">
+														<span class="show-text">
+															<?php _e( 'Show advanced options', 'USL' ); ?>
+															<span class="dashicons dashicons-arrow-down"></span>
+														</span>
+														<span class="hide-text" style="display: none;">
+															<?php _e( 'Hide advanced options', 'USL' ); ?>
+															<span class="dashicons dashicons-arrow-up"></span>
+														</span>
 													</a>
 													<div class="usl-modal-advanced-atts" style="display: none;">
-														<?php self::atts_loop( $shortcode['atts'], true, $wrapping ); ?>
+														<?php self::atts_loop( $shortcode['atts'], $advanced = true, $wrapping ); ?>
 													</div>
 												<?php endif; ?>
 											</div>
-										<?php endif; ?>
-									</form>
+										</div>
+									<?php endif; ?>
 								</li>
 							<?php endforeach; ?>
 						<?php endif; ?>
@@ -496,12 +600,27 @@ class USL_Modal {
 					<a class="submitdelete deletion" href="#"><?php _e( 'Cancel', 'USL' ); ?></a>
 				</div>
 				<div class="usl-modal-update">
-					<input type="submit" value="<?php _e( 'Add Shortcode', 'USL' ); ?>" class="button button-primary"
-					       id="usl-modal-submit" name="usl-modal-submit">
 
-					<input type="submit" value="<?php _e( 'Remove Shortcode', 'USL' ); ?>"
-					       class="button-secondary delete"
-					       id="usl-modal-remove"/>
+					<div id="usl-modal-submit" class="button button-primary">
+						<p class="usl-modal-submit-text-add" style="top: 0;"><?php // Needed for initial animation ?>
+							<?php _e( 'Add Shortcode', 'USL' ); ?>
+						</p>
+						<br/>
+
+						<p class="usl-modal-submit-text-modify">
+							<?php _e( 'Modify Current Shortcode', 'USL' ); ?>
+						</p>
+						<br/>
+
+						<p class="usl-modal-submit-text-change">
+							<?php _e( 'Change To New Shortcode', 'USL' ); ?>
+						</p>
+					</div>
+
+					<div id="usl-modal-remove" class="button-secondary delete" style="display: none;">
+						<?php _e( 'Remove Current Shortcode', 'USL' ); ?>
+					</div>
+
 					<?php do_action( 'usl_modal_action_area' ); ?>
 				</div>
 			</div>

@@ -1,6 +1,8 @@
+@import "global";
+
 .usl-tinymce-shortcode-wrapper {
   position: relative;
-  transition: 300ms padding;
+  transition: $primary-transition padding;
   display: inline-block;
 
   &.styled {
@@ -17,4 +19,18 @@
   .usl-tinymce-shortcode-atts, .usl-tinymce-shortcode-code {
     display: none;
   }
+}
+
+// Global hidden and visible content
+.usl-content-hidden {
+  color: #C52D2D;
+}
+
+.usl-content-visible {
+  color: #04A104;
+}
+
+// Dividers
+.usl-tinymce-divider {
+  display: inline;
 }

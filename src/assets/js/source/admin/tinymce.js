@@ -48,6 +48,10 @@ var USL_tinymce;
                 USL_tinymce.removeShortcode();
             });
 
+            $(document).on('usl-tinymce-post-render', function () {
+                USL_tinymce.postRender();
+            });
+
             $('#post').submit(function (event) {
                 USL_tinymce.submit(event, $(this));
             });
@@ -108,19 +112,18 @@ var USL_tinymce;
                             return;
                         }
 
-                        var caretPos = range.startOffset,
-                            charcode = curElm.textContent.charCodeAt(0);
+                        var caret_position = range.startOffset,
+                            $parent = $(range.startContainer.parentElement);
 
-                        // When deleting the character &8203;, this should also delete the shortcode node preceding
-                        // it (because the character &8203; is not visible to the user, so having to delete that and
-                        // THEN also deleting the shortcode would be confusing.
-                        if (typeof range !== 'undefined') {
-                            if (charcode === 8203 && caretPos === 1) {
-                                var $curElm = $(curElm),
-                                    $prev = $curElm.prev();
 
-                                $prev.remove();
-                            }
+                        // When deleting the character usl-tinymce-divider;, this should also delete the shortcode node
+                        // preceding it (because the character &8203; is not visible to the user, so having to delete
+                        // that and THEN also deleting the shortcode would be confusing.
+                        if (caret_position === 1 &&
+                            $parent.attr('ID') == 'mce_noneditablecaret' &&
+                            $parent.prev().hasClass('usl-tinymce-divider')
+                        ){
+                            $parent.prev().prev('.usl-tinymce-shortcode-wrapper').remove();
                         }
 
                         // If there's no more content, delete the shortcode
@@ -129,7 +132,7 @@ var USL_tinymce;
                         }
 
                         // Don't allow backspace at beginning of string (inside shortcodes)
-                        if (caretPos === 0 && $(node).hasClass('usl-tinymce-shortcode-content')) {
+                        if (caret_position === 0 && $(node).hasClass('usl-tinymce-shortcode-content')) {
                             event.preventDefault();
                         }
                     }
@@ -197,10 +200,8 @@ var USL_tinymce;
                             no_selected = true;
                         }
 
-                        USL_Modal.showRemoveButton();
                         USL_Modal.modify(shortcode);
                     } else {
-                        USL_Modal.hideRemoveButton();
                         USL_Modal.open();
                     }
                 });
@@ -211,18 +212,6 @@ var USL_tinymce;
                     var content = editor.getContent({format: 'numeric'});
                     $texteditor.val(window.switchEditors.pre_wpautop(USL_tinymce.loadText(content)));
                 });
-
-                // Custom external scripts
-                if (USL_Data.tinymceExternalScripts) {
-                    for (var i = 0; i < USL_Data.tinymceExternalScripts.length; i++) {
-                        //tinymce.ScriptLoader.load(USL_Data.tinymceExternalScripts[i]);
-                        //
-                        //var loader = new tinymce.dom.ScriptLoader();
-                        //loader.load(USL_Data.tinymceExternalScripts[i]);
-
-                        tinymce.PluginManager.load( 'myplugin', USL_Data.tinymceExternalScripts[i]);
-                    }
-                }
             });
         },
 
@@ -243,13 +232,26 @@ var USL_tinymce;
             }
         },
 
+        postRender: function () {
+
+            // If there's any usl dividers in their own p tags, modify the p tag to be inline
+            var $body = $(editor.getBody());
+            $body.find('.usl-tinymce-divider').each(function () {
+
+                // If this divider is the ONLY contents of the parent <p> tag
+                if ($(this).parent().contents().length === 1) {
+                    $(this).parent().attr('style', 'display: inline;').addClass('usl-tinymce-divider');
+                }
+            });
+        },
+
         /**
          * Converts rendered shortcodes into literal shortcodes (Visual -> Text).
          */
         loadText: function (content) {
 
             content = USL_MCECallbacks.convertRenderedToLiteral(content);
-            content = content.replace(/&#8203;/g, '');
+            content = content.replace(/<span class="usl-tinymce-divider usl-tinymce-noneditable">.*?<\/span>/g, '');
 
             return content;
         },
@@ -262,8 +264,9 @@ var USL_tinymce;
 
             var output = '[' + code;
 
+
             if (atts) {
-                atts = JSON.parse(atts.replace(/&quot;/g, '"'));
+                atts = JSON.parse(usl_encode_attr(atts, ['"']));
                 $.each(atts, function (name, value) {
                     if (value.length) {
                         output += ' ' + name + '=\'' + value + '\'';
@@ -273,7 +276,7 @@ var USL_tinymce;
 
             output += ']';
 
-            if (shortcode_content.length) {
+            if (shortcode_content) {
                 output += shortcode_content + '[/' + code + ']';
             }
 
@@ -286,27 +289,22 @@ var USL_tinymce;
 
         update: function () {
 
-            // Nesting support
-            var old_code = USL_Modal.current_shortcode.code,
-                new_code = USL_Modal.output.code,
-                old_render_obj = USL_Data.rendered_shortcodes[old_code],
-                new_render_obj = USL_Data.rendered_shortcodes[new_code],
-                nesting = false;
+            // Get the current USL node (if it exists)
+            var node = editor.selection.getNode(),
+                $node = $(node).hasClass('usl-tinymce-shortcode-wrapper') ?
+                    $(node) :
+                    $(node).closest('.usl-tinymce-shortcode-wrapper'),
+                $divider = $node.next('.usl-tinymce-divider');
 
-            if (old_code && old_code !== new_code && new_render_obj && old_render_obj) {
-
-                // Only do it if the parent code supports it, the code to be nested doesn't allow it, and there is
-                // some selected content
-                if (old_render_obj.allowNesting && !new_render_obj.allowNesting && USL_Modal.selection.length) {
-                    nesting = true;
-                }
+            // Replace or insert the content
+            if ($node.length) {
+                $node.replaceWith(USL_Modal.output.all);
+                editor.dom.remove($divider[0]);
+            } else {
+                editor.insertContent(USL_Modal.output.all);
             }
 
-            if (!nesting) {
-                this.removeShortcode();
-            }
-
-            editor.insertContent(USL_Modal.output.all);
+            // Render the shortcodes
             this.loadVisual();
         },
 
@@ -315,9 +313,12 @@ var USL_tinymce;
             var node = editor.selection.getNode(),
                 $node = $(node).hasClass('usl-tinymce-shortcode-wrapper') ?
                     $(node) :
-                    $(node).closest('.usl-tinymce-shortcode-wrapper');
+                    $(node).closest('.usl-tinymce-shortcode-wrapper'),
+                $divider = $node.next('.usl-tinymce-divider');
 
-            $node.remove();
+            editor.dom.remove($node[0]);
+            editor.dom.remove($divider[0]);
+
             USL_Modal.close();
         },
 

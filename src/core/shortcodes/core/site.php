@@ -10,6 +10,7 @@
 
 $_shortcodes = array(
 	// Site Info
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_site',
 		'function'    => '_usl_sc_site',
@@ -23,6 +24,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Site Title
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_site_title',
 		'function'    => '_usl_sc_site_title',
@@ -31,6 +33,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Site Tagline
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_site_tagline',
 		'function'    => '_usl_sc_site_tagline',
@@ -39,6 +42,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Site Admin Email
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_site_admin_email',
 		'function'    => '_usl_sc_site_admin_email',

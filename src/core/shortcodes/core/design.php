@@ -3,41 +3,45 @@
 /**
  * Contains all USL packaged shortcodes within the Design category.
  *
- * @since USL 1.0.0
+ * @since      USL 1.0.0
  *
- * @package USL
+ * @package    USL
  * @subpackage Shortcodes
  */
 
 $_shortcodes = array(
-	// TODO Get this to work (need to get external JS in the tinymce iframe)
 	// Accordion
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_accordion',
 		'function'    => '_usl_sc_accordion',
 		'title'       => __( 'Accordion', 'USL' ),
 		'description' => __( 'Creates a clickable dropdown for your content', 'USL' ),
 		'atts'        => array(
-			'heading' => array(
-				'label'    => __( 'Heading', 'USL' ),
-				'required' => true,
+			'sections' => array(
+				'label'      => __( 'Sections', 'USL' ),
+				'required'   => true,
+				'type'       => 'repeater',
+				'properties' => array(
+					'fields' => array(
+						'heading' => array(
+							'label'    => __( 'Heading', 'USL' ),
+							'required' => true,
+						),
+						'content' => array(
+							'label'        => __( 'Content', 'USL' ),
+							'required'     => true,
+							'type'         => 'textarea',
+							'initCallback' => 'accordionUseContentInit',
+						)
+					),
+				),
 			),
 		),
-		'wrapping'    => true,
+		'noDisplay'   => true,
 		'render'      => array(
 			'allowNesting' => true,
 			'noStyle'      => true,
-		),
-		//
-		'noDisplay'   => true,
-	),
-	// Accordion section
-	array(
-		'code'      => 'usl_accordion_section',
-		'function'  => '_usl_sc_accordion_section',
-		'noDisplay' => true,
-		'render'    => array(
-			'noWrap' => true,
 		),
 	),
 	// Button
@@ -47,22 +51,30 @@ $_shortcodes = array(
 		'title'       => __( 'Button', 'USL' ),
 		'description' => __( 'Creates a sweet button', 'USL' ),
 		'atts'        => array(
-			'color'       => array(
-				'label'   => __( 'Color', 'USL' ),
-				'type'    => 'colorpicker',
-				'default' => '#bada55',
+			array(
+				'type'  => 'section_break',
+				'label' => __( 'Colors', 'USL' ),
 			),
-			'color_hover' => array(
-				'label'   => __( 'Color Hover', 'USL' ),
+			'color'                      => array(
+				'label'   => __( 'Background', 'USL' ),
 				'type'    => 'colorpicker',
-				'default' => '#84A347',
+				'default' => USL_PRIMARY_COLOR,
 			),
-			'font_color'  => array(
-				'label'   => __( 'Font Color', 'USL' ),
+			'color_hover'                => array(
+				'label'   => __( 'Background (Hover)', 'USL' ),
 				'type'    => 'colorpicker',
-				'default' => '#222',
+				'default' => USL_PRIMARY_COLOR_DARK,
 			),
-			'size'        => array(
+			'font_color'                 => array(
+				'label'   => __( 'Font', 'USL' ),
+				'type'    => 'colorpicker',
+				'default' => USL_PRIMARY_FONT_COLOR,
+			),
+			array(
+				'type'  => 'section_break',
+				'label' => __( 'Visual', 'USL' ),
+			),
+			'size'                       => array(
 				'label'      => __( 'Size', 'USL' ),
 				'type'       => 'selectbox',
 				'properties' => array(
@@ -74,71 +86,259 @@ $_shortcodes = array(
 					),
 				),
 			),
-			'shape'       => array(
+			'shape'                      => array(
 				'label'      => __( 'Shape', 'USL' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Square', 'USL' ),
+					'placeholder' => __( 'Rectangle', 'USL' ),
 					'options'     => array(
-						'square'  => __( 'Square', 'USL' ),
-						'rounded' => __( 'Rounded', 'USL' ),
-						'circle'  => __( 'Circle', 'USL' ),
+						'rectangle' => __( 'Rectangle', 'USL' ),
+						'rounded'   => __( 'Rounded', 'USL' ),
+						'ellipse'   => __( 'Ellipse', 'USL' ),
 					),
 				),
 			),
-			'link'        => array(
-				'label'    => __( 'Link', 'USL' ),
-				'validate' => array(
-					'url:',
-				),
-				'sanitize' => array(
-					'url:',
-				),
-			),
-			'icon'        => array(
+			'icon'                       => array(
 				'label'      => __( 'Icon', 'USL' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'callback'    => '_usl_sc_icon_list',
+					'callback'    => 'usl_sc_icon_list',
 					'allowIcons'  => true,
 					'placeholder' => __( 'Select an icon (no icon by default)', 'USL' ),
 				)
 			),
+			array(
+				'type'  => 'section_break',
+				'label' => __( 'Meta', 'USL' ),
+			),
+			'link'                       => array(
+				'label' => __( 'HREF (link)', 'USL' ),
+			),
+			array(
+				'type'        => 'section_break',
+				'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used.', 'USL' ),
+				'advanced'    => true,
+			),
+			'border_top_left_radius'     => array(
+				'label'      => __( 'Border Top Left Radius', 'USL' ),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 5,
+					'max'        => 200,
+					'unit'       => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'border_top_right_radius'    => array(
+				'label'      => __( 'Border Top Right Radius', 'USL' ),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 5,
+					'max'        => 200,
+					'unit'       => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'border_bottom_left_radius'  => array(
+				'label'      => __( 'Border Bottom Left Radius', 'USL' ),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 5,
+					'max'        => 200,
+					'unit'       => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'border_bottom_right_radius' => array(
+				'label'      => __( 'Border Bottom Right Radius', 'USL' ),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 5,
+					'max'        => 200,
+					'unit'       => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
 		),
 		'wrapping'    => true,
 		'render'      => array(
-			'noStyle'      => true,
-			'dummyContent' => __( 'Button', 'USL' ),
+			'noStyle' => true,
 		),
 	),
 	// Box
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_box',
 		'function'    => '_usl_sc_box',
 		'title'       => __( 'Box', 'USL' ),
 		'description' => __( 'Creates a nice box for your content.', 'USL' ),
 		'atts'        => array(
-			'color'      => array(
-				'label' => __( 'Color', 'USL' ),
-				'type'  => 'colorpicker',
+			array(
+				'type'  => 'section_break',
+				'label' => __( 'Content', 'USL' ),
 			),
-			'font_color' => array(
-				'label' => __( 'Font Color', 'USL' ),
-				'type'  => 'colorpicker',
+			'heading'                    => array(
+				'label' => __( 'Heading', 'USL' ),
 			),
-			'shape'      => array(
+			array(
+				'type'  => 'section_break',
+				'label' => __( 'Colors', 'USL' ),
+			),
+			'color'                      => array(
+				'label'   => __( 'Box Background', 'USL' ),
+				'type'    => 'colorpicker',
+				'default' => USL_PRIMARY_COLOR,
+			),
+			'font_color'                 => array(
+				'label'   => __( 'Body Font', 'USL' ),
+				'type'    => 'colorpicker',
+				'default' => USL_PRIMARY_FONT_COLOR,
+			),
+			'heading_font_color'         => array(
+				'label'   => __( 'Heading Font', 'USL' ),
+				'type'    => 'colorpicker',
+				'default' => USL_PRIMARY_FONT_COLOR,
+			),
+			array(
+				'type'  => 'section_break',
+				'label' => __( 'Visual', 'USL' ),
+			),
+			'shape'                      => array(
 				'label'      => __( 'Shape', 'USL' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'options' => array(
-						'square'  => __( 'Square', 'USL' ),
-						'rounded' => __( 'Rounded', 'USL' ),
-						'circle'  => __( 'Circle', 'USL' ),
+					'placeholder' => __( 'Rectangle', 'USL' ),
+					'options'     => array(
+						'rectangle' => __( 'Rectangle', 'USL' ),
+						'rounded'   => __( 'Rounded', 'USL' ),
+						'ellipse'   => __( 'Ellipse', 'USL' ),
 					),
 				),
 			),
-			'heading'    => array(
-				'label' => __( 'Heading', 'USL' ),
+			array(
+				'type'        => 'section_break',
+				'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used.', 'USL' ),
+				'advanced'    => true,
+			),
+			'border_top_left_radius'     => array(
+				'label'      => __( 'Border Top Left Radius', 'USL' ),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 5,
+					'max'        => 200,
+					'unit'       => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'border_top_right_radius'    => array(
+				'label'      => __( 'Border Top Right Radius', 'USL' ),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 5,
+					'max'        => 200,
+					'unit'       => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'border_bottom_left_radius'  => array(
+				'label'      => __( 'Border Bottom Left Radius', 'USL' ),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 5,
+					'max'        => 200,
+					'unit'       => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'border_bottom_right_radius' => array(
+				'label'      => __( 'Border Bottom Right Radius', 'USL' ),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 5,
+					'max'        => 200,
+					'unit'       => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
 			),
 		),
 		'wrapping'    => true,
@@ -147,11 +347,50 @@ $_shortcodes = array(
 		),
 	),
 	// Column 2
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_column_two',
 		'function'    => '_usl_sc_column_two',
 		'title'       => __( 'Column 2', 'USL' ),
 		'description' => __( 'Creates a nice column that is half the width of the container.', 'USL' ),
+		'atts'        => array(
+			'padding_left'  => array(
+				'label'      => __( 'Padding left', 'USL' ),
+				'type'       => 'counter',
+				'default'    => 10,
+				'properties' => array(
+					'unit' => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'padding_right' => array(
+				'label'      => __( 'Padding right', 'USL' ),
+				'type'       => 'counter',
+				'default'    => 10,
+				'properties' => array(
+					'unit' => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+		),
 		'wrapping'    => true,
 		'render'      => array(
 			'noStyle'      => true,
@@ -159,6 +398,7 @@ $_shortcodes = array(
 		),
 	),
 	// Column 3
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_column_three',
 		'function'    => '_usl_sc_column_three',
@@ -171,6 +411,7 @@ $_shortcodes = array(
 		),
 	),
 	// Column 4
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_column_four',
 		'function'    => '_usl_sc_column_four',
@@ -183,6 +424,7 @@ $_shortcodes = array(
 		),
 	),
 	// Column 5
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_column_five',
 		'function'    => '_usl_sc_column_five',
@@ -205,41 +447,35 @@ foreach ( $_shortcodes as $shortcode ) {
 /**
  * Outside wrapper for an accordion.
  *
- * @since USL 1.0.0
+ * @since  USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
  *
  * @return string The accordion HTML.
  */
-function _usl_sc_accordion( $atts = array(), $content = null ) {
-	return '<div class="usl-accordion">' . do_shortcode( $content ) . '</div>';
-}
-
-/**
- * Accordion sections.
- *
- * @since USL 1.0.0
- * @access Private
- *
- * @param null|array $atts The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
- *
- * @return string The accordion HTML.
- */
-function _usl_sc_accordion_section( $atts = array(), $content = null ) {
+function _usl_sc_accordion( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
-		'heading' => 'No heading entered',
+		'sections' => false,
 	), $atts );
+
+	if ( $atts['sections'] === false ) {
+		return 'ERROR: No sections set!';
+	}
 
 	$atts = usl_esc_atts( $atts );
 
-	$output = '<div class="usl-accordion-section">';
-	$output .= '<p class="usl-accordion-heading">' . $atts['heading'] . '</p>';
-	$output .= '<div class="usl-accordion-content">' . do_shortcode( $content ) . '</div>';
-	$output .= '</div>';
+	$sections = usl_associative_atts( $atts, 'sections' );
+
+	$output = '<div class="usl-accordion">';
+
+	foreach ( $sections as $section ) {
+		$output .= "<h3 class='usl-accordion-title'>$section[heading]</h3>";
+		$output .= '<div class="usl-accordion-content">' . wpautop( do_shortcode( $section['content'] ) ) . '</div>';
+	}
+
+	$output .= '</div>'; // .usl-accordion
 
 	return $output;
 }
@@ -247,30 +483,34 @@ function _usl_sc_accordion_section( $atts = array(), $content = null ) {
 /**
  * Wraps the content within a styled button.
  *
- * @since USL 1.0.0
+ * @since  USL 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param null|array  $atts    The attributes sent to the shortcode.
  * @param null|string $content The content inside the shortcode.
  *
  * @return string The button HTML.
  */
 function _usl_sc_button( $atts = array(), $content = null ) {
 
-	// TODO Test
-
 	$atts = shortcode_atts( array(
-		'link'        => '#',
-		'size'        => 'medium',
-		'color'       => '#bada55',
-		'color_hover' => '#84A347',
-		'font_color'  => '#fff',
-		'shape'       => '',
-		'icon'        => '',
+		'link'                       => '#',
+		'size'                       => 'medium',
+		'color'                      => USL_PRIMARY_COLOR,
+		'color_hover'                => USL_PRIMARY_COLOR_DARK,
+		'font_color'                 => USL_PRIMARY_FONT_COLOR,
+		'shape'                      => 'rectangle',
+		'icon'                       => '',
+		'border_top_left_radius'     => 0,
+		'border_top_right_radius'    => 0,
+		'border_bottom_left_radius'  => 0,
+		'border_bottom_right_radius' => 0,
 	), $atts );
 
 	// Escape atts
 	usl_esc_atts( $atts );
+
+	$border_radius = usl_sc_parse_border_radius( $atts );
 
 	$class = 'usl-button';
 	$class .= ! empty( $atts['size'] ) ? "-$atts[size]" : '';
@@ -278,9 +518,9 @@ function _usl_sc_button( $atts = array(), $content = null ) {
 	$class .= ! empty( $atts['icon'] ) ? "-icon" : '';
 
 	$output = "<a href='$atts[link]' class='$class'";
-	$output .= " style='background: $atts[color]; color: $atts[font_color]'";
+	$output .= " style='background: $atts[color]; color: $atts[font_color]; $border_radius'";
 	$output .= '>';
-	$output .= "<span class='hover' style='background: $atts[color_hover]'></span>";
+	$output .= "<span class='hover' style='background: $atts[color_hover]; $border_radius'></span>";
 	$output .= ! empty( $atts['icon'] ) ? "<span class='icon dashicons $atts[icon]'></span>" : '';
 	$output .= '<span class="content">';
 	$output .= do_shortcode( $content );
@@ -294,34 +534,40 @@ function _usl_sc_button( $atts = array(), $content = null ) {
 /**
  * Wraps the content within a styled box.
  *
- * @since USL 1.0.0
+ * @since  USL 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param null|array  $atts    The attributes sent to the shortcode.
  * @param null|string $content The content inside the shortcode.
  *
  * @return string The box HTML.
  */
-function _usl_sc_box( $atts, $content = null ) {
+function _usl_sc_box( $atts = array(), $content = null ) {
 
-	// TODO Test
 	$atts = shortcode_atts( array(
-		'color'      => '#bada55',
-		'shape'      => 'rounded',
-		'font_color' => '#222',
-		'heading'    => ''
+		'color'                      => USL_PRIMARY_COLOR,
+		'font_color'                 => USL_PRIMARY_FONT_COLOR,
+		'heading_font_color'         => USL_PRIMARY_FONT_COLOR,
+		'shape'                      => 'rectangle',
+		'heading'                    => '',
+		'border_top_left_radius'     => 0,
+		'border_top_right_radius'    => 0,
+		'border_bottom_left_radius'  => 0,
+		'border_bottom_right_radius' => 0,
 	), $atts );
 
 	// Escape atts
 	usl_esc_atts( $atts );
 
+	$border_radius = usl_sc_parse_border_radius( $atts );
+
 	$class = 'usl-box';
 	$class .= ! empty( $atts['shape'] ) ? "-$atts[shape]" : '';
 
 	$output = "<div class='$class'";
-	$output .= " style='background: $atts[color]; color: $atts[font_color]'";
+	$output .= " style='background: $atts[color]; color: $atts[font_color]; $border_radius'";
 	$output .= '>';
-	$output .= ! empty( $atts['heading'] ) ? "<h3>$atts[heading]</h3>" : '';
+	$output .= ! empty( $atts['heading'] ) ? "<h3 style='color: $atts[heading_font_color]'>$atts[heading]</h3>" : '';
 	$output .= do_shortcode( $content );
 	$output .= '</div>';
 
@@ -332,87 +578,89 @@ function _usl_sc_box( $atts, $content = null ) {
 /**
  * Wraps the content within a half-width column.
  *
- * @since USL 1.0.0
+ * @since  USL 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param null|array  $atts    The attributes sent to the shortcode.
  * @param null|string $content The content inside the shortcode.
  *
  * @return string The content in a column HTML.
  */
-function _usl_sc_column_two( $atts, $content = null ) {
+function _usl_sc_column_two( $atts = array(), $content = null ) {
 
-	// TODO Test
+	$atts = shortcode_atts( array(
+		'padding_left'  => '10px',
+		'padding_right' => '10px',
+	), $atts );
 
-	return '<div class="usl-column-2">' . do_shortcode( $content ) . '</div>';
+	// Escape atts
+	usl_esc_atts( $atts );
+
+	$padding = "padding-left: $atts[padding_left]; padding-right: $atts[padding_right];";
+
+	return "<div class='usl-column-two' style='$padding'>" . do_shortcode( $content ) . '</div>';
 }
 
 
 /**
  * Wraps the content within a third-width column.
  *
- * @since USL 1.0.0
+ * @since  USL 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param null|array  $atts    The attributes sent to the shortcode.
  * @param null|string $content The content inside the shortcode.
  *
  * @return string The content in a column HTML.
  */
 function _usl_sc_column_three( $atts, $content = null ) {
 
-	// TODO Test
-
-	return '<div class="usl-column-3">' . do_shortcode( $content ) . '</div>';
+	return '<div class="usl-column-three">' . do_shortcode( $content ) . '</div>';
 }
 
 
 /**
  * Wraps the content within a quarter-width column.
  *
- * @since USL 1.0.0
+ * @since  USL 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param null|array  $atts    The attributes sent to the shortcode.
  * @param null|string $content The content inside the shortcode.
  *
  * @return string The content in a column HTML.
  */
 function _usl_sc_column_four( $atts, $content = null ) {
 
-	// TODO Test
-
-	return '<div class="usl-column-4">' . do_shortcode( $content ) . '</div>';
+	return '<div class="usl-column-four">' . do_shortcode( $content ) . '</div>';
 }
 
 
 /**
  * Wraps the content within a fifth-width column.
  *
- * @since USL 1.0.0
+ * @since  USL 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param null|array  $atts    The attributes sent to the shortcode.
  * @param null|string $content The content inside the shortcode.
  *
  * @return string The content in a column HTML.
  */
 function _usl_sc_column_five( $atts, $content = null ) {
 
-	// TODO Test
-
-	return '<div class="usl-column-5">' . do_shortcode( $content ) . '</div>';
+	return '<div class="usl-column-five">' . do_shortcode( $content ) . '</div>';
 }
 
 /**
  * Helper function for populating the icon list selectbox.
  *
- * @since USL 1.0.0
+ * @since  USL 1.0.0
  * @access Private
  *
  * @return bool|array List of icons.
  */
-function _usl_sc_icon_list() {
+function usl_sc_icon_list() {
 
 	$icons = array(
 		'menu',
@@ -629,4 +877,33 @@ function _usl_sc_icon_list() {
 	}
 
 	return $output;
+}
+
+function usl_sc_parse_border_radius( $atts ) {
+
+	// Prepare border radius'
+	$_border_radius = array(
+		'border-top-left-radius'     => $atts['border_top_left_radius'],
+		'border-top-right-radius'    => $atts['border_top_right_radius'],
+		'border-bottom-left-radius'  => $atts['border_bottom_left_radius'],
+		'border-bottom-right-radius' => $atts['border_bottom_right_radius'],
+	);
+
+	// intval() each radius so we can later add them
+	$_border_radius_sum = $_border_radius;
+	array_walk( $_border_radius_sum, function( &$value ) {
+		$value = intval( $value );
+	});
+
+	// Use border radius if at least one is not 0
+	$border_radius = '';
+	if ( array_sum( $_border_radius_sum ) !== 0 ) {
+		foreach ( $_border_radius as $property => $value ) {
+			$border_radius .= "$property: $value;";
+		}
+	} else {
+		$border_radius = '';
+	}
+
+	return $border_radius;
 }

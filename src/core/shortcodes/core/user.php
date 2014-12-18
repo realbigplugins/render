@@ -11,6 +11,7 @@
 
 $_shortcodes = array(
 	// Full Name
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_full_name',
 		'function'    => '_usl_sc_user_full_name',
@@ -29,6 +30,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// First Name
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_first_name',
 		'function'    => '_usl_sc_user_first_name',
@@ -47,6 +49,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Last Name
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_last_name',
 		'function'    => '_usl_sc_user_last_name',
@@ -65,6 +68,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Username
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_username',
 		'function'    => '_usl_sc_user_username',
@@ -83,6 +87,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Email
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_email',
 		'function'    => '_usl_sc_user_email',
@@ -101,6 +106,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Display Name
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_display_name',
 		'function'    => '_usl_sc_user_display_name',
@@ -119,6 +125,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// ID
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_id',
 		'function'    => '_usl_sc_user_id',
@@ -137,6 +144,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Author URL
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_url',
 		'function'    => '_usl_sc_user_url',
@@ -155,6 +163,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Registered Date
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_registered_date',
 		'function'    => '_usl_sc_user_registered_date',
@@ -177,6 +186,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Description
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_description',
 		'function'    => '_usl_sc_user_description',
@@ -195,6 +205,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Role
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_role',
 		'function'    => '_usl_sc_user_role',
@@ -213,6 +224,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Capabilities
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_capabilities',
 		'function'    => '_usl_sc_user_capabilities',
@@ -231,6 +243,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Admin Theme
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_admin_theme',
 		'function'    => '_usl_sc_user_admin_theme',
@@ -249,6 +262,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Primary Blog
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_primary_blog',
 		'function'    => '_usl_sc_user_primary_blog',
@@ -267,6 +281,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Source Domain
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user_source_domain',
 		'function'    => '_usl_sc_user_source_domain',
@@ -285,6 +300,7 @@ $_shortcodes = array(
 		'render'      => true,
 	),
 	// Custom User Info
+	// TODO Test and fix up
 	array(
 		'code'        => 'usl_user',
 		'function'    => '_usl_sc_user',

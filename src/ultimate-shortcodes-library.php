@@ -3,6 +3,10 @@
  * Plugin header will go here (don't forget the text domain, and the domain path!)
  */
 
+define( 'USL_PRIMARY_COLOR', '#266ba8' );
+define( 'USL_PRIMARY_COLOR_DARK', '#19568D' );
+define( 'USL_PRIMARY_FONT_COLOR', '#fff' );
+
 if ( ! class_exists( 'USL' ) ) {
 	/**
 	 * Class USL
@@ -207,6 +211,9 @@ if ( ! class_exists( 'USL' ) ) {
 
 			// Translations
 			add_action( 'init', array( __CLASS__, 'i18n' ) );
+
+			// Filter content
+			add_filter( 'the_content', 'usl_strip_paragraphs_around_shortcodes' );
 		}
 
 		/**
