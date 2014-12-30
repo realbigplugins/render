@@ -1,9 +1,9 @@
 /**
  * Mimics how other plugins should extend the Modal.
  *
- * @since USL 1.0.0
+ * @since Render 1.0.0
  *
- * @package USL
+ * @package Render
  */
 (function ($) {
 
@@ -13,8 +13,8 @@
     window['accordionUseContentInit'] = function ($attRow, attObj) {
 
         // If there's only one field, put the selected content in
-        if ($attRow.closest('.usl-modal-repeater-field').siblings('.usl-modal-repeater-field').not('.dummy-field').length == 0) {
-            attObj.setValue(USL_Modal.selection);
+        if ($attRow.closest('.render-modal-repeater-field').siblings('.render-modal-repeater-field').not('.dummy-field').length == 0) {
+            attObj.setValue(Render_Modal.selection);
         }
     };
 
@@ -26,7 +26,7 @@
 
         // Initialize the values to be in a time format
         var ui = {},
-            $input = $attRow.find('.usl-modal-att-slider-value');
+            $input = $attRow.find('.render-modal-att-slider-value');
         ui.values = $input.val().split('-');
 
         timeSlider(null, ui, $input);
@@ -75,10 +75,10 @@
         }
 
         // Output the ranges to the text and the input
-        var $text = $input.siblings('.usl-modal-att-slider-range-text');
+        var $text = $input.siblings('.render-modal-att-slider-range-text');
 
-        $text.find('.usl-modal-att-slider-range-text-value1').html(translateTime(ui.values[0]));
-        $text.find('.usl-modal-att-slider-range-text-value2').html(translateTime(ui.values[1]));
+        $text.find('.render-modal-att-slider-range-text-value1').html(translateTime(ui.values[0]));
+        $text.find('.render-modal-att-slider-range-text-value2').html(translateTime(ui.values[1]));
 
         $input.val(ui.values[0] + '-' + ui.values[1]);
 

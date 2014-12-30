@@ -1,35 +1,35 @@
-var USL_MCECallbacks;
+var Render_MCECallbacks;
 (function ($) {
     var editor,
-        pattern_visual_codes = /<(?:span|div).*?class="usl-tinymce-shortcode-wrapper.*?data-code="([^"]*)".*?data-atts="([^"]*)".*?usl-tinymce-shortcode-content-start"><\/span>(.*?)<span class="usl-tinymce-shortcode-content-end.*?usl-tinymce-shortcode-wrapper-end\s+\1"><\/span><\/(?:span|div)>/g;
-    USL_MCECallbacks = {
+        pattern_visual_codes = /<(?:span|div).*?class="render-tinymce-shortcode-wrapper.*?data-code="([^"]*)".*?data-atts="([^"]*)".*?render-tinymce-shortcode-content-start"><\/span>(.*?)<span class="render-tinymce-shortcode-content-end.*?render-tinymce-shortcode-wrapper-end\s+\1"><\/span><\/(?:span|div)>/g;
+    Render_MCECallbacks = {
 
         convertLiteralToRendered: function (content, editor) {
 
-            USL_tinymce.loading(true);
+            Render_tinymce.loading(true);
 
             var data;
 
-            if (typeof USL_Data.render_data !== 'undefined') {
-                data = USL_Data.render_data;
+            if (typeof Render_Data.render_data !== 'undefined') {
+                data = Render_Data.render_data;
             }
 
-            data.action = 'usl_render_shortcodes';
+            data.action = 'render_render_shortcodes';
             data.content = content;
-            data.shortcode_data = USL_Data.rendered_shortcodes;
+            data.shortcode_data = Render_Data.rendered_shortcodes;
 
             $.post(
                 ajaxurl,
                 data,
                 function (response) {
 
-                    // Remove any previously existing dividers
+                    // Remove any previorendery existing dividers
                     response = response.replace(/(&#8203;)+/g, '');
 
                     editor.setContent(response);
-                    USL_tinymce.loading(false);
+                    Render_tinymce.loading(false);
 
-                    $(document).trigger('usl-tinymce-post-render');
+                    $(document).trigger('render-tinymce-post-render');
                 }
             );
         },
@@ -38,19 +38,19 @@ var USL_MCECallbacks;
 
             var $container = $('<div />').append($(content));
 
-            $container.closestChildren('.usl-tinymce-shortcode-wrapper').each(function () {
+            $container.closestChildren('.render-tinymce-shortcode-wrapper').each(function () {
                 $container = replaceShortcodes($(this), $container);
             });
 
             function replaceShortcodes($e, $container) {
 
-                $e.closestChildren('.usl-tinymce-shortcode-wrapper').each(function () {
+                $e.closestChildren('.render-tinymce-shortcode-wrapper').each(function () {
                     $container = replaceShortcodes($(this), $container);
                 });
 
                 var atts = $e.attr('data-atts'),
                     code = $e.attr('data-code'),
-                    shortcode_content = $e.closestChildren('.usl-tinymce-shortcode-content').html(),
+                    shortcode_content = $e.closestChildren('.render-tinymce-shortcode-content').html(),
                     output = '[' + code;
 
                 if (atts) {
@@ -136,7 +136,7 @@ var USL_MCECallbacks;
 
             var maybe_classes = classes.length ? ' ' + classes.join(' ') : '';
 
-            return '<span class="usl-tinymce-shortcode-content' + maybe_classes + '">' + content + '</span>';
+            return '<span class="render-tinymce-shortcode-content' + maybe_classes + '">' + content + '</span>';
         }
     };
 

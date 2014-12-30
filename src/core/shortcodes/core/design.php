@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Contains all USL packaged shortcodes within the Design category.
+ * Contains all Render packaged shortcodes within the Design category.
  *
- * @since      USL 1.0.0
+ * @since      Render 1.0.0
  *
- * @package    USL
+ * @package    Render
  * @subpackage Shortcodes
  */
 
@@ -13,23 +13,23 @@ $_shortcodes = array(
 	// Accordion
 	// TODO Test and fix up
 	array(
-		'code'        => 'usl_accordion',
-		'function'    => '_usl_sc_accordion',
-		'title'       => __( 'Accordion', 'USL' ),
-		'description' => __( 'Creates a clickable dropdown for your content', 'USL' ),
+		'code'        => 'render_accordion',
+		'function'    => '_render_sc_accordion',
+		'title'       => __( 'Accordion', 'Render' ),
+		'description' => __( 'Creates a clickable dropdown for your content', 'Render' ),
 		'atts'        => array(
 			'sections' => array(
-				'label'      => __( 'Sections', 'USL' ),
+				'label'      => __( 'Sections', 'Render' ),
 				'required'   => true,
 				'type'       => 'repeater',
 				'properties' => array(
 					'fields' => array(
 						'heading' => array(
-							'label'    => __( 'Heading', 'USL' ),
+							'label'    => __( 'Heading', 'Render' ),
 							'required' => true,
 						),
 						'content' => array(
-							'label'        => __( 'Content', 'USL' ),
+							'label'        => __( 'Content', 'Render' ),
 							'required'     => true,
 							'type'         => 'textarea',
 							'initCallback' => 'accordionUseContentInit',
@@ -45,83 +45,83 @@ $_shortcodes = array(
 	),
 	// Button
 	array(
-		'code'        => 'usl_button',
-		'function'    => '_usl_sc_button',
-		'title'       => __( 'Button', 'USL' ),
-		'description' => __( 'Creates a sweet button', 'USL' ),
+		'code'        => 'render_button',
+		'function'    => '_render_sc_button',
+		'title'       => __( 'Button', 'Render' ),
+		'description' => __( 'Creates a sweet button', 'Render' ),
 		'atts'        => array(
 			array(
 				'type'  => 'section_break',
-				'label' => __( 'Colors', 'USL' ),
+				'label' => __( 'Colors', 'Render' ),
 			),
 			'color'                      => array(
-				'label'   => __( 'Background', 'USL' ),
+				'label'   => __( 'Background', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => USL_PRIMARY_COLOR,
+				'default' => Render_PRIMARY_COLOR,
 			),
 			'color_hover'                => array(
-				'label'   => __( 'Background (Hover)', 'USL' ),
+				'label'   => __( 'Background (Hover)', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => USL_PRIMARY_COLOR_DARK,
+				'default' => Render_PRIMARY_COLOR_DARK,
 			),
 			'font_color'                 => array(
-				'label'   => __( 'Font', 'USL' ),
+				'label'   => __( 'Font', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => USL_PRIMARY_FONT_COLOR,
+				'default' => Render_PRIMARY_FONT_COLOR,
 			),
 			array(
 				'type'  => 'section_break',
-				'label' => __( 'Visual', 'USL' ),
+				'label' => __( 'Visual', 'Render' ),
 			),
 			'size'                       => array(
-				'label'      => __( 'Size', 'USL' ),
+				'label'      => __( 'Size', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Medium', 'USL' ),
+					'placeholder' => __( 'Medium', 'Render' ),
 					'options'     => array(
-						'large'  => __( 'Large', 'USL' ),
-						'medium' => __( 'Medium', 'USL' ),
-						'small'  => __( 'Small', 'USL' ),
+						'large'  => __( 'Large', 'Render' ),
+						'medium' => __( 'Medium', 'Render' ),
+						'small'  => __( 'Small', 'Render' ),
 					),
 				),
 			),
 			'shape'                      => array(
-				'label'      => __( 'Shape', 'USL' ),
+				'label'      => __( 'Shape', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Rectangle', 'USL' ),
+					'placeholder' => __( 'Rectangle', 'Render' ),
 					'options'     => array(
-						'rectangle' => __( 'Rectangle', 'USL' ),
-						'rounded'   => __( 'Rounded', 'USL' ),
-						'ellipse'   => __( 'Ellipse', 'USL' ),
+						'rectangle' => __( 'Rectangle', 'Render' ),
+						'rounded'   => __( 'Rounded', 'Render' ),
+						'ellipse'   => __( 'Ellipse', 'Render' ),
 					),
 				),
 			),
 			'icon'                       => array(
-				'label'      => __( 'Icon', 'USL' ),
+				'label'      => __( 'Icon', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
 					'callback'    => array(
-						'function' => 'usl_sc_icon_list',
+						'function' => 'render_sc_icon_list',
 					),
 					'allowIcons'  => true,
-					'placeholder' => __( 'Select an icon (no icon by default)', 'USL' ),
+					'placeholder' => __( 'Select an icon (no icon by default)', 'Render' ),
 				)
 			),
 			array(
 				'type'  => 'section_break',
-				'label' => __( 'Meta', 'USL' ),
+				'label' => __( 'Meta', 'Render' ),
 			),
 			'link'                       => array(
-				'label' => __( 'HREF (link)', 'USL' ),
+				'label' => __( 'HREF (link)', 'Render' ),
 			),
 			array(
 				'type'        => 'section_break',
-				'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used.', 'USL' ),
+				'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used.', 'Render' ),
 				'advanced'    => true,
 			),
 			'border_top_left_radius'     => array(
-				'label'      => __( 'Border Top Left Radius', 'USL' ),
+				'label'      => __( 'Border Top Left Radius', 'Render' ),
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
@@ -141,7 +141,7 @@ $_shortcodes = array(
 				),
 			),
 			'border_top_right_radius'    => array(
-				'label'      => __( 'Border Top Right Radius', 'USL' ),
+				'label'      => __( 'Border Top Right Radius', 'Render' ),
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
@@ -161,7 +161,7 @@ $_shortcodes = array(
 				),
 			),
 			'border_bottom_left_radius'  => array(
-				'label'      => __( 'Border Bottom Left Radius', 'USL' ),
+				'label'      => __( 'Border Bottom Left Radius', 'Render' ),
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
@@ -181,7 +181,7 @@ $_shortcodes = array(
 				),
 			),
 			'border_bottom_right_radius' => array(
-				'label'      => __( 'Border Bottom Right Radius', 'USL' ),
+				'label'      => __( 'Border Bottom Right Radius', 'Render' ),
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
@@ -208,55 +208,55 @@ $_shortcodes = array(
 	),
 	// Box
 	array(
-		'code'        => 'usl_box',
-		'function'    => '_usl_sc_box',
-		'title'       => __( 'Box', 'USL' ),
-		'description' => __( 'Creates a nice box for your content.', 'USL' ),
+		'code'        => 'render_box',
+		'function'    => '_render_sc_box',
+		'title'       => __( 'Box', 'Render' ),
+		'description' => __( 'Creates a nice box for your content.', 'Render' ),
 		'atts'        => array(
 			array(
 				'type'  => 'section_break',
-				'label' => __( 'Content', 'USL' ),
+				'label' => __( 'Content', 'Render' ),
 			),
 			'heading'                    => array(
-				'label' => __( 'Heading', 'USL' ),
+				'label' => __( 'Heading', 'Render' ),
 			),
 			array(
 				'type'  => 'section_break',
-				'label' => __( 'Colors', 'USL' ),
+				'label' => __( 'Colors', 'Render' ),
 			),
 			'color'                      => array(
-				'label'   => __( 'Box Background', 'USL' ),
+				'label'   => __( 'Box Background', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => USL_PRIMARY_COLOR,
+				'default' => Render_PRIMARY_COLOR,
 			),
 			'font_color'                 => array(
-				'label'   => __( 'Body Font', 'USL' ),
+				'label'   => __( 'Body Font', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => USL_PRIMARY_FONT_COLOR,
+				'default' => Render_PRIMARY_FONT_COLOR,
 			),
 			'heading_font_color'         => array(
-				'label'   => __( 'Heading Font', 'USL' ),
+				'label'   => __( 'Heading Font', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => USL_PRIMARY_FONT_COLOR,
+				'default' => Render_PRIMARY_FONT_COLOR,
 			),
 			array(
 				'type'  => 'section_break',
-				'label' => __( 'Visual', 'USL' ),
+				'label' => __( 'Visual', 'Render' ),
 			),
 			'shape'                      => array(
-				'label'      => __( 'Shape', 'USL' ),
+				'label'      => __( 'Shape', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Rectangle', 'USL' ),
+					'placeholder' => __( 'Rectangle', 'Render' ),
 					'options'     => array(
-						'rectangle' => __( 'Rectangle', 'USL' ),
-						'rounded'   => __( 'Rounded', 'USL' ),
-						'ellipse'   => __( 'Ellipse', 'USL' ),
+						'rectangle' => __( 'Rectangle', 'Render' ),
+						'rounded'   => __( 'Rounded', 'Render' ),
+						'ellipse'   => __( 'Ellipse', 'Render' ),
 					),
 				),
 			),
 			'heading_tag'                => array(
-				'label'      => __( 'Heading Tag', 'USL' ),
+				'label'      => __( 'Heading Tag', 'Render' ),
 				'type'       => 'selectbox',
 				'default'    => 'h3',
 				'advanced'   => true,
@@ -278,11 +278,11 @@ $_shortcodes = array(
 			),
 			array(
 				'type'        => 'section_break',
-				'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used.', 'USL' ),
+				'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used.', 'Render' ),
 				'advanced'    => true,
 			),
 			'border_top_left_radius'     => array(
-				'label'      => __( 'Border Top Left Radius', 'USL' ),
+				'label'      => __( 'Border Top Left Radius', 'Render' ),
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
@@ -302,7 +302,7 @@ $_shortcodes = array(
 				),
 			),
 			'border_top_right_radius'    => array(
-				'label'      => __( 'Border Top Right Radius', 'USL' ),
+				'label'      => __( 'Border Top Right Radius', 'Render' ),
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
@@ -322,7 +322,7 @@ $_shortcodes = array(
 				),
 			),
 			'border_bottom_left_radius'  => array(
-				'label'      => __( 'Border Bottom Left Radius', 'USL' ),
+				'label'      => __( 'Border Bottom Left Radius', 'Render' ),
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
@@ -342,7 +342,7 @@ $_shortcodes = array(
 				),
 			),
 			'border_bottom_right_radius' => array(
-				'label'      => __( 'Border Bottom Right Radius', 'USL' ),
+				'label'      => __( 'Border Bottom Right Radius', 'Render' ),
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
@@ -369,13 +369,13 @@ $_shortcodes = array(
 	),
 	// Column 2
 	array(
-		'code'        => 'usl_column_two',
-		'function'    => '_usl_sc_column_two',
-		'title'       => __( 'Column 2', 'USL' ),
-		'description' => __( 'Creates a nice column that is half the width of the container.', 'USL' ),
+		'code'        => 'render_column_two',
+		'function'    => '_render_sc_column_two',
+		'title'       => __( 'Column 2', 'Render' ),
+		'description' => __( 'Creates a nice column that is half the width of the container.', 'Render' ),
 		'atts'        => array(
 			'padding_left'  => array(
-				'label'      => __( 'Padding left', 'USL' ),
+				'label'      => __( 'Padding left', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -393,7 +393,7 @@ $_shortcodes = array(
 				),
 			),
 			'padding_right' => array(
-				'label'      => __( 'Padding right', 'USL' ),
+				'label'      => __( 'Padding right', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -418,13 +418,13 @@ $_shortcodes = array(
 	),
 	// Column 3
 	array(
-		'code'        => 'usl_column_three',
-		'function'    => '_usl_sc_column_three',
-		'title'       => __( 'Column 3', 'USL' ),
-		'description' => __( 'Creates a nice column that is a third the width of the container.', 'USL' ),
+		'code'        => 'render_column_three',
+		'function'    => '_render_sc_column_three',
+		'title'       => __( 'Column 3', 'Render' ),
+		'description' => __( 'Creates a nice column that is a third the width of the container.', 'Render' ),
 		'atts'        => array(
 			'padding_left'  => array(
-				'label'      => __( 'Padding left', 'USL' ),
+				'label'      => __( 'Padding left', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -442,7 +442,7 @@ $_shortcodes = array(
 				),
 			),
 			'padding_right' => array(
-				'label'      => __( 'Padding right', 'USL' ),
+				'label'      => __( 'Padding right', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -467,13 +467,13 @@ $_shortcodes = array(
 	),
 	// Column 4
 	array(
-		'code'        => 'usl_column_four',
-		'function'    => '_usl_sc_column_four',
-		'title'       => __( 'Column 4', 'USL' ),
-		'description' => __( 'Creates a nice column that is a quarter the width of the container.', 'USL' ),
+		'code'        => 'render_column_four',
+		'function'    => '_render_sc_column_four',
+		'title'       => __( 'Column 4', 'Render' ),
+		'description' => __( 'Creates a nice column that is a quarter the width of the container.', 'Render' ),
 		'atts'        => array(
 			'padding_left'  => array(
-				'label'      => __( 'Padding left', 'USL' ),
+				'label'      => __( 'Padding left', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -491,7 +491,7 @@ $_shortcodes = array(
 				),
 			),
 			'padding_right' => array(
-				'label'      => __( 'Padding right', 'USL' ),
+				'label'      => __( 'Padding right', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -516,13 +516,13 @@ $_shortcodes = array(
 	),
 	// Column 5
 	array(
-		'code'        => 'usl_column_five',
-		'function'    => '_usl_sc_column_five',
-		'title'       => __( 'Column 5', 'USL' ),
-		'description' => __( 'Creates a nice column that is a fifth the width of the container.', 'USL' ),
+		'code'        => 'render_column_five',
+		'function'    => '_render_sc_column_five',
+		'title'       => __( 'Column 5', 'Render' ),
+		'description' => __( 'Creates a nice column that is a fifth the width of the container.', 'Render' ),
 		'atts'        => array(
 			'padding_left'  => array(
-				'label'      => __( 'Padding left', 'USL' ),
+				'label'      => __( 'Padding left', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -540,7 +540,7 @@ $_shortcodes = array(
 				),
 			),
 			'padding_right' => array(
-				'label'      => __( 'Padding right', 'USL' ),
+				'label'      => __( 'Padding right', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -567,21 +567,21 @@ $_shortcodes = array(
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'design';
-	$shortcode['source']   = 'Ultimate Shortcodes Library';
-	usl_add_shortcode( $shortcode );
+	$shortcode['source']   = 'Render';
+	render_add_shortcode( $shortcode );
 }
 
 /**
  * Outside wrapper for an accordion.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
  *
  * @return string The accordion HTML.
  */
-function _usl_sc_accordion( $atts = array() ) {
+function _render_sc_accordion( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
 		'sections' => false,
@@ -591,18 +591,18 @@ function _usl_sc_accordion( $atts = array() ) {
 		return 'ERROR: No sections set!';
 	}
 
-	$atts = usl_esc_atts( $atts );
+	$atts = render_esc_atts( $atts );
 
-	$sections = usl_associative_atts( $atts, 'sections' );
+	$sections = render_associative_atts( $atts, 'sections' );
 
-	$output = '<div class="usl-accordion">';
+	$output = '<div class="render-accordion">';
 
 	foreach ( $sections as $section ) {
-		$output .= "<h3 class='usl-accordion-title'>$section[heading]</h3>";
-		$output .= '<div class="usl-accordion-content">' . wpautop( do_shortcode( $section['content'] ) ) . '</div>';
+		$output .= "<h3 class='render-accordion-title'>$section[heading]</h3>";
+		$output .= '<div class="render-accordion-content">' . wpautop( do_shortcode( $section['content'] ) ) . '</div>';
 	}
 
-	$output .= '</div>'; // .usl-accordion
+	$output .= '</div>'; // .render-accordion
 
 	return $output;
 }
@@ -610,7 +610,7 @@ function _usl_sc_accordion( $atts = array() ) {
 /**
  * Wraps the content within a styled button.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array  $atts    The attributes sent to the shortcode.
@@ -618,14 +618,14 @@ function _usl_sc_accordion( $atts = array() ) {
  *
  * @return string The button HTML.
  */
-function _usl_sc_button( $atts = array(), $content = null ) {
+function _render_sc_button( $atts = array(), $content = null ) {
 
 	$atts = shortcode_atts( array(
 		'link'                       => '#',
 		'size'                       => 'medium',
-		'color'                      => USL_PRIMARY_COLOR,
-		'color_hover'                => USL_PRIMARY_COLOR_DARK,
-		'font_color'                 => USL_PRIMARY_FONT_COLOR,
+		'color'                      => Render_PRIMARY_COLOR,
+		'color_hover'                => Render_PRIMARY_COLOR_DARK,
+		'font_color'                 => Render_PRIMARY_FONT_COLOR,
 		'shape'                      => 'rectangle',
 		'icon'                       => '',
 		'border_top_left_radius'     => 0,
@@ -635,11 +635,11 @@ function _usl_sc_button( $atts = array(), $content = null ) {
 	), $atts );
 
 	// Escape atts
-	usl_esc_atts( $atts );
+	render_esc_atts( $atts );
 
-	$border_radius = usl_sc_parse_border_radius( $atts );
+	$border_radius = render_sc_parse_border_radius( $atts );
 
-	$class = 'usl-button';
+	$class = 'render-button';
 	$class .= ! empty( $atts['size'] ) ? "-$atts[size]" : '';
 	$class .= ! empty( $atts['shape'] ) ? "-$atts[shape]" : '';
 	$class .= ! empty( $atts['icon'] ) ? "-icon" : '';
@@ -661,7 +661,7 @@ function _usl_sc_button( $atts = array(), $content = null ) {
 /**
  * Wraps the content within a styled box.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array  $atts    The attributes sent to the shortcode.
@@ -669,12 +669,12 @@ function _usl_sc_button( $atts = array(), $content = null ) {
  *
  * @return string The box HTML.
  */
-function _usl_sc_box( $atts = array(), $content = null ) {
+function _render_sc_box( $atts = array(), $content = null ) {
 
 	$atts = shortcode_atts( array(
-		'color'                      => USL_PRIMARY_COLOR,
-		'font_color'                 => USL_PRIMARY_FONT_COLOR,
-		'heading_font_color'         => USL_PRIMARY_FONT_COLOR,
+		'color'                      => Render_PRIMARY_COLOR,
+		'font_color'                 => Render_PRIMARY_FONT_COLOR,
+		'heading_font_color'         => Render_PRIMARY_FONT_COLOR,
 		'shape'                      => 'rectangle',
 		'heading'                    => '',
 		'heading_tag'                => 'h3',
@@ -685,11 +685,11 @@ function _usl_sc_box( $atts = array(), $content = null ) {
 	), $atts );
 
 	// Escape atts
-	usl_esc_atts( $atts );
+	render_esc_atts( $atts );
 
-	$border_radius = usl_sc_parse_border_radius( $atts );
+	$border_radius = render_sc_parse_border_radius( $atts );
 
-	$class = 'usl-box';
+	$class = 'render-box';
 	$class .= ! empty( $atts['shape'] ) ? "-$atts[shape]" : '';
 
 	$output = "<div class='$class'";
@@ -707,7 +707,7 @@ function _usl_sc_box( $atts = array(), $content = null ) {
 /**
  * Wraps the content within a half-width column.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array  $atts    The attributes sent to the shortcode.
@@ -715,7 +715,7 @@ function _usl_sc_box( $atts = array(), $content = null ) {
  *
  * @return string The content in a column HTML.
  */
-function _usl_sc_column_two( $atts = array(), $content = null ) {
+function _render_sc_column_two( $atts = array(), $content = null ) {
 
 	$atts = shortcode_atts( array(
 		'padding_left'  => '10px',
@@ -723,18 +723,18 @@ function _usl_sc_column_two( $atts = array(), $content = null ) {
 	), $atts );
 
 	// Escape atts
-	usl_esc_atts( $atts );
+	render_esc_atts( $atts );
 
 	$padding = "padding-left: $atts[padding_left]; padding-right: $atts[padding_right];";
 
-	return "<div class='usl-column-two' style='$padding'>" . do_shortcode( $content ) . '</div>';
+	return "<div class='render-column-two' style='$padding'>" . do_shortcode( $content ) . '</div>';
 }
 
 
 /**
  * Wraps the content within a third-width column.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array  $atts    The attributes sent to the shortcode.
@@ -742,16 +742,16 @@ function _usl_sc_column_two( $atts = array(), $content = null ) {
  *
  * @return string The content in a column HTML.
  */
-function _usl_sc_column_three( $atts, $content = null ) {
+function _render_sc_column_three( $atts, $content = null ) {
 
-	return '<div class="usl-column-three">' . do_shortcode( $content ) . '</div>';
+	return '<div class="render-column-three">' . do_shortcode( $content ) . '</div>';
 }
 
 
 /**
  * Wraps the content within a quarter-width column.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array  $atts    The attributes sent to the shortcode.
@@ -759,16 +759,16 @@ function _usl_sc_column_three( $atts, $content = null ) {
  *
  * @return string The content in a column HTML.
  */
-function _usl_sc_column_four( $atts, $content = null ) {
+function _render_sc_column_four( $atts, $content = null ) {
 
-	return '<div class="usl-column-four">' . do_shortcode( $content ) . '</div>';
+	return '<div class="render-column-four">' . do_shortcode( $content ) . '</div>';
 }
 
 
 /**
  * Wraps the content within a fifth-width column.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array  $atts    The attributes sent to the shortcode.
@@ -776,20 +776,20 @@ function _usl_sc_column_four( $atts, $content = null ) {
  *
  * @return string The content in a column HTML.
  */
-function _usl_sc_column_five( $atts, $content = null ) {
+function _render_sc_column_five( $atts, $content = null ) {
 
-	return '<div class="usl-column-five">' . do_shortcode( $content ) . '</div>';
+	return '<div class="render-column-five">' . do_shortcode( $content ) . '</div>';
 }
 
 /**
  * Helper function for populating the icon list selectbox.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @return bool|array List of icons.
  */
-function usl_sc_icon_list() {
+function render_sc_icon_list() {
 
 	$icons = array(
 		'menu',
@@ -1000,7 +1000,7 @@ function usl_sc_icon_list() {
 	$output = array();
 	foreach ( $icons as $icon ) {
 		$output["dashicons-$icon"] = array(
-			'label' => usl_translate_id_to_name( str_replace( 'admin-', '', $icon ) ),
+			'label' => render_translate_id_to_name( str_replace( 'admin-', '', $icon ) ),
 			'icon'  => "dashicons dashicons-$icon",
 		);
 	}
@@ -1008,7 +1008,7 @@ function usl_sc_icon_list() {
 	return $output;
 }
 
-function usl_sc_parse_border_radius( $atts ) {
+function render_sc_parse_border_radius( $atts ) {
 
 	// Prepare border radius'
 	$_border_radius = array(

@@ -7,7 +7,7 @@ body {
     overflow: scroll;
 }
 
-#usl-tools-tagdebug {
+#render-tools-tagdebug {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -21,7 +21,7 @@ body {
     overflow: auto;
 }
 
-#usl-tools-tagdebug > p {
+#render-tools-tagdebug > p {
     font-size: 30px;
     font-weight: bold;
     margin: 0;

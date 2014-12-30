@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Contains all USL packaged shortcodes within the Visibility category.
+ * Contains all Render packaged shortcodes within the Visibility category.
  *
- * @since      USL 1.0.0
+ * @since      Render 1.0.0
  *
- * @package    USL
+ * @package    Render
  * @subpackage Shortcodes
  */
 
@@ -13,65 +13,65 @@ $_shortcodes = array(
 	// Logic
 	// TODO Test and fix up
 	array(
-		'code'        => 'usl_logic',
-		'function'    => '_usl_sc_logic',
-		'title'       => __( 'Logic', 'USL' ),
-		'description' => __( 'Allows for the use of conditional statements for showing content.', 'USL' ),
+		'code'        => 'render_logic',
+		'function'    => '_render_sc_logic',
+		'title'       => __( 'Logic', 'Render' ),
+		'description' => __( 'Allows for the use of conditional statements for showing content.', 'Render' ),
 		'atts'        => array(
 			'arg1'     => array(
-				'label'      => __( 'Argument One', 'USL' ),
+				'label'      => __( 'Argument One', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
 					'allowCustomInput' => true,
 					'options'          => array(
-						'logged_in' => __( 'User is logged in', 'USL' ),
-						'home'      => __( 'Current page is home page', 'USL' ),
-						'comments'  => __( 'Comments allowed', 'USL' ),
-						'single'    => __( 'Is single post', 'USL' ),
-						'page'      => __( 'Is page', 'USL' ),
-						'category'  => __( 'Is category page', 'USL' ),
-						'tag'       => __( 'Is tag page', 'USL' ),
-						'tax'       => __( 'Is taxonomy page', 'USL' ),
-						'author'    => __( 'Is archive of specific author', 'USL' ),
-						'archive'   => __( 'Current page is an archive page', 'USL' ),
-						'search'    => __( 'Current page is a search results page', 'USL' ),
-						'404'       => __( 'Current page is a 404', 'USL' ),
+						'logged_in' => __( 'User is logged in', 'Render' ),
+						'home'      => __( 'Current page is home page', 'Render' ),
+						'comments'  => __( 'Comments allowed', 'Render' ),
+						'single'    => __( 'Is single post', 'Render' ),
+						'page'      => __( 'Is page', 'Render' ),
+						'category'  => __( 'Is category page', 'Render' ),
+						'tag'       => __( 'Is tag page', 'Render' ),
+						'tax'       => __( 'Is taxonomy page', 'Render' ),
+						'author'    => __( 'Is archive of specific author', 'Render' ),
+						'archive'   => __( 'Current page is an archive page', 'Render' ),
+						'search'    => __( 'Current page is a search results page', 'Render' ),
+						'404'       => __( 'Current page is a 404', 'Render' ),
 					),
 				),
 			),
 			'arg2'     => array(
-				'label'      => __( 'Argument Two', 'USL' ),
+				'label'      => __( 'Argument Two', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
 					'allowCustomInput' => true,
-					'placeholder'      => __( 'True', 'USL' ),
+					'placeholder'      => __( 'True', 'Render' ),
 					'options'          => array(
-						'true'  => __( 'True', 'USL' ),
-						'false' => __( 'False', 'USL' ),
+						'true'  => __( 'True', 'Render' ),
+						'false' => __( 'False', 'Render' ),
 					),
 				),
 			),
 			'operator' => array(
-				'label'      => __( 'Operator', 'USL' ),
+				'label'      => __( 'Operator', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
 					'allowCustomInput' => true,
-					'placeholder'      => __( 'Equals', 'USL' ),
+					'placeholder'      => __( 'Equals', 'Render' ),
 					'options'          => array(
-						'===' => __( 'Identical', 'USL' ),
-						'=='  => __( 'Equals', 'USL' ),
-						'!='  => __( 'Does not equal', 'USL' ),
-						'!==' => __( 'Not identical', 'USL' ),
-						'<'   => __( 'Less than', 'USL' ),
-						'>'   => __( 'Greater than', 'USL' ),
-						'<='  => __( 'Less than or equal to', 'USL' ),
-						'>='  => __( 'Greater than or equal', 'USL' ),
+						'===' => __( 'Identical', 'Render' ),
+						'=='  => __( 'Equals', 'Render' ),
+						'!='  => __( 'Does not equal', 'Render' ),
+						'!==' => __( 'Not identical', 'Render' ),
+						'<'   => __( 'Less than', 'Render' ),
+						'>'   => __( 'Greater than', 'Render' ),
+						'<='  => __( 'Less than or equal to', 'Render' ),
+						'>='  => __( 'Greater than or equal', 'Render' ),
 					),
 				),
 			),
 			'param'    => array(
-				'label'       => __( 'Parameter (optional)', 'USL' ),
-				'description' => __( 'Used in some conditions to further specify the condition.', 'USL' ),
+				'label'       => __( 'Parameter (optional)', 'Render' ),
+				'description' => __( 'Used in some conditions to further specify the condition.', 'Render' ),
 			),
 		),
 		'render'      => array(
@@ -82,43 +82,43 @@ $_shortcodes = array(
 	// Hide for times
 	// TODO Test and fix up
 	array(
-		'code'        => 'usl_hide_for_times',
-		'function'    => '_usl_sc_hide_for_times',
-		'title'       => __( 'Hide for Times', 'USL' ),
-		'description' => __( 'Allows content to be visible only during set times', 'USL' ),
+		'code'        => 'render_hide_for_times',
+		'function'    => '_render_sc_hide_for_times',
+		'title'       => __( 'Hide for Times', 'Render' ),
+		'description' => __( 'Allows content to be visible only during set times', 'Render' ),
 		'atts'        => array(
 			'visibility' => array(
-				'label'      => __( 'Visibility', 'USL' ),
+				'label'      => __( 'Visibility', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Hide for these times', 'USL' ),
+					'placeholder' => __( 'Hide for these times', 'Render' ),
 					'options'     => array(
-						'hide' => __( 'Hide for these times', 'USL' ),
-						'show' => __( 'Show for these times', 'USL' ),
+						'hide' => __( 'Hide for these times', 'Render' ),
+						'show' => __( 'Show for these times', 'Render' ),
 					),
 				),
 			),
 			'timezone' => array(
-				'label' => __( 'Timezone', 'USL' ),
+				'label' => __( 'Timezone', 'Render' ),
 				'type' => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Defaults to timezone set in Settings -> General', 'USL' ),
+					'placeholder' => __( 'Defaults to timezone set in Settings -> General', 'Render' ),
 					'callback' => array(
-						'function' => 'usl_sc_timezone_dropdown',
+						'function' => 'render_sc_timezone_dropdown',
 					),
 				),
 			),
 			'times'      => array(
-				'label'      => __( 'Times', 'USL' ),
+				'label'      => __( 'Times', 'Render' ),
 				'type'       => 'repeater',
 				'properties' => array(
 					'startWith' => 1,
 					'fields'    => array(
 						'time' => array(
-							'label'        => __( 'Hide / show between...', 'USL' ),
+							'label'        => __( 'Hide / show between...', 'Render' ),
 							'type'         => 'slider',
 							'callback'     => array(
-								'function' => 'usl_sc_time_slider',
+								'function' => 'render_sc_time_slider',
 							),
 							'initCallback' => 'timeSliderInit',
 							'properties'   => array(
@@ -135,30 +135,30 @@ $_shortcodes = array(
 	// Hide for users
 	// TODO Test and fix up
 	array(
-		'code'        => 'usl_hide_for_users',
-		'function'    => '_usl_sc_hide_for_users',
-		'title'       => __( 'Hide for Users', 'USL' ),
-		'description' => __( 'Allows content to be visible only for specific users', 'USL' ),
+		'code'        => 'render_hide_for_users',
+		'function'    => '_render_sc_hide_for_users',
+		'title'       => __( 'Hide for Users', 'Render' ),
+		'description' => __( 'Allows content to be visible only for specific users', 'Render' ),
 		'atts'        => array(
 			'users'      => array(
-				'label'      => __( 'Users', 'USL' ),
+				'label'      => __( 'Users', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Select one or more users', 'USL' ),
+					'placeholder' => __( 'Select one or more users', 'Render' ),
 					'multi'       => true,
 					'callback'    => array(
-						'function' => '_usl_user_dropdown',
+						'function' => '_render_user_dropdown',
 					),
 				),
 			),
 			'visibility' => array(
-				'label'      => __( 'Visibility', 'USL' ),
+				'label'      => __( 'Visibility', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Hide for these users', 'USL' ),
+					'placeholder' => __( 'Hide for these users', 'Render' ),
 					'options'     => array(
-						'hide' => __( 'Hide for these users', 'USL' ),
-						'show' => __( 'Show for these users', 'USL' ),
+						'hide' => __( 'Hide for these users', 'Render' ),
+						'show' => __( 'Show for these users', 'Render' ),
 					),
 				),
 			),
@@ -172,14 +172,14 @@ $_shortcodes = array(
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'visibility';
-	$shortcode['source']   = 'Ultimate Shortcodes Library';
-	usl_add_shortcode( $shortcode );
+	$shortcode['source']   = 'Render';
+	render_add_shortcode( $shortcode );
 }
 
 /**
  * Returns the content if the condition is met, otherwise, returns nothing.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array  $atts    The attributes sent to the shortcode.
@@ -187,7 +187,7 @@ foreach ( $_shortcodes as $shortcode ) {
  *
  * @return bool True if statement succeeds, false otherwise. Doy!
  */
-function _usl_sc_logic( $atts = array(), $content = null ) {
+function _render_sc_logic( $atts = array(), $content = null ) {
 
 	$atts = shortcode_atts( array(
 		'arg1'     => 'logged_in',
@@ -197,7 +197,7 @@ function _usl_sc_logic( $atts = array(), $content = null ) {
 	), $atts );
 
 	// Escape atts
-	usl_esc_atts( $atts );
+	render_esc_atts( $atts );
 
 	$param = $atts['param'];
 
@@ -296,7 +296,7 @@ function _usl_sc_logic( $atts = array(), $content = null ) {
 	}
 
 	// Differ for tinymce output
-	if ( defined( 'USL_SHORTCODE_RENDERING' ) && USL_SHORTCODE_RENDERING ) {
+	if ( defined( 'Render_SHORTCODE_RENDERING' ) && Render_SHORTCODE_RENDERING ) {
 		return '<div class="' . ( empty( $output ) ? 'hidden' : 'visible' ) . '">' . $content . '</div>';
 	}
 
@@ -306,7 +306,7 @@ function _usl_sc_logic( $atts = array(), $content = null ) {
 /**
  * Returns the content if the specified time properties are not met.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array  $atts    The attributes sent to the shortcode.
@@ -314,16 +314,16 @@ function _usl_sc_logic( $atts = array(), $content = null ) {
  *
  * @return null|string The content, if it's returned
  */
-function _usl_sc_hide_for_times( $atts = array(), $content = null ) {
+function _render_sc_hide_for_times( $atts = array(), $content = null ) {
 
 	$atts = wp_parse_args( $atts, array(
 		'visibility' => 'hide',
 		'timezone' => get_option( 'timezone_string', 'UTC' ),
 	) );
 
-	$atts = usl_esc_atts( $atts );
+	$atts = render_esc_atts( $atts );
 
-	$time_blocks = usl_associative_atts( $atts, 'times' );
+	$time_blocks = render_associative_atts( $atts, 'times' );
 
 	$orig_timezone = date_default_timezone_get();
 	date_default_timezone_set( $atts['timezone'] );
@@ -343,8 +343,8 @@ function _usl_sc_hide_for_times( $atts = array(), $content = null ) {
 	date_default_timezone_set( $orig_timezone );
 
 	// Differ for tinymce output
-	if ( defined( 'USL_SHORTCODE_RENDERING' ) && USL_SHORTCODE_RENDERING ) {
-		return '<div class="' . ( $hidden ? 'usl-content-hidden' : 'usl-content-visible' ) . '">' . $content . '</div>';
+	if ( defined( 'Render_SHORTCODE_RENDERING' ) && Render_SHORTCODE_RENDERING ) {
+		return '<div class="' . ( $hidden ? 'render-content-hidden' : 'render-content-visible' ) . '">' . $content . '</div>';
 	}
 
 	$content = $hidden ? '' : $content;
@@ -354,7 +354,7 @@ function _usl_sc_hide_for_times( $atts = array(), $content = null ) {
 /**
  * Returns the content if the specified users are or are not logged in.
  *
- * @since  USL 1.0.0
+ * @since  Render 1.0.0
  * @access Private
  *
  * @param null|array  $atts    The attributes sent to the shortcode.
@@ -362,14 +362,14 @@ function _usl_sc_hide_for_times( $atts = array(), $content = null ) {
  *
  * @return null|string The content, if it's returned
  */
-function _usl_sc_hide_for_users( $atts = array(), $content = null ) {
+function _render_sc_hide_for_users( $atts = array(), $content = null ) {
 
 	$atts = shortcode_atts( array(
 		'users'      => false,
 		'visibility' => 'hide',
 	), $atts );
 
-	$atts = usl_esc_atts( $atts );
+	$atts = render_esc_atts( $atts );
 
 	$output = '';
 
@@ -390,14 +390,14 @@ function _usl_sc_hide_for_users( $atts = array(), $content = null ) {
 	}
 
 	// Differ for tinymce output
-	if ( defined( 'USL_SHORTCODE_RENDERING' ) && USL_SHORTCODE_RENDERING ) {
+	if ( defined( 'Render_SHORTCODE_RENDERING' ) && Render_SHORTCODE_RENDERING ) {
 		return '<div class="' . ( empty( $output ) ? 'hidden' : 'visible' ) . '">' . $content . '</div>';
 	}
 
 	return $output;
 }
 
-function usl_sc_timezone_dropdown() {
+function render_sc_timezone_dropdown() {
 
 	return $timeszones = array(
 		'Pacific/Midway'       => "(GMT-11:00) Midway Island",
@@ -515,7 +515,7 @@ function usl_sc_timezone_dropdown() {
 	);
 }
 
-function usl_sc_time_slider( $att_id, $att, $properties ) {
+function render_sc_time_slider( $att_id, $att, $properties ) {
 
 	// Establish defaults
 	$defaults   = array(
@@ -539,18 +539,18 @@ function usl_sc_time_slider( $att_id, $att, $properties ) {
 
 	$values = explode( '-', $properties['values'] );
 	?>
-	<div class="usl-modal-att-extend-slider-time">
-		<input type="hidden" class="usl-modal-att-slider-value usl-modal-att-input"
+	<div class="render-modal-att-extend-slider-time">
+		<input type="hidden" class="render-modal-att-slider-value render-modal-att-input"
 		       value="<?php echo $properties['values']; ?>"
 		       name="<?php echo $att_id; ?>"/>
 
-		<div class="usl-modal-att-slider-range-text">
-			<span class="usl-modal-att-slider-range-text-value1"><?php echo $values[0]; ?></span>
+		<div class="render-modal-att-slider-range-text">
+			<span class="render-modal-att-slider-range-text-value1"><?php echo $values[0]; ?></span>
 			&nbsp;-&nbsp;
-			<span class="usl-modal-att-slider-range-text-value2"><?php echo $values[1]; ?></span>
+			<span class="render-modal-att-slider-range-text-value2"><?php echo $values[1]; ?></span>
 		</div>
 
-		<div class="usl-modal-att-slider" <?php echo $data; ?>></div>
+		<div class="render-modal-att-slider" <?php echo $data; ?>></div>
 	</div>
 <?php
 }

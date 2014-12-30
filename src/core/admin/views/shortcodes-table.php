@@ -1,12 +1,12 @@
 <?php
 
-class USL_ShortcodesTable extends WP_List_Table {
+class Render_ShortcodesTable extends WP_List_Table {
 
 	function __construct() {
 
 		parent::__construct( array(
-			'singular' => 'usl_shortcodes_table',
-			'plural'   => 'usl_shortcodes_tables',
+			'singular' => 'render_shortcodes_table',
+			'plural'   => 'render_shortcodes_tables',
 			'ajax'     => false,
 		) );
 	}
@@ -17,7 +17,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 			?>
 			<div class="alignleft actions">
 				<?php $this->categories_dropdown(); ?>
-				<input type="submit" id="post-query-submit" class="button" value="<?php _e( 'Filter', 'USL' ); ?>">
+				<input type="submit" id="post-query-submit" class="button" value="<?php _e( 'Filter', 'Render' ); ?>">
 			</div>
 		<?php
 		endif;
@@ -25,20 +25,20 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 	private function categories_dropdown() {
 
-		$categories  = _usl_get_categories();
+		$categories  = _render_get_categories();
 		$current_cat = isset( $_GET['category'] ) ? $_GET['category'] : '';
 		?>
 
 		<label for="filter-by-category" class="screen-reader-text">
-			<?php _e( 'Filter by category', 'USL' ); ?>
+			<?php _e( 'Filter by category', 'Render' ); ?>
 		</label>
 
 		<select name="category" id="filter-by-category" class="postform">
-			<option value="0"><?php _e( 'All categories', 'USL' ); ?></option>
+			<option value="0"><?php _e( 'All categories', 'Render' ); ?></option>
 
 			<?php foreach ( $categories as $category ) : ?>
 				<option class="level-0" value="<?php echo $category; ?>" <?php selected( $category, $current_cat ); ?>>
-					<?php echo usl_translate_id_to_name( $category ); ?>
+					<?php echo render_translate_id_to_name( $category ); ?>
 				</option>
 			<?php endforeach; ?>
 		</select>
@@ -59,19 +59,19 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 		return $columns = array(
 			'cb'          => '<input type="checkbox" />',
-			'name'        => __( 'Name', 'USL' ),
-			'description' => __( 'Description', 'USL' ),
-			'category'    => __( 'Category', 'USL' ),
-			'source'      => __( 'Source', 'USL' ),
-			'attributes'  => __( 'Attributes', 'USL' ),
-			'code'        => __( 'Code', 'USL' ),
+			'name'        => __( 'Name', 'Render' ),
+			'description' => __( 'Description', 'Render' ),
+			'category'    => __( 'Category', 'Render' ),
+			'source'      => __( 'Source', 'Render' ),
+			'attributes'  => __( 'Attributes', 'Render' ),
+			'code'        => __( 'Code', 'Render' ),
 		);
 	}
 
 	public function get_bulk_actions() {
 		return $actions = array(
-			'disable' => __( 'Disable', 'USL' ),
-			'enable'  => __( 'Enable', 'USL' ),
+			'disable' => __( 'Disable', 'Render' ),
+			'enable'  => __( 'Enable', 'Render' ),
 		);
 	}
 
@@ -92,7 +92,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 				'disable',
 				$item['code'],
 				$extra_params,
-				__( 'Disable', 'USL' )
+				__( 'Disable', 'Render' )
 			),
 			'enable' => sprintf(
 				"<a href='?page=%s&action=%s&shortcodes=%s%s'>%s</a>",
@@ -100,7 +100,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 				'enable',
 				$item['code'],
 				$extra_params,
-				__( 'Enable', 'USL' )
+				__( 'Enable', 'Render' )
 			),
 		);
 
@@ -130,7 +130,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 		// Get our items and setup the basic array
 		$items          = array();
-		$all_shortcodes = _usl_get_merged_shortcodes();
+		$all_shortcodes = _render_get_merged_shortcodes();
 
 		foreach ( $all_shortcodes as $code => $shortcode ) {
 
@@ -209,7 +209,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 				return $item[ $column_name ];
 
 			case 'category':
-				return usl_translate_id_to_name( $item[ $column_name ] );
+				return render_translate_id_to_name( $item[ $column_name ] );
 
 			case 'attributes':
 
@@ -233,7 +233,7 @@ class USL_ShortcodesTable extends WP_List_Table {
 
 	public function save_shortcode_options() {
 
-		$shortcodes = get_option( 'usl_disabled_shortcodes', array() );
+		$shortcodes = get_option( 'render_disabled_shortcodes', array() );
 
 		if ( ! isset( $_REQUEST['action'] ) ) {
 			return;
@@ -256,13 +256,13 @@ class USL_ShortcodesTable extends WP_List_Table {
 				$shortcodes = array_diff( $shortcodes, $_shortcodes );
 			}
 
-			update_option( 'usl_disabled_shortcodes', array_unique( $shortcodes ) );
+			update_option( 'render_disabled_shortcodes', array_unique( $shortcodes ) );
 		}
 
 		$this->shortcodes = $shortcodes;
 	}
 
 	public function no_items() {
-		_e( 'Sorry, couldn\'t find any shortcodes.', 'USL' );
+		_e( 'Sorry, couldn\'t find any shortcodes.', 'Render' );
 	}
 }

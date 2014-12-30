@@ -1,9 +1,9 @@
 @import "../global";
 
-$usl-modal-width: 600px;
-$usl-modal-height: 800px;
+$render-modal-width: 600px;
+$render-modal-height: 800px;
 
-#usl-modal-backdrop {
+#render-modal-backdrop {
   position: fixed;
   display: none;
   top: 0;
@@ -14,27 +14,27 @@ $usl-modal-height: 800px;
   z-index: 100100;
 }
 
-#usl-modal-wrap {
+#render-modal-wrap {
   position: fixed;
   top: 50%;
   left: 50%;
-  margin-left: - $usl-modal-width / 2;
-  margin-top: - $usl-modal-height / 2;
-  width: $usl-modal-width;
-  height: $usl-modal-height;
+  margin-left: - $render-modal-width / 2;
+  margin-top: - $render-modal-height / 2;
+  width: $render-modal-width;
+  height: $render-modal-height;
   overflow: hidden;
   box-shadow: 0 3px 6px rgba(#000, 0.3);
   background: #fff;
   z-index: 100105;
 
-  @media screen and (max-width: $usl-modal-width + 20px) {
+  @media screen and (max-width: $render-modal-width + 20px) {
     width: auto;
     margin-left: 0;
     left: 10px;
     right: 10px;
   }
 
-  @media screen and (max-height: $usl-modal-height + 20px) {
+  @media screen and (max-height: $render-modal-height + 20px) {
     height: auto;
     margin-top: 0;
     top: 10px;
@@ -42,22 +42,37 @@ $usl-modal-height: 800px;
   }
 }
 
-.usl-modal-form {
+.render-modal-form {
   height: 100%;
 }
 
-.usl-modal-title {
+.render-modal-title {
   background: #fcfcfc;
   border-bottom: 1px solid #dfdfdf;
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 36px;
-  padding: 0 36px 0 16px;
+  text-align: center;
+  padding: 10px 0;
   top: 0;
   right: 0;
   left: 0;
 
-  .usl-modal-close {
+  .render-modal-logo {
+    width: 194px;
+    height: 38px;
+    background: url('../images/render-logo.png') no-repeat;
+    display: inline-block;
+
+    @media only screen and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (min--moz-device-pixel-ratio: 2),
+    only screen and (-o-min-device-pixel-ratio: 2/1),
+    only screen and (min-device-pixel-ratio: 2),
+    only screen and (min-resolution: 192dpi),
+    only screen and (min-resolution: 2dppx) {
+      background: url('../images/render-logo@2x.png');
+      background-size: 194px 38px;
+    }
+  }
+
+  .render-modal-close {
     color: #666;
     padding: 0;
     position: absolute;
@@ -87,11 +102,11 @@ $usl-modal-height: 800px;
   }
 }
 
-.usl-modal-body {
+.render-modal-body {
   padding: 0 16px 50px;
 }
 
-.usl-modal-search {
+.render-modal-search {
   position: relative;
   width: 100%;
   margin: 10px 0;
@@ -112,7 +127,7 @@ $usl-modal-height: 800px;
     height: 29px;
   }
 
-  .usl-modal-invalidsearch {
+  .render-modal-invalidsearch {
     background: $error-color;
     color: #fff;
     padding: 5px;
@@ -120,7 +135,7 @@ $usl-modal-height: 800px;
   }
 }
 
-.usl-modal-categories {
+.render-modal-categories {
   overflow: hidden;
   position: relative;
 
@@ -132,7 +147,7 @@ $usl-modal-height: 800px;
   user-select: none;
 
   // Right and left arrows
-  [class*="usl-modal-categories-"] {
+  [class*="render-modal-categories-"] {
     position: absolute;
     height: 100%;
     top: 0;
@@ -194,11 +209,11 @@ $usl-modal-height: 800px;
   }
 }
 
-.usl-modal-shortcodes-container {
+.render-modal-shortcodes-container {
   position: relative;
 }
 
-.usl-modal-shortcodes-spinner {
+.render-modal-shortcodes-spinner {
   position: absolute;
   top: 50%;
   margin-top: -10px;
@@ -209,7 +224,7 @@ $usl-modal-height: 800px;
   z-index: 1;
 }
 
-.usl-modal-shortcodes {
+.render-modal-shortcodes {
   border-collapse: collapse;
   overflow-y: scroll;
   display: block;
@@ -219,7 +234,7 @@ $usl-modal-height: 800px;
   z-index: 2;
   transition: $primary-transition background-color;
 
-  .usl-modal-shortcode {
+  .render-modal-shortcode {
     display: block;
     border: 1px solid transparent;
     margin: 0;
@@ -238,8 +253,8 @@ $usl-modal-height: 800px;
       border-color: $primary-color !important;
     }
 
-    &.usl-modal-shortcode-error-message {
-      .usl-modal-shortcode-title:before {
+    &.render-modal-shortcode-error-message {
+      .render-modal-shortcode-title:before {
         content: '!';
         display: inline-block;
         width: 10px;
@@ -255,7 +270,7 @@ $usl-modal-height: 800px;
         margin-right: 2px;
       }
 
-      .usl-modal-shortcode-description {
+      .render-modal-shortcode-description {
         font-weight: bold;
       }
     }
@@ -266,7 +281,7 @@ $usl-modal-height: 800px;
         background-color: darken(#fff, 10%);
       }
 
-      .usl-modal-shortcode-source {
+      .render-modal-shortcode-source {
         opacity: 1;
       }
     }
@@ -285,12 +300,12 @@ $usl-modal-height: 800px;
 
 // Shortcode toolbar
 $toolbar-height: 50px;
-.usl-modal-shortcode-toolbar {
-  .usl-modal-shortcode-toolbar-tools {
+.render-modal-shortcode-toolbar {
+  .render-modal-shortcode-toolbar-tools {
     overflow: hidden;
     height: 0;
 
-    [class^="usl-modal-shortcode-toolbar-button"] {
+    [class^="render-modal-shortcode-toolbar-button"] {
       float: left;
       width: 50%;
       height: 50px;
@@ -327,7 +342,7 @@ $toolbar-height: 50px;
     }
   }
 
-  .usl-modal-shortcode-toolbar-toggle {
+  .render-modal-shortcode-toolbar-toggle {
     width: 100%;
     font-size: 40px;
     color: #bbb;
@@ -343,7 +358,7 @@ $toolbar-height: 50px;
   }
 }
 
-.accordion-section-title, .usl-modal-sc-title {
+.accordion-section-title, .render-modal-sc-title {
   border: none;
   padding: 10px 5px 0;
   cursor: pointer;
@@ -355,19 +370,19 @@ $toolbar-height: 50px;
 }
 
 // Hide down arrow when shortcode is disabled
-.usl-modal-shortcode.disabled {
+.render-modal-shortcode.disabled {
   .accordion-section-title:after {
     display: none;
   }
 }
 
 // Active
-.usl-modal-shortcode.active {
-  .accordion-section-title, .usl-modal-sc-title {
+.render-modal-shortcode.active {
+  .accordion-section-title, .render-modal-sc-title {
     color: #fff;
     @include background-gradient($primary-color, darken($primary-color, 10%));
 
-    .usl-modal-shortcode-source {
+    .render-modal-shortcode-source {
       color: #ccc;
     }
 
@@ -384,27 +399,27 @@ $toolbar-height: 50px;
   // Fix Chosen selectbox cutting off
   overflow: visible;
 
-  .usl-modal-shortcode-atts {
+  .render-modal-shortcode-atts {
     padding: 10px 0;
   }
 }
 
 // Att section break
-.usl-modal-att-section-break {
+.render-modal-att-section-break {
   padding: 0 0 10px 10px;
   margin: 0 0 10px 0;
   font-weight: bold;
   font-size: 120%;
   border-bottom: 1px solid darken(#fff, 30%);
 
-  .usl-modal-att-section-break-description {
+  .render-modal-att-section-break-description {
     font-weight: normal;
     font-size: 80%;
   }
 }
 
 // Chosen
-.chosen-container {
+#render-modal-wrap .chosen-container {
   &.allow-custom-input {
     .no-results {
       display: none;
@@ -424,9 +439,20 @@ $toolbar-height: 50px;
       margin-left: 2px;
     }
   }
+
+  .active-result.highlighted {
+    background: #50a4b3; /* Old browsers */
+    background: -moz-linear-gradient(top,  #50a4b3 0%, #428a93 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#50a4b3), color-stop(100%,#428a93)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #50a4b3 0%,#428a93 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #50a4b3 0%,#428a93 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #50a4b3 0%,#428a93 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #50a4b3 0%,#428a93 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#50a4b3', endColorstr='#428a93',GradientType=0 ); /* IE6-9 */
+  }
 }
 
-.usl-modal-att-row {
+.render-modal-att-row {
   padding: 10px;
 
   @include clearfix;
@@ -435,18 +461,18 @@ $toolbar-height: 50px;
     background: $error-color;
     color: #fff;
 
-    .usl-modal-att-field .usl-modal-att-errormsg {
+    .render-modal-att-field .render-modal-att-errormsg {
       display: block;
     }
   }
 }
 
-.usl-modal-att-name {
+.render-modal-att-name {
   float: left;
   width: 25%;
 }
 
-.usl-modal-att-field {
+.render-modal-att-field {
   float: left;
   width: 75%;
   position: relative;
@@ -455,23 +481,23 @@ $toolbar-height: 50px;
     width: 100%;
 
     // Don't do it to the colorpicker input
-    &.usl-modal-att-colorpicker {
+    &.render-modal-att-colorpicker {
       width: 65px;
     }
   }
 
-  .usl-modal-att-description {
+  .render-modal-att-description {
     color: #999;
     font-style: normal;
     margin-top: 5px;
     margin-bottom: 0;
   }
 
-  .usl-modal-att-errormsg {
+  .render-modal-att-errormsg {
     display: none;
   }
 
-  .usl-modal-button {
+  .render-modal-button {
     width: 30px;
     height: 30px;
     line-height: 30px;
@@ -502,14 +528,14 @@ $toolbar-height: 50px;
   }
 
   // Text Box
-  .usl-modal-att-textbox {
+  .render-modal-att-textbox {
     width: 100%;
     box-sizing: border-box;
     margin: 0;
   }
 
   // Text Area
-  .usl-modal-att-textarea {
+  .render-modal-att-textarea {
     width: 100%;
     min-height: 100px;
     box-sizing: border-box;
@@ -517,7 +543,7 @@ $toolbar-height: 50px;
   }
 
   // Slider
-  .usl-modal-att-slider {
+  .render-modal-att-slider {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -535,7 +561,7 @@ $toolbar-height: 50px;
     }
   }
 
-  input[type="text"].usl-modal-att-slider-value {
+  input[type="text"].render-modal-att-slider-value {
     width: 20%;
     text-align: center;
     margin: 0;
@@ -543,24 +569,24 @@ $toolbar-height: 50px;
 
   // Counter
   $counter-size: 30px;
-  .usl-modal-counter-container {
+  .render-modal-counter-container {
     float: left;
 
     .dashicons {
       float: left;
     }
 
-    .usl-modal-counter-down {
+    .render-modal-counter-down {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
     }
 
-    .usl-modal-counter-up {
+    .render-modal-counter-up {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
 
-    .usl-modal-att-counter {
+    .render-modal-att-counter {
       float: left;
       width: $counter-size * 2;
       height: $counter-size;
@@ -571,7 +597,7 @@ $toolbar-height: 50px;
     }
   }
 
-  .usl-modal-counter-unit {
+  .render-modal-counter-unit {
     margin-left: 10px;
     float: left;
     height: $counter-size;
@@ -600,7 +626,7 @@ $toolbar-height: 50px;
   }
 
   // Repeater
-  .usl-modal-repeater-field {
+  .render-modal-repeater-field {
     padding-top: 20px;
     border-top: 1px solid #ccc;
     margin-top: 20px;
@@ -620,30 +646,30 @@ $toolbar-height: 50px;
       clear: both;
     }
 
-    .usl-modal-repeater-inputs {
+    .render-modal-repeater-inputs {
       width: 80%;
       float: left;
       box-sizing: border-box;
       margin: 0;
     }
 
-    .usl-modal-repeater-actions {
+    .render-modal-repeater-actions {
       width: 20%;
       float: right;
       padding-left: 10px;
       box-sizing: border-box;
 
-      .usl-modal-repeater-add {
+      .render-modal-repeater-add {
         float: left;
       }
 
-      .usl-modal-repeater-remove {
+      .render-modal-repeater-remove {
         float: right;
       }
     }
 
     // Nested attributes
-    .usl-modal-att-row {
+    .render-modal-att-row {
       margin: 10px 0;
       padding: 5px;
       border: 1px solid #ddd;
@@ -657,13 +683,13 @@ $toolbar-height: 50px;
         margin-bottom: 0;
       }
 
-      .usl-modal-att-field {
+      .render-modal-att-field {
         width: 100%;
         padding-left: 0;
         padding-right: 0;
       }
 
-      .usl-modal-att-name {
+      .render-modal-att-name {
         float: none;
         width: auto;
         display: inline-block;
@@ -678,7 +704,7 @@ $toolbar-height: 50px;
     height: auto !important;
 
     // This would become :first-of-type and cause these properties to be lost, so we have to !important them
-    .usl-modal-repeater-field {
+    .render-modal-repeater-field {
       border-top: 1px solid #ccc !important;
       margin-top: 20px !important;
       padding-top: 20px !important;
@@ -692,7 +718,7 @@ $toolbar-height: 50px;
   }
 }
 
-.usl-modal-show-advanced-atts {
+.render-modal-show-advanced-atts {
   display: block;
   color: inherit;
   text-decoration: none;
@@ -715,11 +741,11 @@ $toolbar-height: 50px;
   }
 }
 
-.usl-modal-shortcode-title {
+.render-modal-shortcode-title {
   width: 25%;
   float: left;
 
-  .usl-modal-shortcode-source {
+  .render-modal-shortcode-source {
     font-size: 80%;
     color: #aaa;
     opacity: 0;
@@ -728,7 +754,7 @@ $toolbar-height: 50px;
   }
 }
 
-.usl-modal-shortcode-description {
+.render-modal-shortcode-description {
   width: 75%;
   float: left;
   padding-right: 20px;
@@ -736,7 +762,7 @@ $toolbar-height: 50px;
   box-sizing: border-box;
 }
 
-.usl-modal-footer {
+.render-modal-footer {
   padding: 8px 16px;
   background: #fcfcfc;
   border-top: 1px solid #dfdfdf;
@@ -746,7 +772,7 @@ $toolbar-height: 50px;
   right: 0;
   z-index: 2;
 
-  .usl-modal-cancel {
+  .render-modal-cancel {
     line-height: 28px;
     height: 28px;
     float: left;
@@ -758,15 +784,45 @@ $toolbar-height: 50px;
 
 $submit-height: 28px;
 $submit-transition: 500ms;
-#usl-modal-submit {
+#render-modal-submit {
   float: right;
-  margin-bottom: 0;
   overflow: hidden;
   height: $submit-height;
   text-align: center;
   box-sizing: content-box;
 
-  [class^="usl-modal-submit-text"] {
+  // Copy of WP button styling (with custom colors)
+  background: $primary-color;
+  border: 1px solid darken($primary-color, 10%);
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(#000, 0.1);
+  box-shadow: inset 0 1px 0 rgba(lighten($primary-color, 10%), 0.5), 0 1px 0 rgba(#000, 0.15);
+  display: inline-block;
+  font-size: 13px;
+  line-height: 26px;
+  margin: 0;
+  padding: 0 10px 1px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 3px;
+
+  &:hover {
+    background: darken($primary-color, 5%);
+    border-color: darken($primary-color, 15%);
+    box-shadow: inset 0 1px 0 rgba(lighten($primary-color, 10%), 0.6), 0 1px 0 rgba(#000, 0.15);
+  }
+
+  &:active {
+    background: darken($primary-color, 15%);
+    border-color: darken($primary-color, 20%);
+    box-shadow: inset 0 1px 0 rgba(#000, 0.1);
+  }
+
+  &.disabled {
+    color: #d5d5d5;
+  }
+
+  [class^="render-modal-submit-text"] {
     position: relative;
     display: inline-block;
     margin: 0;
@@ -783,7 +839,7 @@ $submit-transition: 500ms;
   }
 }
 
-#usl-modal-remove {
+#render-modal-remove {
   float: right;
   margin-right: 20px;
   height: $submit-height;
