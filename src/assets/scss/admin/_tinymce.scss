@@ -8,6 +8,14 @@ i.mce-i-usl-mce-icon {
   }
 }
 
+i.mce-i-usl-mce-refresh-icon {
+  font: 400 20px/1 dashicons;
+
+  &:before {
+    content: "\f463";
+  }
+}
+
 #usl-tinymce-loader {
   position: absolute;
   top: 0;

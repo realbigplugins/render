@@ -146,7 +146,8 @@ class USL_tinymce extends USL {
 	 */
 	public static function register_tinymce_buttons( $buttons ) {
 
-		array_push( $buttons, 'usl' );
+		array_push( $buttons, 'usl_open' );
+		array_push( $buttons, 'usl_refresh' );
 
 		return $buttons;
 	}
@@ -251,8 +252,11 @@ class USL_tinymce extends USL {
 
 		// Close the wrapper
 		if ( ! isset( $usl_shortcode_data[ $code ]['noWrap'] ) ) {
-			$divider =  '<span class="usl-tinymce-divider usl-tinymce-noneditable">&#8203;</span>';
-			$output .= "</$tag>$divider";
+
+			// Delete notification
+			$output .= "<$tag class='usl-tinymce-shortcode-wrapper-delete'>" . __( 'Press again to delete', 'USL' ) . "</$tag>";
+
+			$output .= "</$tag>";
 		}
 
 		return $output;
@@ -260,7 +264,6 @@ class USL_tinymce extends USL {
 }
 
 add_action( 'current_screen', '_usl_init_tinymce' );
-
 
 // Always add the AJAX
 add_action( 'usl_render_ajax', array( 'USL_tinymce', 'render_ajax' ) );

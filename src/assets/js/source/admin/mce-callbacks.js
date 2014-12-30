@@ -23,7 +23,9 @@ var USL_MCECallbacks;
                 data,
                 function (response) {
 
-                    response = response.replace(/(<span class="usl-tinymce-divider usl-tinymce-noneditable">.*?<\/span>)+/g, "$1");
+                    // Remove any previously existing dividers
+                    response = response.replace(/(&#8203;)+/g, '');
+
                     editor.setContent(response);
                     USL_tinymce.loading(false);
 
@@ -90,16 +92,6 @@ var USL_MCECallbacks;
 
             content = content.replace(/&#160;/g, '&nbsp;');
             return content;
-        },
-
-        updateCounter: function () {
-
-            this.visualLoadCounter.count++;
-            if (this.visualLoadCounter.count == this.visualLoadCounter.total) {
-                var content = editor.getContent({format: 'numeric'});
-                editor.setContent(content.replace(/(<span class="usl-tinymce-divider usl-tinymce-noneditable">.*?<\/span>)+/g, '<span class="usl-tinymce-divider usl-tinymce-noneditable">&#8203;</span>'));
-                USL_tinymce.loading(false);
-            }
         },
 
         getLiteralAtts: function (content, default_args) {

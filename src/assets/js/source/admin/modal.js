@@ -160,9 +160,7 @@ var USL_Modal;
 
                                         var $first = $(this);
                                         if ($next.length && $next.is(':visible')) {
-
-                                            elements.active_shortcode = $first;
-                                            USL_Modal.openShortcode();
+                                            USL_Modal.activateShortcode($first);
                                         }
                                         return false;
                                     }
@@ -185,9 +183,7 @@ var USL_Modal;
 
                                     $next = $(this);
                                     if ($next.length && $next.is(':visible')) {
-
-                                        elements.active_shortcode = $next;
-                                        USL_Modal.openShortcode();
+                                        USL_Modal.activateShortcode($next);
                                     }
                                     return false;
                                 }
@@ -198,8 +194,7 @@ var USL_Modal;
                             if ($next.length && $next.is(':visible')) {
 
                                 USL_Modal.closeShortcode();
-                                elements.active_shortcode = $next;
-                                USL_Modal.openShortcode();
+                                USL_Modal.activateShortcode($next);
                             } else {
                                 elements.active_shortcode.effect('shake', {
                                     distance: 10
@@ -223,9 +218,7 @@ var USL_Modal;
 
                                     $prev = $(this);
                                     if ($prev.length && $prev.is(':visible')) {
-
-                                        elements.active_shortcode = $prev;
-                                        USL_Modal.openShortcode();
+                                        USL_Modal.activateShortcode($prev);
                                     }
                                     return false;
                                 }
@@ -236,8 +229,7 @@ var USL_Modal;
                             if ($prev.length && $prev.is(':visible')) {
 
                                 USL_Modal.closeShortcode();
-                                elements.active_shortcode = $prev;
-                                USL_Modal.openShortcode();
+                                USL_Modal.activateShortcode($prev);
                             } else {
                                 elements.active_shortcode.effect('shake', {
                                     distance: 10
@@ -362,8 +354,28 @@ var USL_Modal;
                         // Extend functionality to allow custom text input (if enabled on input)
                         // TODO Find a way to allow searching of option values as well as text
                         if ($chosen.hasClass('allow-custom-input')) {
-                            //$container.find('.chosen-container').addClass('allow-custom-input');
+
+                            // Binds and such
                             chosen_custom_input($chosen);
+
+                            // Make sure we get the new value and not the old
+                            attObj.getValue = function () {
+                                return this.$container.find('*[name="' + this.name + '"]').last().val();
+                            };
+
+                            // Pressing enter should set the value, not submit the entire form
+                            $container.find('.chosen-search input[type="text"]').keyup(function (e) {
+
+                                if (!usl_modal_open || e.which !== 13) {
+                                    return;
+                                }
+
+                                // FIXME This isn't working...
+                                $chosen.trigger('chosen:close');
+
+                                e.preventDefault();
+                                return false;
+                            });
                         }
                         break;
                     case 'colorpicker':
@@ -670,7 +682,8 @@ var USL_Modal;
                             description = $(this).find('.description').text(),
                             code = $(this).attr('data-code'),
                             source = $(this).attr('data-source'),
-                            search_string = title + description + code + source;
+                            tags = $(this).attr('data-tags'),
+                            search_string = title + description + code + source + tags;
 
                         if (search_string.toLowerCase().indexOf(search_query.toLowerCase()) < 0) {
                             $(this).hide();
@@ -785,6 +798,11 @@ var USL_Modal;
         },
 
         restoreShortcode: function () {
+
+            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+                $(this).data('attObj').revert();
+            });
+
             this.populateShortcode(this.current_shortcode.atts);
         },
 
@@ -1680,10 +1698,8 @@ var USL_Modal;
                 for (i = 0; i < fields.length; i++) {
 
                     $.each(fields[i], function (name, value) {
-                        var attObj = self.$container.find('.usl-modal-repeater-field:eq(' + ( i + 1 ) + ')').
-                            find('.usl-modal-att-row[data-att-name="' + name + '"]').data('attObj');
-
-                        attObj.setValue(value);
+                        self.$container.find('.usl-modal-repeater-field:eq(' + ( i + 1 ) + ')').
+                            find('.usl-modal-att-row[data-att-name="' + name + '"]').data('attObj').setValue(value);
                     });
                 }
             }
@@ -1698,6 +1714,9 @@ var USL_Modal;
 
     $(window).load(function () {
         USL_Modal.load();
+
+        // REMOVE
+        USL_Modal.filterByCategory($('.usl-modal-categories').find('li[data-category="user"]'));
     });
 
     $(window).resize(function () {
@@ -1740,8 +1759,7 @@ var USL_Modal;
                 // Clear the inputs
                 highlight($field);
                 $field.find('.usl-modal-att-row').each(function () {
-                    var attObj = $(this).data('attObj');
-                    attObj.revert();
+                    $(this).data('attObj').revert();
                 });
             } else {
 

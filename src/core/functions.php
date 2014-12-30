@@ -46,6 +46,7 @@ function usl_add_shortcode( $args ) {
 			'title'       => $args['title'],
 			'atts'        => $args['atts'],
 			'source'      => $args['source'],
+			'tags'        => $args['tags'],
 			'description' => $args['description'],
 			'example'     => $args['example'],
 			'category'    => $args['category'],
@@ -125,10 +126,9 @@ function usl_esc_atts( $atts ) {
 function usl_strip_paragraphs_around_shortcodes( $content ) {
 
 	$array = array(
-		'<p>['                                                                    => '[',
-		']</p>'                                                                   => ']',
-		']<span class="usl-tinymce-divider usl-tinymce-noneditable">&#8203;</span></p>' => ']',
-		']<br />'                                                                 => ']',
+		'<p>['    => '[',
+		']</p>'   => ']',
+		']<br />' => ']',
 	);
 
 	$content = strtr( $content, $array );
@@ -177,4 +177,64 @@ function usl_associative_atts( $atts, $keyname ) {
 
 function _usl_decode_att( $att ) {
 	return str_replace( array( '::dquot::', '::squot::', '::br::' ), array( '"', '\'', '<br/>' ), $att );
+}
+
+/**
+ * Outputs an HTML error message formatted by the plugin.
+ *
+ * @since 1.0.0
+ *
+ * @param string $message The error message to display.
+ * @return string The HTML error message.
+ */
+function _usl_sc_error( $message ) {
+	return "<span class='usl-sc-error'>ERROR: $message</span>";
+}
+
+function usl_sc_attr_template( $template ) {
+
+	switch ( $template ) {
+		case 'date_format':
+
+			return array(
+				'label'       => __( 'Date Format', 'USL' ),
+				'type'        => 'selectbox',
+				'description' => sprintf(
+					__( 'Format to display the date. Either choose one or input a custom date format using %s date format standards.', 'USL' ), '<a href="http://php.net/manual/en/function.date.php" target="_blank">PHP</a>' ),
+				'properties'  => array(
+					'placeholder'      => __( 'Select a date format or enter a custom format.', 'USL' ),
+					'default'          => 'default_date',
+					'allowCustomInput' => true,
+					'options'          => array(
+						'default_date'      => __( 'Date format set in Settings -> General', 'USL' ),
+						'l, F jS, Y - g:iA' => date( 'l, F jS, Y - g:iA' ),
+						'l, F jS, Y'        => date( 'l, F jS, Y' ),
+						'F jS, Y'           => date( 'F jS, Y' ),
+						'M jS, Y'           => date( 'M jS, Y' ),
+						'm-d-Y'             => date( 'm-d-Y' ),
+						'd-m-Y'             => date( 'd-m-Y' ),
+						'm-d-y'             => date( 'm-d-y' ),
+						'd-m-y'             => date( 'd-m-y' ),
+						'j-n-y'             => date( 'j-n-y' ),
+						'n-j-y'             => date( 'n-j-y' ),
+					),
+				),
+			);
+			break;
+
+		case 'post_list':
+
+			return array(
+				'label'      => __( 'Post', 'USL' ),
+				'type'       => 'selectbox',
+				'properties' => array(
+					'callback'    => array(
+						'groups'   => true,
+						'function' => '_usl_sc_post_list',
+					),
+					'placeholder' => __( 'Defaults to the current post.', 'USL' ),
+				),
+			);
+			break;
+	}
 }

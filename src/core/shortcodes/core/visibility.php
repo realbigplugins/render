@@ -103,7 +103,9 @@ $_shortcodes = array(
 				'type' => 'selectbox',
 				'properties' => array(
 					'placeholder' => __( 'Defaults to timezone set in Settings -> General', 'USL' ),
-					'callback' => 'usl_sc_timezone_dropdown',
+					'callback' => array(
+						'function' => 'usl_sc_timezone_dropdown',
+					),
 				),
 			),
 			'times'      => array(
@@ -115,7 +117,9 @@ $_shortcodes = array(
 						'time' => array(
 							'label'        => __( 'Hide / show between...', 'USL' ),
 							'type'         => 'slider',
-							'callback'     => 'usl_sc_time_slider',
+							'callback'     => array(
+								'function' => 'usl_sc_time_slider',
+							),
 							'initCallback' => 'timeSliderInit',
 							'properties'   => array(
 								'range' => true,
@@ -142,7 +146,9 @@ $_shortcodes = array(
 				'properties' => array(
 					'placeholder' => __( 'Select one or more users', 'USL' ),
 					'multi'       => true,
-					'callback'    => '_usl_user_dropdown',
+					'callback'    => array(
+						'function' => '_usl_user_dropdown',
+					),
 				),
 			),
 			'visibility' => array(

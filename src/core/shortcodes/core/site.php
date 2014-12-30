@@ -2,73 +2,60 @@
 /**
  * Contains all USL packaged shortcodes within the Site category.
  *
- * @since USL 1.0.0
+ * @since      USL 1.0.0
  *
- * @package USL
+ * @package    USL
  * @subpackage Shortcodes
  */
 
 $_shortcodes = array(
 	// Site Info
-	// TODO Test and fix up
 	array(
-		'code'        => 'usl_site',
-		'function'    => '_usl_sc_site',
+		'code'        => 'usl_site_info',
+		'function'    => '_usl_sc_site_info',
 		'title'       => __( 'Site Information', 'USL' ),
 		'description' => __( 'Gets specified info about the current site.', 'USL' ),
+		'tags'        => 'title tag line admin email url version language description name',
 		'atts'        => array(
 			'info' => array(
-				'label' => __( 'Info', 'USL' ),
+				'label'       => __( 'Info', 'USL' ),
+				'description' => __( 'Which information to get about the site. Either choose an option or input your own.', 'USL' ),
+				'type'        => 'selectbox',
+				'properties'  => array(
+					'allowCustomInput' => true,
+					'default'          => 'title',
+					'options'          => array(
+						'name'       => __( 'Title', 'USL' ),
+						'description'     => __( 'Tag Line', 'USL' ),
+						'admin_email' => __( 'Admin Email', 'USL' ),
+						'url'     => __( 'Site URL', 'USL' ),
+						'version'     => __( 'WordPress Version', 'USL' ),
+						'language'     => __( 'Language', 'USL' ),
+					),
+				),
 			),
 		),
-		'render'      => true,
-	),
-	// Site Title
-	// TODO Test and fix up
-	array(
-		'code'        => 'usl_site_title',
-		'function'    => '_usl_sc_site_title',
-		'title'       => __( 'Site Title', 'USL' ),
-		'description' => __( 'Gets the title of the current site.', 'USL' ),
-		'render'      => true,
-	),
-	// Site Tagline
-	// TODO Test and fix up
-	array(
-		'code'        => 'usl_site_tagline',
-		'function'    => '_usl_sc_site_tagline',
-		'title'       => __( 'Site Tagline', 'USL' ),
-		'description' => __( 'Gets the tagline of the current site.', 'USL' ),
-		'render'      => true,
-	),
-	// Site Admin Email
-	// TODO Test and fix up
-	array(
-		'code'        => 'usl_site_admin_email',
-		'function'    => '_usl_sc_site_admin_email',
-		'title'       => __( 'Site Admin Email', 'USL' ),
-		'description' => __( 'Gets the admin email the current site.', 'USL' ),
 		'render'      => true,
 	),
 );
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'site';
-	$shortcode['source'] = 'Ultimate Shortcodes Library';
+	$shortcode['source']   = 'Ultimate Shortcodes Library';
 	usl_add_shortcode( $shortcode );
 }
 
 /**
  * Gets info about the current site.
  *
- * @since USL 1.0.0
+ * @since  USL 1.0.0
  * @access Private
  *
  * @param null|array $atts The attributes sent to the shortcode.
  *
  * @return string The desired blog info.
  */
-function _usl_sc_site( $atts ) {
+function _usl_sc_site_info( $atts ) {
 
 	$atts = shortcode_atts( array(
 		'info' => 'name'
@@ -78,43 +65,4 @@ function _usl_sc_site( $atts ) {
 	usl_esc_atts( $atts );
 
 	return get_bloginfo( $atts['info'] );
-}
-
-/**
- * Gets the current site title.
- *
- * @since USL 1.0.0
- * @access Private
- *
- * @return string The texturized site title.
- */
-function _usl_sc_site_title() {
-
-	return get_bloginfo( 'name', 'display' );
-}
-
-/**
- * Gets the site tag-line.
- *
- * @since USL 1.0.0
- * @access Private
- *
- * @return string The texturized site tag-line.
- */
-function _usl_sc_site_tagline() {
-
-	return get_bloginfo( 'description', 'display' );
-}
-
-/**
- * Gets the site's admin email.
- *
- * @since USL 1.0.0
- * @access Private
- *
- * @return string The site's admin email.
- */
-function _usl_sc_site_admin_email() {
-
-	return get_bloginfo( 'admin_email' );
 }

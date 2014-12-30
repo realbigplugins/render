@@ -40,7 +40,6 @@ $_shortcodes = array(
 		),
 		'noDisplay'   => true,
 		'render'      => array(
-			'allowNesting' => true,
 			'noStyle'      => true,
 		),
 	),
@@ -102,7 +101,9 @@ $_shortcodes = array(
 				'label'      => __( 'Icon', 'USL' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'callback'    => 'usl_sc_icon_list',
+					'callback'    => array(
+						'function' => 'usl_sc_icon_list',
+					),
 					'allowIcons'  => true,
 					'placeholder' => __( 'Select an icon (no icon by default)', 'USL' ),
 				)
@@ -206,7 +207,6 @@ $_shortcodes = array(
 		),
 	),
 	// Box
-	// TODO Test and fix up
 	array(
 		'code'        => 'usl_box',
 		'function'    => '_usl_sc_box',
@@ -252,6 +252,27 @@ $_shortcodes = array(
 						'rectangle' => __( 'Rectangle', 'USL' ),
 						'rounded'   => __( 'Rounded', 'USL' ),
 						'ellipse'   => __( 'Ellipse', 'USL' ),
+					),
+				),
+			),
+			'heading_tag'                => array(
+				'label'      => __( 'Heading Tag', 'USL' ),
+				'type'       => 'selectbox',
+				'default'    => 'h3',
+				'advanced'   => true,
+				'properties' => array(
+					'allowCustomInput' => true,
+					'placeholder'      => 'h3',
+					'options'          => array(
+						'h3'   => 'h3',
+						'h1'   => 'h1',
+						'h2'   => 'h2',
+						'h4'   => 'h4',
+						'h5'   => 'h5',
+						'h6'   => 'h6',
+						'p'    => 'p',
+						'span' => 'span',
+						'div'  => 'div',
 					),
 				),
 			),
@@ -347,7 +368,6 @@ $_shortcodes = array(
 		),
 	),
 	// Column 2
-	// TODO Test and fix up
 	array(
 		'code'        => 'usl_column_two',
 		'function'    => '_usl_sc_column_two',
@@ -394,46 +414,153 @@ $_shortcodes = array(
 		'wrapping'    => true,
 		'render'      => array(
 			'noStyle'      => true,
-			'allowNesting' => true,
 		),
 	),
 	// Column 3
-	// TODO Test and fix up
 	array(
 		'code'        => 'usl_column_three',
 		'function'    => '_usl_sc_column_three',
 		'title'       => __( 'Column 3', 'USL' ),
 		'description' => __( 'Creates a nice column that is a third the width of the container.', 'USL' ),
+		'atts'        => array(
+			'padding_left'  => array(
+				'label'      => __( 'Padding left', 'USL' ),
+				'type'       => 'counter',
+				'default'    => 10,
+				'properties' => array(
+					'unit' => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'padding_right' => array(
+				'label'      => __( 'Padding right', 'USL' ),
+				'type'       => 'counter',
+				'default'    => 10,
+				'properties' => array(
+					'unit' => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+		),
 		'wrapping'    => true,
 		'render'      => array(
 			'noStyle'      => true,
-			'allowNesting' => true,
 		),
 	),
 	// Column 4
-	// TODO Test and fix up
 	array(
 		'code'        => 'usl_column_four',
 		'function'    => '_usl_sc_column_four',
 		'title'       => __( 'Column 4', 'USL' ),
 		'description' => __( 'Creates a nice column that is a quarter the width of the container.', 'USL' ),
+		'atts'        => array(
+			'padding_left'  => array(
+				'label'      => __( 'Padding left', 'USL' ),
+				'type'       => 'counter',
+				'default'    => 10,
+				'properties' => array(
+					'unit' => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'padding_right' => array(
+				'label'      => __( 'Padding right', 'USL' ),
+				'type'       => 'counter',
+				'default'    => 10,
+				'properties' => array(
+					'unit' => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+		),
 		'wrapping'    => true,
 		'render'      => array(
 			'noStyle'      => true,
-			'allowNesting' => true,
 		),
 	),
 	// Column 5
-	// TODO Test and fix up
 	array(
 		'code'        => 'usl_column_five',
 		'function'    => '_usl_sc_column_five',
 		'title'       => __( 'Column 5', 'USL' ),
 		'description' => __( 'Creates a nice column that is a fifth the width of the container.', 'USL' ),
+		'atts'        => array(
+			'padding_left'  => array(
+				'label'      => __( 'Padding left', 'USL' ),
+				'type'       => 'counter',
+				'default'    => 10,
+				'properties' => array(
+					'unit' => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+			'padding_right' => array(
+				'label'      => __( 'Padding right', 'USL' ),
+				'type'       => 'counter',
+				'default'    => 10,
+				'properties' => array(
+					'unit' => array(
+						'default' => 'px',
+						'custom'  => true,
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			),
+		),
 		'wrapping'    => true,
 		'render'      => array(
 			'noStyle'      => true,
-			'allowNesting' => true,
 		),
 	)
 );
@@ -550,6 +677,7 @@ function _usl_sc_box( $atts = array(), $content = null ) {
 		'heading_font_color'         => USL_PRIMARY_FONT_COLOR,
 		'shape'                      => 'rectangle',
 		'heading'                    => '',
+		'heading_tag'                => 'h3',
 		'border_top_left_radius'     => 0,
 		'border_top_right_radius'    => 0,
 		'border_bottom_left_radius'  => 0,
@@ -567,7 +695,8 @@ function _usl_sc_box( $atts = array(), $content = null ) {
 	$output = "<div class='$class'";
 	$output .= " style='background: $atts[color]; color: $atts[font_color]; $border_radius'";
 	$output .= '>';
-	$output .= ! empty( $atts['heading'] ) ? "<h3 style='color: $atts[heading_font_color]'>$atts[heading]</h3>" : '';
+	$output .= ! empty( $atts['heading'] ) ?
+		"<$atts[heading_tag] style='color: $atts[heading_font_color]'>$atts[heading]</$atts[heading_tag]>" : '';
 	$output .= do_shortcode( $content );
 	$output .= '</div>';
 
@@ -891,9 +1020,9 @@ function usl_sc_parse_border_radius( $atts ) {
 
 	// intval() each radius so we can later add them
 	$_border_radius_sum = $_border_radius;
-	array_walk( $_border_radius_sum, function( &$value ) {
+	array_walk( $_border_radius_sum, function ( &$value ) {
 		$value = intval( $value );
-	});
+	} );
 
 	// Use border radius if at least one is not 0
 	$border_radius = '';

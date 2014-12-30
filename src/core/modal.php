@@ -163,22 +163,34 @@ class USL_Modal {
 	private static function att_type_selectbox( $att_id, $att, $properties ) {
 
 		// If a callback is provided, use that to populate options
-		if ( isset( $properties['callback'] ) && is_callable( $properties['callback'] ) ) {
-			$options = call_user_func( $properties['callback'] );
+		if ( isset( $properties['callback'] ) && is_callable( $properties['callback']['function'] ) ) {
+			$options = call_user_func( $properties['callback']['function'] );
 		}
 
 		if ( ! empty( $options ) ) {
-			if ( ! empty( $properties['options'] ) ) {
-				$properties['options'] = array_merge( $options, $properties['options'] );
+
+			$which = isset( $properties['callback']['groups'] ) ? 'groups' : 'options';
+			if ( ! empty( $properties[ $which ] ) ) {
+				$properties[ $which ] = array_merge( $options, $properties[ $which ] );
 			} else {
-				$properties['options'] = $options;
+				$properties[ $which ] = $options;
 			}
 		}
 
-		if ( empty( $properties['options'] ) ) {
+		if ( empty( $properties['options'] ) && empty( $properties['groups'] ) ) {
 			echo 'No options!';
 
 			return;
+		}
+
+		// Optgroup support
+		if ( ! isset( $properties['groups'] ) ) {
+
+			$properties['groups'] = array(
+				0 => array(
+					'options' => $properties['options'],
+				),
+			);
 		}
 
 		// Chosen support
@@ -195,40 +207,28 @@ class USL_Modal {
 		?>
 
 		<select name="<?php echo $att_id; ?>"
-		        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select one'; ?>"
+		        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select an option'; ?>"
 		        class="usl-modal-att-input <?php echo $chosen; ?>"
 			<?php echo isset( $properties['multi'] ) ? 'multiple' : ''; ?>>
 
 			<?php // Necessary for starting with nothing selected ?>
 			<option></option>
 
-			<?php
-			// If this array is 2 levels deep, we have optgroups
-			$optgroup = false;
-			foreach ( $properties['options'] as $maybe_optgroup => $vals ) {
-				if ( gettype( $vals ) === 'array' && ! isset( $vals['label'] ) ) {
-					$optgroup = true;
-					break;
-				}
-			}
+			<?php foreach ( $properties['groups'] as $opt_group ) : ?>
 
-			// No-optgroup support
-			if ( ! $optgroup ) {
-				$properties['options'] = array(
-					'' => $properties['options'],
-				);
-			}
-			?>
-
-			<?php foreach ( $properties['options'] as $opt_group => $options ) : ?>
-
-				<?php if ( ! empty( $opt_group ) ) : ?>
-					<optgroup label="<?php echo $opt_group; ?>">
+				<?php if ( isset( $opt_group['label'] ) ) : ?>
+					<optgroup label="<?php echo $opt_group['label']; ?>">
 				<?php endif; ?>
 
-				<?php foreach ( $options as $option_value => $option ) : ?>
+				<?php foreach ( $opt_group['options'] as $option_value => $option ) : ?>
 					<?php
-					$option_name = gettype( $option ) === 'array' ? $option['label'] : $option;
+					// Simple format support
+					if ( ! is_array( $option ) ) {
+						$option_label = $option;
+						$option = array(
+							'label' => $option_label,
+						);
+					}
 					?>
 					<option
 						<?php echo isset( $option['icon'] ) ?
@@ -236,11 +236,12 @@ class USL_Modal {
 						value="<?php echo $option_value; ?>"
 						<?php selected( $option_value, isset( $properties['default'] ) ? $properties['default'] : '' ); ?>
 						>
-						<?php echo $option_name; ?>
+						<?php echo !isset($option['label']) ? 'MOTHER EFF' : ''; ?>
+						<?php echo $option['label']; ?>
 					</option>
 				<?php endforeach; ?>
 
-				<?php if ( ! empty( $opt_group ) ) : ?>
+				<?php if ( isset( $opt_group['label'] ) ) : ?>
 					</optgroup>
 				<?php endif; ?>
 
@@ -510,6 +511,7 @@ class USL_Modal {
 									$shortcode['category'] : 'other'; ?>"
 								    data-code="<?php echo $code; ?>"
 								    data-source="<?php echo $shortcode['source']; ?>"
+								    data-tags="<?php echo $shortcode['tags']; ?>"
 								    class="usl-modal-shortcode
 								    <?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : ''; ?>
 								    <?php echo $shortcode['wrapping'] ? 'wrapping' : ''; ?>">
@@ -542,16 +544,15 @@ class USL_Modal {
 															<?php _e( 'Restore Shortcode', 'USL' ); ?>
 														</div>
 
-														<div class="usl-modal-shortcode-toolbar-button-templates disabled">
+														<div
+															class="usl-modal-shortcode-toolbar-button-templates disabled">
 															<?php _e( 'Templates (coming soon!)', 'USL' ); ?>
 														</div>
 													</div>
 												</div>
 
 												<div class="usl-modal-shortcode-toolbar-toggle dashicons
-													dashicons-arrow-down-alt2">
-													<span class="dashicons-admin-generic"></span>
-												</div>
+													dashicons-arrow-down-alt2"></div>
 											</div>
 
 											<div class="usl-modal-shortcode-atts">

@@ -64,121 +64,8 @@ var USL_tinymce;
                 // Set the active editor
                 editor = _editor;
 
-                // WP default shortcut
-                editor.addShortcut('alt+shift+s', '', 'usl-open');
-
-                editor.addButton('usl', {
-
-                    // Establishes an icon class for the button with the prefix "mce-i-"
-                    icon: 'usl-mce-icon',
-                    cmd: 'usl-open',
-
-                    // Make the < > button active when cursor is inside a shortcode
-                    onPostRender: function () {
-                        var usl_button = this;
-
-                        editor.on('nodechange', function (event) {
-
-                            var $node = $(event.element).hasClass('usl-tinymce-shortcode-wrapper') ?
-                                    $(event.element) :
-                                    $(event.element).closest('.usl-tinymce-shortcode-wrapper'),
-                                is_usl = $node.length ? true : false;
-
-                            if ($lastNode.length) {
-                                $lastNode.removeClass('active');
-                            }
-
-                            if (is_usl) {
-                                $lastNode = $node;
-                                $lastNode.addClass('active');
-                            }
-
-                            usl_button.active(is_usl);
-                        });
-                    }
-                });
-
-                // Keydown (ANY key) in the editor
-                editor.onKeyDown.add(function (ed, event) {
-
-                    // Backspace
-                    if (event.keyCode == 8) {
-
-                        var curElm = ed.selection.getRng().startContainer,
-                            range = ed.selection.getBookmark(curElm.textContent).rng,
-                            node = ed.selection.getNode();
-
-                        if (typeof range === 'undefined') {
-                            return;
-                        }
-
-                        var caret_position = range.startOffset,
-                            $parent = $(range.startContainer.parentElement);
-
-
-                        // When deleting the character usl-tinymce-divider;, this should also delete the shortcode node
-                        // preceding it (because the character &8203; is not visible to the user, so having to delete
-                        // that and THEN also deleting the shortcode would be confusing.
-                        if (caret_position === 1 &&
-                            $parent.attr('ID') == 'mce_noneditablecaret' &&
-                            $parent.prev().hasClass('usl-tinymce-divider')
-                        ){
-                            $parent.prev().prev('.usl-tinymce-shortcode-wrapper').remove();
-                        }
-
-                        // If there's no more content, delete the shortcode
-                        if ($(node).html().length <= 1) {
-                            $(node).closest('.usl-tinymce-shortcode-wrapper').remove();
-                        }
-
-                        // Don't allow backspace at beginning of string (inside shortcodes)
-                        if (caret_position === 0 && $(node).hasClass('usl-tinymce-shortcode-content')) {
-                            event.preventDefault();
-                        }
-                    }
-                });
-
-                // Keypress (printable keys) in the editor
-                editor.onKeyPress.add(function (ed, event) {
-
-                    var node = ed.selection.getNode(),
-                        node_content = $(node).html();
-
-                    if (node && !$(node).hasClass('usl-tinymce-shortcode-content')) {
-                        return;
-                    }
-
-                    var curElm = ed.selection.getRng().startContainer,
-                        range = ed.selection.getBookmark(curElm.textContent).rng;
-
-                    if (typeof range === 'undefined') {
-                        return;
-                    }
-
-                    var caretPos = range.startOffset,
-                        char_to_delete = caretPos != 0 ? node_content.slice(caretPos - 1, caretPos) : '';
-
-                    // Convert char codes to literal for counting purposes
-                    var literal_text = $('<div />').html(node_content).text();
-
-                    // Insert char after string to prevent editing outside the shortcode
-                    if (caretPos === literal_text.length) {
-
-                        var newChar = String.fromCharCode(event.charCode);
-
-                        if (newChar === ' ') {
-                            newChar = '&nbsp;';
-                        }
-
-                        event.preventDefault();
-                        $(node).html(literal_text + newChar);
-                        ed.selection.select(node, true);
-                        ed.selection.collapse(false);
-                    }
-                });
-
                 // Fires when clicking the shortcode < > button in the tinymce toolbar
-                editor.addCommand('usl-open', function () {
+                _editor.addCommand('USL_Open', function () {
 
                     var node = editor.selection.getNode();
 
@@ -206,9 +93,166 @@ var USL_tinymce;
                     }
                 });
 
-                editor.on('init show', USL_tinymce.loadVisual);
+                // Refresh the editor
+                _editor.addCommand('USL_Refresh', function () {
+                    USL_tinymce.loadVisual();
+                });
 
-                editor.on('hide', function () {
+                _editor.addButton('usl_open', {
+
+                    // Establishes an icon class for the button with the prefix "mce-i-"
+                    icon: 'usl-mce-icon',
+                    cmd: 'USL_Open',
+                    tooltip: 'Add Shortcode',
+
+                    // Make the < > button active when cursor is inside a shortcode
+                    onPostRender: function () {
+                        var usl_button = this;
+
+                        editor.on('nodechange', function (event) {
+
+                            var $node = $(event.element).hasClass('usl-tinymce-shortcode-wrapper') ?
+                                    $(event.element) :
+                                    $(event.element).closest('.usl-tinymce-shortcode-wrapper'),
+                                is_usl = $node.length ? true : false;
+
+                            if ($lastNode.length) {
+                                $lastNode.removeClass('active');
+                            }
+
+                            if (is_usl) {
+                                $lastNode = $node;
+                                $lastNode.addClass('active');
+                            }
+
+                            usl_button.active(is_usl);
+                        });
+                    }
+                });
+
+                _editor.addButton('usl_refresh', {
+
+                    // Establishes an icon class for the button with the prefix "mce-i-"
+                    icon: 'usl-mce-refresh-icon',
+                    cmd: 'USL_Refresh',
+                    tooltip: 'Refresh Editor'
+                });
+
+                // WP default shortcut
+                _editor.addShortcut('alt+shift+s', '', 'usl-open');
+
+                // Click the editor
+                _editor.onClick.add(function (editor, event) {
+
+                    // Remove delete overlay for all shortcodes
+                    var $body = $(editor.getBody());
+                    $body.find('.usl-tinymce-shortcode-wrapper.delete').removeClass('delete');
+                });
+
+                // Keydown (ANY key) in the editor
+                // FIXME Deprecated
+                _editor.onKeyDown.add(function (editor, event) {
+
+                    // Backspace
+                    if (event.keyCode == 8) {
+
+                        var curElm = editor.selection.getRng().startContainer,
+                            range = editor.selection.getBookmark(curElm.textContent).rng,
+                            node = editor.selection.getNode(),
+                            text = range.startContainer.textContent;
+
+                        if (typeof range === 'undefined') {
+                            return;
+                        }
+
+                        // If pressing backspace right after a shortcode, delete the entire shortcode
+                        var caret_position = range.startOffset,
+                            $container = $(range.startContainer),
+                            $prev = $(range.startContainer.previousElementSibling);
+
+                        if (!$prev.length) {
+                            $prev = $container.prev();
+                        }
+
+                        if (!$prev.length) {
+                            $prev = $container.parent().prev();
+                        }
+
+                        // If we're at the beginning of the current node and the previous node is a shortcode, delete it!
+                        if ((caret_position === 0 || !text.trim().length || text.charCodeAt(caret_position - 1) === 8203) &&
+                            $prev.hasClass('usl-tinymce-shortcode-wrapper')) {
+
+                            if ($prev.hasClass('delete')) {
+                                $prev.remove();
+                            } else {
+                                $prev.addClass('delete');
+                            }
+
+                            event.preventDefault();
+                            return false;
+                        }
+
+                        // If there's no more content, delete the shortcode
+                        if ($(node).html().length <= 1) {
+                            $(node).closest('.usl-tinymce-shortcode-wrapper').remove();
+                        }
+
+                        // Don't allow backspace at beginning of string (inside shortcodes)
+                        if (caret_position === 0 && $(node).hasClass('usl-tinymce-shortcode-content')) {
+                            event.preventDefault();
+                        }
+                    } else {
+
+                        // Any other key [besides backspace]
+
+                        // Remove delete overlay for all shortcodes
+                        var $body = $(editor.getBody());
+                        $body.find('.usl-tinymce-shortcode-wrapper.delete').removeClass('delete');
+                    }
+                });
+
+                // Keypress (printable keys) in the editor
+                _editor.onKeyPress.add(function (editor, event) {
+
+                    var node = editor.selection.getNode(),
+                        node_content = $(node).html();
+
+                    if (node && !$(node).hasClass('usl-tinymce-shortcode-content')) {
+                        return;
+                    }
+
+                    var curElm = editor.selection.getRng().startContainer,
+                        range = editor.selection.getBookmark(curElm.textContent).rng;
+
+                    if (typeof range === 'undefined') {
+                        return;
+                    }
+
+                    var caretPos = range.startOffset,
+                        char_to_delete = caretPos != 0 ? node_content.slice(caretPos - 1, caretPos) : '';
+
+                    // Convert char codes to literal for counting purposes
+                    var literal_text = $('<div />').html(node_content).text();
+
+                    // Insert char after string to prevent editing outside the shortcode
+                    if (caretPos === literal_text.length) {
+
+                        var newChar = String.fromCharCode(event.charCode);
+
+                        if (newChar === ' ') {
+                            newChar = '&nbsp;';
+                        }
+
+                        event.preventDefault();
+                        $(node).html(literal_text + newChar);
+                        editor.selection.select(node, true);
+                        editor.selection.collapse(false);
+                    }
+                });
+
+                _editor.on('init show', USL_tinymce.loadVisual);
+
+                _editor.on('hide', function () {
                     var content = editor.getContent({format: 'numeric'});
                     $texteditor.val(window.switchEditors.pre_wpautop(USL_tinymce.loadText(content)));
                 });
@@ -234,13 +278,13 @@ var USL_tinymce;
 
         postRender: function () {
 
-            // If there's any usl dividers in their own p tags, modify the p tag to be inline
+            // Add a divider to any shortcode that's the last item (as it's then impossible to click beyond it)
             var $body = $(editor.getBody());
-            $body.find('.usl-tinymce-divider').each(function () {
+            $body.find('.usl-tinymce-shortcode-wrapper').each(function () {
 
-                // If this divider is the ONLY contents of the parent <p> tag
-                if ($(this).parent().contents().length === 1) {
-                    $(this).parent().attr('style', 'display: inline;').addClass('usl-tinymce-divider');
+                // If this element is the last element of it's parent
+                if ($(this).parent().contents().last()[0] == $(this)[0]) {
+                    $(this).after('&#8203;');
                 }
             });
         },
@@ -252,6 +296,7 @@ var USL_tinymce;
 
             content = USL_MCECallbacks.convertRenderedToLiteral(content);
             content = content.replace(/<span class="usl-tinymce-divider usl-tinymce-noneditable">.*?<\/span>/g, '');
+            content = content.replace(/<p class="usl-tinymce-divider.*?>.*?<\/p>/g, '');
 
             return content;
         },

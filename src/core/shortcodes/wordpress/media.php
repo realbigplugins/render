@@ -240,7 +240,7 @@ $_shortcodes = array(
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'off' => __( 'Off', 'USL' ),
-						'on'  => __( 'Onf', 'USL' ),
+						'on'  => __( 'On', 'USL' ),
 					),
 				),
 			),
@@ -249,7 +249,7 @@ $_shortcodes = array(
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
 						'off' => __( 'Off', 'USL' ),
-						'on'  => __( 'Onf', 'USL' ),
+						'on'  => __( 'On', 'USL' ),
 					),
 				),
 			),

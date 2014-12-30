@@ -74,6 +74,7 @@ if ( ! class_exists( 'USL' ) ) {
 			'title'       => '',
 			'description' => '',
 			'source'      => 'Unknown',
+			'tags'        => '',
 			'category'    => 'other',
 			'atts'        => array(),
 			'example'     => '',
@@ -260,7 +261,7 @@ if ( ! class_exists( 'USL' ) ) {
 
 			wp_register_script(
 				'usl-chosen',
-				self::$url . '/includes/chosen/chosen.jquery.js',
+				self::$url . '/includes/chosen/chosen.jquery.min.js',
 				array( 'jquery' ),
 				defined( 'USL_DEVELOPMENT' ) ? time() : self::VERSION
 			);

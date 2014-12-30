@@ -330,29 +330,12 @@ $toolbar-height: 50px;
   .usl-modal-shortcode-toolbar-toggle {
     width: 100%;
     font-size: 40px;
-    color: #aaa;
+    color: #bbb;
     line-height: inherit;
-    margin-top: 18px;
+    margin-top: 10px;
     cursor: pointer;
     position: relative;
-    transition: color 300ms;
-
-    &.open {
-      margin-top: 5px;
-
-      .dashicons-admin-generic {
-        top: auto;
-        bottom: -12px;
-      }
-    }
-
-    .dashicons-admin-generic {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: -14px;
-      font-size: 18px;
-    }
+    transition: color 300ms, margin 300ms;
 
     &:hover {
       color: inherit;
@@ -604,7 +587,8 @@ $toolbar-height: 50px;
 
       // Down arrow
       b {
-        top: 4px;
+        position: relative;
+        top: 3px;
       }
     }
 
@@ -763,7 +747,8 @@ $toolbar-height: 50px;
   z-index: 2;
 
   .usl-modal-cancel {
-    line-height: 25px;
+    line-height: 28px;
+    height: 28px;
     float: left;
     a {
       color: #a00;
