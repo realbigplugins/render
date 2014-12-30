@@ -1,6 +1,6 @@
 @import "global";
 
-.usl-tinymce-shortcode-wrapper {
+.render-tinymce-shortcode-wrapper {
   position: relative;
   transition: $primary-transition padding;
   display: inline-block;
@@ -20,7 +20,7 @@
     border: 2px dashed rgba(#f00, 0.3) !important;
     padding: 5px;
 
-    .usl-tinymce-shortcode-wrapper-delete {
+    .render-tinymce-shortcode-wrapper-delete {
       visibility: visible;
       opacity: 1;
       margin-bottom: 0;
@@ -32,7 +32,7 @@
   $tooltip-color: #f5f5f5;
   $tooltip-border-color: #aaa;
 
-  .usl-tinymce-shortcode-wrapper-delete {
+  .render-tinymce-shortcode-wrapper-delete {
     visibility: hidden;
     opacity: 0;
     position: absolute;
@@ -76,21 +76,21 @@
     }
   }
 
-  .usl-tinymce-shortcode-atts, .usl-tinymce-shortcode-code {
+  .render-tinymce-shortcode-atts, .render-tinymce-shortcode-code {
     display: none;
   }
 }
 
 // Global hidden and visible content
-.usl-content-hidden {
+.render-content-hidden {
   color: #C52D2D;
 }
 
-.usl-content-visible {
+.render-content-visible {
   color: #04A104;
 }
 
 // Dividers
-.usl-tinymce-divider {
+.render-tinymce-divider {
   display: inline;
 }

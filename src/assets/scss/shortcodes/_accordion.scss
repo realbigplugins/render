@@ -1,24 +1,24 @@
 @import "../global";
 
-.usl-accordion {
+.render-accordion {
 
   border: 1px solid rgba(#000, 0.1);
   background-color: #ddd;
   padding: 5px;
 
-  .usl-accordion-heading {
+  .render-accordion-heading {
     margin: 0;
   }
 
-//  .usl-accordion-content {
+//  .render-accordion-content {
 //    overflow: hidden;
 //    height: 0;
 //  }
 }
 
 // Tinymce
-.usl-tinymce-shortcode-wrapper {
-  &.usl_accordion {
+.render-tinymce-shortcode-wrapper {
+  &.render_accordion {
     display: block;
   }
 }

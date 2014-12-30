@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Class USL_tinymce
+ * Class Render_tinymce
  *
- * All functionality for the tinyMCE button that USL adds to the standard editor.
+ * All functionality for the tinyMCE button that Render adds to the standard editor.
  *
- * @since USL 1.0.0
+ * @since Render 1.0.0
  *
- * @package USL
+ * @package Render
  * @subpackage TinyMCE
  */
-class USL_tinymce extends USL {
+class Render_tinymce extends Render {
 
 	public $rendered_shortcodes = array();
 
@@ -19,7 +19,7 @@ class USL_tinymce extends USL {
 	function __construct() {
 
 		include_once( self::$path . 'core/modal.php' );
-		new USL_Modal();
+		new Render_Modal();
 
 		$this->set_render_data();
 		self::add_tinymce_style();
@@ -28,10 +28,10 @@ class USL_tinymce extends USL {
 		add_filter( 'mce_buttons', array( __CLASS__, 'register_tinymce_buttons' ) );
 		add_filter( 'tiny_mce_before_init', array( __CLASS__, 'modify_tinymce_init' ) );
 
-		add_action( 'usl_localized_data', array( __CLASS__, 'loading_messages' ) );
-		add_action( 'usl_localized_data', array( $this, 'rendering_data' ) );
-		add_action( 'usl_localized_data', array( __CLASS__, 'tinymce_external_scripts' ) );
-		add_action( 'usl_localized_data', array( __CLASS__, 'shortcode_regex' ) );
+		add_action( 'render_localized_data', array( __CLASS__, 'loading_messages' ) );
+		add_action( 'render_localized_data', array( $this, 'rendering_data' ) );
+		add_action( 'render_localized_data', array( __CLASS__, 'tinymce_external_scripts' ) );
+		add_action( 'render_localized_data', array( __CLASS__, 'shortcode_regex' ) );
 	}
 
 	/**
@@ -39,7 +39,7 @@ class USL_tinymce extends USL {
 	 *
 	 * Currently, I'm adding some extended_valid_elememnts so that tinymce doesn't strip my empty tags (mainly spans).
 	 *
-	 * @since USL 1.0.0
+	 * @since Render 1.0.0
 	 *
 	 * @param array $mceinit The init settings for tinymce.
 	 *
@@ -47,8 +47,8 @@ class USL_tinymce extends USL {
 	 */
 	public static function modify_tinymce_init( $mceinit ) {
 
-		$mceinit['noneditable_noneditable_class'] = 'usl-tinymce-noneditable';
-		$mceinit['noneditable_editable_class']    = 'usl-tinymce-editable';
+		$mceinit['noneditable_noneditable_class'] = 'render-tinymce-noneditable';
+		$mceinit['noneditable_editable_class']    = 'render-tinymce-editable';
 		$mceinit['extended_valid_elements']       = 'span[*]';
 		$mceinit['entity_encoding']               = 'numeric';
 
@@ -57,7 +57,7 @@ class USL_tinymce extends USL {
 
 	public static function tinymce_external_scripts( $data ) {
 
-		$data['tinymceExternalScripts'][] = self::$url . '/assets/js/ultimate-shortcodes-library.min.js';
+		$data['tinymceExternalScripts'][] = self::$url . '/assets/js/render.min.js';
 		return $data;
 	}
 
@@ -69,21 +69,21 @@ class USL_tinymce extends USL {
 
 	public static function loading_messages( $data ) {
 
-		$data['loading_messages'] = apply_filters( 'usl_loading_messages', array(
-			__( 'Awesome-ifying your content...', 'USL' ),
-			__( 'Cleaning up the bathroom...', 'USL' ),
-			__( 'Making a cup of coffee for your content...', 'USL' ),
-			__( 'Playing catch with the WYSIWYG...', 'USL' ),
-			__( 'Taking your content to the next level...', 'USL' ),
-			__( 'Making your dreams come true...', 'USL' ),
-			__( 'Reducing synchronized load caching errors...', 'USL' ),
-			__( 'Taking out the trash (you\'re welcome!)...', 'USL' ),
-			__( 'Sending your content to the moon, and back...', 'USL' ),
-			__( 'Giving your content a bubble bath...', 'USL' ),
-			__( 'Taking your content to a classy restaurant...', 'USL' ),
-			__( 'Showing your content a good time...', 'USL' ),
-			__( 'Playing cards with the Automattic team...', 'USL' ),
-			__( 'Strapping a jetpack onto your content...', 'USL' ),
+		$data['loading_messages'] = apply_filters( 'render_loading_messages', array(
+			__( 'Awesome-ifying your content...', 'Render' ),
+			__( 'Cleaning up the bathroom...', 'Render' ),
+			__( 'Making a cup of coffee for your content...', 'Render' ),
+			__( 'Playing catch with the WYSIWYG...', 'Render' ),
+			__( 'Taking your content to the next level...', 'Render' ),
+			__( 'Making your dreams come true...', 'Render' ),
+			__( 'Reducing synchronized load caching errors...', 'Render' ),
+			__( 'Taking out the trash (you\'re welcome!)...', 'Render' ),
+			__( 'Sending your content to the moon, and back...', 'Render' ),
+			__( 'Giving your content a bubble bath...', 'Render' ),
+			__( 'Taking your content to a classy restaurant...', 'Render' ),
+			__( 'Showing your content a good time...', 'Render' ),
+			__( 'Playing cards with the Automattic team...', 'Render' ),
+			__( 'Strapping a jetpack onto your content...', 'Render' ),
 		) );
 
 		return $data;
@@ -93,19 +93,19 @@ class USL_tinymce extends USL {
 
 		$this->render_data['post'] = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
 
-		$this->render_data = apply_filters( 'usl_render_data', $this->render_data );
+		$this->render_data = apply_filters( 'render_render_data', $this->render_data );
 	}
 
 	public static function add_tinymce_style() {
-		add_editor_style( self::$url . "/assets/css/ultimate-shortcodes-library.min.css" );
+		add_editor_style( self::$url . "/assets/css/render.min.css" );
 	}
 
 	public function rendering_data( $data ) {
 
-		global $USL;
+		global $Render;
 
 		$rendered = array();
-		foreach ( $USL->shortcodes as $code => $shortcode ) {
+		foreach ( $Render->shortcodes as $code => $shortcode ) {
 			if ( $shortcode['render'] ) {
 				$rendered[ $code ] = $shortcode['render'];
 			}
@@ -113,7 +113,7 @@ class USL_tinymce extends USL {
 		$data['rendered_shortcodes'] = $rendered;
 		$data['render_data']         = $this->render_data;
 
-		$data['do_render'] = get_option( 'usl_render_visual', true );
+		$data['do_render'] = get_option( 'render_render_visual', true );
 
 		return $data;
 	}
@@ -121,7 +121,7 @@ class USL_tinymce extends USL {
 	/**
 	 * Links our custom script to our tinyMCE button.
 	 *
-	 * @since USL 1.0.0
+	 * @since Render 1.0.0
 	 *
 	 * @param null|array $plugins The array of button scripts.
 	 *
@@ -129,7 +129,7 @@ class USL_tinymce extends USL {
 	 */
 	public static function add_tinymce_plugins( $plugins ) {
 
-		$plugins['usl']            = self::$url . '/assets/js/includes/tinymce-plugins/usl/plugin.min.js';
+		$plugins['render']            = self::$url . '/assets/js/includes/tinymce-plugins/render/plugin.min.js';
 		$plugins['noneditable']    = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
 
 		return $plugins;
@@ -138,7 +138,7 @@ class USL_tinymce extends USL {
 	/**
 	 * Adds our custom button to the tinyMCE buttons.
 	 *
-	 * @since USL 1.0.0
+	 * @since Render 1.0.0
 	 *
 	 * @param mixed|array $buttons All tinyMCE buttons.
 	 *
@@ -146,8 +146,8 @@ class USL_tinymce extends USL {
 	 */
 	public static function register_tinymce_buttons( $buttons ) {
 
-		array_push( $buttons, 'usl_open' );
-		array_push( $buttons, 'usl_refresh' );
+		array_push( $buttons, 'render_open' );
+		array_push( $buttons, 'render_refresh' );
 
 		return $buttons;
 	}
@@ -163,19 +163,19 @@ class USL_tinymce extends USL {
 
 	public static function render_shortcodes() {
 
-		global $usl_shortcode_data;
+		global $render_shortcode_data;
 
-		define( 'USL_SHORTCODE_RENDERING', true );
-		do_action( 'usl_render_ajax' );
+		define( 'Render_SHORTCODE_RENDERING', true );
+		do_action( 'render_render_ajax' );
 
 		$content            = stripslashes( $_POST['content'] );
-		$usl_shortcode_data = $_POST['shortcode_data'];
+		$render_shortcode_data = $_POST['shortcode_data'];
 
 		$pattern = get_shortcode_regex();
 
 		// FIXME Weird paragraph tags
-		$content = preg_replace( '/<span class="usl-tinymce-divider usl-tinymce-noneditable">.*?<\/span>/', '', $content );
-		$content = usl_strip_paragraphs_around_shortcodes( $content );
+		$content = preg_replace( '/<span class="render-tinymce-divider render-tinymce-noneditable">.*?<\/span>/', '', $content );
+		$content = render_strip_paragraphs_around_shortcodes( $content );
 		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $content );
 
 		echo $content;
@@ -185,7 +185,7 @@ class USL_tinymce extends USL {
 
 	public static function replace_shortcodes( $matches ) {
 
-		global $usl_shortcode_data;
+		global $render_shortcode_data;
 
 		// "Extract" some of the found matches
 		$entire_code = $matches[0];
@@ -198,9 +198,9 @@ class USL_tinymce extends USL {
 		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $_content );
 
 		// If this is a wrapping code, but no content is provided, use dummy content
-		if ( empty( $content ) && $usl_shortcode_data[ $code ]['wrapping'] === 'true' ) {
-			if ( isset( $usl_shortcode_data[ $code ]['dummyContent'] ) ) {
-				$content = $usl_shortcode_data[ $code ]['dummyContent'];
+		if ( empty( $content ) && $render_shortcode_data[ $code ]['wrapping'] === 'true' ) {
+			if ( isset( $render_shortcode_data[ $code ]['dummyContent'] ) ) {
+				$content = $render_shortcode_data[ $code ]['dummyContent'];
 			} else {
 				$content = 'No content selected.';
 			}
@@ -217,7 +217,7 @@ class USL_tinymce extends USL {
 
 			// Wrap the content in a special element, but first decide if it needs to be div or span
 			$tag     = preg_match( $block_regex, $content ) ? 'div' : 'span';
-			$content = "<$tag class='usl-tinymce-shortcode-content usl-tinymce-editable'>$content</$tag>";
+			$content = "<$tag class='render-tinymce-shortcode-content render-tinymce-editable'>$content</$tag>";
 		}
 
 		// Replace the content with the new content
@@ -226,7 +226,7 @@ class USL_tinymce extends USL {
 		}
 
 		// Whether or not to style the code
-		$nostyle = isset( $usl_shortcode_data[ $code ]['noStyle'] ) ? '' : ' styled';
+		$nostyle = isset( $render_shortcode_data[ $code ]['noStyle'] ) ? '' : ' styled';
 
 		// Get the atts prepared for JSON
 		$atts = shortcode_parse_atts( $atts );
@@ -243,18 +243,18 @@ class USL_tinymce extends USL {
 		$output = '';
 
 		// Start the wrapper
-		if ( ! isset( $usl_shortcode_data[ $code ]['noWrap'] ) ) {
+		if ( ! isset( $render_shortcode_data[ $code ]['noWrap'] ) ) {
 			$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
-			$output .= "<$tag class='usl-tinymce-shortcode-wrapper usl-tinymce-noneditable $code $nostyle' data-code='$code' data-atts='$atts'>";
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable $code $nostyle' data-code='$code' data-atts='$atts'>";
 		}
 
 		$output .= $shortcode_output;
 
 		// Close the wrapper
-		if ( ! isset( $usl_shortcode_data[ $code ]['noWrap'] ) ) {
+		if ( ! isset( $render_shortcode_data[ $code ]['noWrap'] ) ) {
 
 			// Delete notification
-			$output .= "<$tag class='usl-tinymce-shortcode-wrapper-delete'>" . __( 'Press again to delete', 'USL' ) . "</$tag>";
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper-delete'>" . __( 'Press again to delete', 'Render' ) . "</$tag>";
 
 			$output .= "</$tag>";
 		}
@@ -263,20 +263,20 @@ class USL_tinymce extends USL {
 	}
 }
 
-add_action( 'current_screen', '_usl_init_tinymce' );
+add_action( 'current_screen', '_render_init_tinymce' );
 
 // Always add the AJAX
-add_action( 'usl_render_ajax', array( 'USL_tinymce', 'render_ajax' ) );
-add_action( 'wp_ajax_usl_render_shortcode', array( 'USL_tinymce', 'render_shortcode' ) );
-add_action( 'wp_ajax_usl_render_shortcodes', array( 'USL_tinymce', 'render_shortcodes' ) );
+add_action( 'render_render_ajax', array( 'Render_tinymce', 'render_ajax' ) );
+add_action( 'wp_ajax_render_render_shortcode', array( 'Render_tinymce', 'render_shortcode' ) );
+add_action( 'wp_ajax_render_render_shortcodes', array( 'Render_tinymce', 'render_shortcodes' ) );
 
-function _usl_init_tinymce( $screen ) {
+function _render_init_tinymce( $screen ) {
 
-	$allowed_screens = apply_filters( 'usl_tinymce_allowed_screens', array(
+	$allowed_screens = apply_filters( 'render_tinymce_allowed_screens', array(
 		'post',
 	), $screen->base, $screen );
 
 	if ( in_array( $screen->base, $allowed_screens ) ) {
-		new USL_tinymce();
+		new Render_tinymce();
 	}
 }

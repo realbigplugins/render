@@ -1,24 +1,24 @@
 /**
- * Functionality for the USL modal.
+ * Functionality for the Render modal.
  *
- * @since USL 1.0.0
+ * @since Render 1.0.0
  *
- * @global USL_Data
+ * @global Render_Data
  *
- * @package USL
+ * @package Render
  * @subpackage Modal
  */
-var USL_Modal;
+var Render_Modal;
 (function ($) {
     var elements = {},
         shortcodes = {},
         slide_transition = 150,
         categories_sliding = false,
-        usl_modal_open = false,
+        render_modal_open = false,
         _search_timeout, search_loading, textbox_focused,
         error_color = '#ec6750';
 
-    USL_Modal = {
+    Render_Modal = {
 
         current_shortcode: '',
         active_shortcode: '',
@@ -43,18 +43,18 @@ var USL_Modal;
         },
 
         establishElements: function () {
-            elements.wrap = $('#usl-modal-wrap');
-            elements.submit = $('#usl-modal-submit');
-            elements.backdrop = $('#usl-modal-backdrop');
-            elements.cancel = elements.wrap.find('.usl-modal-cancel');
-            elements.close = elements.wrap.find('.usl-modal-close');
-            elements.remove = $('#usl-modal-remove');
-            elements.title = elements.wrap.find('.usl-modal-title');
-            elements.search = elements.wrap.find('.usl-modal-search');
-            elements.categories = elements.wrap.find('.usl-modal-categories');
-            elements.footer = elements.wrap.find('.usl-modal-footer');
-            elements.list = elements.wrap.find('.usl-modal-shortcodes');
-            elements.search_input = elements.wrap.find('input[name="usl-modal-search"]');
+            elements.wrap = $('#render-modal-wrap');
+            elements.submit = $('#render-modal-submit');
+            elements.backdrop = $('#render-modal-backdrop');
+            elements.cancel = elements.wrap.find('.render-modal-cancel');
+            elements.close = elements.wrap.find('.render-modal-close');
+            elements.remove = $('#render-modal-remove');
+            elements.title = elements.wrap.find('.render-modal-title');
+            elements.search = elements.wrap.find('.render-modal-search');
+            elements.categories = elements.wrap.find('.render-modal-categories');
+            elements.footer = elements.wrap.find('.render-modal-footer');
+            elements.list = elements.wrap.find('.render-modal-shortcodes');
+            elements.search_input = elements.wrap.find('input[name="render-modal-search"]');
             elements.active_shortcode = false;
             elements.last_active_shortcode = false;
         },
@@ -62,65 +62,65 @@ var USL_Modal;
         binds: function () {
 
             // Active a shortcode
-            elements.list.find('.accordion-section-title, .usl-modal-sc-title').click(function () {
-                USL_Modal.activateShortcode($(this));
+            elements.list.find('.accordion-section-title, .render-modal-sc-title').click(function () {
+                Render_Modal.activateShortcode($(this));
             });
 
             // Shortcode toolbar toggle
-            elements.list.find('.usl-modal-shortcode-toolbar-toggle').click(function () {
-                USL_Modal.shortcodeToolbarTogggle($(this));
+            elements.list.find('.render-modal-shortcode-toolbar-toggle').click(function () {
+                Render_Modal.shortcodeToolbarTogggle($(this));
             });
 
             // Restore shortcode
-            elements.list.find('.usl-modal-shortcode-toolbar-button-restore').click(function () {
+            elements.list.find('.render-modal-shortcode-toolbar-button-restore').click(function () {
 
                 if (!$(this).hasClass('disabled')) {
-                    USL_Modal.restoreShortcode();
+                    Render_Modal.restoreShortcode();
                 }
             });
 
             // Submit the form
             elements.submit.off('click').click(function (event) {
                 event.preventDefault();
-                USL_Modal.update();
+                Render_Modal.update();
             });
 
             // Remove button
             elements.remove.click(function () {
-                $(document).trigger('usl-modal-remove');
+                $(document).trigger('render-modal-remove');
             });
 
             // Close the form
             elements.cancel.click(function (event) {
                 event.preventDefault();
-                USL_Modal.close();
+                Render_Modal.close();
             });
             elements.close.click(function (event) {
                 event.preventDefault();
-                USL_Modal.close();
+                Render_Modal.close();
             });
 
             // Filter shortcodes by category
             elements.categories.find('li').click(function () {
-                USL_Modal.filterByCategory($(this));
+                Render_Modal.filterByCategory($(this));
             });
 
             // Show advanced atts
-            elements.list.find('.usl-modal-show-advanced-atts').click(function () {
-                USL_Modal.toggleAdvancedAtts($(this));
+            elements.list.find('.render-modal-show-advanced-atts').click(function () {
+                Render_Modal.toggleAdvancedAtts($(this));
                 return false;
             });
 
             // Move categories left and right
-            elements.categories.find('.usl-modal-categories-left').click(USL_Modal.moveCategoriesLeft);
-            elements.categories.find('.usl-modal-categories-right').click(USL_Modal.moveCategoriesRight);
+            elements.categories.find('.render-modal-categories-left').click(Render_Modal.moveCategoriesLeft);
+            elements.categories.find('.render-modal-categories-right').click(Render_Modal.moveCategoriesRight);
         },
 
         keyboardShortcuts: function () {
 
             $(document).keyup(function (e) {
 
-                if (!usl_modal_open) {
+                if (!render_modal_open) {
                     return;
                 }
 
@@ -135,12 +135,12 @@ var USL_Modal;
                             break;
                         }
 
-                        USL_Modal.update();
+                        Render_Modal.update();
                         break;
 
                     // Escape
                     case 27:
-                        USL_Modal.close();
+                        Render_Modal.close();
                         break;
 
                     // Tab
@@ -151,7 +151,7 @@ var USL_Modal;
                             e.preventDefault();
 
                             if (elements.active_shortcode) {
-                                elements.active_shortcode.find('.usl-modal-att-row').first().focus();
+                                elements.active_shortcode.find('.render-modal-att-row').first().focus();
                             } else {
 
                                 elements.list.find('li').each(function () {
@@ -160,7 +160,7 @@ var USL_Modal;
 
                                         var $first = $(this);
                                         if ($next.length && $next.is(':visible')) {
-                                            USL_Modal.activateShortcode($first);
+                                            Render_Modal.activateShortcode($first);
                                         }
                                         return false;
                                     }
@@ -183,7 +183,7 @@ var USL_Modal;
 
                                     $next = $(this);
                                     if ($next.length && $next.is(':visible')) {
-                                        USL_Modal.activateShortcode($next);
+                                        Render_Modal.activateShortcode($next);
                                     }
                                     return false;
                                 }
@@ -193,8 +193,8 @@ var USL_Modal;
 
                             if ($next.length && $next.is(':visible')) {
 
-                                USL_Modal.closeShortcode();
-                                USL_Modal.activateShortcode($next);
+                                Render_Modal.closeShortcode();
+                                Render_Modal.activateShortcode($next);
                             } else {
                                 elements.active_shortcode.effect('shake', {
                                     distance: 10
@@ -218,7 +218,7 @@ var USL_Modal;
 
                                     $prev = $(this);
                                     if ($prev.length && $prev.is(':visible')) {
-                                        USL_Modal.activateShortcode($prev);
+                                        Render_Modal.activateShortcode($prev);
                                     }
                                     return false;
                                 }
@@ -228,8 +228,8 @@ var USL_Modal;
 
                             if ($prev.length && $prev.is(':visible')) {
 
-                                USL_Modal.closeShortcode();
-                                USL_Modal.activateShortcode($prev);
+                                Render_Modal.closeShortcode();
+                                Render_Modal.activateShortcode($prev);
                             } else {
                                 elements.active_shortcode.effect('shake', {
                                     distance: 10
@@ -283,7 +283,7 @@ var USL_Modal;
 
         initAtts: function () {
 
-            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+            elements.active_shortcode.find('.render-modal-att-row').each(function () {
 
                 // Skip if already initialized or if set to not initialize
                 if ($(this).data('attObj') || $(this).attr('data-no-init')) {
@@ -301,7 +301,7 @@ var USL_Modal;
 
                         // Apply Chosen
                         var $chosen = $(this).find('.chosen'),
-                            $container = $chosen.closest('.usl-modal-att-field');
+                            $container = $chosen.closest('.render-modal-att-field');
 
                         $chosen.chosen({
                             width: '100%',
@@ -366,7 +366,7 @@ var USL_Modal;
                             // Pressing enter should set the value, not submit the entire form
                             $container.find('.chosen-search input[type="text"]').keyup(function (e) {
 
-                                if (!usl_modal_open || e.which !== 13) {
+                                if (!render_modal_open || e.which !== 13) {
                                     return;
                                 }
 
@@ -382,7 +382,7 @@ var USL_Modal;
 
                         attObj = new Colorpicker($(this));
 
-                        $(this).find('.usl-modal-att-colorpicker').each(function () {
+                        $(this).find('.render-modal-att-colorpicker').each(function () {
                             var data = $(this).data();
                             $(this).wpColorPicker(data);
                         });
@@ -392,11 +392,11 @@ var USL_Modal;
 
                         attObj = new Slider($(this));
 
-                        $(this).find('.usl-modal-att-slider').each(function () {
+                        $(this).find('.render-modal-att-slider').each(function () {
 
                             var $this = $(this),
                                 data = $this.data(),
-                                $input = $this.siblings('.usl-modal-att-slider-value');
+                                $input = $this.siblings('.render-modal-att-slider-value');
 
                             // Skip if the slider's already been initilaized
                             if (typeof data.uiSlider !== 'undefined') {
@@ -430,10 +430,10 @@ var USL_Modal;
                                         }
 
                                         // Output the ranges to the text and the input
-                                        var $text = $input.siblings('.usl-modal-att-slider-range-text');
+                                        var $text = $input.siblings('.render-modal-att-slider-range-text');
 
-                                        $text.find('.usl-modal-att-slider-range-text-value1').html(ui.values[0]);
-                                        $text.find('.usl-modal-att-slider-range-text-value2').html(ui.values[1]);
+                                        $text.find('.render-modal-att-slider-range-text-value1').html(ui.values[0]);
+                                        $text.find('.render-modal-att-slider-range-text-value2').html(ui.values[1]);
 
                                         $input.val(ui.values[0] + '-' + ui.values[1]);
                                     };
@@ -464,16 +464,16 @@ var USL_Modal;
                             // Change the slider and keep the numbers in the allowed range
                             $input.change(function () {
 
-                                var $slider = $(this).siblings('.usl-modal-att-slider');
+                                var $slider = $(this).siblings('.render-modal-att-slider');
 
                                 if ($slider.attr('data-range')) {
 
                                     // Range slider
-                                    var $text = $(this).siblings('.usl-modal-att-slider-range-text'),
+                                    var $text = $(this).siblings('.render-modal-att-slider-range-text'),
                                         values = $(this).val().split('-');
 
-                                    $text.find('.usl-modal-att-slider-range-text-value1').html(values[0]);
-                                    $text.find('.usl-modal-att-slider-range-text-value2').html(values[1]);
+                                    $text.find('.render-modal-att-slider-range-text-value1').html(values[0]);
+                                    $text.find('.render-modal-att-slider-range-text-value2').html(values[1]);
 
                                     $slider.slider('values', values);
                                 } else {
@@ -511,9 +511,9 @@ var USL_Modal;
                         attObj = new Counter($(this));
 
                         var shift_down = false,
-                            $input = $(this).find('.usl-modal-att-counter'),
-                            $button_down = $input.siblings('.usl-modal-counter-down'),
-                            $button_up = $input.siblings('.usl-modal-counter-up'),
+                            $input = $(this).find('.render-modal-att-counter'),
+                            $button_down = $input.siblings('.render-modal-counter-down'),
+                            $button_up = $input.siblings('.render-modal-counter-up'),
                             min = parseInt($input.attr('data-min')),
                             max = parseInt($input.attr('data-max')),
                             step = parseInt($input.attr('data-step')),
@@ -546,13 +546,13 @@ var USL_Modal;
                         });
 
                         // Click on the "+"
-                        $(this).find('.usl-modal-counter-up').click(function () {
+                        $(this).find('.render-modal-counter-up').click(function () {
                             $input.val(parseInt($input.val()) + (shift_down ? shift_step : step));
                             $input.change();
                         });
 
                         // Click on the "-"
-                        $(this).find('.usl-modal-counter-down').click(function () {
+                        $(this).find('.render-modal-counter-down').click(function () {
                             $input.val(parseInt($input.val()) - (shift_down ? shift_step : step));
                             $input.change();
                         });
@@ -560,8 +560,8 @@ var USL_Modal;
                         // Keep the number within its limits
                         $input.off().change(function () {
 
-                            var $button_up = $(this).siblings('.usl-modal-counter-up'),
-                                $button_down = $(this).siblings('.usl-modal-counter-down');
+                            var $button_up = $(this).siblings('.render-modal-counter-up'),
+                                $button_down = $(this).siblings('.render-modal-counter-down');
 
                             if (parseInt($(this).val()) >= max) {
 
@@ -615,11 +615,11 @@ var USL_Modal;
 
                         attObj = new Textbox($(this));
 
-                        $(this).find('.usl-modal-att-input').focusin(function () {
+                        $(this).find('.render-modal-att-input').focusin(function () {
                             textbox_focused = true;
                         });
 
-                        $(this).find('.usl-modal-att-input').focusout(function () {
+                        $(this).find('.render-modal-att-input').focusout(function () {
                             textbox_focused = false;
                         });
                         break;
@@ -651,15 +651,15 @@ var USL_Modal;
 
                 // Don't search if the query isn't allowed characters
                 if (search_query.length && (matches === null || matches.length !== search_query.length)) {
-                    USL_Modal.invalidSearch(true);
+                    Render_Modal.invalidSearch(true);
                     return;
                 } else {
-                    USL_Modal.invalidSearch(false);
+                    Render_Modal.invalidSearch(false);
                 }
 
                 // Don't search if empty
                 if (!search_query.length) {
-                    USL_Modal.clearSearch(search_fade);
+                    Render_Modal.clearSearch(search_fade);
                     return;
                 }
 
@@ -675,10 +675,10 @@ var USL_Modal;
                     search_loading = false;
                     elements.list.stop().animate({opacity: 1}, search_fade);
                     elements.list.scrollTop(0);
-                    USL_Modal.closeShortcode();
+                    Render_Modal.closeShortcode();
 
-                    elements.list.find('.usl-modal-shortcode').each(function () {
-                        var title = $(this).find('.usl-modal-shortcode-title').text(),
+                    elements.list.find('.render-modal-shortcode').each(function () {
+                        var title = $(this).find('.render-modal-shortcode-title').text(),
                             description = $(this).find('.description').text(),
                             code = $(this).attr('data-code'),
                             source = $(this).attr('data-source'),
@@ -699,7 +699,7 @@ var USL_Modal;
 
             time = typeof time === 'undefined' ? 0 : time;
             elements.search_input.val('');
-            elements.list.find('.usl-modal-shortcode').show();
+            elements.list.find('.render-modal-shortcode').show();
             clearTimeout(_search_timeout);
             this.closeShortcode();
             elements.list.stop().animate({opacity: 1}, time);
@@ -708,7 +708,7 @@ var USL_Modal;
 
         invalidSearch: function (invalid) {
 
-            var $invalidsearch = elements.wrap.find('.usl-modal-invalidsearch');
+            var $invalidsearch = elements.wrap.find('.render-modal-invalidsearch');
 
             if (invalid) {
                 $invalidsearch.show();
@@ -719,7 +719,7 @@ var USL_Modal;
 
         activateShortcode: function ($e) {
 
-            var $container = $e.closest('.usl-modal-shortcode');
+            var $container = $e.closest('.render-modal-shortcode');
 
             this.clearShortcodeErrors();
 
@@ -727,11 +727,11 @@ var USL_Modal;
             if ($container.hasClass('disabled')) {
 
                 // Error message
-                var $description = $container.find('.usl-modal-shortcode-description');
+                var $description = $container.find('.render-modal-shortcode-description');
                 $description.data('shortcodeDescriptionText', $description.html());
                 $description.html('Please select content from the editor to enable this shortcode.');
 
-                $container.addClass('usl-modal-shortcode-error-message');
+                $container.addClass('render-modal-shortcode-error-message');
 
                 highlight($container);
 
@@ -765,9 +765,9 @@ var USL_Modal;
 
             // Enable / Disable restore button
             if (this.modifying && this.active_shortcode === this.current_shortcode.code) {
-                elements.active_shortcode.find('.usl-modal-shortcode-toolbar-button-restore').removeClass('disabled');
+                elements.active_shortcode.find('.render-modal-shortcode-toolbar-button-restore').removeClass('disabled');
             } else {
-                elements.active_shortcode.find('.usl-modal-shortcode-toolbar-button-restore').addClass('disabled');
+                elements.active_shortcode.find('.render-modal-shortcode-toolbar-button-restore').addClass('disabled');
             }
 
             this.openShortcode();
@@ -778,7 +778,7 @@ var USL_Modal;
             force = typeof force !== 'undefined' ? force : false;
 
             var transition = 300,
-                $tools = $this.siblings('.usl-modal-shortcode-toolbar-tools');
+                $tools = $this.siblings('.render-modal-shortcode-toolbar-tools');
 
             if ($this.hasClass('open') || force === 'close') {
 
@@ -799,7 +799,7 @@ var USL_Modal;
 
         restoreShortcode: function () {
 
-            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+            elements.active_shortcode.find('.render-modal-att-row').each(function () {
                 $(this).data('attObj').revert();
             });
 
@@ -809,10 +809,10 @@ var USL_Modal;
         clearShortcodeErrors: function () {
 
             // Remove any previous error messages
-            elements.list.find('.usl-modal-shortcode.usl-modal-shortcode-error-message').
-                find('.usl-modal-shortcode-description').each(function () {
+            elements.list.find('.render-modal-shortcode.render-modal-shortcode-error-message').
+                find('.render-modal-shortcode-description').each(function () {
                     $(this).html($(this).data('shortcodeDescriptionText'));
-                    $(this).closest('.usl-modal-shortcode').removeClass('usl-modal-shortcode-error-message');
+                    $(this).closest('.render-modal-shortcode').removeClass('render-modal-shortcode-error-message');
                 });
         },
 
@@ -828,7 +828,7 @@ var USL_Modal;
         showAdvancedAtts: function ($e) {
 
             $e.removeClass('hidden');
-            $e.siblings('.usl-modal-advanced-atts').show();
+            $e.siblings('.render-modal-advanced-atts').show();
             $e.find('.show-text').hide();
             $e.find('.hide-text').show();
         },
@@ -836,7 +836,7 @@ var USL_Modal;
         hideAdvancedAtts: function ($e) {
 
             $e.addClass('hidden');
-            $e.siblings('.usl-modal-advanced-atts').hide();
+            $e.siblings('.render-modal-advanced-atts').hide();
             $e.find('.hide-text').hide();
             $e.find('.show-text').show();
         },
@@ -859,7 +859,7 @@ var USL_Modal;
             elements.categories.find('li').removeClass('active');
             $e.addClass('active');
 
-            // Clear previously activated and opened items and clear forms
+            // Clear previorendery activated and opened items and clear forms
             this.refresh();
             this.closeShortcode();
             elements.active_shortcode = false;
@@ -927,8 +927,8 @@ var USL_Modal;
             function transition($button) {
 
                 var orig_width, width,
-                    $buttons = elements.submit.find('[class^="usl-modal-submit-text"]'),
-                    offset = $button.height() * $button.index('[class^="usl-modal-submit-text"]') * -1;
+                    $buttons = elements.submit.find('[class^="render-modal-submit-text"]'),
+                    offset = $button.height() * $button.index('[class^="render-modal-submit-text"]') * -1;
 
                 orig_width = elements.submit.width();
                 elements.submit.width('auto');
@@ -955,24 +955,24 @@ var USL_Modal;
             switch (_which) {
                 case 'add':
                     elements.submit.removeClass('disabled');
-                    transition(elements.submit.find('.usl-modal-submit-text-add'));
+                    transition(elements.submit.find('.render-modal-submit-text-add'));
 
                     break;
                 case 'modify':
                     elements.submit.removeClass('disabled');
-                    transition(elements.submit.find('.usl-modal-submit-text-modify'));
+                    transition(elements.submit.find('.render-modal-submit-text-modify'));
 
                     break;
                 case 'change':
                     elements.submit.removeClass('disabled');
-                    transition(elements.submit.find('.usl-modal-submit-text-change'));
+                    transition(elements.submit.find('.render-modal-submit-text-change'));
 
                     break;
                 case 'disable':
                     elements.submit.addClass('disabled');
                     break;
                 default:
-                    throw new Error('USL: submitButton() has no button type "' + which + '"');
+                    throw new Error('Render: submitButton() has no button type "' + which + '"');
             }
         },
 
@@ -982,7 +982,7 @@ var USL_Modal;
             shortcode = shortcode.trim();
 
             // Get our shortcode regex (localized)
-            var shortcode_regex = USL_Data.shortcode_regex;
+            var shortcode_regex = Render_Data.shortcode_regex;
 
             // Make it compatible with JS (originally in PHP)
             shortcode_regex = shortcode_regex.replace(/\*\+/g, '*');
@@ -1039,7 +1039,7 @@ var USL_Modal;
 
             $.each(atts, function (name, value) {
 
-                var attObj = elements.active_shortcode.find('.usl-modal-att-row[data-att-name="' + name + '"]').data('attObj');
+                var attObj = elements.active_shortcode.find('.render-modal-att-row[data-att-name="' + name + '"]').data('attObj');
 
                 if (attObj) {
                     attObj.setValue(value);
@@ -1055,13 +1055,13 @@ var USL_Modal;
 
                 elements.active_shortcode.find('.accordion-section-content').slideUp(slide_transition);
 
-                USL_Modal.hideAdvancedAtts(elements.active_shortcode.find('.usl-modal-show-advanced-atts'));
+                Render_Modal.hideAdvancedAtts(elements.active_shortcode.find('.render-modal-show-advanced-atts'));
 
                 if (!elements.active_shortcode.hasClass('current-shortcode')) {
-                    USL_Modal.refresh();
+                    Render_Modal.refresh();
                 }
 
-                this.shortcodeToolbarTogggle(elements.active_shortcode.find('.usl-modal-shortcode-toolbar-toggle'), 'close');
+                this.shortcodeToolbarTogggle(elements.active_shortcode.find('.render-modal-shortcode-toolbar-toggle'), 'close');
 
                 elements.last_active_shortcode = elements.active_shortcode;
                 elements.active_shortcode = false;
@@ -1110,12 +1110,12 @@ var USL_Modal;
 
         open: function () {
 
-            usl_modal_open = true;
+            render_modal_open = true;
 
             if (!this.selection) {
-                elements.list.find('.usl-modal-shortcode.wrapping').addClass('disabled');
+                elements.list.find('.render-modal-shortcode.wrapping').addClass('disabled');
             } else {
-                elements.list.find('.usl-modal-shortcode.wrapping.disabled').removeClass('disabled');
+                elements.list.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
             }
 
             this.refreshRows();
@@ -1123,7 +1123,7 @@ var USL_Modal;
             elements.wrap.show();
             elements.backdrop.show();
 
-            elements.search.find('input[name="usl-modal-search"]').focus();
+            elements.search.find('input[name="render-modal-search"]').focus();
 
             this.listHeight();
 
@@ -1136,12 +1136,12 @@ var USL_Modal;
                 this.submitButton('disable');
             }
 
-            $(document).trigger('usl-modal-open');
+            $(document).trigger('render-modal-open');
         },
 
         close: function () {
 
-            usl_modal_open = false;
+            render_modal_open = false;
 
             elements.list.scrollTop(0);
             elements.wrap.hide();
@@ -1166,7 +1166,7 @@ var USL_Modal;
             this.active_shortcode = '';
             this.selection = '';
 
-            $(document).trigger('usl-modal-close');
+            $(document).trigger('render-modal-close');
         },
 
         update: function () {
@@ -1178,11 +1178,11 @@ var USL_Modal;
             this.sanitize();
 
             var code = elements.active_shortcode.attr('data-code'),
-                title = elements.active_shortcode.find('.usl-modal-shortcode-title').html(),
+                title = elements.active_shortcode.find('.render-modal-shortcode-title').html(),
                 props, output, atts = {}, selection = this.selection;
 
             // Get the atts
-            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+            elements.active_shortcode.find('.render-modal-att-row').each(function () {
 
                 var attObj = $(this).data('attObj');
 
@@ -1196,7 +1196,7 @@ var USL_Modal;
                 }
             });
 
-            props = USL_Data.all_shortcodes[code];
+            props = Render_Data.all_shortcodes[code];
 
             output = '[' + code;
 
@@ -1212,7 +1212,7 @@ var USL_Modal;
 
                     // Add the att to the shortcode output
                     if (value.length) {
-                        output += ' ' + name + '=\'' + usl_encode_attr(value, ['\"']) + '\'';
+                        output += ' ' + name + '=\'' + render_encode_attr(value, ['\"']) + '\'';
                     }
                 });
             }
@@ -1230,7 +1230,7 @@ var USL_Modal;
                 title: title
             };
 
-            $(document).trigger('usl-modal-update');
+            $(document).trigger('render-modal-update');
 
             this.close();
         },
@@ -1239,7 +1239,7 @@ var USL_Modal;
 
             var validated = true;
 
-            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+            elements.active_shortcode.find('.render-modal-att-row').each(function () {
 
                 var attObj = $(this).data('attObj');
 
@@ -1266,7 +1266,7 @@ var USL_Modal;
                 // If there's validation, let's do it
                 if (validate.length) {
 
-                    validate = USL_Modal._stringToObject(validate);
+                    validate = Render_Modal._stringToObject(validate);
 
                     $.each(validate, function (type, value) {
 
@@ -1348,7 +1348,7 @@ var USL_Modal;
 
                             // If no matches, throw error
                             default:
-                                throw new Error('USL: Unsupported validation method "' + type + '" for the shortcode "' + attObj.shortcode + '" at field "' + attObj.fieldname + '"');
+                                throw new Error('Render: Unsupported validation method "' + type + '" for the shortcode "' + attObj.shortcode + '" at field "' + attObj.fieldname + '"');
                         }
                     });
                 }
@@ -1363,7 +1363,7 @@ var USL_Modal;
 
         sanitize: function () {
 
-            elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+            elements.active_shortcode.find('.render-modal-att-row').each(function () {
 
                 var attObj = $(this).data('attObj');
 
@@ -1372,7 +1372,7 @@ var USL_Modal;
                     return true; // Continue $.each
                 }
 
-                var sanitize = USL_Modal._stringToObject($(this).attr('data-sanitize')),
+                var sanitize = Render_Modal._stringToObject($(this).attr('data-sanitize')),
                     att_value = attObj.getValue();
 
                 if (sanitize && att_value !== null && att_value.length) {
@@ -1387,7 +1387,7 @@ var USL_Modal;
 
                             // If no matches, throw an error
                             default:
-                                throw new Error('USL -> Unsupported sanitation method "' + type + '" for the shortcode "' + attObj.shortcode + '" at field "' + attObj.fieldname + '"');
+                                throw new Error('Render -> Unsupported sanitation method "' + type + '" for the shortcode "' + attObj.shortcode + '" at field "' + attObj.fieldname + '"');
 
                         }
                     });
@@ -1399,7 +1399,7 @@ var USL_Modal;
 
             if (elements.active_shortcode) {
 
-                elements.active_shortcode.find('.usl-modal-att-row').each(function () {
+                elements.active_shortcode.find('.render-modal-att-row').each(function () {
 
                     var attObj = $(this).data('attObj');
 
@@ -1433,10 +1433,10 @@ var USL_Modal;
         this.init = function ($e) {
 
             this.$container = $e;
-            this.$input = this.$container.find('.usl-modal-att-input');
+            this.$input = this.$container.find('.render-modal-att-input');
             this.name = $e.attr('data-att-name');
-            this.fieldname = this.$container.find('.usl-modal-att-name').text().trim();
-            this.shortcode = this.$container.closest('.usl-modal-shortcode').attr('data-code');
+            this.fieldname = this.$container.find('.render-modal-att-name').text().trim();
+            this.shortcode = this.$container.closest('.render-modal-shortcode').attr('data-code');
             this.disabled = this.$container.attr('data-disabled') ? true : false;
 
             this.storeOriginalValue();
@@ -1463,7 +1463,7 @@ var USL_Modal;
         };
 
         this.setValue = function (value) {
-            this.$input.val(usl_decode_attr(value));
+            this.$input.val(render_decode_attr(value));
         };
 
         this.setInvalid = function (msg) {
@@ -1480,7 +1480,7 @@ var USL_Modal;
         this.errorMsg = function (msg) {
 
             if (typeof this.$errormsg === 'undefined') {
-                this.$errormsg = this.$container.find('.usl-modal-att-errormsg');
+                this.$errormsg = this.$container.find('.render-modal-att-errormsg');
             }
 
             this.$errormsg.html(msg);
@@ -1512,7 +1512,7 @@ var USL_Modal;
         AttAPI.apply(this, arguments);
 
         this.setValue = function (value) {
-            this.$input.val(usl_decode_attr(value));
+            this.$input.val(render_decode_attr(value));
             this.$input.trigger('chosen:updated');
         };
 
@@ -1543,7 +1543,7 @@ var USL_Modal;
             this.$input.removeData('wpWpColorPicker');
             this.$input.removeData('a8cIris');
             this.$container.find('.wp-picker-container').remove();
-            this.$container.find('.usl-modal-att-field').prepend(this.$input);
+            this.$container.find('.render-modal-att-field').prepend(this.$input);
         };
 
         this.init($e);
@@ -1564,7 +1564,7 @@ var USL_Modal;
         };
 
         this.destroy = function () {
-            var $slider = this.$container.find('.usl-modal-att-slider');
+            var $slider = this.$container.find('.render-modal-att-slider');
             $slider.slider('destroy');
             $slider.removeData();
         };
@@ -1580,7 +1580,7 @@ var USL_Modal;
         this.getValue = function () {
 
             var value = this.$input.val(),
-                unit = this.$container.find('.usl-modal-counter-unit select').val();
+                unit = this.$container.find('.render-modal-counter-unit select').val();
 
             if (unit) {
                 value += unit;
@@ -1600,22 +1600,22 @@ var USL_Modal;
                 max = this.$input.attr('data-max');
 
             if (value == min) {
-                this.$input.siblings('.usl-modal-counter-down').addClass('disabled');
+                this.$input.siblings('.render-modal-counter-down').addClass('disabled');
             } else {
-                this.$input.siblings('.usl-modal-counter-down').removeClass('disabled');
+                this.$input.siblings('.render-modal-counter-down').removeClass('disabled');
             }
 
             if (value == max) {
-                this.$input.siblings('.usl-modal-counter-up').addClass('disabled');
+                this.$input.siblings('.render-modal-counter-up').addClass('disabled');
             } else {
-                this.$input.siblings('.usl-modal-counter-up').removeClass('disabled');
+                this.$input.siblings('.render-modal-counter-up').removeClass('disabled');
             }
 
             this.$input.val(value);
 
             // If a unit was found
             if (values.length > 1) {
-                this.$container.find('.usl-modal-counter-unit-input').val(values[1]); // The unit
+                this.$container.find('.render-modal-counter-unit-input').val(values[1]); // The unit
             }
         };
 
@@ -1628,7 +1628,7 @@ var USL_Modal;
         AttAPI.apply(this, arguments);
 
         this.revert = function () {
-            this.$container.find('.usl-modal-repeater-field').each(function () {
+            this.$container.find('.render-modal-repeater-field').each(function () {
                 if ($(this).index() > 1) {
                     $(this).remove();
                 }
@@ -1639,10 +1639,10 @@ var USL_Modal;
 
             var values = {};
 
-            this.$container.find('.usl-modal-att-row').each(function () {
+            this.$container.find('.render-modal-att-row').each(function () {
 
                 // Skip dummy field
-                if ($(this).closest('.usl-modal-repeater-field').hasClass('dummy-field')) {
+                if ($(this).closest('.render-modal-repeater-field').hasClass('dummy-field')) {
                     return true; // Continue $.each
                 }
 
@@ -1650,9 +1650,9 @@ var USL_Modal;
 
                 if (values[attObj.name]) {
                     // Att already set, append new value
-                    values[attObj.name] += '::sep::' + usl_encode_attr(attObj.getValue());
+                    values[attObj.name] += '::sep::' + render_encode_attr(attObj.getValue());
                 } else {
-                    values[attObj.name] = usl_encode_attr(attObj.getValue());
+                    values[attObj.name] = render_encode_attr(attObj.getValue());
                 }
             });
 
@@ -1688,18 +1688,18 @@ var USL_Modal;
                 for (var i = 1; i < fields.length; i++) {
 
                     // Fire clicking the "+" button manually in order to create all the fields
-                    this.$container.find('.usl-modal-repeater-field:eq(1)').find('.usl-modal-repeater-add').click();
+                    this.$container.find('.render-modal-repeater-field:eq(1)').find('.render-modal-repeater-add').click();
                 }
 
                 // Rebuild the new atts attObj data
-                USL_Modal.initAtts();
+                Render_Modal.initAtts();
 
                 // Set the values
                 for (i = 0; i < fields.length; i++) {
 
                     $.each(fields[i], function (name, value) {
-                        self.$container.find('.usl-modal-repeater-field:eq(' + ( i + 1 ) + ')').
-                            find('.usl-modal-att-row[data-att-name="' + name + '"]').data('attObj').setValue(value);
+                        self.$container.find('.render-modal-repeater-field:eq(' + ( i + 1 ) + ')').
+                            find('.render-modal-att-row[data-att-name="' + name + '"]').data('attObj').setValue(value);
                     });
                 }
             }
@@ -1709,56 +1709,53 @@ var USL_Modal;
     };
 
     $(function () {
-        USL_Modal.init();
+        Render_Modal.init();
     });
 
     $(window).load(function () {
-        USL_Modal.load();
-
-        // REMOVE
-        USL_Modal.filterByCategory($('.usl-modal-categories').find('li[data-category="user"]'));
+        Render_Modal.load();
     });
 
     $(window).resize(function () {
-        USL_Modal.resize();
+        Render_Modal.resize();
     });
 
     // Helper functions
     function initRepeaterButtons($e) {
 
-        var $container = $e.find('.usl-modal-att-field');
+        var $container = $e.find('.render-modal-att-field');
 
         // Add a new field after on pressing the "+"
-        $container.find('.usl-modal-repeater-add').off().click(function () {
+        $container.find('.render-modal-repeater-add').off().click(function () {
 
             // Clone the dummy field in after the current field
-            var $clone = $(this).closest('.usl-modal-att-field').find('.usl-modal-repeater-field.dummy-field').clone();
+            var $clone = $(this).closest('.render-modal-att-field').find('.render-modal-repeater-field.dummy-field').clone();
 
             // Modify the clone
             $clone.show();
-            $clone.find('.usl-modal-att-row').removeAttr('data-no-init');
+            $clone.find('.render-modal-att-row').removeAttr('data-no-init');
             $clone.removeClass('dummy-field');
 
-            $(this).closest('.usl-modal-repeater-field').after($clone);
+            $(this).closest('.render-modal-repeater-field').after($clone);
 
             // Re-build the attObj data for the newly cloned atts
-            USL_Modal.initAtts();
+            Render_Modal.initAtts();
 
             // Re-attach button handlers
             initRepeaterButtons($e);
         });
 
         // Delete the field on pressing the "-"
-        $container.find('.usl-modal-repeater-remove').off().click(function () {
+        $container.find('.render-modal-repeater-remove').off().click(function () {
 
-            var $field = $(this).closest('.usl-modal-repeater-field');
+            var $field = $(this).closest('.render-modal-repeater-field');
 
             // If we're on the second (first visible) field and they're are no more (visible) fields besides this one
-            if ($field.index() == 1 && $(this).closest('.usl-modal-att-row').find('.usl-modal-repeater-field').length <= 2) {
+            if ($field.index() == 1 && $(this).closest('.render-modal-att-row').find('.render-modal-repeater-field').length <= 2) {
 
                 // Clear the inputs
                 highlight($field);
-                $field.find('.usl-modal-att-row').each(function () {
+                $field.find('.render-modal-att-row').each(function () {
                     $(this).data('attObj').revert();
                 });
             } else {
@@ -1851,7 +1848,7 @@ var USL_Modal;
         });
     }
 
-    window['usl_encode_attr'] = function (attr, allowed) {
+    window['render_encode_attr'] = function (attr, allowed) {
 
         allowed = typeof allowed !== 'undefined' ? allowed : [];
 
@@ -1863,7 +1860,7 @@ var USL_Modal;
         })).html();
     };
 
-    window['usl_decode_attr'] = function (attr, ignore) {
+    window['render_decode_attr'] = function (attr, ignore) {
 
         attr = typeof attr !== 'undefined' ? attr : '';
         ignore = typeof ignore !== 'undefined' ? ignore : [];

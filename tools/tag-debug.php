@@ -1,43 +1,43 @@
 <?php
 if ( isset( $_GET['DEBUG_TAGS'] ) ) {
 
-	add_action( 'all', '_usl_tools_tagdebug_gather' );
-	add_action( 'wp_enqueue_scripts', '_usl_tools_tagdebug_scripts' );
-	add_action( 'admin_enqueue_scripts', '_usl_tools_tagdebug_scripts' );
-	add_action( 'shutdown', '_usl_tools_tagdebug_output' );
+	add_action( 'all', '_render_tools_tagdebug_gather' );
+	add_action( 'wp_enqueue_scripts', '_render_tools_tagdebug_scripts' );
+	add_action( 'admin_enqueue_scripts', '_render_tools_tagdebug_scripts' );
+	add_action( 'shutdown', '_render_tools_tagdebug_output' );
 
-	$usl_debug_tags = array();
+	$render_debug_tags = array();
 
-	function _usl_tools_tagdebug_gather( $tag ) {
+	function _render_tools_tagdebug_gather( $tag ) {
 
-		global $usl_debug_tags;
+		global $render_debug_tags;
 
-		if ( $usl_debug_tags === null ) {
-			$usl_debug_tags = array();
+		if ( $render_debug_tags === null ) {
+			$render_debug_tags = array();
 		}
 
-		if ( in_array( $tag, $usl_debug_tags ) ) {
+		if ( in_array( $tag, $render_debug_tags ) ) {
 			return;
 		}
 
-		$usl_debug_tags[] = $tag;
+		$render_debug_tags[] = $tag;
 	}
 
-	function _usl_tools_tagdebug_scripts() {
+	function _render_tools_tagdebug_scripts() {
 
 		wp_enqueue_style(
-			'usl-tools-tagdebug',
+			'render-tools-tagdebug',
 			plugins_url( 'css/tagdebug.css', __FILE__ )
 		);
 	}
 
-	function _usl_tools_tagdebug_output() {
+	function _render_tools_tagdebug_output() {
 
-		global $usl_debug_tags;
+		global $render_debug_tags;
 
-		echo '<pre id="usl-tools-tagdebug">';
+		echo '<pre id="render-tools-tagdebug">';
 		echo '<p>TAGS</p>';
-		var_dump( $usl_debug_tags );
+		var_dump( $render_debug_tags );
 		echo '</pre>';
 	}
 }

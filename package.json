@@ -4,7 +4,7 @@
   "description": "This plugin is the only shortcode plugin you will ever need.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/brashrebel/ultimate-shortcodes-library"
+    "url": "https://github.com/brashrebel/render"
   },
   "author": "Kyle Maurer & Joel Worsham",
   "license": "GPLv2 or later",

@@ -1,6 +1,6 @@
 # We're in BETA!
 
-Ultimate shortcodes library is currently in its first beta release. Please download and test the crap out of this plugin!
+Render is currently in its first beta release. Please download and test the crap out of this plugin!
 
 ## Installation
 

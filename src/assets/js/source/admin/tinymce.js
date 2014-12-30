@@ -1,17 +1,17 @@
 /**
  * Adds the tinymce button.
  *
- * @since USL 1.0.0
+ * @since Render 1.0.0
  *
  * @global tinymce
- * @global USL_Modal
- * @global USL_Data
- * @global USL_MCECallbacks
+ * @global Render_Modal
+ * @global Render_Data
+ * @global Render_MCECallbacks
  *
- * @package USL
+ * @package Render
  * @subpackage Modal
  */
-var USL_tinymce;
+var Render_tinymce;
 (function ($) {
     var editor, $texteditor, $editor, $loader, no_selected,
         min_load_time = false,
@@ -19,7 +19,7 @@ var USL_tinymce;
         submitted = false,
         $lastNode = '';
 
-    USL_tinymce = {
+    Render_tinymce = {
 
         init: function () {
 
@@ -36,117 +36,117 @@ var USL_tinymce;
 
         binds: function () {
 
-            $(document).on('usl-modal-close', function () {
-                USL_tinymce.close();
+            $(document).on('render-modal-close', function () {
+                Render_tinymce.close();
             });
 
-            $(document).on('usl-modal-update', function () {
-                USL_tinymce.update();
+            $(document).on('render-modal-update', function () {
+                Render_tinymce.update();
             });
 
-            $(document).on('usl-modal-remove', function () {
-                USL_tinymce.removeShortcode();
+            $(document).on('render-modal-remove', function () {
+                Render_tinymce.removeShortcode();
             });
 
-            $(document).on('usl-tinymce-post-render', function () {
-                USL_tinymce.postRender();
+            $(document).on('render-tinymce-post-render', function () {
+                Render_tinymce.postRender();
             });
 
             $('#post').submit(function (event) {
-                USL_tinymce.submit(event, $(this));
+                Render_tinymce.submit(event, $(this));
             });
         },
 
         addToTinymce: function () {
 
-            tinymce.PluginManager.add('usl', function (_editor) {
+            tinymce.PluginManager.add('render', function (_editor) {
 
                 // Set the active editor
                 editor = _editor;
 
                 // Fires when clicking the shortcode < > button in the tinymce toolbar
-                _editor.addCommand('USL_Open', function () {
+                _editor.addCommand('Render_Open', function () {
 
                     var node = editor.selection.getNode();
 
-                    USL_Modal.selection = editor.selection.getContent();
+                    Render_Modal.selection = editor.selection.getContent();
                     no_selected = false;
 
-                    if ($(node).closest('.usl-tinymce-shortcode-wrapper').length || $(node).hasClass('usl-tinymce-shortcode-wrapper')) {
+                    if ($(node).closest('.render-tinymce-shortcode-wrapper').length || $(node).hasClass('render-tinymce-shortcode-wrapper')) {
 
-                        var $node = $(node).hasClass('usl-tinymce-shortcode-wrapper') ?
+                        var $node = $(node).hasClass('render-tinymce-shortcode-wrapper') ?
                                 $(node) :
-                                $(node).closest('.usl-tinymce-shortcode-wrapper'),
-                            content = $node.find('.usl-tinymce-shortcode-content').html(),
+                                $(node).closest('.render-tinymce-shortcode-wrapper'),
+                            content = $node.find('.render-tinymce-shortcode-content').html(),
                             container_html = $('<div />').append($node.clone()).html(),
-                            shortcode = USL_tinymce.visualToLiteral(container_html);
+                            shortcode = Render_tinymce.visualToLiteral(container_html);
 
                         // If there's no selected text, assume the entire shortcode is being modified
-                        if (!USL_Modal.selection.length) {
-                            USL_Modal.selection = content;
+                        if (!Render_Modal.selection.length) {
+                            Render_Modal.selection = content;
                             no_selected = true;
                         }
 
-                        USL_Modal.modify(shortcode);
+                        Render_Modal.modify(shortcode);
                     } else {
-                        USL_Modal.open();
+                        Render_Modal.open();
                     }
                 });
 
                 // Refresh the editor
-                _editor.addCommand('USL_Refresh', function () {
-                    USL_tinymce.loadVisual();
+                _editor.addCommand('Render_Refresh', function () {
+                    Render_tinymce.loadVisual();
                 });
 
-                _editor.addButton('usl_open', {
+                _editor.addButton('render_open', {
 
                     // Establishes an icon class for the button with the prefix "mce-i-"
-                    icon: 'usl-mce-icon',
-                    cmd: 'USL_Open',
+                    icon: 'render-mce-icon',
+                    cmd: 'Render_Open',
                     tooltip: 'Add Shortcode',
 
                     // Make the < > button active when cursor is inside a shortcode
                     onPostRender: function () {
-                        var usl_button = this;
+                        var render_button = this;
 
                         editor.on('nodechange', function (event) {
 
-                            var $node = $(event.element).hasClass('usl-tinymce-shortcode-wrapper') ?
+                            var $node = $(event.element).hasClass('render-tinymce-shortcode-wrapper') ?
                                     $(event.element) :
-                                    $(event.element).closest('.usl-tinymce-shortcode-wrapper'),
-                                is_usl = $node.length ? true : false;
+                                    $(event.element).closest('.render-tinymce-shortcode-wrapper'),
+                                is_render = $node.length ? true : false;
 
                             if ($lastNode.length) {
                                 $lastNode.removeClass('active');
                             }
 
-                            if (is_usl) {
+                            if (is_render) {
                                 $lastNode = $node;
                                 $lastNode.addClass('active');
                             }
 
-                            usl_button.active(is_usl);
+                            render_button.active(is_render);
                         });
                     }
                 });
 
-                _editor.addButton('usl_refresh', {
+                _editor.addButton('render_refresh', {
 
                     // Establishes an icon class for the button with the prefix "mce-i-"
-                    icon: 'usl-mce-refresh-icon',
-                    cmd: 'USL_Refresh',
+                    icon: 'render-mce-refresh-icon',
+                    cmd: 'Render_Refresh',
                     tooltip: 'Refresh Editor'
                 });
 
                 // WP default shortcut
-                _editor.addShortcut('alt+shift+s', '', 'usl-open');
+                _editor.addShortcut('alt+shift+s', '', 'render-open');
 
                 // Click the editor
                 _editor.onClick.add(function (editor, event) {
 
                     // Remove delete overlay for all shortcodes
                     var $body = $(editor.getBody());
-                    $body.find('.usl-tinymce-shortcode-wrapper.delete').removeClass('delete');
+                    $body.find('.render-tinymce-shortcode-wrapper.delete').removeClass('delete');
                 });
 
                 // Keydown (ANY key) in the editor
@@ -180,7 +180,7 @@ var USL_tinymce;
 
                         // If we're at the beginning of the current node and the previous node is a shortcode, delete it!
                         if ((caret_position === 0 || !text.trim().length || text.charCodeAt(caret_position - 1) === 8203) &&
-                            $prev.hasClass('usl-tinymce-shortcode-wrapper')) {
+                            $prev.hasClass('render-tinymce-shortcode-wrapper')) {
 
                             if ($prev.hasClass('delete')) {
                                 $prev.remove();
@@ -194,11 +194,11 @@ var USL_tinymce;
 
                         // If there's no more content, delete the shortcode
                         if ($(node).html().length <= 1) {
-                            $(node).closest('.usl-tinymce-shortcode-wrapper').remove();
+                            $(node).closest('.render-tinymce-shortcode-wrapper').remove();
                         }
 
                         // Don't allow backspace at beginning of string (inside shortcodes)
-                        if (caret_position === 0 && $(node).hasClass('usl-tinymce-shortcode-content')) {
+                        if (caret_position === 0 && $(node).hasClass('render-tinymce-shortcode-content')) {
                             event.preventDefault();
                         }
                     } else {
@@ -207,7 +207,7 @@ var USL_tinymce;
 
                         // Remove delete overlay for all shortcodes
                         var $body = $(editor.getBody());
-                        $body.find('.usl-tinymce-shortcode-wrapper.delete').removeClass('delete');
+                        $body.find('.render-tinymce-shortcode-wrapper.delete').removeClass('delete');
                     }
                 });
 
@@ -217,7 +217,7 @@ var USL_tinymce;
                     var node = editor.selection.getNode(),
                         node_content = $(node).html();
 
-                    if (node && !$(node).hasClass('usl-tinymce-shortcode-content')) {
+                    if (node && !$(node).hasClass('render-tinymce-shortcode-content')) {
                         return;
                     }
 
@@ -250,19 +250,19 @@ var USL_tinymce;
                     }
                 });
 
-                _editor.on('init show', USL_tinymce.loadVisual);
+                _editor.on('init show', Render_tinymce.loadVisual);
 
                 _editor.on('hide', function () {
                     var content = editor.getContent({format: 'numeric'});
-                    $texteditor.val(window.switchEditors.pre_wpautop(USL_tinymce.loadText(content)));
+                    $texteditor.val(window.switchEditors.pre_wpautop(Render_tinymce.loadText(content)));
                 });
             });
         },
 
         createLoader: function () {
 
-            $editor.append('<div id="usl-tinymce-loader" class="hide"><div class="spinner"></div><div class="text">></div></div>');
-            $loader = $('#usl-tinymce-loader');
+            $editor.append('<div id="render-tinymce-loader" class="hide"><div class="spinner"></div><div class="text">></div></div>');
+            $loader = $('#render-tinymce-loader');
         },
 
         /**
@@ -270,9 +270,9 @@ var USL_tinymce;
          */
         loadVisual: function () {
 
-            if (USL_Data.do_render) {
+            if (Render_Data.do_render) {
                 var content = editor.getContent();
-                USL_MCECallbacks.convertLiteralToRendered(content, editor);
+                Render_MCECallbacks.convertLiteralToRendered(content, editor);
             }
         },
 
@@ -280,7 +280,7 @@ var USL_tinymce;
 
             // Add a divider to any shortcode that's the last item (as it's then impossible to click beyond it)
             var $body = $(editor.getBody());
-            $body.find('.usl-tinymce-shortcode-wrapper').each(function () {
+            $body.find('.render-tinymce-shortcode-wrapper').each(function () {
 
                 // If this element is the last element of it's parent
                 if ($(this).parent().contents().last()[0] == $(this)[0]) {
@@ -294,9 +294,9 @@ var USL_tinymce;
          */
         loadText: function (content) {
 
-            content = USL_MCECallbacks.convertRenderedToLiteral(content);
-            content = content.replace(/<span class="usl-tinymce-divider usl-tinymce-noneditable">.*?<\/span>/g, '');
-            content = content.replace(/<p class="usl-tinymce-divider.*?>.*?<\/p>/g, '');
+            content = Render_MCECallbacks.convertRenderedToLiteral(content);
+            content = content.replace(/<span class="render-tinymce-divider render-tinymce-noneditable">.*?<\/span>/g, '');
+            content = content.replace(/<p class="render-tinymce-divider.*?>.*?<\/p>/g, '');
 
             return content;
         },
@@ -305,13 +305,13 @@ var USL_tinymce;
 
             var code = $(shortcode).attr('data-code'),
                 atts = $(shortcode).attr('data-atts'),
-                shortcode_content = $(shortcode).find('.usl-tinymce-shortcode-content').html();
+                shortcode_content = $(shortcode).find('.render-tinymce-shortcode-content').html();
 
             var output = '[' + code;
 
 
             if (atts) {
-                atts = JSON.parse(usl_encode_attr(atts, ['"']));
+                atts = JSON.parse(render_encode_attr(atts, ['"']));
                 $.each(atts, function (name, value) {
                     if (value.length) {
                         output += ' ' + name + '=\'' + value + '\'';
@@ -334,19 +334,19 @@ var USL_tinymce;
 
         update: function () {
 
-            // Get the current USL node (if it exists)
+            // Get the current Render node (if it exists)
             var node = editor.selection.getNode(),
-                $node = $(node).hasClass('usl-tinymce-shortcode-wrapper') ?
+                $node = $(node).hasClass('render-tinymce-shortcode-wrapper') ?
                     $(node) :
-                    $(node).closest('.usl-tinymce-shortcode-wrapper'),
-                $divider = $node.next('.usl-tinymce-divider');
+                    $(node).closest('.render-tinymce-shortcode-wrapper'),
+                $divider = $node.next('.render-tinymce-divider');
 
             // Replace or insert the content
             if ($node.length) {
-                $node.replaceWith(USL_Modal.output.all);
+                $node.replaceWith(Render_Modal.output.all);
                 editor.dom.remove($divider[0]);
             } else {
-                editor.insertContent(USL_Modal.output.all);
+                editor.insertContent(Render_Modal.output.all);
             }
 
             // Render the shortcodes
@@ -356,15 +356,15 @@ var USL_tinymce;
         removeShortcode: function () {
 
             var node = editor.selection.getNode(),
-                $node = $(node).hasClass('usl-tinymce-shortcode-wrapper') ?
+                $node = $(node).hasClass('render-tinymce-shortcode-wrapper') ?
                     $(node) :
-                    $(node).closest('.usl-tinymce-shortcode-wrapper'),
-                $divider = $node.next('.usl-tinymce-divider');
+                    $(node).closest('.render-tinymce-shortcode-wrapper'),
+                $divider = $node.next('.render-tinymce-divider');
 
             editor.dom.remove($node[0]);
             editor.dom.remove($divider[0]);
 
-            USL_Modal.close();
+            Render_Modal.close();
         },
 
         loading: function (loading) {
@@ -378,7 +378,7 @@ var USL_tinymce;
                 }, 1500);
 
                 // Get a random loading message
-                var loading_messages = USL_Data.loading_messages,
+                var loading_messages = Render_Data.loading_messages,
                     random_message = Math.floor(Math.random() * (loading_messages.length));
 
                 // Make sure it's not the same message as last time (that's boring!)
@@ -424,7 +424,7 @@ var USL_tinymce;
                 var content = editor.getContent();
 
                 editor.on('PostProcess', function (e) {
-                    e.content = USL_tinymce.loadText(content);
+                    e.content = Render_tinymce.loadText(content);
                 });
 
                 $e.submit();
@@ -433,6 +433,6 @@ var USL_tinymce;
     };
 
     $(function () {
-        USL_tinymce.init();
+        Render_tinymce.init();
     })
 })(jQuery);

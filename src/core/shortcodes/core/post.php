@@ -1,40 +1,40 @@
 <?php
 /**
- * Contains all USL packaged shortcodes within the Post category.
+ * Contains all Render packaged shortcodes within the Post category.
  *
- * @since      USL 1.0.0
+ * @since      Render 1.0.0
  *
- * @package    USL
+ * @package    Render
  * @subpackage Shortcodes
  */
 
 $_shortcodes = array(
 	// Post meta
 	array(
-		'code'        => 'usl_post_meta',
-		'function'    => '_usl_sc_post_meta',
-		'title'       => __( 'Post Meta', 'USL' ),
-		'description' => __( 'Displays the supplied meta information about the post.', 'USL' ),
+		'code'        => 'render_post_meta',
+		'function'    => '_render_sc_post_meta',
+		'title'       => __( 'Post Meta', 'Render' ),
+		'description' => __( 'Displays the supplied meta information about the post.', 'Render' ),
 		'tags'        => 'id author title word count published date status type excerpt',
 		'atts'        => array(
-			'post' => usl_sc_attr_template( 'post_list' ),
+			'post' => render_sc_attr_template( 'post_list' ),
 			'meta' => array(
-				'label'       => __( 'Meta', 'USL' ),
+				'label'       => __( 'Meta', 'Render' ),
 				'type'        => 'selectbox',
-				'description' => __( 'The meta information of the post to show (custom input allowed).', 'USL' ),
+				'description' => __( 'The meta information of the post to show (custom input allowed).', 'Render' ),
 				'properties'  => array(
-					'placeholder'      => __( 'Title', 'USL' ),
+					'placeholder'      => __( 'Title', 'Render' ),
 					'allowCustomInput' => true,
 					'options'          => array(
-						'title'          => __( 'Title', 'USL' ),
-						'author'         => __( 'Author', 'USL' ),
-						'status'         => __( 'Status', 'USL' ),
-						'type'           => __( 'Type', 'USL' ),
-						'excerpt'        => __( 'Excerpt', 'USL' ),
-						'content'        => __( 'Content', 'USL' ),
-						'published_date' => __( 'Published Date', 'USL' ),
-						'word_count'     => __( 'Word Count', 'USL' ),
-						'id'             => __( 'ID', 'USL' ),
+						'title'          => __( 'Title', 'Render' ),
+						'author'         => __( 'Author', 'Render' ),
+						'status'         => __( 'Status', 'Render' ),
+						'type'           => __( 'Type', 'Render' ),
+						'excerpt'        => __( 'Excerpt', 'Render' ),
+						'content'        => __( 'Content', 'Render' ),
+						'published_date' => __( 'Published Date', 'Render' ),
+						'word_count'     => __( 'Word Count', 'Render' ),
+						'id'             => __( 'ID', 'Render' ),
 					),
 				),
 			),
@@ -43,24 +43,24 @@ $_shortcodes = array(
 	),
 	// Post published date
 	array(
-		'code'        => 'usl_post_published_date',
-		'function'    => '_usl_sc_post_published_date',
-		'title'       => __( 'Post Published Date', 'USL' ),
-		'description' => __( 'Displays the published date of the supplied post.', 'USL' ),
+		'code'        => 'render_post_published_date',
+		'function'    => '_render_sc_post_published_date',
+		'title'       => __( 'Post Published Date', 'Render' ),
+		'description' => __( 'Displays the published date of the supplied post.', 'Render' ),
 		'atts'        => array(
-			'post'        => usl_sc_attr_template( 'post_list' ),
-			'date_format' => usl_sc_attr_template( 'date_format' ),
+			'post'        => render_sc_attr_template( 'post_list' ),
+			'date_format' => render_sc_attr_template( 'date_format' ),
 		),
 		'render'      => true,
 	),
 	// Post word count
 	array(
-		'code'        => 'usl_post_word_count',
-		'function'    => '_usl_sc_post_word_count',
-		'title'       => __( 'Post Word Count', 'USL' ),
-		'description' => __( 'Displays the word count of the supplied post.', 'USL' ),
+		'code'        => 'render_post_word_count',
+		'function'    => '_render_sc_post_word_count',
+		'title'       => __( 'Post Word Count', 'Render' ),
+		'description' => __( 'Displays the word count of the supplied post.', 'Render' ),
 		'atts'        => array(
-			'post' => usl_sc_attr_template( 'post_list' ),
+			'post' => render_sc_attr_template( 'post_list' ),
 		),
 		'render'      => true,
 	),
@@ -68,8 +68,8 @@ $_shortcodes = array(
 
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'post';
-	$shortcode['source']   = 'Ultimate Shortcodes Library';
-	usl_add_shortcode( $shortcode );
+	$shortcode['source']   = 'Render';
+	render_add_shortcode( $shortcode );
 }
 
 /**
@@ -82,7 +82,7 @@ foreach ( $_shortcodes as $shortcode ) {
  *
  * @return int The post ID.
  */
-function _usl_sc_post_meta( $atts ) {
+function _render_sc_post_meta( $atts ) {
 
 	$atts = shortcode_atts( array(
 		'post' => get_the_ID(),
@@ -90,11 +90,11 @@ function _usl_sc_post_meta( $atts ) {
 	), $atts );
 
 	// Escape atts
-	usl_esc_atts( $atts );
+	render_esc_atts( $atts );
 
 	// Get the post object
 	if ( ( $post = get_post( $atts['post'] ) ) === null ) {
-		return _usl_sc_error( 'Cannot get post object.' );
+		return _render_sc_error( 'Cannot get post object.' );
 	}
 
 	// Attempt to get the meta and return it
@@ -112,8 +112,8 @@ function _usl_sc_post_meta( $atts ) {
 		case 'content':
 		case 'status':
 
-			if ( is_callable( "_usl_sc_post_$atts[meta]" ) ) {
-				return call_user_func( "_usl_sc_post_$atts[meta]", $post );
+			if ( is_callable( "_render_sc_post_$atts[meta]" ) ) {
+				return call_user_func( "_render_sc_post_$atts[meta]", $post );
 			}
 			break;
 
@@ -122,7 +122,7 @@ function _usl_sc_post_meta( $atts ) {
 			if ( isset( $post->{$atts['meta']} ) ) {
 				return $post->{$atts['meta']};
 			} else {
-				return _usl_sc_error( "Cannot get post $atts[meta]." );
+				return _render_sc_error( "Cannot get post $atts[meta]." );
 			}
 			break;
 	}
@@ -138,7 +138,7 @@ function _usl_sc_post_meta( $atts ) {
  *
  * @return string The post author.
  */
-function _usl_sc_post_author( $post ) {
+function _render_sc_post_author( $post ) {
 
 	if ( isset( $post->post_author ) ) {
 
@@ -147,7 +147,7 @@ function _usl_sc_post_author( $post ) {
 			return $author;
 		}
 	} else {
-		return _usl_sc_error( 'Cannot get post author.' );
+		return _render_sc_error( 'Cannot get post author.' );
 	}
 }
 
@@ -161,13 +161,13 @@ function _usl_sc_post_author( $post ) {
  *
  * @return string The post title.
  */
-function _usl_sc_post_title( $post ) {
+function _render_sc_post_title( $post ) {
 
 	$title = get_the_title( $post );
 	if ( ! empty( $title ) ) {
 		return $title;
 	} else {
-		return _usl_sc_error( 'Cannot get post title.' );
+		return _render_sc_error( 'Cannot get post title.' );
 	}
 }
 
@@ -181,12 +181,12 @@ function _usl_sc_post_title( $post ) {
  *
  * @return string The post status
  */
-function _usl_sc_post_status( $post ) {
+function _render_sc_post_status( $post ) {
 
 	if ( isset( $post->post_status ) ) {
 		return $post->post_status;
 	} else {
-		return _usl_sc_error( "Cannot get post status." );
+		return _render_sc_error( "Cannot get post status." );
 	}
 }
 
@@ -200,12 +200,12 @@ function _usl_sc_post_status( $post ) {
  *
  * @return string The post type.
  */
-function _usl_sc_post_type( $post ) {
+function _render_sc_post_type( $post ) {
 
 	if ( isset( $post->post_type ) ) {
 		return $post->post_type;
 	} else {
-		return _usl_sc_error( "Cannot get post type." );
+		return _render_sc_error( "Cannot get post type." );
 	}
 }
 
@@ -219,12 +219,12 @@ function _usl_sc_post_type( $post ) {
  *
  * @return string The post excerpt.
  */
-function _usl_sc_post_excerpt( $post ) {
+function _render_sc_post_excerpt( $post ) {
 
 	if ( isset( $post->post_excerpt ) ) {
 		return ! empty( $post->post_excerpt ) ? $post->post_excerpt : 'No excerpt.';
 	} else {
-		return _usl_sc_error( "Cannot get post excerpt." );
+		return _render_sc_error( "Cannot get post excerpt." );
 	}
 }
 
@@ -238,7 +238,7 @@ function _usl_sc_post_excerpt( $post ) {
  *
  * @return string The post excerpt.
  */
-function _usl_sc_post_content( $post ) {
+function _render_sc_post_content( $post ) {
 
 	$content = apply_filters( 'the_content', $post->post_content );
 
@@ -255,7 +255,7 @@ function _usl_sc_post_content( $post ) {
  *
  * @return string The post publish date.
  */
-function _usl_sc_post_published_date( $atts ) {
+function _render_sc_post_published_date( $atts ) {
 
 	// TODO Once conditional atts are implemented, move this back into the main post meta shortcode and have the date attr be a conditional attr that only shows when the meta attr has date selected.
 
@@ -265,17 +265,17 @@ function _usl_sc_post_published_date( $atts ) {
 	), $atts );
 
 	// Escape atts
-	usl_esc_atts( $atts );
+	render_esc_atts( $atts );
 
 	// Get the post object
 	if ( ( $post = get_post( $atts['post'] ) ) === null ) {
-		return _usl_sc_error( 'Cannot get post object.' );
+		return _render_sc_error( 'Cannot get post object.' );
 	}
 
 	if ( isset( $post->post_date ) ) {
 		return date( $atts['date_format'], strtotime( $post->post_date ) );
 	} else {
-		return _usl_sc_error( "Cannot get post published date." );
+		return _render_sc_error( "Cannot get post published date." );
 	}
 }
 
@@ -289,18 +289,18 @@ function _usl_sc_post_published_date( $atts ) {
  *
  * @return string The post word count.
  */
-function _usl_sc_post_word_count( $atts ) {
+function _render_sc_post_word_count( $atts ) {
 
 	$atts = shortcode_atts( array(
 		'post' => get_the_ID(),
 	), $atts );
 
 	// Escape atts
-	usl_esc_atts( $atts );
+	render_esc_atts( $atts );
 
 	// Get the post object
 	if ( ( $post = get_post( $atts['post'] ) ) === null ) {
-		return _usl_sc_error( 'Cannot get post object.' );
+		return _render_sc_error( 'Cannot get post object.' );
 	}
 
 	// Get the filtered content
@@ -324,7 +324,7 @@ function _usl_sc_post_word_count( $atts ) {
  *
  * @return null|array List of all posts
  */
-function _usl_sc_post_list() {
+function _render_sc_post_list() {
 
 	$posts = get_posts( array(
 			'post_type'   => 'any',

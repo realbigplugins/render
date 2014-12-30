@@ -51,17 +51,17 @@ module.exports = function (grunt) {
             },
             src: {
                 files: {
-                    'src/assets/js/ultimate-shortcodes-library.min.js': ['src/assets/js/source/**/*.js', '!src/assets/js/source/admin/**/*.js']
+                    'src/assets/js/render.min.js': ['src/assets/js/source/**/*.js', '!src/assets/js/source/admin/**/*.js']
                 }
             },
             admin: {
                 files: {
-                    'src/assets/js/ultimate-shortcodes-library-admin.min.js': ['src/assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js']
+                    'src/assets/js/render-admin.min.js': ['src/assets/js/source/admin/*.js', '!src/assets/js/source/admin/tinymce.js']
                 }
             },
             tinymce: {
                 files: {
-                    'src/assets/js/includes/tinymce-plugins/usl/plugin.min.js': ['src/assets/js/source/admin/tinymce.js']
+                    'src/assets/js/includes/tinymce-plugins/render/plugin.min.js': ['src/assets/js/source/admin/tinymce.js']
                 }
             }
         },
@@ -73,12 +73,12 @@ module.exports = function (grunt) {
             },
             src: {
                 files: {
-                    'src/assets/css/ultimate-shortcodes-library.min.css': 'src/assets/scss/main.scss'
+                    'src/assets/css/render.min.css': 'src/assets/scss/main.scss'
                 }
             },
             admin: {
                 files: {
-                    'src/assets/css/ultimate-shortcodes-library-admin.min.css': 'src/assets/scss/admin/admin.scss'
+                    'src/assets/css/render-admin.min.css': 'src/assets/scss/admin/admin.scss'
                 }
             }
         },

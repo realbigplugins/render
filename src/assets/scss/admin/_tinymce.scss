@@ -1,6 +1,6 @@
 @import "../global";
 
-i.mce-i-usl-mce-icon {
+i.mce-i-render-mce-icon {
   font: 400 20px/1 dashicons;
 
   &:before {
@@ -8,7 +8,7 @@ i.mce-i-usl-mce-icon {
   }
 }
 
-i.mce-i-usl-mce-refresh-icon {
+i.mce-i-render-mce-refresh-icon {
   font: 400 20px/1 dashicons;
 
   &:before {
@@ -16,7 +16,7 @@ i.mce-i-usl-mce-refresh-icon {
   }
 }
 
-#usl-tinymce-loader {
+#render-tinymce-loader {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -89,6 +89,6 @@ i.mce-i-usl-mce-refresh-icon {
   }
 }
 
-#usl-tinymce-tempdiv {
+#render-tinymce-tempdiv {
   display: none;
 }

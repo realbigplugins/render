@@ -1,10 +1,10 @@
 <?php
 /**
- * Contains all USL packaged shortcodes within the Design category.
+ * Contains all Render packaged shortcodes within the Design category.
  *
- * @since USL 1.0.0
+ * @since Render 1.0.0
  *
- * @package USL
+ * @package Render
  * @subpackage Shortcodes
  */
 
@@ -13,18 +13,18 @@ $_shortcodes = array(
 	// TODO Test and fix up
 	array(
 		'code'        => 'embed',
-		'title'       => __( 'Embed', 'USL' ),
-		'description' => __( 'It\'s super easy to embed videos, images, tweets, audio, and other content into your WordPress site', 'USL' ),
+		'title'       => __( 'Embed', 'Render' ),
+		'description' => __( 'It\'s super easy to embed videos, images, tweets, audio, and other content into your WordPress site', 'Render' ),
 		'atts'        => array(
 			'width'  => array(
-				'label'      => __( 'Width', 'USL' ),
+				'label'      => __( 'Width', 'Render' ),
 				'type'       => 'slider',
 				'properties' => array(
 					'max' => 2000,
 				),
 			),
 			'height' => array(
-				'label'      => __( 'Height', 'USL' ),
+				'label'      => __( 'Height', 'Render' ),
 				'type'       => 'slider',
 				'properties' => array(
 					'max' => 2000,
@@ -37,29 +37,29 @@ $_shortcodes = array(
 	// TODO Test and fix up
 	array(
 		'code'        => 'caption',
-		'title'       => __( 'Caption', 'USL' ),
-		'description' => __( 'The Caption feature allows you to wrap captions around content. This is primarily used with individual images.', 'USL' ),
+		'title'       => __( 'Caption', 'Render' ),
+		'description' => __( 'The Caption feature allows you to wrap captions around content. This is primarily used with individual images.', 'Render' ),
 		'atts'        => array(
 			'id'    => array(
-				'label' => __( 'ID', 'USL' ),
+				'label' => __( 'ID', 'Render' ),
 			),
 			'class' => array(
-				'label' => __( 'Class', 'USL' ),
+				'label' => __( 'Class', 'Render' ),
 			),
 			'align' => array(
-				'label'      => __( 'Align', 'USL' ),
+				'label'      => __( 'Align', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
 					'options' => array(
-						'alignnone'   => __( 'None', 'USL' ),
-						'aligncenter' => __( 'Center', 'USL' ),
-						'alignright'  => __( 'Right', 'USL' ),
-						'alignleft'   => __( 'Left', 'USL' ),
+						'alignnone'   => __( 'None', 'Render' ),
+						'aligncenter' => __( 'Center', 'Render' ),
+						'alignright'  => __( 'Right', 'Render' ),
+						'alignleft'   => __( 'Left', 'Render' ),
 					),
 				),
 			),
 			'width' => array(
-				'label' => __( 'Width', 'USL' ),
+				'label' => __( 'Width', 'Render' ),
 			),
 		),
 		'wrapping'    => true,
@@ -68,64 +68,64 @@ $_shortcodes = array(
 	// TODO Test and fix up
 	array(
 		'code'        => 'gallery',
-		'title'       => __( 'Gallery', 'USL' ),
-		'description' => __( 'The Gallery feature allows you to add one or more image galleries to your posts and pages', 'USL' ),
+		'title'       => __( 'Gallery', 'Render' ),
+		'description' => __( 'The Gallery feature allows you to add one or more image galleries to your posts and pages', 'Render' ),
 		'atts'        => array(
 			'ids'        => array(
-				'label'    => __( 'IDs', 'USL' ),
+				'label'    => __( 'IDs', 'Render' ),
 				'required' => true,
 			),
 			'orderby'    => array(
-				'label'      => __( 'Order By', 'USL' ),
+				'label'      => __( 'Order By', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
 					'options' => array(
-						'menu_order' => __( 'Menu Order', 'USL' ),
-						'title'      => __( 'Title', 'USL' ),
-						'post_date'  => __( 'Post Date', 'USL' ),
-						'rand'       => __( 'Random', 'USL' ),
-						'ID'         => __( 'ID', 'USL' ),
+						'menu_order' => __( 'Menu Order', 'Render' ),
+						'title'      => __( 'Title', 'Render' ),
+						'post_date'  => __( 'Post Date', 'Render' ),
+						'rand'       => __( 'Random', 'Render' ),
+						'ID'         => __( 'ID', 'Render' ),
 					),
 				),
 			),
 			'order'      => array(
-				'label'      => __( 'Order', 'USL' ),
+				'label'      => __( 'Order', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
 					'options' => array(
-						'ASC' => __( 'Ascending', 'USL' ),
-						'DSC' => __( 'Descending', 'USL' ),
+						'ASC' => __( 'Ascending', 'Render' ),
+						'DSC' => __( 'Descending', 'Render' ),
 					),
 				),
 			),
 			'columns'    => array(
-				'label' => __( 'Columns', 'USL' ),
+				'label' => __( 'Columns', 'Render' ),
 			),
 			'size'       => array(
-				'label' => __( 'Size', 'USL' ),
+				'label' => __( 'Size', 'Render' ),
 			),
 			'include'    => array(
-				'label'    => __( 'Include', 'USL' ),
+				'label'    => __( 'Include', 'Render' ),
 				'advanced' => true,
 			),
 			'exclude'    => array(
-				'label'    => __( 'Exclude', 'USL' ),
+				'label'    => __( 'Exclude', 'Render' ),
 				'advanced' => true,
 			),
 			'itemtag'    => array(
-				'label'    => __( 'Item Tag', 'USL' ),
+				'label'    => __( 'Item Tag', 'Render' ),
 				'advanced' => true,
 			),
 			'icontag'    => array(
-				'label'    => __( 'Icon Tag', 'USL' ),
+				'label'    => __( 'Icon Tag', 'Render' ),
 				'advanced' => true,
 			),
 			'captiontag' => array(
-				'label'    => __( 'Caption Tag', 'USL' ),
+				'label'    => __( 'Caption Tag', 'Render' ),
 				'advanced' => true,
 			),
 			'link'       => array(
-				'label'    => __( 'Link', 'USL' ),
+				'label'    => __( 'Link', 'Render' ),
 				'advanced' => true,
 			),
 		),
@@ -134,91 +134,91 @@ $_shortcodes = array(
 	// TODO Test and fix up
 	array(
 		'code'        => 'playlist',
-		'title'       => __( 'Playlist', 'USL' ),
-		'description' => __( 'The playlist shortcode implements the functionality of displaying a collection of WordPress audio or video files in a post', 'USL' ),
+		'title'       => __( 'Playlist', 'Render' ),
+		'description' => __( 'The playlist shortcode implements the functionality of displaying a collection of WordPress audio or video files in a post', 'Render' ),
 		'atts'        => array(
 			'type'         => array(
-				'label'     => __( 'Type', 'USL' ),
+				'label'     => __( 'Type', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'audio' => __( 'Audio', 'USL' ),
-						'video' => __( 'Video', 'USL' ),
+						'audio' => __( 'Audio', 'Render' ),
+						'video' => __( 'Video', 'Render' ),
 					),
 				),
 			),
 			'orderby'      => array(
-				'label'     => __( 'Order By', 'USL' ),
+				'label'     => __( 'Order By', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'menu_order' => __( 'Menu Order', 'USL' ),
-						'title'      => __( 'Title', 'USL' ),
-						'post_date'  => __( 'Post Date', 'USL' ),
-						'rand'       => __( 'Random', 'USL' ),
-						'ID'         => __( 'ID', 'USL' ),
+						'menu_order' => __( 'Menu Order', 'Render' ),
+						'title'      => __( 'Title', 'Render' ),
+						'post_date'  => __( 'Post Date', 'Render' ),
+						'rand'       => __( 'Random', 'Render' ),
+						'ID'         => __( 'ID', 'Render' ),
 					),
 				),
 			),
 			'order'        => array(
-				'label'     => __( 'Order', 'USL' ),
+				'label'     => __( 'Order', 'Render' ),
 				'type'    => 'selectbox', 'properties'=> array(
 					'options' => array(
-						'ASC' => __( 'Ascending', 'USL' ),
-						'DSC' => __( 'Descending', 'USL' ),
+						'ASC' => __( 'Ascending', 'Render' ),
+						'DSC' => __( 'Descending', 'Render' ),
 					),
 				),
 			),
 			'ids'          => array(
-				'label'    => __( 'IDs', 'USL' ),
+				'label'    => __( 'IDs', 'Render' ),
 				'required' => true,
 			),
 			'include'      => array(
-				'label' => __( 'Include', 'USL' ),
+				'label' => __( 'Include', 'Render' ),
 			),
 			'exclude'      => array(
-				'label' => __( 'Exclude', 'USL' ),
+				'label' => __( 'Exclude', 'Render' ),
 			),
 			'style'        => array(
-				'label'     => __( 'Style', 'USL' ),
+				'label'     => __( 'Style', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'light' => __( 'Light', 'USL' ),
-						'dark'  => __( 'Dark', 'USL' ),
+						'light' => __( 'Light', 'Render' ),
+						'dark'  => __( 'Dark', 'Render' ),
 					),
 				),
 			),
 			'tracklist'    => array(
-				'label'     => __( 'Track List', 'USL' ),
+				'label'     => __( 'Track List', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'true'  => __( 'True', 'USL' ),
-						'false' => __( 'False', 'USL' ),
+						'true'  => __( 'True', 'Render' ),
+						'false' => __( 'False', 'Render' ),
 					),
 				),
 			),
 			'tracknumbers' => array(
-				'label'     => __( 'Track Numbers', 'USL' ),
+				'label'     => __( 'Track Numbers', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'true'  => __( 'True', 'USL' ),
-						'false' => __( 'False', 'USL' ),
+						'true'  => __( 'True', 'Render' ),
+						'false' => __( 'False', 'Render' ),
 					),
 				),
 			),
 			'images'       => array(
-				'label'     => __( 'Images', 'USL' ),
+				'label'     => __( 'Images', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'true'  => __( 'True', 'USL' ),
-						'false' => __( 'False', 'USL' ),
+						'true'  => __( 'True', 'Render' ),
+						'false' => __( 'False', 'Render' ),
 					),
 				),
 			),
 			'artists'      => array(
-				'label'     => __( 'Artists', 'USL' ),
+				'label'     => __( 'Artists', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'true'  => __( 'True', 'USL' ),
-						'false' => __( 'False', 'USL' ),
+						'true'  => __( 'True', 'Render' ),
+						'false' => __( 'False', 'Render' ),
 					),
 				),
 			),
@@ -228,38 +228,38 @@ $_shortcodes = array(
 	// TODO Test and fix up
 	array(
 		'code'        => 'audio',
-		'title'       => __( 'Audio', 'USL' ),
-		'description' => __( 'The Audio feature allows you to embed audio files and play them back', 'USL' ),
+		'title'       => __( 'Audio', 'Render' ),
+		'description' => __( 'The Audio feature allows you to embed audio files and play them back', 'Render' ),
 		'atts'        => array(
 			'src'      => array(
-				'label'    => __( 'Source', 'USL' ),
+				'label'    => __( 'Source', 'Render' ),
 				'required' => true,
 			),
 			'loop'     => array(
-				'label'     => __( 'Loop', 'USL' ),
+				'label'     => __( 'Loop', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'off' => __( 'Off', 'USL' ),
-						'on'  => __( 'On', 'USL' ),
+						'off' => __( 'Off', 'Render' ),
+						'on'  => __( 'On', 'Render' ),
 					),
 				),
 			),
 			'autoplay' => array(
-				'label'     => __( 'Autoplay', 'USL' ),
+				'label'     => __( 'Autoplay', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'off' => __( 'Off', 'USL' ),
-						'on'  => __( 'On', 'USL' ),
+						'off' => __( 'Off', 'Render' ),
+						'on'  => __( 'On', 'Render' ),
 					),
 				),
 			),
 			'preload'  => array(
-				'label'     => __( 'Pre Load', 'USL' ),
+				'label'     => __( 'Pre Load', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'metadata' => __( 'Metadata', 'USL' ),
-						'none'     => __( 'None', 'USL' ),
-						'auto'     => __( 'Auto', 'USL' ),
+						'metadata' => __( 'Metadata', 'Render' ),
+						'none'     => __( 'None', 'Render' ),
+						'auto'     => __( 'Auto', 'Render' ),
 					),
 				),
 			),
@@ -269,49 +269,49 @@ $_shortcodes = array(
 	// TODO Test and fix up
 	array(
 		'code'        => 'video',
-		'title'       => __( 'Video', 'USL' ),
-		'description' => __( 'The Video feature allows you to embed video files and play them back', 'USL' ),
+		'title'       => __( 'Video', 'Render' ),
+		'description' => __( 'The Video feature allows you to embed video files and play them back', 'Render' ),
 		'atts'        => array(
 			'src'      => array(
-				'label'    => __( 'Source', 'USL' ),
+				'label'    => __( 'Source', 'Render' ),
 				'required' => true,
 			),
 			'poster'   => array(
-				'label' => __( 'Poster', 'USL' ),
+				'label' => __( 'Poster', 'Render' ),
 			),
 			'loop'     => array(
-				'label'     => __( 'Loop', 'USL' ),
+				'label'     => __( 'Loop', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'off' => __( 'Off', 'USL' ),
-						'on'  => __( 'On', 'USL' ),
+						'off' => __( 'Off', 'Render' ),
+						'on'  => __( 'On', 'Render' ),
 					),
 				),
 			),
 			'autoplay' => array(
-				'label'     => __( 'Auto Play', 'USL' ),
+				'label'     => __( 'Auto Play', 'Render' ),
 				'type'    => 'selectbox', 'propreties' => array(
 					'options' => array(
-						'off' => __( 'Off', 'USL' ),
-						'on'  => __( 'On', 'USL' ),
+						'off' => __( 'Off', 'Render' ),
+						'on'  => __( 'On', 'Render' ),
 					),
 				),
 			),
 			'preload'  => array(
-				'label'     => __( 'Pre Load', 'USL' ),
+				'label'     => __( 'Pre Load', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
 					'options' => array(
-						'metadata' => __( 'Metadata', 'USL' ),
-						'none'     => __( 'None', 'USL' ),
-						'auto'     => __( 'Auto', 'USL' ),
+						'metadata' => __( 'Metadata', 'Render' ),
+						'none'     => __( 'None', 'Render' ),
+						'auto'     => __( 'Auto', 'Render' ),
 					),
 				),
 			),
 			'height'   => array(
-				'label' => __( 'Height', 'USL' ),
+				'label' => __( 'Height', 'Render' ),
 			),
 			'width'    => array(
-				'label' => __( 'Width', 'USL' ),
+				'label' => __( 'Width', 'Render' ),
 			),
 		),
 	)
@@ -320,5 +320,5 @@ $_shortcodes = array(
 foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'media';
 	$shortcode['source']   = 'WordPress';
-	usl_add_shortcode( $shortcode );
+	render_add_shortcode( $shortcode );
 }

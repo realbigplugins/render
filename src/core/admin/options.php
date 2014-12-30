@@ -1,6 +1,6 @@
 <?php
 
-class USL_OptionsPage extends USL {
+class Render_OptionsPage extends Render {
 
 	public function __construct() {
 
@@ -14,11 +14,11 @@ class USL_OptionsPage extends USL {
 	public function menu() {
 
 		$hook = add_submenu_page(
-			'usl-view-all-shortcodes',
+			'render-view-all-shortcodes',
 			'Ultimate Shortcode Libary Options',
 			'Options',
 			'manage_options',
-			'usl-options',
+			'render-options',
 			array( $this, 'page_output' )
 		);
 
@@ -31,12 +31,12 @@ class USL_OptionsPage extends USL {
 
 	public static function register_settings() {
 
-		register_setting( 'usl_options', 'usl_render_visual' );
+		register_setting( 'render_options', 'render_render_visual' );
 	}
 
 	public static function body_class( $classes ) {
 
-		$classes .= 'usl usl-options';
+		$classes .= 'render render-options';
 
 		return $classes;
 	}
@@ -51,25 +51,25 @@ class USL_OptionsPage extends USL {
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}
 
-		$render_visual = get_option( 'usl_render_visual', '1' );
+		$render_visual = get_option( 'render_render_visual', '1' );
 		require(ABSPATH . 'wp-admin/options-head.php');
 		?>
 		<div class="wrap">
-			<h2><?php _e( 'Ultimate Shortcode Library Options', 'USL' ); ?></h2>
+			<h2><?php _e( 'Ultimate Shortcode Library Options', 'Render' ); ?></h2>
 
 			<form method="post" action="options.php">
 
-				<?php settings_fields( 'usl_options' ); ?>
+				<?php settings_fields( 'render_options' ); ?>
 
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row">
-							<?php _e( 'Use the magical visual renderer?', 'USL' ); ?>
+							<?php _e( 'Use the magical visual renderer?', 'Render' ); ?>
 						</th>
 						<td>
-							<input type="checkbox" id="usl_render_visual"
-							       name="usl_render_visual" value="1" <?php checked( '1', $render_visual ); ?> />
-							<label for="usl_render_visual"><?php _e( 'Heck Yes!', 'USL' ); ?></label>
+							<input type="checkbox" id="render_render_visual"
+							       name="render_render_visual" value="1" <?php checked( '1', $render_visual ); ?> />
+							<label for="render_render_visual"><?php _e( 'Heck Yes!', 'Render' ); ?></label>
 						</td>
 					</tr>
 				</table>
@@ -83,4 +83,4 @@ class USL_OptionsPage extends USL {
 	}
 }
 
-new USL_OptionsPage();
+new Render_OptionsPage();

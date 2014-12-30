@@ -1,6 +1,6 @@
 <?php
 
-class USL_MenuPage extends USL {
+class Render_MenuPage extends Render {
 
 	public function __construct() {
 
@@ -14,11 +14,11 @@ class USL_MenuPage extends USL {
 	public function menu() {
 
 		$hook = add_submenu_page(
-			'usl-view-all-shortcodes',
+			'render-view-all-shortcodes',
 			'Shortcodes',
 			'Shortcodes',
 			'manage_options',
-			'usl-view-all-shortcodes',
+			'render-view-all-shortcodes',
 			array( $this, 'page_output' )
 		);
 
@@ -27,7 +27,7 @@ class USL_MenuPage extends USL {
 
 	public static function screen_options() {
 
-		global $USLShortcodesTable;
+		global $RenderShortcodesTable;
 
 		add_filter( 'admin_body_class', array( __CLASS__, 'body_class' ) );
 
@@ -44,12 +44,12 @@ class USL_MenuPage extends USL {
 			require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 		}
 		require_once( self::$path . 'core/admin/views/shortcodes-table.php' );
-		$USLShortcodesTable = new USL_ShortcodesTable();
+		$RenderShortcodesTable = new Render_ShortcodesTable();
 	}
 
 	public static function body_class( $classes ) {
 
-		$classes .= 'usl usl-shortcodes';
+		$classes .= 'render render-shortcodes';
 
 		return $classes;
 	}
@@ -69,17 +69,17 @@ class USL_MenuPage extends USL {
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}
 
-		global $USLShortcodesTable;
+		global $RenderShortcodesTable;
 
-		$USLShortcodesTable->prepare_items();
+		$RenderShortcodesTable->prepare_items();
 		?>
 		<div class="wrap">
 			<h2>
-				<?php _e( 'Shortcodes', 'USL' ); ?>
+				<?php _e( 'Shortcodes', 'Render' ); ?>
 				<?php if ( ! empty( $_GET['s'] ) ) : ?>
 					<span class="subtitle">
 						<?php printf(
-							__( 'Search results for %s', 'USL' ),
+							__( 'Search results for %s', 'Render' ),
 							'&ldquo;<strong>' . esc_html( $_GET['s'] ) . '</strong>&rdquo;'
 						); ?>
 					</span>
@@ -89,9 +89,9 @@ class USL_MenuPage extends USL {
 			<form method="get">
 				<input type="hidden" name="page" value="<?php echo isset( $_GET['page'] ) ? $_GET['page'] : ''; ?>" />
 
-				<?php $USLShortcodesTable->search_box( 'Search Shortcodes', 'usl_col_name' ); ?>
+				<?php $RenderShortcodesTable->search_box( 'Search Shortcodes', 'render_col_name' ); ?>
 
-				<?php $USLShortcodesTable->display(); ?>
+				<?php $RenderShortcodesTable->display(); ?>
 			</form>
 
 		</div>
@@ -99,4 +99,4 @@ class USL_MenuPage extends USL {
 	}
 }
 
-new USL_MenuPage();
+new Render_MenuPage();

@@ -1,19 +1,19 @@
 /**
- * The main file for USL scripts. Houses generic, broad functionality for the plugin.
+ * The main file for Render scripts. Houses generic, broad functionality for the plugin.
  *
- * @since USL 1.0.0
+ * @since Render 1.0.0
  *
- * @package USL
+ * @package Render
  * @subpackage Scripts
  */
-var USL_Accordion;
+var Render_Accordion;
 (function ($) {
-    USL_Accordion = {
+    Render_Accordion = {
         init: function () {
-            $('.usl-accordion-heading').click(function () {
+            $('.render-accordion-heading').click(function () {
 
-                var $content = $(this).siblings('.usl-accordion-content'),
-                    $container = $(this).closest('.usl-accordion'),
+                var $content = $(this).siblings('.render-accordion-content'),
+                    $container = $(this).closest('.render-accordion'),
                     transition = 300;
 
                     $container.toggleClass('open');
@@ -40,6 +40,6 @@ var USL_Accordion;
     };
 
     $(function () {
-        USL_Accordion.init();
+        Render_Accordion.init();
     })
 })(jQuery);

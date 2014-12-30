@@ -1,6 +1,6 @@
 
 /* Addons page */
-[class^="usl-col-"], [class*=" usl-col-"] {
+[class^="render-col-"], [class*=" render-col-"] {
   display: inline-block;
   margin-right: -4px !important;
   vertical-align: top;
@@ -8,36 +8,36 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
-.usl-col-three {
+.render-col-three {
   width:33.3333%;
 }
-.usl-addon {
+.render-addon {
   text-align: center;
   padding: 10px;
 }
-.usl-addon-container {
+.render-addon-container {
   background-color: #fff;
   text-align: center;
   padding: 10px;
   min-height: 223px;
 }
-.usl-addon a{
+.render-addon a{
   text-decoration: none;
 }
-.usl-addon span {
+.render-addon span {
   font-size: 130px;
   height: auto;
   width: auto;
 }
-.usl-addon h4 { margin: 0 0 20px;
+.render-addon h4 { margin: 0 0 20px;
 }
 @media screen and (max-width: 700px) {
-  .usl-addon {
+  .render-addon {
     width: 50% !important;
   }
 }
 @media screen and (max-width: 450px) {
-  .usl-addon {
+  .render-addon {
     width:100% !important;
   }
 }

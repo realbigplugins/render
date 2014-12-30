@@ -1,8 +1,8 @@
 <?php
 // Create the new function for adding shortcodes
-function usl_add_shortcode( $args ) {
+function render_add_shortcode( $args ) {
 
-	global $USL, $shortcode_tags;
+	global $Render, $shortcode_tags;
 
 	// Merge if it already exists
 	if ( isset( $shortcode_tags[ $args['code'] ] ) ) {
@@ -10,7 +10,7 @@ function usl_add_shortcode( $args ) {
 	}
 
 	// Establish defaults
-	$args = wp_parse_args( $args, USL::$shortcode_defaults );
+	$args = wp_parse_args( $args, Render::$shortcode_defaults );
 
 	// Establish default attribute properties (if any exist)
 	if ( ! empty( $args['atts'] ) ) {
@@ -39,10 +39,10 @@ function usl_add_shortcode( $args ) {
 	}
 
 	// Add the shortcode info to our list if it hasn't yet been added
-	if ( empty( $USL->shortcodes ) || ! array_key_exists( $args['code'], $USL->shortcodes ) ) {
+	if ( empty( $Render->shortcodes ) || ! array_key_exists( $args['code'], $Render->shortcodes ) ) {
 
 		// TODO make this dynamic
-		$USL->shortcodes[ $args['code'] ] = array(
+		$Render->shortcodes[ $args['code'] ] = array(
 			'title'       => $args['title'],
 			'atts'        => $args['atts'],
 			'source'      => $args['source'],
@@ -58,17 +58,17 @@ function usl_add_shortcode( $args ) {
 }
 
 /**
- * Merges the WP global shortcode array with the USL array.
+ * Merges the WP global shortcode array with the Render array.
  *
- * @since USL 1.0.0
+ * @since Render 1.0.0
  *
  * @return array The merged shortcode array.
  */
-function _usl_get_merged_shortcodes() {
+function _render_get_merged_shortcodes() {
 
-	global $USL, $shortcode_tags;
+	global $Render, $shortcode_tags;
 
-	// Setup the WP $shortcode_tags to be compatible with USL
+	// Setup the WP $shortcode_tags to be compatible with Render
 	$_shortcode_tags = array();
 	foreach ( $shortcode_tags as $code => $shortcode_func ) {
 
@@ -82,12 +82,12 @@ function _usl_get_merged_shortcodes() {
 
 		$_shortcode_tags[ $code ] = wp_parse_args( array(
 			'function' => $shortcode_func,
-			'title'    => usl_translate_id_to_name( $code ),
-		), USL::$shortcode_defaults );
+			'title'    => render_translate_id_to_name( $code ),
+		), Render::$shortcode_defaults );
 	}
 
-	// Merge Other shortcodes with USL shortcodes
-	$all_shortcodes = array_merge( $_shortcode_tags, $USL->shortcodes );
+	// Merge Other shortcodes with Render shortcodes
+	$all_shortcodes = array_merge( $_shortcode_tags, $Render->shortcodes );
 
 	// Sort the array alphabetically by shortcode title
 	uasort( $all_shortcodes, function ( $a, $b ) {
@@ -97,20 +97,20 @@ function _usl_get_merged_shortcodes() {
 	return $all_shortcodes;
 }
 
-function _usl_get_categories() {
+function _render_get_categories() {
 	return array_unique(
 		wp_list_pluck(
-			_usl_get_merged_shortcodes(),
+			_render_get_merged_shortcodes(),
 			'category'
 		)
 	);
 }
 
-function usl_translate_id_to_name( $id ) {
+function render_translate_id_to_name( $id ) {
 	return ucwords( str_replace( array( ' ', '_', '-' ), ' ', $id ) );
 }
 
-function usl_esc_atts( $atts ) {
+function render_esc_atts( $atts ) {
 
 	if ( empty( $atts ) ) {
 		return $atts;
@@ -123,7 +123,7 @@ function usl_esc_atts( $atts ) {
 	return $atts;
 }
 
-function usl_strip_paragraphs_around_shortcodes( $content ) {
+function render_strip_paragraphs_around_shortcodes( $content ) {
 
 	$array = array(
 		'<p>['    => '[',
@@ -136,7 +136,7 @@ function usl_strip_paragraphs_around_shortcodes( $content ) {
 	return $content;
 }
 
-function usl_associative_atts( $atts, $keyname ) {
+function render_associative_atts( $atts, $keyname ) {
 
 	$output = array();
 
@@ -165,7 +165,7 @@ function usl_associative_atts( $atts, $keyname ) {
 
 			$array = array();
 			foreach ( $fields as $field_name => $field_values ) {
-				$array[ $field_name ] = _usl_decode_att( $field_values[ $i ] );
+				$array[ $field_name ] = _render_decode_att( $field_values[ $i ] );
 			}
 
 			$output[] = $array;
@@ -175,7 +175,7 @@ function usl_associative_atts( $atts, $keyname ) {
 	return $output;
 }
 
-function _usl_decode_att( $att ) {
+function _render_decode_att( $att ) {
 	return str_replace( array( '::dquot::', '::squot::', '::br::' ), array( '"', '\'', '<br/>' ), $att );
 }
 
@@ -187,26 +187,26 @@ function _usl_decode_att( $att ) {
  * @param string $message The error message to display.
  * @return string The HTML error message.
  */
-function _usl_sc_error( $message ) {
-	return "<span class='usl-sc-error'>ERROR: $message</span>";
+function _render_sc_error( $message ) {
+	return "<span class='render-sc-error'>ERROR: $message</span>";
 }
 
-function usl_sc_attr_template( $template ) {
+function render_sc_attr_template( $template ) {
 
 	switch ( $template ) {
 		case 'date_format':
 
 			return array(
-				'label'       => __( 'Date Format', 'USL' ),
+				'label'       => __( 'Date Format', 'Render' ),
 				'type'        => 'selectbox',
 				'description' => sprintf(
-					__( 'Format to display the date. Either choose one or input a custom date format using %s date format standards.', 'USL' ), '<a href="http://php.net/manual/en/function.date.php" target="_blank">PHP</a>' ),
+					__( 'Format to display the date. Either choose one or input a custom date format using %s date format standards.', 'Render' ), '<a href="http://php.net/manual/en/function.date.php" target="_blank">PHP</a>' ),
 				'properties'  => array(
-					'placeholder'      => __( 'Select a date format or enter a custom format.', 'USL' ),
+					'placeholder'      => __( 'Select a date format or enter a custom format.', 'Render' ),
 					'default'          => 'default_date',
 					'allowCustomInput' => true,
 					'options'          => array(
-						'default_date'      => __( 'Date format set in Settings -> General', 'USL' ),
+						'default_date'      => __( 'Date format set in Settings -> General', 'Render' ),
 						'l, F jS, Y - g:iA' => date( 'l, F jS, Y - g:iA' ),
 						'l, F jS, Y'        => date( 'l, F jS, Y' ),
 						'F jS, Y'           => date( 'F jS, Y' ),
@@ -225,14 +225,14 @@ function usl_sc_attr_template( $template ) {
 		case 'post_list':
 
 			return array(
-				'label'      => __( 'Post', 'USL' ),
+				'label'      => __( 'Post', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
 					'callback'    => array(
 						'groups'   => true,
-						'function' => '_usl_sc_post_list',
+						'function' => '_render_sc_post_list',
 					),
-					'placeholder' => __( 'Defaults to the current post.', 'USL' ),
+					'placeholder' => __( 'Defaults to the current post.', 'Render' ),
 				),
 			);
 			break;

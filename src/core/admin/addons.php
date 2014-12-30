@@ -1,6 +1,6 @@
 <?php
 // TODO Re-do this page
-class USL_Addons {
+class Render_Addons {
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'menu' ) );
@@ -12,8 +12,8 @@ class USL_Addons {
 	public function menu() {
 		add_submenu_page(
 			'view-all-shortcodes',
-			__( 'Shortcode Addons', 'USL' ),
-			__( 'Addons', 'USL' ),
+			__( 'Shortcode Addons', 'Render' ),
+			__( 'Addons', 'Render' ),
 			'manage_options',
 			'shortcodes-addons',
 			array( $this, 'display' )
@@ -30,13 +30,13 @@ class USL_Addons {
 		}
 
 		// Activate/Deactivate plugins
-		if ( isset( $_GET['usl_activate'] ) ) {
-			activate_plugin( $_GET['usl_activate'] );
+		if ( isset( $_GET['render_activate'] ) ) {
+			activate_plugin( $_GET['render_activate'] );
 //			$this->update_nag( 'Extension activated! Refresh for changes to take effect.' );
 		}
 
-		if ( isset( $_GET['usl_deactivate'] ) ) {
-			deactivate_plugins( $_GET['usl_deactivate'] );
+		if ( isset( $_GET['render_deactivate'] ) ) {
+			deactivate_plugins( $_GET['render_deactivate'] );
 //			$this->update_nag( 'Extension deactivated! Refresh for changes to take effect.' );
 		}
 
@@ -57,12 +57,12 @@ class USL_Addons {
 		<?php
 		foreach ( $addons as $name => $props ) {
 			// Set up activate/deactivate urls
-			$url            = remove_query_arg( array( 'usl_deactivate', 'usl_activate' ) );
-			$activate_url   = esc_url( add_query_arg( array( 'usl_activate' => $props['activate-slug'] ), $url ) );
-			$deactivate_url = esc_url( add_query_arg( array( 'usl_deactivate' => $props['activate-slug'] ), $url ) );
+			$url            = remove_query_arg( array( 'render_deactivate', 'render_activate' ) );
+			$activate_url   = esc_url( add_query_arg( array( 'render_activate' => $props['activate-slug'] ), $url ) );
+			$deactivate_url = esc_url( add_query_arg( array( 'render_deactivate' => $props['activate-slug'] ), $url ) );
 
-			echo '<div class="usl-addon usl-col-three">';
-			echo '<div class="usl-addon-container">';
+			echo '<div class="render-addon render-col-three">';
+			echo '<div class="render-addon-container">';
 			echo '<a href="' . $props['url'] . '"><span class="dashicons dashicons-' . $props['icon'] . '"></span>';
 			echo '<h4>' . $name . '</h4></a>';
 
@@ -80,4 +80,4 @@ class USL_Addons {
 	}
 }
 
-new USL_Addons();
+new Render_Addons();

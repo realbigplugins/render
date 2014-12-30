@@ -1,13 +1,13 @@
-var USL_Admin;
+var Render_Admin;
 (function ($) {
-    USL_Admin = {
+    Render_Admin = {
         init: function () {
 
         }
     };
 
     $(function() {
-        USL_Admin.init();
+        Render_Admin.init();
     });
 })(jQuery);
 

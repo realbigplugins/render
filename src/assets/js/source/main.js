@@ -1,21 +1,21 @@
 /**
- * The main file for USL scripts. Houses generic, broad functionality for the plugin.
+ * The main file for Render scripts. Houses generic, broad functionality for the plugin.
  *
- * @since USL 1.0.0
+ * @since Render 1.0.0
  *
- * @package USL
+ * @package Render
  * @subpackage Scripts
  */
-var USL;
+var Render;
 (function ($) {
-	USL = {
+	Render = {
 		init: function () {
 
 		},
 		/**
 		 * Toggles the visibility of an element.
 		 *
-		 * @since USL 1.0.0
+		 * @since Render 1.0.0
 		 *
 		 * @param id The ID of the node to target.
 		 */
@@ -29,6 +29,6 @@ var USL;
 	};
 
 	$(function () {
-		USL.init();
+		Render.init();
 	})
 })(jQuery);

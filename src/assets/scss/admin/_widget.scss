@@ -1,26 +1,26 @@
 @import "../global";
 
-.usl-widget {
+.render-widget {
   p {
     margin: 10px 0;
   }
 }
 
-.usl-widget-add-shortcode-container {
+.render-widget-add-shortcode-container {
   text-align: center;
 
-  .usl-widget-add-shortcode {
+  .render-widget-add-shortcode {
     border: 1px solid #ddd;
   }
 }
 
-.usl-widget-shortcode-preview {
+.render-widget-shortcode-preview {
   text-align: center;
   font-size: 20px;
   font-weight: bold;
 }
 
-.usl-widget-customizer-message {
+.render-widget-customizer-message {
   text-align: center;
   font-style: italic;
   color: #777;

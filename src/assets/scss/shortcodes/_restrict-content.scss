@@ -1,9 +1,9 @@
 @import "../global";
 
 // Tinymce
-.usl-tinymce-shortcode-wrapper {
+.render-tinymce-shortcode-wrapper {
 
-  &.usl_hide_for_users {
+  &.render_hide_for_users {
     .hidden {
       color: #C60000;
     }
