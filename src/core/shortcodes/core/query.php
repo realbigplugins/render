@@ -17,12 +17,12 @@ $_shortcodes = array(
 		'description' => __( 'Queries the database for posts.', 'Render' ),
 		'tags'        => 'query database posts data loop',
 		'atts'        => array(
-			'author' => array(
-				'label' => __( 'Author', 'Render' ),
-				'type'        => 'selectbox',
-				'properties'  => array(
-					'placeholder'      => __( 'Author', 'Render' ),
-					'options'          => 'test',
+			'author'    => array(
+				'label'      => __( 'Author', 'Render' ),
+				'type'       => 'selectbox',
+				'properties' => array(
+					'placeholder' => __( 'Author', 'Render' ),
+					'options'     => _render_authors(),
 				),
 			),
 			'post_type' => array(
@@ -30,13 +30,13 @@ $_shortcodes = array(
 				'type'        => 'selectbox',
 				'description' => __( 'Available post types.', 'Render' ),
 				'properties'  => array(
-					'placeholder'      => __( 'Post Type', 'Render' ),
-					'options'          => get_post_types(),
+					'placeholder' => __( 'Post Type', 'Render' ),
+					'options'     => get_post_types(),
 				),
 			),
 		),
 		'render'      => true,
-		'wrapping' => false
+		'wrapping'    => false
 	)
 );
 
@@ -44,6 +44,20 @@ foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'query';
 	$shortcode['source']   = 'Render';
 	render_add_shortcode( $shortcode );
+}
+
+/**
+ * Get all authors on the site
+ *
+ * @return array
+ */
+function _render_authors() {
+	$users = get_users( array( 'fields' => array( 'display_name' ) ) );
+	foreach ( $users as $user ) {
+		$authors[] = esc_html( $user->display_name );
+	}
+
+	return $authors;
 }
 
 /**
@@ -60,7 +74,7 @@ function _render_query( $atts ) {
 
 	$atts = shortcode_atts( array(
 		'post_type' => '',
-		'author' => '',
+		'author'    => '',
 	), $atts );
 
 	// Escape atts
@@ -68,15 +82,15 @@ function _render_query( $atts ) {
 
 	$args = array(
 		'post_type' => $atts['post_type'],
-		'author' => $atts['author']
+		'author'    => $atts['author']
 	);
 
 	$output = '';
-	$query = new WP_Query( $args );
+	$query  = new WP_Query( $args );
 
 	if ( $query->have_posts() ) {
 		$output = '<ul>';
-		while ( $query->have_posts() )  {
+		while ( $query->have_posts() ) {
 			$query->the_post();
 			$output .= '<li>' . get_the_title() . '</li>';
 		}
@@ -84,5 +98,6 @@ function _render_query( $atts ) {
 	} else {
 		$output = 'No posts found';
 	}
+
 	return $output;
 }
