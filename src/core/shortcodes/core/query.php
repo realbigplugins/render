@@ -22,7 +22,7 @@ $_shortcodes = array(
 				'type'       => 'selectbox',
 				'properties' => array(
 					'placeholder' => __( 'Author', 'Render' ),
-					'options'     => _render_authors(),
+					'options'    => render_user_dropdown( "edit_posts" ),
 				),
 			),
 			'post_type' => array(
@@ -44,20 +44,6 @@ foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'query';
 	$shortcode['source']   = 'Render';
 	render_add_shortcode( $shortcode );
-}
-
-/**
- * Get all authors on the site
- *
- * @return array
- */
-function _render_authors() {
-	$users = get_users( array( 'fields' => array( 'display_name' ) ) );
-	foreach ( $users as $user ) {
-		$authors[] = esc_html( $user->display_name );
-	}
-
-	return $authors;
 }
 
 /**

@@ -407,7 +407,7 @@ function render_sc_user_get_userdata( $user_ID ) {
  *
  * @return bool|array List of registered users.
  */
-function render_user_dropdown() {
+function render_user_dropdown( $cap = 'read' ) {
 
 	$users = get_users( array(
 		'fields' => array(
@@ -418,7 +418,14 @@ function render_user_dropdown() {
 
 	$output = array();
 	foreach ( $users as $user ) {
-		$output[ $user->ID ] = $user->display_name;
+		if ( 'read' != $cap ) {
+			// Results in fatal error: "exists" method is undefined
+//			if ( user_can( $user, $cap ) ) {
+//			$output[ $user->ID ] = $user->display_name;
+//			}
+		} else {
+			$output[ $user->ID ] = $user->display_name;
+		}
 	}
 
 	return $output;
