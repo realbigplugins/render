@@ -407,18 +407,19 @@ function render_sc_user_get_userdata( $user_ID ) {
  *
  * @return bool|array List of registered users.
  */
-function render_user_dropdown() {
+function render_user_dropdown( $all = true ) {
 
-	$users = get_users( array(
-		'fields' => array(
-			'ID',
-			'display_name',
-		)
-	) );
+	$users = get_users();
 
 	$output = array();
 	foreach ( $users as $user ) {
-		$output[ $user->ID ] = $user->display_name;
+		if ( $all == false ) {
+			if ( $user->has_cap( 'edit_posts' ) ) {
+			$output[ $user->ID ] = $user->display_name;
+			}
+		} else {
+			$output[ $user->ID ] = $user->display_name;
+		}
 	}
 
 	return $output;

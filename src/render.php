@@ -91,6 +91,7 @@ if ( ! class_exists( 'Render' ) ) {
 				'time',
 				'user',
 				'visibility',
+				'query',
 			),
 			'wordpress' => array(
 				'media',
