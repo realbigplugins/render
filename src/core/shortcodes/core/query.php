@@ -22,7 +22,7 @@ $_shortcodes = array(
 				'type'       => 'selectbox',
 				'properties' => array(
 					'placeholder' => __( 'Author', 'Render' ),
-					'options'     => render_user_dropdown(),
+					'options'     => render_user_dropdown( false ),
 				),
 			),
 			'post_type'   => array(
