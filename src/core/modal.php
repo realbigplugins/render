@@ -152,6 +152,13 @@ class Render_Modal {
 	<?php
 	}
 
+	private static function att_type_checkbox( $att_id, $att, $properties = array() ) {
+		?>
+		<input type="checkbox" class="render-modal-att-input render-modal-att-checkbox"
+		       name="<?php echo $att_id; ?>"
+				value="<?php echo isset( $properties['value'] ) ? $properties['value'] : ''; ?>"><?php
+	}
+
 	private static function att_type_textarea( $att_id, $att ) {
 		?>
 		<textarea class="render-modal-att-input render-modal-att-textarea" name="<?php echo $att_id; ?>"><?php
