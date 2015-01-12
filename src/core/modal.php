@@ -510,6 +510,7 @@ class Render_Modal {
 								<li data-category="<?php echo isset( $shortcode['category'] ) ?
 									$shortcode['category'] : 'other'; ?>"
 								    data-code="<?php echo $code; ?>"
+								    data-title="<?php echo $shortcode['title']; ?>"
 								    data-source="<?php echo $shortcode['source']; ?>"
 								    data-tags="<?php echo $shortcode['tags']; ?>"
 								    class="render-modal-shortcode

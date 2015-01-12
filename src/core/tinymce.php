@@ -5,9 +5,9 @@
  *
  * All functionality for the tinyMCE button that Render adds to the standard editor.
  *
- * @since Render 1.0.0
+ * @since      Render 1.0.0
  *
- * @package Render
+ * @package    Render
  * @subpackage TinyMCE
  */
 class Render_tinymce extends Render {
@@ -58,12 +58,14 @@ class Render_tinymce extends Render {
 	public static function tinymce_external_scripts( $data ) {
 
 		$data['tinymceExternalScripts'][] = self::$url . '/assets/js/render.min.js';
+
 		return $data;
 	}
 
 	public static function shortcode_regex( $data ) {
 
 		$data['shortcode_regex'] = get_shortcode_regex();
+
 		return $data;
 	}
 
@@ -129,8 +131,8 @@ class Render_tinymce extends Render {
 	 */
 	public static function add_tinymce_plugins( $plugins ) {
 
-		$plugins['render']            = self::$url . '/assets/js/includes/tinymce-plugins/render/plugin.min.js';
-		$plugins['noneditable']    = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
+		$plugins['render']      = self::$url . '/assets/js/includes/tinymce-plugins/render/plugin.min.js';
+		$plugins['noneditable'] = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
 
 		return $plugins;
 	}
@@ -168,7 +170,7 @@ class Render_tinymce extends Render {
 		define( 'Render_SHORTCODE_RENDERING', true );
 		do_action( 'render_render_ajax' );
 
-		$content            = stripslashes( $_POST['content'] );
+		$content               = stripslashes( $_POST['content'] );
 		$render_shortcode_data = $_POST['shortcode_data'];
 
 		$pattern = get_shortcode_regex();
@@ -194,8 +196,10 @@ class Render_tinymce extends Render {
 		$_content    = $matches[5];
 
 		// Search again for any nested shortcodes (loops infinitely)
-		$pattern = get_shortcode_regex();
-		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $_content );
+		if ( ! empty( $_content ) ) {
+			$pattern = get_shortcode_regex();
+			$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $_content );
+		}
 
 		// If this is a wrapping code, but no content is provided, use dummy content
 		if ( empty( $content ) && $render_shortcode_data[ $code ]['wrapping'] === 'true' ) {
@@ -229,9 +233,11 @@ class Render_tinymce extends Render {
 		$nostyle = isset( $render_shortcode_data[ $code ]['noStyle'] ) ? '' : ' styled';
 
 		// Get the atts prepared for JSON
-		$atts = shortcode_parse_atts( $atts );
 		if ( ! empty( $atts ) ) {
-			$atts = json_encode( $atts );
+			$atts = shortcode_parse_atts( $atts );
+			if ( ! empty( $atts ) ) {
+				$atts = json_encode( $atts );
+			}
 		}
 
 		// Get the shortcode output
@@ -244,7 +250,11 @@ class Render_tinymce extends Render {
 
 		// Start the wrapper
 		if ( ! isset( $render_shortcode_data[ $code ]['noWrap'] ) ) {
-			$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
+
+			if ( ! empty( $atts ) ) {
+				$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
+			}
+
 			$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable $code $nostyle' data-code='$code' data-atts='$atts'>";
 		}
 
@@ -254,7 +264,13 @@ class Render_tinymce extends Render {
 		if ( ! isset( $render_shortcode_data[ $code ]['noWrap'] ) ) {
 
 			// Delete notification
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper-delete'>" . __( 'Press again to delete', 'Render' ) . "</$tag>";
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip'>" . __( 'Press again to delete', 'Render' ) . "</$tag>";
+
+			// Action button
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip'>";
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit'>edit</$tag>";
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper-remove dashicons dashicons-no'>remove</$tag>";
+			$output .= "</$tag>";
 
 			$output .= "</$tag>";
 		}
@@ -274,6 +290,8 @@ function _render_init_tinymce( $screen ) {
 
 	$allowed_screens = apply_filters( 'render_tinymce_allowed_screens', array(
 		'post',
+		'widgets',
+		'customize',
 	), $screen->base, $screen );
 
 	if ( in_array( $screen->base, $allowed_screens ) ) {

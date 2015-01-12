@@ -1,5 +1,6 @@
 @import "../global";
 
+// Buttons
 i.mce-i-render-mce-icon {
   font: 400 20px/1 dashicons;
 
@@ -16,6 +17,7 @@ i.mce-i-render-mce-refresh-icon {
   }
 }
 
+// Loader overlay
 #render-tinymce-loader {
   position: absolute;
   top: 0;

@@ -13,7 +13,7 @@
  */
 var Render_tinymce;
 (function ($) {
-    var editor, $texteditor, $editor, $loader, no_selected,
+    var editor, $texteditor, $editor, $loader,
         min_load_time = false,
         last_message = 0,
         submitted = false,
@@ -57,6 +57,28 @@ var Render_tinymce;
             });
         },
 
+        editorBinds: function ($body) {
+
+            $body.on('mouseover', '.render-tinymce-shortcode-wrapper', function (e) {
+
+                e.stopPropagation();
+
+                // Remove all other active tooltips
+                $body.find('.render-tinymce-shortcode-wrapper-actions.active').removeClass('active');
+
+                // Add to new tooltip
+                $(this).find('> .render-tinymce-shortcode-wrapper-actions').addClass('active');
+            });
+
+            $body.on('mouseleave', '.render-tinymce-shortcode-wrapper', function (e) {
+
+                e.stopPropagation();
+
+                // Remove all other active tooltips
+                $body.find('.render-tinymce-shortcode-wrapper-actions.active').removeClass('active');
+            })
+        },
+
         addToTinymce: function () {
 
             tinymce.PluginManager.add('render', function (_editor) {
@@ -64,33 +86,11 @@ var Render_tinymce;
                 // Set the active editor
                 editor = _editor;
 
-                // Fires when clicking the shortcode < > button in the tinymce toolbar
+                // Fires when clicking the shortcode <> button in the tinymce toolbar
                 _editor.addCommand('Render_Open', function () {
 
-                    var node = editor.selection.getNode();
-
                     Render_Modal.selection = editor.selection.getContent();
-                    no_selected = false;
-
-                    if ($(node).closest('.render-tinymce-shortcode-wrapper').length || $(node).hasClass('render-tinymce-shortcode-wrapper')) {
-
-                        var $node = $(node).hasClass('render-tinymce-shortcode-wrapper') ?
-                                $(node) :
-                                $(node).closest('.render-tinymce-shortcode-wrapper'),
-                            content = $node.find('.render-tinymce-shortcode-content').html(),
-                            container_html = $('<div />').append($node.clone()).html(),
-                            shortcode = Render_tinymce.visualToLiteral(container_html);
-
-                        // If there's no selected text, assume the entire shortcode is being modified
-                        if (!Render_Modal.selection.length) {
-                            Render_Modal.selection = content;
-                            no_selected = true;
-                        }
-
-                        Render_Modal.modify(shortcode);
-                    } else {
-                        Render_Modal.open();
-                    }
+                    Render_Modal.open();
                 });
 
                 // Refresh the editor
@@ -105,29 +105,26 @@ var Render_tinymce;
                     cmd: 'Render_Open',
                     tooltip: 'Add Shortcode',
 
-                    // Make the < > button active when cursor is inside a shortcode
-                    onPostRender: function () {
-                        var render_button = this;
-
-                        editor.on('nodechange', function (event) {
-
-                            var $node = $(event.element).hasClass('render-tinymce-shortcode-wrapper') ?
-                                    $(event.element) :
-                                    $(event.element).closest('.render-tinymce-shortcode-wrapper'),
-                                is_render = $node.length ? true : false;
-
-                            if ($lastNode.length) {
-                                $lastNode.removeClass('active');
-                            }
-
-                            if (is_render) {
-                                $lastNode = $node;
-                                $lastNode.addClass('active');
-                            }
-
-                            render_button.active(is_render);
-                        });
-                    }
+                    // Make the shortcode have class "active" when cursor is inside it
+                    // REMOVE if still not in use
+                    //onPostRender: function () {
+                    //    editor.on('nodechange', function (event) {
+                    //
+                    //        var $node = $(event.element).hasClass('render-tinymce-shortcode-wrapper') ?
+                    //                $(event.element) :
+                    //                $(event.element).closest('.render-tinymce-shortcode-wrapper'),
+                    //            is_render = $node.length ? true : false;
+                    //
+                    //        if ($lastNode.length) {
+                    //            $lastNode.removeClass('active');
+                    //        }
+                    //
+                    //        if (is_render) {
+                    //            $lastNode = $node;
+                    //            $lastNode.addClass('active');
+                    //        }
+                    //    });
+                    //}
                 });
 
                 _editor.addButton('render_refresh', {
@@ -145,8 +142,33 @@ var Render_tinymce;
                 _editor.onClick.add(function (editor, event) {
 
                     // Remove delete overlay for all shortcodes
-                    var $body = $(editor.getBody());
+                    var $body = $(editor.getBody()),
+                        $shortcode, content, container_html, shortcode;
+
                     $body.find('.render-tinymce-shortcode-wrapper.delete').removeClass('delete');
+
+                    // Edit a shortcode
+                    if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-edit')) {
+
+                        $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper');
+                        content = $shortcode.find('.render-tinymce-shortcode-content').html();
+                        container_html = $('<div />').append($shortcode.clone()).html();
+                        shortcode = Render_tinymce.visualToLiteral(container_html);
+
+                        if (content && content.length) {
+                            Render_Modal.selection = content;
+                        }
+
+                        $shortcode.addClass('render-tinymce-editing');
+                        Render_Modal.modify(shortcode);
+                    }
+
+                    // Remove a shortcode
+                    if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-remove')) {
+
+                        $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper');
+                        editor.dom.remove($shortcode[0]);
+                    }
                 });
 
                 // Keydown (ANY key) in the editor
@@ -252,10 +274,22 @@ var Render_tinymce;
 
                 _editor.on('init show', Render_tinymce.loadVisual);
 
+                _editor.on('init', function () {
+                    Render_tinymce.editorBinds($(editor.getBody()));
+                });
+
                 _editor.on('hide', function () {
                     var content = editor.getContent({format: 'numeric'});
                     $texteditor.val(window.switchEditors.pre_wpautop(Render_tinymce.loadText(content)));
                 });
+
+                // TODO Do something like this to prevent undo-ing rendering (taken from wpview tinymce plugin)
+                // Prevent adding undo levels on changes inside a view wrapper
+                //editor.on( 'BeforeAddUndo', function( event ) {
+                //    if ( event.lastLevel && emptyViews( event.level.content ) === emptyViews( event.lastLevel.content ) ) {
+                //        event.preventDefault();
+                //    }
+                //});
             });
         },
 
@@ -295,7 +329,7 @@ var Render_tinymce;
         loadText: function (content) {
 
             content = Render_MCECallbacks.convertRenderedToLiteral(content);
-            content = content.replace(/<span class="render-tinymce-divider render-tinymce-noneditable">.*?<\/span>/g, '');
+            content = content.replace(/<span class="render-tinymce-divider.*?>.*?<\/span>/g, '');
             content = content.replace(/<p class="render-tinymce-divider.*?>.*?<\/p>/g, '');
 
             return content;
@@ -308,7 +342,6 @@ var Render_tinymce;
                 shortcode_content = $(shortcode).find('.render-tinymce-shortcode-content').html();
 
             var output = '[' + code;
-
 
             if (atts) {
                 atts = JSON.parse(render_encode_attr(atts, ['"']));
@@ -334,18 +367,15 @@ var Render_tinymce;
 
         update: function () {
 
-            // Get the current Render node (if it exists)
-            var node = editor.selection.getNode(),
-                $node = $(node).hasClass('render-tinymce-shortcode-wrapper') ?
-                    $(node) :
-                    $(node).closest('.render-tinymce-shortcode-wrapper'),
-                $divider = $node.next('.render-tinymce-divider');
+            var $shortcode = $(editor.dom.select('.render-tinymce-editing'));
 
             // Replace or insert the content
-            if ($node.length) {
-                $node.replaceWith(Render_Modal.output.all);
-                editor.dom.remove($divider[0]);
+            if ($shortcode.length) {
+                editor.dom.remove($shortcode.next('.render-tinymce-divider')); // Get rid of the leftover divider!
+                $shortcode.replaceWith(Render_Modal.output.all);
+                console.log('modify');
             } else {
+                console.log('insert');
                 editor.insertContent(Render_Modal.output.all);
             }
 

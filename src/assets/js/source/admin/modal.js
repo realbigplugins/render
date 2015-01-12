@@ -647,7 +647,7 @@ var Render_Modal;
                 }
 
                 var search_query = $(this).val(),
-                    matches = search_query.match(/[a-zA-Z0-9\s]/g);
+                    matches = search_query.match(/[a-zA-Z0-9\s_]/g);
 
                 // Don't search if the query isn't allowed characters
                 if (search_query.length && (matches === null || matches.length !== search_query.length)) {
@@ -679,7 +679,7 @@ var Render_Modal;
 
                     elements.list.find('.render-modal-shortcode').each(function () {
                         var title = $(this).find('.render-modal-shortcode-title').text(),
-                            description = $(this).find('.description').text(),
+                            description = $(this).find('.render-modal-shortcode-description').text(),
                             code = $(this).attr('data-code'),
                             source = $(this).attr('data-source'),
                             tags = $(this).attr('data-tags'),
@@ -1112,11 +1112,11 @@ var Render_Modal;
 
             render_modal_open = true;
 
-            if (!this.selection) {
-                elements.list.find('.render-modal-shortcode.wrapping').addClass('disabled');
-            } else {
-                elements.list.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
-            }
+            //if (!this.selection) {
+            //    elements.list.find('.render-modal-shortcode.wrapping').addClass('disabled');
+            //} else {
+            //    elements.list.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
+            //}
 
             this.refreshRows();
 
@@ -1178,7 +1178,7 @@ var Render_Modal;
             this.sanitize();
 
             var code = elements.active_shortcode.attr('data-code'),
-                title = elements.active_shortcode.find('.render-modal-shortcode-title').html(),
+                title = elements.active_shortcode.attr('data-title'),
                 props, output, atts = {}, selection = this.selection;
 
             // Get the atts

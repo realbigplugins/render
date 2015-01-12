@@ -10,8 +10,8 @@ Author URI: http://realbigmarketing.com
 define( 'RENDER_DEVELOPMENT', true );
 
 if ( isset( $_GET['DEBUG_WPSCRIPTS'] ) ) {
-	define( 'SCRIPT_DEBUG', true );
 }
+define( 'SCRIPT_DEBUG', true );
 
 include_once( 'tools/tag-debug.php' );
 include_once( 'tools/filter-content.php' );

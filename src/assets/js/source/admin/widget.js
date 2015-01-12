@@ -10,6 +10,7 @@
  * @subpackage Widget
  */
 
+    // FIXME Translation ready
 var Render_Widget;
 (function ($) {
     var active_widget, self;
@@ -40,10 +41,9 @@ var Render_Widget;
 
             active_widget = $e.closest('.widget-content');
 
-            var title = active_widget.find('.render-widget-shortcode-preview').html(),
-                shortcode = active_widget.find('.render-widget-shortcode').val();
+            var shortcode = active_widget.find('.render-widget-shortcode').val();
 
-            if (title.toLowerCase().trim() != 'no shortcode yet') {
+            if (shortcode) {
                 Render_Modal.modify(shortcode);
             } else {
                 Render_Modal.open();
@@ -52,6 +52,7 @@ var Render_Widget;
 
         update: function () {
 
+            console.log(Render_Modal.output);
             self._change(Render_Modal.output.all, Render_Modal.output.title, 'Modify / Remove Shortcode', Render_Modal.output.title);
         },
 

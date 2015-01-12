@@ -6,26 +6,26 @@ var Render_Admin;
         }
     };
 
-    $(function() {
+    $(function () {
         Render_Admin.init();
     });
 })(jQuery);
 
-// Closest Child Plugin
-(function($){
-    $.fn.closestChildren = function(selector) {
-        var $children, $results;
+// Sort by depth plugin
+jQuery.fn.sortByDepth = function () {
+    var ar = this.map(function () {
+            return {length: jQuery(this).parents().length, elt: this}
+        }).get(),
+        result = [],
+        i = ar.length;
 
-        $children = this.children();
 
-        if ($children.length === 0)
-            return $();
+    ar.sort(function (a, b) {
+        return a.length - b.length;
+    });
 
-        $results = $children.filter(selector);
-
-        if ($results.length > 0)
-            return $results;
-        else
-            return $children.closestChildren(selector);
-    };
-})(window.jQuery);
+    while (i--) {
+        result.push(ar[i].elt);
+    }
+    return jQuery(result);
+};

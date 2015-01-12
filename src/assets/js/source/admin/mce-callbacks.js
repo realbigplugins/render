@@ -36,21 +36,16 @@ var Render_MCECallbacks;
 
         convertRenderedToLiteral: function (content) {
 
-            var $container = $('<div />').append($(content));
+            // FIXME Something (not necessarily here) is causing a JS error in WP JS when clicking around in the visual editor. To replicate, have sentence with button, then a column 2 with text in it.
 
-            $container.closestChildren('.render-tinymce-shortcode-wrapper').each(function () {
-                $container = replaceShortcodes($(this), $container);
-            });
+            var $container = $('<div />').append($(content)),
+                $shortcodes = $container.find('.render-tinymce-shortcode-wrapper').sortByDepth();
 
-            function replaceShortcodes($e, $container) {
+            $shortcodes.each(function () {
 
-                $e.closestChildren('.render-tinymce-shortcode-wrapper').each(function () {
-                    $container = replaceShortcodes($(this), $container);
-                });
-
-                var atts = $e.attr('data-atts'),
-                    code = $e.attr('data-code'),
-                    shortcode_content = $e.closestChildren('.render-tinymce-shortcode-content').html(),
+                var atts = $(this).attr('data-atts'),
+                    code = $(this).attr('data-code'),
+                    shortcode_content = $(this).find('.render-tinymce-shortcode-content').first().html(),
                     output = '[' + code;
 
                 if (atts) {
@@ -68,8 +63,16 @@ var Render_MCECallbacks;
                     output += shortcode_content + '[/' + code + ']';
                 }
 
-                $e.replaceWith(output);
-                return $container;
+                $(this).replaceWith(output);
+            });
+
+            function replaceShortcodes($e) {
+
+                //$e.children().each(function () {
+                //    $e = replaceShortcodes($(this));
+                //});
+
+                return $e;
             }
 
             return $container.html();

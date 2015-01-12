@@ -5,9 +5,9 @@ class Render_Widget extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'render_widget',
-			__( 'Shortcode', 'Render' ),
+			__( 'Render', 'Render' ),
 			array(
-				'description' => __( 'Adds a shortcode to your sidebar.', 'Render' ),
+				'description' => __( 'Adds a Render element to your sidebar.', 'Render' ),
 			)
 		);
 	}
@@ -36,7 +36,7 @@ class Render_Widget extends WP_Widget {
 		$shortcode_title = isset( $instance['shortcode_title'] ) ? $instance['shortcode_title'] : '';
 
 		?>
-		<div class="render-widget">
+		<div class="render-widget <?php echo ! empty( $code ) ? 'has-code' : ''; ?>">
 			<p>
 				<label for="<?php echo $this->get_field_id( 'title' ); ?>">
 					<?php _e( 'Title', 'Render' ); ?>:
@@ -48,12 +48,12 @@ class Render_Widget extends WP_Widget {
 			</p>
 
 			<p class="render-widget-shortcode-preview">
-				<?php echo ! empty( $shortcode_title ) ? $shortcode_title : __( 'No shortcode yet', 'Render' ); ?>
+				<?php echo ! empty( $shortcode_title ) ? $shortcode_title : __( 'Nothing added yet.', 'Render' ); ?>
 			</p>
 
 			<p class="render-widget-add-shortcode-container">
 			<span class="render-widget-add-shortcode button">
-				<?php echo empty( $code ) ? __( 'Add Shortcode', 'Render' ) : __( 'Modify / Remove Shortcode', 'Render' ); ?>
+				<?php echo empty( $code ) ? __( 'Add Something Great', 'Render' ) : __( 'Modify / Remove', 'Render' ); ?>
 			</span>
 			</p>
 
