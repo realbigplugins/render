@@ -8,9 +8,12 @@
  * @subpackage Shortcodes
  */
 
+// Get some default values (mimicked how WP gets them)
+$embed_width = isset( $GLOBALS['content_width'] ) ? $GLOBALS['content_width'] : 500;
+$embed_height = min( ceil( $embed_width * 1.5 ), 1000 );
+
 $_shortcodes = array(
 	// Embed
-	// TODO Test and fix up
 	array(
 		'code'        => 'embed',
 		'title'       => __( 'Embed', 'Render' ),
@@ -20,31 +23,36 @@ $_shortcodes = array(
 				'label'      => __( 'Width', 'Render' ),
 				'type'       => 'slider',
 				'properties' => array(
-					'max' => 2000,
+					'value' => $embed_width,
+					'max' => $embed_width * 2,
 				),
 			),
 			'height' => array(
 				'label'      => __( 'Height', 'Render' ),
 				'type'       => 'slider',
 				'properties' => array(
-					'max' => 2000,
+					'value' => $embed_height,
+					'max' => $embed_width * 2,
 				),
 			),
 		),
 		'wrapping'    => true,
 	),
 	// Caption
-	// TODO Test and fix up
+	// TODO Get working. Captions are currently being stripped out, need to figure out why
 	array(
+		'noDisplay' => true,
 		'code'        => 'caption',
 		'title'       => __( 'Caption', 'Render' ),
 		'description' => __( 'The Caption feature allows you to wrap captions around content. This is primarily used with individual images.', 'Render' ),
 		'atts'        => array(
+			'caption' => array(
+				'label' => __( 'Caption', 'Render' ),
+				'description' => __( 'If no ID is supplied, this will be used instead.', 'Render' ),
+			),
 			'id'    => array(
 				'label' => __( 'ID', 'Render' ),
-			),
-			'class' => array(
-				'label' => __( 'Class', 'Render' ),
+				'description' => __( 'The ID of the image inside the caption from.', 'Render' ),
 			),
 			'align' => array(
 				'label'      => __( 'Align', 'Render' ),
@@ -60,25 +68,33 @@ $_shortcodes = array(
 			),
 			'width' => array(
 				'label' => __( 'Width', 'Render' ),
+				'advanced' => true,
+			),
+			'class' => array(
+				'label' => __( 'Class', 'Render' ),
+				'description' => __( 'CSS class to add.', 'Render' ),
+				'advanced' => true,
 			),
 		),
 		'wrapping'    => true,
 	),
 	// Gallery
-	// TODO Test and fix up
 	array(
 		'code'        => 'gallery',
 		'title'       => __( 'Gallery', 'Render' ),
 		'description' => __( 'The Gallery feature allows you to add one or more image galleries to your posts and pages', 'Render' ),
 		'atts'        => array(
+			// TODO Need to get working. Gallery media uploader needs to be figured out
 			'ids'        => array(
 				'label'    => __( 'IDs', 'Render' ),
+				'description' => __( 'Comma delimited list of attachment IDs to use', 'Render' ),
 				'required' => true,
 			),
 			'orderby'    => array(
 				'label'      => __( 'Order By', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
+					'default' => 'post_date',
 					'options' => array(
 						'menu_order' => __( 'Menu Order', 'Render' ),
 						'title'      => __( 'Title', 'Render' ),
@@ -92,6 +108,7 @@ $_shortcodes = array(
 				'label'      => __( 'Order', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
+					'default' => 'DSC',
 					'options' => array(
 						'ASC' => __( 'Ascending', 'Render' ),
 						'DSC' => __( 'Descending', 'Render' ),
@@ -100,9 +117,23 @@ $_shortcodes = array(
 			),
 			'columns'    => array(
 				'label' => __( 'Columns', 'Render' ),
+				'type' => 'slider',
+				'properties' => array(
+					'value' => 4,
+					'min' => 1,
+					'max' => 8,
+				),
 			),
 			'size'       => array(
 				'label' => __( 'Size', 'Render' ),
+				'description' => __( 'Image size to use.', 'Render' ),
+				'type' => 'selectbox',
+				'properties' => array(
+					'default' => 'full',
+					'callback'    => array(
+						'function' => 'render_image_sizes_dropdown',
+					),
+				),
 			),
 			'include'    => array(
 				'label'    => __( 'Include', 'Render' ),
@@ -131,15 +162,29 @@ $_shortcodes = array(
 		),
 	),
 	// Playlist
-	// TODO Test and fix up
 	array(
 		'code'        => 'playlist',
 		'title'       => __( 'Playlist', 'Render' ),
 		'description' => __( 'The playlist shortcode implements the functionality of displaying a collection of WordPress audio or video files in a post', 'Render' ),
 		'atts'        => array(
+			'ids'          => array(
+				'label'    => __( 'IDs', 'Render' ),
+				'description' => __( 'Comma delimited list of attachment IDs to use', 'Render' ),
+				'required' => true,
+			),
+			// TODO Integrate gallery media uploader
+//			'ids'          => array(
+//				'label'    => __( 'IDs', 'Render' ),
+//				'type' => 'media',
+//				'properties' => array(
+//					'type' => 'gallery',
+//				),
+//				'required' => true,
+//			),
 			'type'         => array(
 				'label'     => __( 'Type', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
+					'default' => 'audio',
 					'options' => array(
 						'audio' => __( 'Audio', 'Render' ),
 						'video' => __( 'Video', 'Render' ),
@@ -149,6 +194,7 @@ $_shortcodes = array(
 			'orderby'      => array(
 				'label'     => __( 'Order By', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
+					'default' => 'post_date',
 					'options' => array(
 						'menu_order' => __( 'Menu Order', 'Render' ),
 						'title'      => __( 'Title', 'Render' ),
@@ -161,71 +207,78 @@ $_shortcodes = array(
 			'order'        => array(
 				'label'     => __( 'Order', 'Render' ),
 				'type'    => 'selectbox', 'properties'=> array(
+					'default' => 'DSC',
 					'options' => array(
 						'ASC' => __( 'Ascending', 'Render' ),
 						'DSC' => __( 'Descending', 'Render' ),
 					),
 				),
 			),
-			'ids'          => array(
-				'label'    => __( 'IDs', 'Render' ),
-				'required' => true,
-			),
-			'include'      => array(
-				'label' => __( 'Include', 'Render' ),
-			),
-			'exclude'      => array(
-				'label' => __( 'Exclude', 'Render' ),
-			),
 			'style'        => array(
 				'label'     => __( 'Style', 'Render' ),
 				'type'    => 'selectbox', 'properties' => array(
+					'default' => 'light',
 					'options' => array(
 						'light' => __( 'Light', 'Render' ),
 						'dark'  => __( 'Dark', 'Render' ),
 					),
 				),
 			),
+			'include'      => array(
+				'label' => __( 'Include', 'Render' ),
+				'advanced' => true,
+			),
+			'exclude'      => array(
+				'label' => __( 'Exclude', 'Render' ),
+				'advanced' => true,
+			),
 			'tracklist'    => array(
 				'label'     => __( 'Track List', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
+				'type'    => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'true'  => __( 'True', 'Render' ),
 						'false' => __( 'False', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
 			'tracknumbers' => array(
 				'label'     => __( 'Track Numbers', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
+				'type'    => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'true'  => __( 'True', 'Render' ),
 						'false' => __( 'False', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
 			'images'       => array(
 				'label'     => __( 'Images', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
+				'type'    => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'true'  => __( 'True', 'Render' ),
 						'false' => __( 'False', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
 			'artists'      => array(
 				'label'     => __( 'Artists', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
+				'type'    => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'true'  => __( 'True', 'Render' ),
 						'false' => __( 'False', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
 		),
 	),
 	// Audio
-	// TODO Test and fix up
 	array(
 		'code'        => 'audio',
 		'title'       => __( 'Audio', 'Render' ),
@@ -233,6 +286,10 @@ $_shortcodes = array(
 		'atts'        => array(
 			'src'      => array(
 				'label'    => __( 'Source', 'Render' ),
+				'type' => 'media',
+				'properties' => array(
+					'type' => 'audio',
+				),
 				'required' => true,
 			),
 			'loop'     => array(
@@ -243,6 +300,7 @@ $_shortcodes = array(
 						'on'  => __( 'On', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
 			'autoplay' => array(
 				'label'     => __( 'Autoplay', 'Render' ),
@@ -252,6 +310,7 @@ $_shortcodes = array(
 						'on'  => __( 'On', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
 			'preload'  => array(
 				'label'     => __( 'Pre Load', 'Render' ),
@@ -262,11 +321,11 @@ $_shortcodes = array(
 						'auto'     => __( 'Auto', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
 		),
 	),
 	// Video
-	// TODO Test and fix up
 	array(
 		'code'        => 'video',
 		'title'       => __( 'Video', 'Render' ),
@@ -274,10 +333,29 @@ $_shortcodes = array(
 		'atts'        => array(
 			'src'      => array(
 				'label'    => __( 'Source', 'Render' ),
+				'type' => 'media',
+				'properties' => array(
+					'type' => 'video',
+				),
 				'required' => true,
 			),
-			'poster'   => array(
-				'label' => __( 'Poster', 'Render' ),
+			'width'    => array(
+				'label' => __( 'Width', 'Render' ),
+				'type' => 'slider',
+				'properties' => array(
+					'value' => 640,
+					'min' => 1,
+					'max' => 2000,
+				),
+			),
+			'height'   => array(
+				'label' => __( 'Height', 'Render' ),
+				'type' => 'slider',
+				'properties' => array(
+					'value' => 360,
+					'min' => 1,
+					'max' => 2000,
+				),
 			),
 			'loop'     => array(
 				'label'     => __( 'Loop', 'Render' ),
@@ -287,15 +365,18 @@ $_shortcodes = array(
 						'on'  => __( 'On', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
 			'autoplay' => array(
 				'label'     => __( 'Auto Play', 'Render' ),
-				'type'    => 'selectbox', 'propreties' => array(
+				'type'    => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'off' => __( 'Off', 'Render' ),
 						'on'  => __( 'On', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
 			'preload'  => array(
 				'label'     => __( 'Pre Load', 'Render' ),
@@ -306,12 +387,12 @@ $_shortcodes = array(
 						'auto'     => __( 'Auto', 'Render' ),
 					),
 				),
+				'advanced' => true,
 			),
-			'height'   => array(
-				'label' => __( 'Height', 'Render' ),
-			),
-			'width'    => array(
-				'label' => __( 'Width', 'Render' ),
+			'poster'   => array(
+				'label' => __( 'Poster', 'Render' ),
+				'type' => 'media',
+				'advanced' => true,
 			),
 		),
 	)
@@ -321,4 +402,17 @@ foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'media';
 	$shortcode['source']   = 'WordPress';
 	render_add_shortcode( $shortcode );
+}
+
+function render_image_sizes_dropdown() {
+
+	$output = array(
+		'full' => 'Full',
+	);
+
+	foreach( get_intermediate_image_sizes() as $size ) {
+		$output[ $size ] = render_translate_id_to_name( $size );
+	}
+
+	return $output;
 }
