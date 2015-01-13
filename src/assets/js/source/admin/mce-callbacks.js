@@ -38,6 +38,7 @@ var Render_MCECallbacks;
 
             // FIXME Something (not necessarily here) is causing a JS error in WP JS when clicking around in the visual editor. To replicate, have sentence with button, then a column 2 with text in it.
 
+
             var $container = $('<div />').append($(content)),
                 $shortcodes = $container.find('.render-tinymce-shortcode-wrapper').sortByDepth();
 
