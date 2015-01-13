@@ -140,6 +140,7 @@ var Render_Modal;
 
                     // Escape
                     case 27:
+                        e.preventDefault();
                         Render_Modal.close();
                         break;
 
@@ -611,6 +612,12 @@ var Render_Modal;
                         initRepeaterButtons($(this));
 
                         break;
+
+                    case 'checkbox':
+
+                        attObj = new Checkbox($(this));
+
+                        break;
                     default:
 
                         attObj = new Textbox($(this));
@@ -1057,7 +1064,9 @@ var Render_Modal;
 
                 Render_Modal.hideAdvancedAtts(elements.active_shortcode.find('.render-modal-show-advanced-atts'));
 
-                if (!elements.active_shortcode.hasClass('current-shortcode')) {
+                if (!elements.active_shortcode.hasClass('current-shortcode') ||
+                    (elements.active_shortcode.hasClass('current-shortcode') && !render_modal_open)
+                ) {
                     Render_Modal.refresh();
                 }
 
@@ -1112,11 +1121,11 @@ var Render_Modal;
 
             render_modal_open = true;
 
-            //if (!this.selection) {
-            //    elements.list.find('.render-modal-shortcode.wrapping').addClass('disabled');
-            //} else {
-            //    elements.list.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
-            //}
+            if (!this.selection) {
+                elements.list.find('.render-modal-shortcode.wrapping').addClass('disabled');
+            } else {
+                elements.list.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
+            }
 
             this.refreshRows();
 
@@ -1501,6 +1510,36 @@ var Render_Modal;
             } else {
                 return this.$input.val();
             }
+        };
+
+        this.init($e);
+    };
+
+    var Checkbox = function ($e) {
+
+        // Extends the AttAPI object
+        AttAPI.apply(this, arguments);
+
+        this.getValue = function () {
+
+            if (this.$input.prop('checked')) {
+                return this.$input.val();
+            } else {
+                return false;
+            }
+        };
+
+        this.setValue = function (value) {
+
+            if (value) {
+                this.$input.prop('checked', true);
+            } else {
+                this.$input.prop('checked', false);
+            }
+        };
+
+        this.revert = function () {
+            this.setValue(false);
         };
 
         this.init($e);

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="40px" height="30px" viewBox="0 0 40 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
+    <title>render-logo-tiny</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Logo-Tiny" sketch:type="MSArtboardGroup" transform="translate(-288.000000, -327.000000)" fill="#777777">
+            <g id="render-logo-tiny" sketch:type="MSLayerGroup" transform="translate(288.000000, 327.000000)">
+                <path d="M31.7753529,8.05511439 L14.4475679,8.05511439 L14.4475679,15.1451098 L31.7753529,15.1451098 L31.7753529,18.3081976 L39.542323,11.6001121 L31.7753529,4.8920266 L31.7753529,8.05511439 Z" id="Arrow" sketch:type="MSShapeGroup"></path>
+                <path d="M16.9054795,25.8214818 L16.9054795,22.8528144 L11.8318191,22.8528144 L11.8318191,25.8214818 L6.81203233,25.8214818 L6.81203233,29.6776034 L21.9252662,29.6776034 L21.9252662,25.8214818 L16.9054795,25.8214818 Z M28.8502221,5.96272527 L28.8502221,0.0072737019 L0.0449137958,0.0072737019 L0.0449137958,22.8528144 L28.8502221,22.8528144 L28.8502221,17.0943072 L24.7318189,17.0943072 L24.7318189,18.8883611 L4.24223563,18.8883611 L4.24223563,4.26714349 L24.7318189,4.26714349 L24.7318189,5.96272527 L28.8502221,5.96272527 L28.8502221,5.96272527 Z" id="Monitor" sketch:type="MSShapeGroup"></path>
+            </g>
+        </g>
+    </g>
+</svg>

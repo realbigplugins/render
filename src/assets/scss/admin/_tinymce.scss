@@ -2,11 +2,13 @@
 
 // Buttons
 i.mce-i-render-mce-icon {
-  font: 400 20px/1 dashicons;
+  //noinspection CssOptimizeSimilarProperties,CssOverwrittenProperties
+  background: url("../images/render-logo-tiny.png") no-repeat center center;
 
-  &:before {
-    content: "\f475";
-  }
+  //noinspection CssOptimizeSimilarProperties,CssOptimizeSimilarProperties,CssOverwrittenProperties
+  background-image: url("../images/render-logo-tiny.svg");
+
+  background-size: 20px 15px;
 }
 
 i.mce-i-render-mce-refresh-icon {

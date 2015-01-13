@@ -104,8 +104,8 @@ module.exports = function (grunt) {
                 options: {
                     process: function( content, src ) {
 
-                        // Remove all TODO items
-                        content = content.replace(/(\n|\s)?(.*\/\/.*)(TODO|MAYBETODO|FIXME|NEXTUPDATE|MAYBEFIX|FIXED|FUTUREBUILD|REMOVE)(.*)(\n|\s)?/g, '' );
+                        // Remove all TODO items and noinspection
+                        content = content.replace(/(\n|\s)?(.*\/\/.*)(TODO|MAYBETODO|FIXME|NEXTUPDATE|MAYBEFIX|FIXED|FUTUREBUILD|REMOVE|noinspection)(.*)(\n|\s)?/g, '' );
                         return content;
                     }
                 },

@@ -156,7 +156,7 @@ class Render_Modal {
 		?>
 		<input type="checkbox" class="render-modal-att-input render-modal-att-checkbox"
 		       name="<?php echo $att_id; ?>"
-				value="<?php echo isset( $properties['value'] ) ? $properties['value'] : ''; ?>"><?php
+		       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : ''; ?>"><?php
 	}
 
 	private static function att_type_textarea( $att_id, $att ) {
@@ -232,7 +232,7 @@ class Render_Modal {
 					// Simple format support
 					if ( ! is_array( $option ) ) {
 						$option_label = $option;
-						$option = array(
+						$option       = array(
 							'label' => $option_label,
 						);
 					}
@@ -243,7 +243,7 @@ class Render_Modal {
 						value="<?php echo $option_value; ?>"
 						<?php selected( $option_value, isset( $properties['default'] ) ? $properties['default'] : '' ); ?>
 						>
-						<?php echo !isset($option['label']) ? 'MOTHER EFF' : ''; ?>
+						<?php echo ! isset( $option['label'] ) ? 'MOTHER EFF' : ''; ?>
 						<?php echo $option['label']; ?>
 					</option>
 				<?php endforeach; ?>
@@ -501,7 +501,7 @@ class Render_Modal {
 					<ul class="render-modal-shortcodes accordion-container">
 						<?php if ( ! empty( $all_shortcodes ) ) : ?>
 							<?php foreach ( $all_shortcodes as $code => $shortcode ) :
-								$wrapping = isset( $shortcode['wrapping'] ) && $shortcode['wrapping'] ? true : false;
+								$wrapping          = isset( $shortcode['wrapping'] ) && $shortcode['wrapping'] ? true : false;
 
 								/**
 								 * Allows the filtering of the list of atts for the current shortcode.

@@ -405,15 +405,19 @@ function render_sc_user_get_userdata( $user_ID ) {
  *
  * @since  Render 1.0.0
  *
+ * @param bool $all Whether to show all users or only those that can edit posts
+ *
  * @return bool|array List of registered users.
  */
 function render_user_dropdown( $all = true ) {
+
+	// TODO Change bool $all to parameter that accepts specific capabilities to filter users through (even arrays)
 
 	$users = get_users();
 
 	$output = array();
 	foreach ( $users as $user ) {
-		if ( $all == false ) {
+		if ( $all === false ) {
 			if ( $user->has_cap( 'edit_posts' ) ) {
 			$output[ $user->ID ] = $user->display_name;
 			}
