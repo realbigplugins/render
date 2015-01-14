@@ -18,7 +18,7 @@ class Render_tinymce extends Render {
 
 	function __construct() {
 
-		include_once( self::$path . 'core/modal.php' );
+		include_once( RENDER_PATH . 'core/modal.php' );
 		new Render_Modal();
 
 		$this->set_render_data();
@@ -57,7 +57,7 @@ class Render_tinymce extends Render {
 
 	public static function tinymce_external_scripts( $data ) {
 
-		$data['tinymceExternalScripts'][] = self::$url . '/assets/js/render.min.js';
+		$data['tinymceExternalScripts'][] = RENDER_URL . '/assets/js/render.min.js';
 
 		return $data;
 	}
@@ -99,7 +99,7 @@ class Render_tinymce extends Render {
 	}
 
 	public static function add_tinymce_style() {
-		add_editor_style( self::$url . "/assets/css/render.min.css" );
+		add_editor_style( RENDER_URL . "/assets/css/render.min.css" );
 	}
 
 	public function rendering_data( $data ) {
@@ -131,8 +131,8 @@ class Render_tinymce extends Render {
 	 */
 	public static function add_tinymce_plugins( $plugins ) {
 
-		$plugins['render']      = self::$url . '/assets/js/includes/tinymce-plugins/render/plugin.min.js';
-		$plugins['noneditable'] = self::$url . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
+		$plugins['render']      = RENDER_URL . '/assets/js/includes/tinymce-plugins/render/plugin.min.js';
+		$plugins['noneditable'] = RENDER_URL . '/assets/js/includes/tinymce-plugins/noneditable/plugin.min.js';
 
 		return $plugins;
 	}

@@ -467,5 +467,9 @@ var Render_tinymce;
 
     $(function () {
         Render_tinymce.init();
-    })
+    });
+
+    window['RenderRefreshTinyMCE'] = function () {
+        Render_tinymce.loadVisual();
+    }
 })(jQuery);

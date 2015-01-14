@@ -98,7 +98,7 @@ function _render_widget_add_actions( $screen ) {
 
 	add_filter( 'render_att_pre_loop', '_render_add_content_to_atts', 10, 3 );
 
-	include_once( Render::$path . '/core/modal.php' );
+	include_once( RENDER_PATH . '/core/modal.php' );
 	new Render_Modal();
 }
 
