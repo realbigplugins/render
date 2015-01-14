@@ -389,6 +389,60 @@ var Render_Modal;
                         });
                         break;
 
+                    case 'media':
+
+                        attObj = new Media($(this));
+
+                        $(this).find('.render-modal-att-media-upload').click(function (event) {
+
+                            // TODO Figure out various frame types and how to utilize this better
+                            var options = {
+                                    frame: 'post',
+                                    state: 'insert',
+                                    button: 'Use Media', // FIXME doesn't work
+                                    multiple: false
+                                },
+                                $this = $(this),
+                                type = $this.data('type'),
+                                json;
+
+                            if (type == 'gallery') {
+                                options.multiple = true;
+                            }
+
+                            var file_frame = wp.media.frames.file_frame = wp.media(options);
+
+                            file_frame.open();
+
+                            file_frame.on('insert', function () {
+
+                                json = file_frame.state().get('selection').first().toJSON();
+
+                                if (0 > $.trim(json.url.length)) {
+                                    return;
+                                }
+
+                                switch (type) {
+                                    case 'image':
+                                        $this.siblings('.render-modal-att-media-preview-image').attr('src', json.url);
+                                        $this.siblings('.render-modal-att-input').val(json.id);
+                                        break;
+
+                                    case 'audio':
+                                        $this.siblings('.render-modal-att-media-preview-audio').html(json.url);
+                                        $this.siblings('.render-modal-att-input').val(json.url);
+                                        break;
+
+                                    case 'video':
+                                        $this.siblings('.render-modal-att-media-preview-video').html(json.url);
+                                        $this.siblings('.render-modal-att-input').val(json.url);
+                                        break;
+                                }
+                            });
+                        });
+
+                        break;
+
                     case 'slider':
 
                         attObj = new Slider($(this));
@@ -1606,6 +1660,38 @@ var Render_Modal;
             var $slider = this.$container.find('.render-modal-att-slider');
             $slider.slider('destroy');
             $slider.removeData();
+        };
+
+        this.init($e);
+    };
+
+    var Media = function ($e) {
+
+        // Extends the AttAPI object
+        AttAPI.apply(this, arguments);
+
+        this.setValue = function (value) {
+
+            var type = this.$input.siblings('.render-modal-att-media-upload').data('type');
+
+            console.log(type);
+
+            switch (type) {
+                case 'image':
+                    // TODO Image preview (probably via AJAX)
+                    this.$input.val(value);
+                    break;
+
+                case 'audio':
+                    this.$input.siblings('.render-modal-att-media-preview-audio').html(value);
+                    this.$input.val(value);
+                    break;
+
+                case 'video':
+                    this.$input.siblings('.render-modal-att-media-preview-video').html(value);
+                    this.$input.val(value);
+                    break;
+            }
         };
 
         this.init($e);

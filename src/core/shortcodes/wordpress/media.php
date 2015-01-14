@@ -41,7 +41,7 @@ $_shortcodes = array(
 	// Caption
 	// TODO Get working. Captions are currently being stripped out, need to figure out why
 	array(
-		'noDisplay' => true,
+//		'noDisplay' => true,
 		'code'        => 'caption',
 		'title'       => __( 'Caption', 'Render' ),
 		'description' => __( 'The Caption feature allows you to wrap captions around content. This is primarily used with individual images.', 'Render' ),

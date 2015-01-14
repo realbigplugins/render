@@ -14,11 +14,11 @@ class Render_MenuPage extends Render {
 	public function menu() {
 
 		$hook = add_submenu_page(
-			'render-view-all-shortcodes',
+			'render',
 			'Shortcodes',
 			'Shortcodes',
 			'manage_options',
-			'render-view-all-shortcodes',
+			'render',
 			array( $this, 'page_output' )
 		);
 

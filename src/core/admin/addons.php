@@ -11,11 +11,11 @@ class Render_Addons {
 	 */
 	public function menu() {
 		add_submenu_page(
-			'view-all-shortcodes',
-			__( 'Shortcode Addons', 'Render' ),
+			'render',
+			__( 'Render Addons', 'Render' ),
 			__( 'Addons', 'Render' ),
 			'manage_options',
-			'shortcodes-addons',
+			'render-addons',
 			array( $this, 'display' )
 		);
 	}

@@ -299,7 +299,7 @@ class Render_Modal {
 		<?php else: ?>
 
 			<input type="text" class="render-modal-att-slider-value render-modal-att-input"
-			       value="<?php echo isset( $att['default'] ) ? $att['default'] : '0'; ?>"
+			       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : '0'; ?>"
 			       name="<?php echo $att_id; ?>"/>
 		<?php endif; ?>
 		<div class="render-modal-att-slider" <?php echo $data; ?>></div>
@@ -426,6 +426,43 @@ class Render_Modal {
 			</div>
 		<?php
 		endfor;
+	}
+
+	private static function att_type_media( $att_id, $att, $properties ) {
+
+		$defaults = array(
+			'type' => 'image',
+		);
+
+		$properties = wp_parse_args( $properties, $defaults );
+
+		switch ( $properties['type'] ) :
+			case 'image':
+				?>
+				<img src="" class="render-modal-att-media-preview-image"/>
+				<?php
+				break;
+			case 'audio':
+				// TODO Allow audio player preview here
+				?>
+				<code class="render-modal-att-media-preview-audio"></code>
+				<?php
+				break;
+			case 'video':
+				// TODO Allow video player preview here
+				?>
+				<code class="render-modal-att-media-preview-video"></code>
+				<?php
+				break;
+		endswitch;
+		?>
+		<input type="button" value="Upload / Choose Media" class="render-modal-att-media-upload"
+		       data-type="<?php echo $properties['type']; ?>"/>
+		<input type="hidden"
+		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+		       class="render-modal-att-media render-modal-att-input"
+		       name="<?php echo $att_id; ?>"/>
+	<?php
 	}
 
 	public static function output() {

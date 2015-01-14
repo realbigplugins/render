@@ -373,10 +373,9 @@ var Render_tinymce;
             if ($shortcode.length) {
                 editor.dom.remove($shortcode.next('.render-tinymce-divider')); // Get rid of the leftover divider!
                 $shortcode.replaceWith(Render_Modal.output.all);
-                console.log('modify');
             } else {
-                console.log('insert');
                 editor.insertContent(Render_Modal.output.all);
+                console.log(Render_Modal.output.all);
             }
 
             // Render the shortcodes
@@ -459,6 +458,10 @@ var Render_tinymce;
 
                 $e.submit();
             }
+        },
+
+        getEditor: function () {
+            return editor;
         }
     };
 

@@ -201,8 +201,16 @@ class Render_tinymce extends Render {
 			$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $_content );
 		}
 
+		// Get out of here if rendering is not set
+		if ( ! isset( $render_shortcode_data[ $code ] ) ) {
+			return $entire_code;
+		}
+
 		// If this is a wrapping code, but no content is provided, use dummy content
-		if ( empty( $content ) && $render_shortcode_data[ $code ]['wrapping'] === 'true' ) {
+		if ( empty( $content ) &&
+		     isset( $render_shortcode_data[ $code ]['wrapping'] ) &&
+		     $render_shortcode_data[ $code ]['wrapping'] === 'true'
+		) {
 			if ( isset( $render_shortcode_data[ $code ]['dummyContent'] ) ) {
 				$content = $render_shortcode_data[ $code ]['dummyContent'];
 			} else {

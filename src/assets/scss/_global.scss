@@ -35,3 +35,11 @@ $primary-transition: 300ms;
     clear: both;
   }
 }
+
+@mixin icon($icon) {
+  @extend .render-icon;
+
+  &:before {
+    @extend .render-icon-#{$icon}:before;
+  }
+}

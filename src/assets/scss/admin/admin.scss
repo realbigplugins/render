@@ -1,6 +1,23 @@
+@import '../icons';
 @import 'modal';
 @import 'modal-extend';
 @import 'widget';
 @import 'tinymce';
 @import 'addons-page';
 @import 'shortcodes-page';
+
+// Logo in admin bar
+#toplevel_page_render {
+  .wp-menu-image {
+    @include icon('render-logo-condensed');
+
+    &:before {
+      font-family: 'Render' !important;
+
+      // This icon doesn't seem to sit as nicely as the others, so it needs some minor tweaks
+      font-size: 16px;
+      margin-right: -5px;
+      margin-top: 2px;
+    }
+  }
+}

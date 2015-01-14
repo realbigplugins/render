@@ -190,7 +190,7 @@ class Render_ShortcodesTable extends WP_List_Table {
 		) );
 
 		// Finally, output the items
-		$this->items = $this->found_data;
+		$this->items = array_slice( $items, ( ( $current_page - 1 ) * $per_page ), $per_page );
 	}
 
 	public function column_default( $item, $column_name ) {

@@ -158,19 +158,19 @@ if ( ! class_exists( 'Render' ) ) {
 
 				function admin_page() {
 					add_menu_page(
-						'Shortcodes',
-						'Shortcodes',
+						'Render',
+						'Render',
 						'manage_options',
-						'render-view-all-shortcodes',
+						'render',
 						null,
-						'dashicons-editor-code',
+						'dashicons-admin-generic',
 						82.9
 					);
 				}
 
-				include_once( self::$path . 'core/admin/shortcodes.php' );
-				include_once( self::$path . 'core/admin/options.php' );
-				include_once( self::$path . 'core/admin/addons.php' );
+				include_once __DIR__ . '/core/admin/shortcodes.php';
+				include_once __DIR__ . '/core/admin/options.php';
+				include_once __DIR__ . '/core/admin/addons.php';
 			}
 		}
 

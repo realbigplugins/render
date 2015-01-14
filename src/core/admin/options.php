@@ -14,8 +14,8 @@ class Render_OptionsPage extends Render {
 	public function menu() {
 
 		$hook = add_submenu_page(
-			'render-view-all-shortcodes',
-			'Ultimate Shortcode Libary Options',
+			'render',
+			'Render Options',
 			'Options',
 			'manage_options',
 			'render-options',
