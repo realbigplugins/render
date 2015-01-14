@@ -304,7 +304,11 @@ function _render_sc_post_word_count( $atts ) {
 	}
 
 	// Get the filtered content
-	$content = do_shortcode( 'the_content', $post->post_content );
+	$content = $post->post_content;
+
+	// Strip shortcodes from count
+	$pattern = get_shortcode_regex();
+	$content = preg_replace( "/$pattern/s", '', $content );
 
 	// Convert nbsp to real space
 	$content = preg_replace( '/&nbsp;/', ' ', $content );

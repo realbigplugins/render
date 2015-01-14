@@ -201,12 +201,17 @@ var Render_tinymce;
                         }
 
                         // If we're at the beginning of the current node and the previous node is a shortcode, delete it!
-                        if ((caret_position === 0 || !text.trim().length || text.charCodeAt(caret_position - 1) === 8203) &&
-                            $prev.hasClass('render-tinymce-shortcode-wrapper')) {
+                        if ((caret_position === 0 ||
+                            !text.trim().length ||
+                            text.charCodeAt(caret_position - 1) === 8203) &&
+                            $prev.hasClass('render-tinymce-shortcode-wrapper')
+                        ) {
 
                             if ($prev.hasClass('delete')) {
+                                console.log('remove!');
                                 $prev.remove();
                             } else {
+                                console.log('add');
                                 $prev.addClass('delete');
                             }
 
@@ -330,7 +335,7 @@ var Render_tinymce;
 
                 // If this element is the last element of it's parent
                 if ($(this).parent().contents().last()[0] == $(this)[0]) {
-                    $(this).after('<span>&#8203;</span>');
+                    $(this).after('<span class="render-tinymce-divider">&#8203;</span>');
                 }
             });
         },
