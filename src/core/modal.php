@@ -24,12 +24,12 @@ class Render_Modal {
 		global $wp_scripts;
 		$jquery_ui = $wp_scripts->registered['jquery-ui-core'];
 
-		// Allow WP accordion functionality for our shortcode list
 		wp_enqueue_script( 'jquery-ui-slider' );
 		wp_enqueue_script( 'jquery-effects-shake' );
 		wp_enqueue_script( 'jquery-effects-drop' );
 		wp_enqueue_script( 'wp-color-picker' );
 		wp_enqueue_script( 'render-chosen' );
+		wp_enqueue_media();
 
 		wp_enqueue_style( 'render-chosen' );
 		wp_enqueue_style( 'wp-color-picker' );
