@@ -3,6 +3,9 @@
  * Plugin header will go here (don't forget the text domain, and the domain path!)
  */
 
+// Licensing
+require_once __DIR__ . '/core/licensing/licensing.php';
+
 define( 'RENDER_PRIMARY_COLOR', '#50A4B3' );
 define( 'RENDER_PRIMARY_COLOR_DARK', '#39818E' );
 define( 'RENDER_PRIMARY_FONT_COLOR', '#fff' );
