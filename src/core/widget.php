@@ -53,7 +53,7 @@ class Render_Widget extends WP_Widget {
 
 			<p class="render-widget-add-shortcode-container">
 			<span class="render-widget-add-shortcode button">
-				<?php echo empty( $code ) ? __( 'Add Something Great', 'Render' ) : __( 'Modify / Remove', 'Render' ); ?>
+				<?php echo empty( $code ) ? __( 'Add something great', 'Render' ) : __( 'Modify / Remove', 'Render' ); ?>
 			</span>
 			</p>
 

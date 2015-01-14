@@ -1609,6 +1609,12 @@ var Render_Modal;
             this.$input.siblings('.chosen-container').remove();
         };
 
+        this.setInvalid = function (msg) {
+
+            this.$container.addClass('invalid');
+            this.errorMsg(msg);
+        };
+
         this.init($e);
     };
 

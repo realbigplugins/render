@@ -52,13 +52,14 @@ var Render_Widget;
 
         update: function () {
 
-            console.log(Render_Modal.output);
+            // TODO Make this translatable
             self._change(Render_Modal.output.all, Render_Modal.output.title, 'Modify / Remove Shortcode', Render_Modal.output.title);
         },
 
         remove: function () {
 
             Render_Modal.close();
+            // TODO Make this translatable
             self._change('', '', 'Add Shortcode', 'No shortcode yet');
         },
 
