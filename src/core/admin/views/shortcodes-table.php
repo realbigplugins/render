@@ -217,7 +217,9 @@ class Render_ShortcodesTable extends WP_List_Table {
 
 					$atts = array();
 					foreach ( $item[ $column_name ] as $att ) {
-						$atts[] = $att['label'];
+						if ( isset( $att['label'] ) ) {
+							$atts[] = $att['label'];
+						}
 					}
 					$output = implode( ', ', $atts );
 				} else {
