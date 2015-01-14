@@ -14,11 +14,11 @@ class Render_MenuPage extends Render {
 	public function menu() {
 
 		$hook = add_submenu_page(
-			'render',
+			'render-settings',
 			'Shortcodes',
 			'Shortcodes',
 			'manage_options',
-			'render',
+			'render-shortcodes',
 			array( $this, 'page_output' )
 		);
 
@@ -43,7 +43,7 @@ class Render_MenuPage extends Render {
 		if ( ! class_exists( 'WP_List_Table' ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 		}
-		require_once( self::$path . 'core/admin/views/shortcodes-table.php' );
+		require_once( RENDER_PATH . '/core/admin/views/shortcodes-table.php' );
 		$RenderShortcodesTable = new Render_ShortcodesTable();
 	}
 
@@ -74,22 +74,24 @@ class Render_MenuPage extends Render {
 		$RenderShortcodesTable->prepare_items();
 		?>
 		<div class="wrap">
-			<h2>
+			<h2 class="render-page-title">
+				<img src="<?php echo RENDER_URL; ?>/assets/images/render-logo.svg" class="render-page-title-logo"/>
 				<?php _e( 'Shortcodes', 'Render' ); ?>
-				<?php if ( ! empty( $_GET['s'] ) ) : ?>
-					<span class="subtitle">
-						<?php printf(
-							__( 'Search results for %s', 'Render' ),
-							'&ldquo;<strong>' . esc_html( $_GET['s'] ) . '</strong>&rdquo;'
-						); ?>
-					</span>
-				<?php endif; ?>
 			</h2>
 
 			<form method="get">
 				<input type="hidden" name="page" value="<?php echo isset( $_GET['page'] ) ? $_GET['page'] : ''; ?>" />
 
 				<?php $RenderShortcodesTable->search_box( 'Search Shortcodes', 'render_col_name' ); ?>
+
+				<?php if ( ! empty( $_GET['s'] ) ) : ?>
+					<div class="render-search">
+						<?php printf(
+							__( 'Search results for %s', 'Render' ),
+							'&ldquo;<strong>' . esc_html( $_GET['s'] ) . '</strong>&rdquo;'
+						); ?>
+					</div>
+				<?php endif; ?>
 
 				<?php $RenderShortcodesTable->display(); ?>
 			</form>

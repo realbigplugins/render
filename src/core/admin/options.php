@@ -14,15 +14,13 @@ class Render_OptionsPage extends Render {
 	public function menu() {
 
 		$hook = add_submenu_page(
-			'render',
-			'Render Options',
-			'Options',
+			'render-settings',
+			'Settings',
+			'Settings',
 			'manage_options',
-			'render-options',
+			'render-settings',
 			array( $this, 'page_output' )
 		);
-
-		add_action( "load-$hook", array( __CLASS__, 'page_specific' ) );
 	}
 
 	public static function page_specific() {
@@ -52,24 +50,29 @@ class Render_OptionsPage extends Render {
 		}
 
 		$render_visual = get_option( 'render_render_visual', '1' );
-		require(ABSPATH . 'wp-admin/options-head.php');
+		require( ABSPATH . 'wp-admin/options-head.php' );
 		?>
-		<div class="wrap">
-			<h2><?php _e( 'Ultimate Shortcode Library Options', 'Render' ); ?></h2>
+		<div class="wrap render-wrap">
+			<h2 class="render-page-title">
+				<img src="<?php echo RENDER_URL; ?>/assets/images/render-logo.svg" class="render-page-title-logo"/>
+				<?php _e( 'Settings', 'Render' ); ?>
+			</h2>
 
 			<form method="post" action="options.php">
 
 				<?php settings_fields( 'render_options' ); ?>
 
-				<table class="form-table">
-					<tr valign="top">
+				<table class="render-table">
+					<tr>
 						<th scope="row">
 							<?php _e( 'Use the magical visual renderer?', 'Render' ); ?>
 						</th>
 						<td>
-							<input type="checkbox" id="render_render_visual"
-							       name="render_render_visual" value="1" <?php checked( '1', $render_visual ); ?> />
-							<label for="render_render_visual"><?php _e( 'Heck Yes!', 'Render' ); ?></label>
+							<div class="render-switch">
+								<input type="checkbox" id="render_render_visual"
+								       name="render_render_visual" value="1" <?php checked( '1', $render_visual ); ?> />
+								<label for="render_render_visual"></label>
+							</div>
 						</td>
 					</tr>
 				</table>

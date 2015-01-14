@@ -64,17 +64,17 @@ $_shortcodes = array(
 			'color'                      => array(
 				'label'   => __( 'Background', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => Render_PRIMARY_COLOR,
+				'default' => RENDER_PRIMARY_COLOR,
 			),
 			'color_hover'                => array(
 				'label'   => __( 'Background (Hover)', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => Render_PRIMARY_COLOR_DARK,
+				'default' => RENDER_PRIMARY_COLOR_DARK,
 			),
 			'font_color'                 => array(
 				'label'   => __( 'Font', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => Render_PRIMARY_FONT_COLOR,
+				'default' => RENDER_PRIMARY_FONT_COLOR,
 			),
 			array(
 				'type'  => 'section_break',
@@ -234,17 +234,17 @@ $_shortcodes = array(
 			'color'                      => array(
 				'label'   => __( 'Box Background', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => Render_PRIMARY_COLOR,
+				'default' => RENDER_PRIMARY_COLOR,
 			),
 			'font_color'                 => array(
 				'label'   => __( 'Body Font', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => Render_PRIMARY_FONT_COLOR,
+				'default' => RENDER_PRIMARY_FONT_COLOR,
 			),
 			'heading_font_color'         => array(
 				'label'   => __( 'Heading Font', 'Render' ),
 				'type'    => 'colorpicker',
-				'default' => Render_PRIMARY_FONT_COLOR,
+				'default' => RENDER_PRIMARY_FONT_COLOR,
 			),
 			array(
 				'type'  => 'section_break',
@@ -630,9 +630,9 @@ function _render_sc_button( $atts = array(), $content = null ) {
 	$atts = shortcode_atts( array(
 		'link'                       => '#',
 		'size'                       => 'medium',
-		'color'                      => Render_PRIMARY_COLOR,
-		'color_hover'                => Render_PRIMARY_COLOR_DARK,
-		'font_color'                 => Render_PRIMARY_FONT_COLOR,
+		'color'                      => RENDER_PRIMARY_COLOR,
+		'color_hover'                => RENDER_PRIMARY_COLOR_DARK,
+		'font_color'                 => RENDER_PRIMARY_FONT_COLOR,
 		'shape'                      => 'rectangle',
 		'icon'                       => '',
 		'border_top_left_radius'     => 0,
@@ -679,9 +679,9 @@ function _render_sc_button( $atts = array(), $content = null ) {
 function _render_sc_box( $atts = array(), $content = null ) {
 
 	$atts = shortcode_atts( array(
-		'color'                      => Render_PRIMARY_COLOR,
-		'font_color'                 => Render_PRIMARY_FONT_COLOR,
-		'heading_font_color'         => Render_PRIMARY_FONT_COLOR,
+		'color'                      => RENDER_PRIMARY_COLOR,
+		'font_color'                 => RENDER_PRIMARY_FONT_COLOR,
+		'heading_font_color'         => RENDER_PRIMARY_FONT_COLOR,
 		'shape'                      => 'rectangle',
 		'heading'                    => '',
 		'heading_tag'                => 'h3',

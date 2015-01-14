@@ -3,9 +3,11 @@
  * Plugin header will go here (don't forget the text domain, and the domain path!)
  */
 
-define( 'Render_PRIMARY_COLOR', '#50A4B3' );
-define( 'Render_PRIMARY_COLOR_DARK', '#39818E' );
-define( 'Render_PRIMARY_FONT_COLOR', '#fff' );
+define( 'RENDER_PRIMARY_COLOR', '#50A4B3' );
+define( 'RENDER_PRIMARY_COLOR_DARK', '#39818E' );
+define( 'RENDER_PRIMARY_FONT_COLOR', '#fff' );
+define( 'RENDER_PATH', plugin_dir_path( __FILE__ ) );
+define( 'RENDER_URL',  plugins_url( '', __FILE__ ) );
 
 if ( ! class_exists( 'Render' ) ) {
 	/**
@@ -33,24 +35,6 @@ if ( ! class_exists( 'Render' ) ) {
 		 * @var string
 		 */
 		CONST VERSION = '1.0.0';
-
-		/**
-		 * The path to the main plugin file.
-		 *
-		 * @since Render 1.0.0
-		 *
-		 * @var string
-		 */
-		public static $path;
-
-		/**
-		 * The url to the main plugin file.
-		 *
-		 * @since Render 1.0.0
-		 *
-		 * @var string
-		 */
-		public static $url;
 
 		/**
 		 * This is where ALL shortcodes will exist.
@@ -100,10 +84,6 @@ if ( ! class_exists( 'Render' ) ) {
 
 		private function __construct() {
 
-			// Set up the path and url
-			self::$path = plugin_dir_path( __FILE__ );
-			self::$url  = plugins_url( '', __FILE__ );
-
 			// Initialize functions
 			$this->_require_files();
 			$this->_add_actions();
@@ -145,9 +125,9 @@ if ( ! class_exists( 'Render' ) ) {
 		 */
 		private function _require_files() {
 
-			require_once( self::$path . 'core/tinymce.php' );
-			require_once( self::$path . 'core/functions.php' );
-			require_once( self::$path . 'core/widget.php' );
+			require_once( RENDER_PATH . 'core/tinymce.php' );
+			require_once( RENDER_PATH . 'core/functions.php' );
+			require_once( RENDER_PATH . 'core/widget.php' );
 		}
 
 		private function _admin() {
@@ -161,16 +141,16 @@ if ( ! class_exists( 'Render' ) ) {
 						'Render',
 						'Render',
 						'manage_options',
-						'render',
+						'render-settings',
 						null,
 						'dashicons-admin-generic',
 						82.9
 					);
 				}
 
-				include_once __DIR__ . '/core/admin/shortcodes.php';
 				include_once __DIR__ . '/core/admin/options.php';
-				include_once __DIR__ . '/core/admin/addons.php';
+				include_once __DIR__ . '/core/admin/shortcodes.php';
+//				include_once __DIR__ . '/core/admin/addons.php';
 			}
 		}
 
@@ -191,7 +171,7 @@ if ( ! class_exists( 'Render' ) ) {
 			// Cycle through all Render categories and shortcodes, requiring category files and adding each shortcode
 			foreach ( self::$_shortcodes_extensions as $type => $categories ) {
 				foreach ( $categories as $category ) {
-					require_once( self::$path . "core/shortcodes/$type/$category.php" );
+					require_once( RENDER_PATH . "core/shortcodes/$type/$category.php" );
 				}
 			}
 		}
@@ -227,42 +207,42 @@ if ( ! class_exists( 'Render' ) ) {
 
 			wp_register_style(
 				'render',
-				self::$url . "/assets/css/render.min.css",
+				RENDER_URL . "/assets/css/render.min.css",
 				null,
 				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_style(
 				'render-admin',
-				self::$url . "/assets/css/render-admin.min.css",
+				RENDER_URL . "/assets/css/render-admin.min.css",
 				null,
 				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_style(
 				'render-chosen',
-				self::$url . '/includes/chosen/chosen.min.css',
+				RENDER_URL . '/includes/chosen/chosen.min.css',
 				null,
 				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_script(
 				'render',
-				self::$url . "/assets/js/render.min.js",
+				RENDER_URL . "/assets/js/render.min.js",
 				array( 'jquery' ),
 				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_script(
 				'render-admin',
-				self::$url . "/assets/js/render-admin.min.js",
+				RENDER_URL . "/assets/js/render-admin.min.js",
 				array( 'jquery' ),
 				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
 			);
 
 			wp_register_script(
 				'render-chosen',
-				self::$url . '/includes/chosen/chosen.jquery.min.js',
+				RENDER_URL . '/includes/chosen/chosen.jquery.min.js',
 				array( 'jquery' ),
 				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
 			);
@@ -293,7 +273,7 @@ if ( ! class_exists( 'Render' ) ) {
 		}
 
 		public static function i18n() {
-			load_plugin_textdomain( 'Render', false, self::$path . 'languages' );
+			load_plugin_textdomain( 'Render', false, RENDER_PATH . 'languages' );
 		}
 	}
 

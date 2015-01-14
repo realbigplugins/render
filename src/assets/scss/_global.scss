@@ -43,3 +43,14 @@ $primary-transition: 300ms;
     @extend .render-icon-#{$icon}:before;
   }
 }
+
+@mixin primary-gradient {
+  background: #50a4b3; /* Old browsers */
+  background: -moz-linear-gradient(top,  #50a4b3 0%, #428993 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#50a4b3), color-stop(100%,#428993)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #50a4b3 0%,#428993 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #50a4b3 0%,#428993 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #50a4b3 0%,#428993 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #50a4b3 0%,#428993 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#50a4b3', endColorstr='#3c7c87',GradientType=0 ); /* IE6-9 */
+}
