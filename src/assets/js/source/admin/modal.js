@@ -1175,12 +1175,6 @@ var Render_Modal;
 
             render_modal_open = true;
 
-            if (!this.selection) {
-                elements.list.find('.render-modal-shortcode.wrapping').addClass('disabled');
-            } else {
-                elements.list.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
-            }
-
             this.refreshRows();
 
             elements.wrap.show();

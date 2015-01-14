@@ -90,7 +90,7 @@ var Render_tinymce;
                 _editor.addCommand('Render_Open', function () {
 
                     Render_Modal.selection = editor.selection.getContent();
-                    Render_Modal.open();
+                    Render_tinymce.open();
                 });
 
                 // Refresh the editor
@@ -160,7 +160,8 @@ var Render_tinymce;
                         }
 
                         $shortcode.addClass('render-tinymce-editing');
-                        Render_Modal.modify(shortcode);
+
+                        Render_tinymce.open(shortcode);
                     }
 
                     // Remove a shortcode
@@ -376,6 +377,26 @@ var Render_tinymce;
             }
 
             return output;
+        },
+
+        open: function (shortcode) {
+
+            var $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
+
+
+            if (typeof shortcode !== 'undefined') {
+                $modal_shortcodes.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
+                Render_Modal.modify(shortcode);
+            } else {
+
+                if (!Render_Modal.selection) {
+                    $modal_shortcodes.find('.render-modal-shortcode.wrapping').addClass('disabled');
+                } else {
+                    $modal_shortcodes.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
+                }
+
+                Render_Modal.open();
+            }
         },
 
         close: function () {

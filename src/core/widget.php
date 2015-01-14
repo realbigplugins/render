@@ -102,14 +102,15 @@ function _render_widget_add_actions( $screen ) {
 	new Render_Modal();
 }
 
-function _render_add_content_to_atts( $atts, $wrapping ) {
+function _render_add_content_to_atts( $atts, $code, $shortcode ) {
 
-	if ( $wrapping ) {
+	if ( $shortcode['wrapping'] ) {
 		$atts = array_merge(
 			array(
 				'content' => array(
+					'type' => 'textarea',
+					'label' => __( 'Content', 'Render' ),
 					'required' => true,
-					'textarea' => array(),
 				)
 			),
 			$atts
