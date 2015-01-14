@@ -50,13 +50,6 @@ $_shortcodes = array(
 		'title'       => __( 'Button', 'Render' ),
 		'description' => __( 'Creates a sweet button', 'Render' ),
 		'atts'        => array(
-			'checkbox' => array(
-				'label' => 'Checkbox',
-				'type' => 'checkbox',
-				'properties' => array(
-					'value' => 'test',
-				),
-			),
 			array(
 				'type'  => 'section_break',
 				'label' => __( 'Colors', 'Render' ),

@@ -24,7 +24,7 @@ var Render_MCECallbacks;
                 function (response) {
 
                     // Remove any previorendery existing dividers
-                    response = response.replace(/(&#8203;)+/g, '');
+                    response = response.replace(/(<span>&#8203;<\/span>)+/g, '');
 
                     editor.setContent(response);
                     Render_tinymce.loading(false);

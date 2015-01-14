@@ -283,6 +283,18 @@ var Render_tinymce;
                     $texteditor.val(window.switchEditors.pre_wpautop(Render_tinymce.loadText(content)));
                 });
 
+                _editor.on('click', function (event) {
+                    var x = event.clientX,
+                        y = event.clientY,
+                        body = editor.getBody(),
+                        bodyRect = body.getBoundingClientRect(),
+                        first = body.firstChild,
+                        firstRect = first.getBoundingClientRect(),
+                        last = body.lastChild,
+                        lastRect = last.getBoundingClientRect(),
+                        view;
+                });
+
                 // TODO Do something like this to prevent undo-ing rendering (taken from wpview tinymce plugin)
                 // Prevent adding undo levels on changes inside a view wrapper
                 //editor.on( 'BeforeAddUndo', function( event ) {
@@ -318,7 +330,7 @@ var Render_tinymce;
 
                 // If this element is the last element of it's parent
                 if ($(this).parent().contents().last()[0] == $(this)[0]) {
-                    $(this).after('&#8203;');
+                    $(this).after('<span>&#8203;</span>');
                 }
             });
         },
@@ -375,7 +387,6 @@ var Render_tinymce;
                 $shortcode.replaceWith(Render_Modal.output.all);
             } else {
                 editor.insertContent(Render_Modal.output.all);
-                console.log(Render_Modal.output.all);
             }
 
             // Render the shortcodes
