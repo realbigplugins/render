@@ -244,6 +244,8 @@ function _render_sc_logic( $atts = array(), $content = null ) {
 			$arg1 = true;
 	}
 
+	$arg1 = apply_filters( 'render_sc_logic_arg1', $arg1, $atts );
+
 	// Correctly set arg2 to boolean
 	$arg2 = $atts['arg2'] === 'false' ? false : true;
 

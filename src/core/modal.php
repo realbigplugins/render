@@ -545,7 +545,7 @@ class Render_Modal {
 								 *
 								 * @since Render 1.0.0
 								 */
-								$shortcode['atts'] = apply_filters( 'render_att_pre_loop', $shortcode['atts'], $wrapping );
+								$shortcode['atts'] = apply_filters( 'render_att_pre_loop', $shortcode['atts'], $code, $shortcode );
 
 								if ( $shortcode['noDisplay'] ) {
 									continue;
