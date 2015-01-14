@@ -418,8 +418,8 @@ function render_user_dropdown( $all = true ) {
 	$output = array();
 	foreach ( $users as $user ) {
 		if ( $all === false ) {
-			if ( $user->has_cap( 'edit_posts' ) ) {
-			$output[ $user->ID ] = $user->display_name;
+			if ( isset( $user->allcaps['edit_posts'] ) ) {
+				$output[ $user->ID ] = $user->display_name;
 			}
 		} else {
 			$output[ $user->ID ] = $user->display_name;
