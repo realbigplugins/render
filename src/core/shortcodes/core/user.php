@@ -69,7 +69,7 @@ $_shortcodes = array(
 		'title'       => __( 'User Registered Date', 'Render' ),
 		'description' => __( 'Get the date the specified user registered.', 'Render' ),
 		'atts'        => array(
-			'user'   => array(
+			'user'        => array(
 				'label'      => __( 'User', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
@@ -80,6 +80,20 @@ $_shortcodes = array(
 				),
 			),
 			'date_format' => render_sc_attr_template( 'date_format' ),
+		),
+		'render'      => true,
+	),
+	// Login form
+	// TODO Test and fix up
+	array(
+		'code'        => 'render_login_form',
+		'function'    => '_render_sc_login_form',
+		'title'       => __( 'Login form', 'Render' ),
+		'description' => __( 'Displays a login form to logged out users.', 'Render' ),
+		'atts'        => array(
+			'message' => array(
+				'label' => __( 'Message to logged in users', 'Render' ),
+			),
 		),
 		'render'      => true,
 	),
@@ -163,8 +177,8 @@ function _render_sc_user_info( $atts = array() ) {
  */
 function _render_sc_user_full_name( $user ) {
 
-	if ( isset( $user['first_name']) && isset( $user['last_name']) ) {
-		return $user['first_name']. ' ' . $user['last_name'];
+	if ( isset( $user['first_name'] ) && isset( $user['last_name'] ) ) {
+		return $user['first_name'] . ' ' . $user['last_name'];
 	} else {
 		return _render_sc_error( 'Cannot get user full name.' );
 	}
@@ -182,7 +196,7 @@ function _render_sc_user_full_name( $user ) {
  */
 function _render_sc_user_first_name( $user ) {
 
-	if ( isset( $user['first_name']) ) {
+	if ( isset( $user['first_name'] ) ) {
 		return $user['first_name'];
 	} else {
 		return _render_sc_error( 'Cannot get user first name.' );
@@ -201,7 +215,7 @@ function _render_sc_user_first_name( $user ) {
  */
 function _render_sc_user_last_name( $user ) {
 
-	if ( isset( $user['last_name']) ) {
+	if ( isset( $user['last_name'] ) ) {
 		return $user['last_name'];
 	} else {
 		return _render_sc_error( 'Cannot get user last name.' );
@@ -220,7 +234,7 @@ function _render_sc_user_last_name( $user ) {
  */
 function _render_sc_user_username( $user ) {
 
-	if ( isset( $user['user_login']) ) {
+	if ( isset( $user['user_login'] ) ) {
 		return $user['user_login'];
 	} else {
 		return _render_sc_error( 'Cannot get username.' );
@@ -239,7 +253,7 @@ function _render_sc_user_username( $user ) {
  */
 function _render_sc_user_email( $user ) {
 
-	if ( isset( $user['user_email']) ) {
+	if ( isset( $user['user_email'] ) ) {
 		return $user['user_email'];
 	} else {
 		return _render_sc_error( 'Cannot get user email address.' );
@@ -258,7 +272,7 @@ function _render_sc_user_email( $user ) {
  */
 function _render_sc_user_display_name( $user ) {
 
-	if ( isset( $user['display_name']) ) {
+	if ( isset( $user['display_name'] ) ) {
 		return $user['display_name'];
 	} else {
 		return _render_sc_error( 'Cannot get user display name.' );
@@ -277,7 +291,7 @@ function _render_sc_user_display_name( $user ) {
  */
 function _render_sc_user_author_url( $user ) {
 
-	$url = get_author_posts_url( $user['ID ']);
+	$url = get_author_posts_url( $user['ID '] );
 	if ( ! empty( $url ) ) {
 		return $url;
 	} else {
@@ -297,7 +311,7 @@ function _render_sc_user_author_url( $user ) {
  */
 function _render_sc_user_description( $user ) {
 
-	if ( isset( $user['description']) ) {
+	if ( isset( $user['description'] ) ) {
 		return $user['description'];
 	} else {
 		return _render_sc_error( 'Cannot get user description.' );
@@ -345,7 +359,7 @@ function _render_sc_user_role( $user ) {
 function _render_sc_user_registered_date( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
-		'user' => get_current_user_id(),
+		'user'        => get_current_user_id(),
 		'date_format' => 'F jS, Y',
 	), $atts );
 
@@ -380,7 +394,7 @@ function render_sc_user_get_userdata( $user_ID ) {
 	// Get some extra params
 	$user_obj = get_user_by( 'id', $user_ID );
 	if ( $user_obj instanceof WP_User ) {
-		$data = (array) $user_obj->data;
+		$data      = (array) $user_obj->data;
 		$user_data = array_merge( $user_data, $data );
 	}
 
@@ -427,4 +441,26 @@ function render_user_dropdown( $all = true ) {
 	}
 
 	return $output;
+}
+
+/**
+ * Outputs a login form for logged out users
+ *
+ * @since Render 1.0.0
+ *
+ * @param $atts
+ *
+ * @return null|string
+ */
+function _render_sc_login_form( $atts ) {
+
+	$atts = shortcode_atts( array(
+		'message' => 'You are already logged in.',
+	), $atts );
+
+	if ( is_user_logged_in() ) {
+		return '<p>' . $atts["message"] . '</p>';
+	} else {
+		return wp_login_form( array( 'echo' => false ) );
+	}
 }
