@@ -48,16 +48,26 @@ class Render_Widget extends WP_Widget {
 			</p>
 
 			<p class="render-widget-shortcode-preview">
-				<?php echo ! empty( $shortcode_title ) ? $shortcode_title : __( 'Nothing added yet.', 'Render' ); ?>
+				<span class="nothing-added" <?php echo ! empty( $shortcode_title ) ? 'style="display: none;"' : ''; ?>>
+					<?php _e( 'Nothing added yet.', 'Render' ); ?>
+				</span>
+				<span class="shortcode-title" <?php echo empty( $shortcode_title ) ? 'style="display: none;"' : ''; ?>>
+					<?php echo ! empty( $shortcode_title ) ? $shortcode_title : ''; ?>
+				</span>
 			</p>
 
 			<p class="render-widget-add-shortcode-container">
 			<span class="render-widget-add-shortcode button">
-				<?php echo empty( $code ) ? __( 'Add something great', 'Render' ) : __( 'Modify / Remove', 'Render' ); ?>
+				<span class="add" <?php echo ! empty( $shortcode_title ) ? 'style="display: none;"' : ''; ?>>
+					<?php _e( 'Add something great', 'Render' ); ?>
+				</span>
+				<span class="modify-remove" <?php echo empty( $shortcode_title ) ? 'style="display: none;"' : ''; ?>>
+					<?php _e( 'Modify / Remove', 'Render' ); ?>
+				</span>
 			</span>
 			</p>
 
-			<p class="render-widget-customizer-message" style="display: none;">
+			<p class="render-widget-customizer-message">
 				<?php
 				printf(
 					__( ' In order to see a live preview, please use the %s.', 'Render' ),
@@ -108,8 +118,8 @@ function _render_add_content_to_atts( $atts, $code, $shortcode ) {
 		$atts = array_merge(
 			array(
 				'content' => array(
-					'type' => 'textarea',
-					'label' => __( 'Content', 'Render' ),
+					'type'     => 'textarea',
+					'label'    => __( 'Content', 'Render' ),
 					'required' => true,
 				)
 			),

@@ -21,8 +21,8 @@ var Render_Widget;
             self = this;
             this.binds();
 
-            if (!$('body').hasClass('wp-customizer')) {
-                $('.render-widget-customizer-message').show();
+            if ($('body').hasClass('wp-customizer')) {
+                $('.render-widget-customizer-message').hide();
             }
         },
 
@@ -53,20 +53,34 @@ var Render_Widget;
         update: function () {
 
             // TODO Make this translatable
-            self._change(Render_Modal.output.all, Render_Modal.output.title, 'Modify / Remove Shortcode', Render_Modal.output.title);
+            self.change(Render_Modal.output.all, Render_Modal.output.title, 'modify-remove', Render_Modal.output.title);
         },
 
         remove: function () {
 
             Render_Modal.close();
             // TODO Make this translatable
-            self._change('', '', 'Add Shortcode', 'No shortcode yet');
+            self.change('', '', 'add', false);
         },
 
-        _change: function (value, title, button_text, preview_text) {
+        change: function (value, title, button_text, preview_text) {
 
-            active_widget.find('.render-widget-add-shortcode').text(button_text);
-            active_widget.find('.render-widget-shortcode-preview').text(preview_text);
+            if (button_text == 'add') {
+                active_widget.find('.add').show();
+                active_widget.find('.modify-remove').hide();
+            } else {
+                active_widget.find('.modify-remove').show();
+                active_widget.find('.add').hide();
+            }
+
+            if (!preview_text) {
+                active_widget.find('.nothing-added').show();
+                active_widget.find('.shortcode-title').hide();
+            } else {
+                active_widget.find('.shortcode-title').show().html(preview_text);
+                active_widget.find('.nothing-added').hide();
+            }
+
             active_widget.find('.render-widget-shortcode-title').val(title);
             active_widget.find('.render-widget-shortcode').val(value);
             active_widget.find('.render-widget-shortcode').change();
