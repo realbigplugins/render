@@ -6,6 +6,7 @@
 // Licensing
 require_once __DIR__ . '/core/licensing/licensing.php';
 
+define( 'RENDER_VERSION', '1.0.0' );
 define( 'RENDER_PRIMARY_COLOR', '#50A4B3' );
 define( 'RENDER_PRIMARY_COLOR_DARK', '#39818E' );
 define( 'RENDER_PRIMARY_FONT_COLOR', '#fff' );
@@ -29,15 +30,6 @@ if ( ! class_exists( 'Render' ) ) {
 		 * @var null|Object
 		 */
 		private static $_instance = null;
-
-		/**
-		 * Render's version.
-		 *
-		 * @since Render 1.0.0
-		 *
-		 * @var string
-		 */
-		CONST VERSION = '1.0.0';
 
 		/**
 		 * This is where ALL shortcodes will exist.
@@ -212,42 +204,42 @@ if ( ! class_exists( 'Render' ) ) {
 				'render',
 				RENDER_URL . "/assets/css/render.min.css",
 				null,
-				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
+				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
 			wp_register_style(
 				'render-admin',
 				RENDER_URL . "/assets/css/render-admin.min.css",
 				null,
-				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
+				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
 			wp_register_style(
 				'render-chosen',
 				RENDER_URL . '/includes/chosen/chosen.min.css',
 				null,
-				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
+				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
 			wp_register_script(
 				'render',
 				RENDER_URL . "/assets/js/render.min.js",
 				array( 'jquery' ),
-				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
+				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
 			wp_register_script(
 				'render-admin',
 				RENDER_URL . "/assets/js/render-admin.min.js",
 				array( 'jquery' ),
-				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
+				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
 			wp_register_script(
 				'render-chosen',
 				RENDER_URL . '/includes/chosen/chosen.jquery.min.js',
 				array( 'jquery' ),
-				defined( 'Render_DEVELOPMENT' ) ? time() : self::VERSION
+				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 		}
 
@@ -260,6 +252,9 @@ if ( ! class_exists( 'Render' ) ) {
 
 			wp_enqueue_script( 'render' );
 			wp_enqueue_style( 'render' );
+
+			// Dashicons
+			wp_enqueue_style( 'dashicons' );
 		}
 
 		/**
