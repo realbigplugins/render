@@ -70,6 +70,7 @@ class Render_AdminPage_Settings extends Render {
 		$render_visual = get_option( 'render_render_visual', '1' );
 		$license       = get_option( 'render_license_key' );
 		$status        = get_option( 'render_license_status' );
+
 		require( ABSPATH . 'wp-admin/options-head.php' );
 		?>
 		<div class="wrap render-wrap">
@@ -101,12 +102,19 @@ class Render_AdminPage_Settings extends Render {
 							</th>
 							<td>
 								<?php if ( $status !== false && $status == 'valid' ) { ?>
-									<span style="color:green;"><?php _e( 'active', 'Render' ); ?></span>
 									<?php wp_nonce_field( 'edd_sample_nonce', 'edd_sample_nonce' ); ?>
-									<input type="submit" class="button-secondary" name="edd_license_deactivate"
+									<span class="render-license-status valid">
+										<span class="dashicons dashicons-yes"></span>
+										<?php _e( 'active', 'Render' ); ?>
+									</span>
+									<input type="submit" class="button-secondary button-red" name="edd_license_deactivate"
 									       value="<?php _e( 'Deactivate License', 'Render' ); ?>"/>
 								<?php } else {
 									wp_nonce_field( 'edd_sample_nonce', 'edd_sample_nonce' ); ?>
+									<span class="render-license-status invalid">
+										<span class="dashicons dashicons-no"></span>
+										<?php _e( 'inactive', 'Render' ); ?>
+									</span>
 									<input type="submit" class="button-secondary" name="edd_license_activate"
 									       value="<?php _e( 'Activate License', 'Render' ); ?>"/>
 								<?php } ?>

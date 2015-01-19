@@ -682,7 +682,7 @@ class Render_Modal {
 						</p>
 					</div>
 
-					<div id="render-modal-remove" class="button-secondary delete" style="display: none;">
+					<div id="render-modal-remove" class="button-secondary button-red delete" style="display: none;">
 						<?php _e( 'Remove Current Shortcode', 'Render' ); ?>
 					</div>
 

@@ -99,3 +99,28 @@ $switch-height: $switch-width / 3;
     border-left: 1px solid #ccc;
   }
 }
+
+// License status
+.render-license-status {
+  display: inline-block;
+  font-size: 13px;
+  line-height: 26px;
+  height: 28px;
+  margin: 0;
+  padding: 0 10px 1px;
+  background: #ddd;
+  white-space: nowrap;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 1px #ccc inset;
+  color: #888;
+
+  &.valid {
+    background: $primary-color;
+    color: #fff;
+    box-shadow: none;
+  }
+
+  .dashicons {
+    line-height: 26px;
+  }
+}
