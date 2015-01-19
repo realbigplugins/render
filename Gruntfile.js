@@ -104,8 +104,25 @@ module.exports = function (grunt) {
                 options: {
                     process: function( content, src ) {
 
-                        // Remove all TODO items and noinspection
-                        content = content.replace(/(\n|\s)?(.*\/\/.*)(TODO|MAYBETODO|FIXME|NEXTUPDATE|MAYBEFIX|FIXED|FUTUREBUILD|REMOVE|noinspection)(.*)(\n|\s)?/g, '' );
+                        var version = grunt.config.get('pkg.version'),
+                            name = grunt.config.get('pkg.name'),
+                            description = grunt.config.get('pkg.description'),
+                            author = grunt.config.get('pkg.author'),
+                            author_uri = grunt.config.get('pkg.author_uri'),
+                            plugin_uri = grunt.config.get('pkg.plugin_uri');
+
+                        // Add plugin header
+                        if (src == 'src/render.php') {
+                            var header = '/*\n' +
+                                ' * Plugin Name: ' + name + '\n' +
+                                ' * Description: ' + description + '\n' +
+                                ' * Version: ' + version + '\n' +
+                                ' * Author: ' + author + '\n' +
+                                ' * Author URI: ' + author_uri + '\n' +
+                                ' * Plugin URI: ' + plugin_uri + '\n' +
+                                ' */';
+                            content = '<?php\n' + header + content.slice(5);
+                        }
                         return content;
                     }
                 },

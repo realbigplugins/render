@@ -27,16 +27,100 @@ if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 function edd_sl_sample_plugin_updater() {
 
 	// retrieve our license key from the DB
-	$license_key = trim( get_option( 'edd_sample_license_key' ) );
+	$license_key = trim( get_option( 'render_license_key' ) );
 
 	// setup the updater
-	$edd_updater = new EDD_SL_Plugin_Updater( RENDER_STORE_URL, __FILE__, array(
+	$edd_updater = new EDD_SL_Plugin_Updater( RENDER_STORE_URL, RENDER_PATH . 'render.php', array(
 			'version' 	=> '1.0.0', 				// current version number
 			'license' 	=> $license_key, 		// license key (used get_option above to retrieve from DB)
 			'item_name' => RENDER_ITEM_NAME, 	// name of this plugin
 			'author' 	=> 'Joel Worsham & Kyle Maurer'  // author of this plugin
 		)
 	);
-
 }
 add_action( 'admin_init', 'edd_sl_sample_plugin_updater', 0 );
+
+
+function edd_sample_activate_license() {
+
+	// listen for our activate button to be clicked
+	if( isset( $_POST['edd_license_activate'] ) ) {
+
+		// run a quick security check
+		if( ! check_admin_referer( 'edd_sample_nonce', 'edd_sample_nonce' ) )
+			return; // get out if we didn't click the Activate button
+
+		// retrieve the license from the database
+		$license = trim( get_option( 'render_license_key' ) );
+
+
+		// data to send in our API request
+		$api_params = array(
+			'edd_action'=> 'activate_license',
+			'license' 	=> $license,
+			'item_name' => urlencode( RENDER_ITEM_NAME ), // the name of our product in EDD
+			'url'       => home_url()
+		);
+
+		// Call the custom API.
+		$response = wp_remote_get( add_query_arg( $api_params, RENDER_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+
+		// make sure the response came back okay
+		if ( is_wp_error( $response ) )
+			return false;
+
+		// decode the license data
+		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+
+		// $license_data->license will be either "valid" or "invalid"
+
+		update_option( 'render_license_status', $license_data->license );
+
+	}
+}
+add_action('admin_init', 'edd_sample_activate_license');
+
+
+/***********************************************
+ * Illustrates how to deactivate a license key.
+ * This will descrease the site count
+ ***********************************************/
+
+function edd_sample_deactivate_license() {
+
+	// listen for our activate button to be clicked
+	if( isset( $_POST['edd_license_deactivate'] ) ) {
+
+		// run a quick security check
+		if( ! check_admin_referer( 'edd_sample_nonce', 'edd_sample_nonce' ) )
+			return; // get out if we didn't click the Activate button
+
+		// retrieve the license from the database
+		$license = trim( get_option( 'render_license_key' ) );
+
+
+		// data to send in our API request
+		$api_params = array(
+			'edd_action'=> 'deactivate_license',
+			'license' 	=> $license,
+			'item_name' => urlencode( RENDER_ITEM_NAME ), // the name of our product in EDD
+			'url'       => home_url()
+		);
+
+		// Call the custom API.
+		$response = wp_remote_get( add_query_arg( $api_params, RENDER_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+
+		// make sure the response came back okay
+		if ( is_wp_error( $response ) )
+			return false;
+
+		// decode the license data
+		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+
+		// $license_data->license will be either "deactivated" or "failed"
+		if( $license_data->license == 'deactivated' )
+			delete_option( 'render_license_status' );
+
+	}
+}
+add_action('admin_init', 'edd_sample_deactivate_license');

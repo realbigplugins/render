@@ -46,7 +46,7 @@ class Render_AdminPage_Settings extends Render {
 		register_setting( 'render_options', 'render_render_visual' );
 
 		// EDD Licensing
-		register_setting( 'render_options', 'edd_sample_license_key', 'edd_sanitize_license' );
+		register_setting( 'render_options', 'render_license_key', 'edd_sanitize_license' );
 
 	}
 
@@ -68,8 +68,8 @@ class Render_AdminPage_Settings extends Render {
 		}
 
 		$render_visual = get_option( 'render_render_visual', '1' );
-		$license       = get_option( 'edd_sample_license_key' );
-		$status        = get_option( 'edd_sample_license_status' );
+		$license       = get_option( 'render_license_key' );
+		$status        = get_option( 'render_license_status' );
 		require( ABSPATH . 'wp-admin/options-head.php' );
 		?>
 		<div class="wrap render-wrap">
@@ -89,7 +89,7 @@ class Render_AdminPage_Settings extends Render {
 						</th>
 						<td>
 							<label>
-								<input id="edd_sample_license_key" name="edd_sample_license_key" type="text"
+								<input id="render_license_key" name="render_license_key" type="text"
 								       class="regular-text" value="<?php esc_attr_e( $license ); ?>"/>
 							</label>
 						</td>
@@ -139,9 +139,9 @@ class Render_AdminPage_Settings extends Render {
 new Render_AdminPage_Settings();
 
 function edd_sanitize_license( $new ) {
-	$old = get_option( 'edd_sample_license_key' );
+	$old = get_option( 'render_license_key' );
 	if ( $old && $old != $new ) {
-		delete_option( 'edd_sample_license_status' ); // new license has been entered, so must reactivate
+		delete_option( 'render_license_status' ); // new license has been entered, so must reactivate
 	}
 
 	return $new;

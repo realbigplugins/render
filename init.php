@@ -1,16 +1,14 @@
 <?php
 /*
-Plugin Name: Render DEVELOPMENT
+Plugin Name: Render Development
 Description: The development build for Render.
-Version: 1.0.0-beta-4
+Version: 1.0.0
 Author: Joel Worsham & Kyle Maurer
 Author URI: http://realbigmarketing.com
 */
 
 define( 'RENDER_DEVELOPMENT', true );
 
-if ( isset( $_GET['DEBUG_WPSCRIPTS'] ) ) {
-}
 define( 'SCRIPT_DEBUG', true );
 
 include_once( 'tools/tag-debug.php' );

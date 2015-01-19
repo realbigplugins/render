@@ -1,5 +1,4 @@
 <?php
-// FIXME Plugin header will go here (don't forget the text domain, and the domain path!)
 
 // Exit if loaded directly
 if ( ! defined( 'ABSPATH' ) ) {

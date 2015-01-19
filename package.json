@@ -7,7 +7,8 @@
     "url": "https://github.com/brashrebel/render"
   },
   "author": "Kyle Maurer & Joel Worsham",
-  "license": "GPLv2 or later",
+  "author_uri": "http://realbigmarketing.com",
+  "plugin_uri": "http://renderwp.com",
   "devDependencies": {
     "grunt": "~0.4",
     "grunt-autoprefixer": "~1.0",
