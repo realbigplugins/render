@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Contains all Render packaged shortcodes within the Visibility category.
  *
@@ -9,7 +8,13 @@
  * @subpackage Shortcodes
  */
 
-$_shortcodes = array(
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
+// Loops through each shortcode and adds it to Render
+foreach ( array(
 	// Logic
 	// TODO Test and fix up
 	array(
@@ -168,12 +173,25 @@ $_shortcodes = array(
 			'noStyle' => true,
 		),
 	)
-);
+) as $shortcode ) {
 
-foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'visibility';
 	$shortcode['source']   = 'Render';
-	render_add_shortcode( $shortcode );
+
+	// Adds shortcode to Render
+	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
+		$shortcodes[] = $shortcode;
+		return $shortcodes;
+	});
+
+	// Add shortcode category
+	add_filter( 'render_modal_categories', function( $categories ) {
+		$categories['visibility'] = array(
+			'label' => __( 'Visibility', 'Render' ),
+			'icon'  => 'dashicons-visibility',
+		);
+		return $categories;
+	});
 }
 
 /**

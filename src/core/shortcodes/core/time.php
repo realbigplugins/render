@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Contains all Render packaged shortcodes within the Time category.
  *
@@ -9,7 +8,13 @@
  * @subpackage Shortcodes
  */
 
-$_shortcodes = array(
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
+// Loops through each shortcode and adds it to Render
+foreach ( array(
 	// Custom Date
 	array(
 		'code'        => 'render_date',
@@ -91,12 +96,25 @@ $_shortcodes = array(
 		),
 		'render'      => true,
 	),
-);
+) as $shortcode ) {
 
-foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'time';
 	$shortcode['source']   = 'Render';
-	render_add_shortcode( $shortcode );
+
+	// Adds shortcode to Render
+	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
+		$shortcodes[] = $shortcode;
+		return $shortcodes;
+	});
+
+	// Add shortcode category
+	add_filter( 'render_modal_categories', function( $categories ) {
+		$categories['time'] = array(
+			'label' => __( 'Time', 'Render' ),
+			'icon' => 'dashicons-clock',
+		);
+		return $categories;
+	});
 }
 
 /**

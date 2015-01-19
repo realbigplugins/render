@@ -2,17 +2,22 @@
 /**
  * Contains all Render packaged shortcodes within the Design category.
  *
- * @since Render 1.0.0
+ * @since 1.0.0
  *
  * @package Render
  * @subpackage Shortcodes
  */
 
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
 // Get some default values (mimicked how WP gets them)
 $embed_width = isset( $GLOBALS['content_width'] ) ? $GLOBALS['content_width'] : 500;
 $embed_height = min( ceil( $embed_width * 1.5 ), 1000 );
 
-$_shortcodes = array(
+foreach ( array(
 	// Embed
 	array(
 		'code'        => 'embed',
@@ -41,7 +46,7 @@ $_shortcodes = array(
 	// Caption
 	// TODO Get working. Captions are currently being stripped out, need to figure out why
 	array(
-//		'noDisplay' => true,
+		'noDisplay' => true,
 		'code'        => 'caption',
 		'title'       => __( 'Caption', 'Render' ),
 		'description' => __( 'The Caption feature allows you to wrap captions around content. This is primarily used with individual images.', 'Render' ),
@@ -396,13 +401,37 @@ $_shortcodes = array(
 			),
 		),
 	)
-);
+) as $shortcode ) {
 
-foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'media';
 	$shortcode['source']   = 'WordPress';
-	render_add_shortcode( $shortcode );
+
+	// Add shortcode to Render
+	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
+		$shortcodes[] = $shortcode;
+		return $shortcodes;
+	});
+
+	// Add shortcode category
+	add_filter( 'render_modal_categories', function( $categories ) {
+		$categories['media'] = array(
+			'label' => __( 'Media', 'Render' ),
+			'icon' => 'dashicons-admin-media',
+		);
+		return $categories;
+	});
 }
+
+// Remove wp_caption from Render shortcodes (is duplicate of caption)
+add_filter( 'render_add_shortcodes', function( $shortcodes ) {
+
+	foreach( $shortcodes as $key => $shortcode ) {
+		if ( $shortcode['code'] == 'wp_caption' ) {
+			unset( $shortcodes[ $key ] );
+		}
+	}
+	return $shortcodes;
+}, 999 );
 
 function render_image_sizes_dropdown() {
 

@@ -1,5 +1,19 @@
 <?php
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
+/**
+ * Class Render_Widget
+ *
+ * Provides all Render functionality pertaining to the widget page.
+ *
+ * @since 1.0.0
+ *
+ * @package Render
+ * @subpackage Widgets
+ */
 class Render_Widget extends WP_Widget {
 
 	function __construct() {

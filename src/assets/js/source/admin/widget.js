@@ -1,7 +1,7 @@
 /**
  * Functionality for using the shortcode widget.
  *
- * @since Render 1.0.0
+ * @since 1.0.0
  *
  * @global Render_Modal
  * @global Render_Data

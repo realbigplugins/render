@@ -1,7 +1,7 @@
 /**
  * The main file for Render scripts. Houses generic, broad functionality for the plugin.
  *
- * @since Render 1.0.0
+ * @since 1.0.0
  *
  * @package Render
  * @subpackage Scripts
@@ -15,7 +15,7 @@ var Render;
 		/**
 		 * Toggles the visibility of an element.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param id The ID of the node to target.
 		 */

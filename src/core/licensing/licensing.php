@@ -1,4 +1,17 @@
 <?php
+/**
+ * Integrates Render with EDD licensing.
+ *
+ * @since 1.0.0
+ *
+ * @package Render
+ * @subpackage EDD
+ */
+
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 // this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed
 define( 'RENDER_STORE_URL', 'http://realbigplugins.com' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file

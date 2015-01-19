@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Contains all Render packaged shortcodes within the Design category.
  *
@@ -9,7 +8,13 @@
  * @subpackage Shortcodes
  */
 
-$_shortcodes = array(
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
+// Loops through each shortcode and adds it to Render
+foreach ( array(
 	// Accordion
 	// TODO Test and fix up
 	array(
@@ -563,12 +568,25 @@ $_shortcodes = array(
 			'noStyle'      => true,
 		),
 	)
-);
+) as $shortcode ) {
 
-foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'design';
 	$shortcode['source']   = 'Render';
-	render_add_shortcode( $shortcode );
+
+	// Add shortcode to Render
+	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
+		$shortcodes[] = $shortcode;
+		return $shortcodes;
+	});
+
+	// Add shortcode category
+	add_filter( 'render_modal_categories', function( $categories ) {
+		$categories['design'] = array(
+			'label' => __( 'Design', 'Render' ),
+			'icon' => 'dashicons-admin-appearance',
+		);
+		return $categories;
+	});
 }
 
 /**

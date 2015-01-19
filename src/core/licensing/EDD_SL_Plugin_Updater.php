@@ -1,4 +1,17 @@
 <?php
+/**
+ * Licensing file provided from EDD licensing plugin.
+ *
+ * @since 1.0.0
+ *
+ * @package Render
+ * @subpackage EDD
+ */
+
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 // uncomment this line for testing
 //set_site_transient( 'update_plugins', null );

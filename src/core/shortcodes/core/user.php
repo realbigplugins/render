@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Contains all Render packaged shortcodes within the User category.
  *
@@ -9,7 +8,13 @@
  * @subpackage Shortcodes
  */
 
-$_shortcodes = array(
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
+// Loops through each shortcode and adds it to Render
+foreach ( array(
 	// User Info
 	array(
 		'code'        => 'render_user_info',
@@ -97,12 +102,25 @@ $_shortcodes = array(
 		),
 		'render'      => true,
 	),
-);
+) as $shortcode ) {
 
-foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'user';
 	$shortcode['source']   = 'Render';
-	render_add_shortcode( $shortcode );
+
+	// Adds shortcode to Render
+	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
+		$shortcodes[] = $shortcode;
+		return $shortcodes;
+	});
+
+	// Add shortcode category
+	add_filter( 'render_modal_categories', function( $categories ) {
+		$categories['user'] = array(
+			'label' => __( 'User', 'Render' ),
+			'icon' => 'dashicons-admin-users',
+		);
+		return $categories;
+	});
 }
 
 /**
@@ -446,7 +464,7 @@ function render_user_dropdown( $all = true ) {
 /**
  * Outputs a login form for logged out users
  *
- * @since Render 1.0.0
+ * @since 1.0.0
  *
  * @param $atts
  *

@@ -1,7 +1,7 @@
 /**
  * The main file for Render scripts. Houses generic, broad functionality for the plugin.
  *
- * @since Render 1.0.0
+ * @since 1.0.0
  *
  * @package Render
  * @subpackage Scripts

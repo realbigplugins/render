@@ -1,31 +1,78 @@
 <?php
-/*
- * Plugin header will go here (don't forget the text domain, and the domain path!)
- */
+// FIXME Plugin header will go here (don't forget the text domain, and the domain path!)
+
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 // Licensing
 require_once __DIR__ . '/core/licensing/licensing.php';
 
+// Define all plugin constants.
+
+/**
+ * The version of Render.
+ *
+ * @since 1.0.0
+ */
 define( 'RENDER_VERSION', '1.0.0' );
-define( 'RENDER_PRIMARY_COLOR', '#50A4B3' );
-define( 'RENDER_PRIMARY_COLOR_DARK', '#39818E' );
-define( 'RENDER_PRIMARY_FONT_COLOR', '#fff' );
+
+/**
+ * The absolute server path to Render's root directory.
+ *
+ * @since 1.0.0
+ */
 define( 'RENDER_PATH', plugin_dir_path( __FILE__ ) );
-define( 'RENDER_URL',  plugins_url( '', __FILE__ ) );
+
+/**
+ * The URI to Render's root directory.
+ *
+ * @since 1.0.0
+ */
+define( 'RENDER_URL', plugins_url( '', __FILE__ ) );
+
+/**
+ * The primary color of Render.
+ *
+ * @since 1.0.0
+ */
+define( 'RENDER_PRIMARY_COLOR', '#50A4B3' );
+
+/**
+ * The dark version of the primary color of Render.
+ *
+ * Primarily used for hovering.
+ *
+ * @since 1.0.0
+ */
+define( 'RENDER_PRIMARY_COLOR_DARK', '#39818E' );
+
+/**
+ * The primary font color used throughout Render.
+ *
+ * @since 1.0.0
+ */
+define( 'RENDER_PRIMARY_FONT_COLOR', '#fff' );
 
 if ( ! class_exists( 'Render' ) ) {
+
 	/**
 	 * Class Render
 	 *
 	 * The main class for Render. This class is what sets the plugin into motion. It requires files, adds actions, and
 	 * setups up any initial requirements.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @package Render
 	 */
 	class Render {
 
 		/**
 		 * This will contain the self instance. Prevents duplicate instantiations.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 *
 		 * @var null|Object
 		 */
@@ -34,34 +81,19 @@ if ( ! class_exists( 'Render' ) ) {
 		/**
 		 * This is where ALL shortcodes will exist.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 *
 		 * @var array
 		 */
 		public $shortcodes = array();
 
 		/**
-		 * Default values for a shortcode.
+		 * All core shortcodes to include.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 *
 		 * @var array
 		 */
-		public static $shortcode_defaults = array(
-			'code'        => '',
-			'function'    => '',
-			'title'       => '',
-			'description' => '',
-			'source'      => 'Unknown',
-			'tags'        => '',
-			'category'    => 'other',
-			'atts'        => array(),
-			'example'     => '',
-			'wrapping'    => false,
-			'render'      => false,
-			'noDisplay'   => false,
-		);
-
 		private static $_shortcodes_extensions = array(
 			'core'      => array(
 				'design',
@@ -77,15 +109,17 @@ if ( ! class_exists( 'Render' ) ) {
 			),
 		);
 
+		/**
+		 * Constructs the class.
+		 *
+		 * @since 1.0.0
+		 */
 		private function __construct() {
 
 			// Initialize functions
 			$this->_require_files();
 			$this->_add_actions();
 			$this->_admin();
-
-			// Can't use functions in propertiy declaration
-			self::$shortcode_defaults['source'] = __( 'Unknown', 'Render' );
 		}
 
 		private final function __clone() {
@@ -98,7 +132,7 @@ if ( ! class_exists( 'Render' ) ) {
 		/**
 		 * Returns self. Makes sure it only happens once.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 *
 		 * @return Render Self.
 		 * @throws Exception If trying to instantiate again.
@@ -116,13 +150,13 @@ if ( ! class_exists( 'Render' ) ) {
 		/**
 		 * Requires all plugin necessities.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 */
 		private function _require_files() {
 
-			require_once( RENDER_PATH . 'core/tinymce.php' );
-			require_once( RENDER_PATH . 'core/functions.php' );
-			require_once( RENDER_PATH . 'core/widget.php' );
+			require_once __DIR__ . '/core/tinymce.php';
+			require_once __DIR__ . '/core/functions.php';
+			require_once __DIR__ . '/core/widget.php';
 		}
 
 		private function _admin() {
@@ -143,7 +177,7 @@ if ( ! class_exists( 'Render' ) ) {
 					);
 				}
 
-				include_once __DIR__ . '/core/admin/options.php';
+				include_once __DIR__ . '/core/admin/settings.php';
 				include_once __DIR__ . '/core/admin/shortcodes.php';
 //				include_once __DIR__ . '/core/admin/addons.php';
 			}
@@ -159,14 +193,14 @@ if ( ! class_exists( 'Render' ) ) {
 		/**
 		 * Adds all Render shortcodes.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 */
 		public static function _shortcodes_init() {
 
 			// Cycle through all Render categories and shortcodes, requiring category files and adding each shortcode
 			foreach ( self::$_shortcodes_extensions as $type => $categories ) {
 				foreach ( $categories as $category ) {
-					require_once( RENDER_PATH . "core/shortcodes/$type/$category.php" );
+					require_once RENDER_PATH . "core/shortcodes/$type/$category.php";
 				}
 			}
 		}
@@ -174,7 +208,7 @@ if ( ! class_exists( 'Render' ) ) {
 		/**
 		 * Adds all startup WP actions.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 */
 		private function _add_actions() {
 
@@ -191,12 +225,15 @@ if ( ! class_exists( 'Render' ) ) {
 
 			// Filter content
 			add_filter( 'the_content', 'render_strip_paragraphs_around_shortcodes' );
+
+			// Add shortcodes
+			add_action( 'init', array( __CLASS__, 'add_shortcodes' ) );
 		}
 
 		/**
 		 * Registers the Render javascript and css files.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 */
 		public static function _register_files() {
 
@@ -246,7 +283,7 @@ if ( ! class_exists( 'Render' ) ) {
 		/**
 		 * Enqueues the Render javascript and css files.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 */
 		public static function _enqueue_files() {
 
@@ -260,7 +297,7 @@ if ( ! class_exists( 'Render' ) ) {
 		/**
 		 * Enqueues the admin Render javascript and css files.
 		 *
-		 * @since Render 1.0.0
+		 * @since 1.0.0
 		 */
 		public static function _admin_enqueue_files() {
 
@@ -270,8 +307,134 @@ if ( ! class_exists( 'Render' ) ) {
 			wp_enqueue_style( 'render-admin' );
 		}
 
+		/**
+		 * Sets up internationalization for translations.
+		 */
 		public static function i18n() {
 			load_plugin_textdomain( 'Render', false, RENDER_PATH . 'languages' );
+		}
+
+		/**
+		 * Adds all shortcodes into Render and / or WordPress.
+		 *
+		 * @since 1.0.0
+		 */
+		public static function add_shortcodes() {
+
+			global $Render, $shortcode_tags;
+
+			// Add in all existing shortcode tags first (to account for "unregistered with Render" shortcodes)
+			if ( ! empty( $shortcode_tags ) ) {
+				foreach ( $shortcode_tags as $code => $callback ) {
+
+					$shortcode             = array();
+					$shortcode['code']     = $code;
+					$shortcode['function'] = $callback;
+
+					// Add shortcode to Render
+					add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
+						$shortcodes[] = $shortcode;
+						return $shortcodes;
+					} );
+				}
+			}
+
+			$shortcodes = apply_filters( 'render_add_shortcodes', false );
+
+			if ( $shortcodes !== false ) {
+
+				foreach ( $shortcodes as $args ) {
+
+					/**
+					 * Defaults for the shortcode.
+					 *
+					 * Allows external plugins to modify the defaults for a Render shortcode setup.
+					 *
+					 * @since 1.0.0
+					 *
+					 * @param array $defaults {
+					 *     @var string     $code        The shortcode "code" itself.
+					 *     @var string     $function    The callback function for the shortcode.
+					 *     @var string     $title       Title to show when identifying shortcode.
+					 *     @var string     $description Description to show when identifying shortcode.
+					 *     @var string     $source      Where the shortcode comes from (EG: Render, WordPress, Gravity Forms).
+					 *     @var string     $tags        Searchable tags that describe the shortcode (comma delimited).
+					 *     @var array      $category    Category for the shortcode (must be a registered category).
+					 *     @var array      $atts        Shortcode attributes.
+					 *     @var string     $example     Example of shortcode in use.
+					 *     @var bool       $wrapping    Whether or not this shortcode accepts content.
+					 *     @var bool|array $render      Whether or not to render this shortcode, also accepts properties.
+					 *     @var bool       $noDisplay   Hides the shortcode from the modal if set to true.
+					 * }
+					 * @param array $args The current shortcode args.
+					 */
+					$defaults = apply_filters( 'render_shortcode_defaults', array(
+						'code'        => '',
+						'function'    => '',
+						'title'       => render_translate_id_to_name( $args['code'] ),
+						'description' => '',
+						'source'      => __( 'Unknown', 'Render' ),
+						'tags'        => '',
+						'category'    => 'other',
+						'atts'        => array(),
+						'example'     => '',
+						'wrapping'    => false,
+						'render'      => false,
+						'noDisplay'   => false,
+					), $args );
+					$args = wp_parse_args( $args, $defaults);
+
+					/**
+					 * Defaults for a shortcode attribute.
+					 *
+					 * Allows external plugins to modify defaults for a Render shortcode attribute.
+					 *
+					 * @since 1.0.0
+					 *
+					 * @param array $att_defaults {
+					 *     @var bool $required Whether or not this attribute is required for the shortcode.
+					 *     @var bool $disabled Disables the attribute if set to true.
+					 * }
+					 * @param array $args The current shortcode args.
+					 */
+					$att_defaults = apply_filters( 'render_shortcode_att_defaults', array(
+						'required' => false,
+						// TODO See if this is still in use, or has been deprecated.
+						'disabled' => false,
+					), $args );
+
+					// Establish default attribute properties (if any exist)
+					if ( ! empty( $args['atts'] ) ) {
+
+						foreach ( $args['atts'] as $i => $att ) {
+							$args['atts'][ $i ] = wp_parse_args( $args['atts'][ $i ], $att_defaults );
+						}
+					}
+
+					// Add the wrapping property to the render data
+					if ( $args['render'] ) {
+						if ( ! is_array( $args['render'] ) ) {
+							$args['render'] = array();
+						}
+						$args['render']['wrapping'] = $args['wrapping'];
+					}
+
+					// Create the actual shortcode if it hasn't yet been created
+					if ( ! array_key_exists( $args['code'], $shortcode_tags ) ) {
+						add_shortcode( $args['code'], $args['function'] );
+					}
+
+					// Add the shortcode info to our list if it hasn't yet been added
+					if ( empty( $Render->shortcodes ) || ! array_key_exists( $args['code'], $Render->shortcodes ) ) {
+
+						// Code will be used for the key
+						$code = $args['code'];
+						unset( $args['code'] );
+
+						$Render->shortcodes[ $code ] = $args;
+					}
+				}
+			}
 		}
 	}
 

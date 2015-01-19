@@ -8,7 +8,13 @@
  * @subpackage Shortcodes
  */
 
-$_shortcodes = array(
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
+// Loops through each shortcode and adds it to Render
+foreach ( array(
 	// Site Info
 	array(
 		'code'        => 'render_site_info',
@@ -37,12 +43,25 @@ $_shortcodes = array(
 		),
 		'render'      => true,
 	),
-);
+) as $shortcode ) {
 
-foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'site';
 	$shortcode['source']   = 'Render';
-	render_add_shortcode( $shortcode );
+
+	// Adds shortcode to Render
+	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
+		$shortcodes[] = $shortcode;
+		return $shortcodes;
+	});
+
+	// Add shortcode category
+	add_filter( 'render_modal_categories', function( $categories ) {
+		$categories['site'] = array(
+			'label' => __( 'Site', 'Render' ),
+			'icon' => 'dashicons-admin-home',
+		);
+		return $categories;
+	});
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * Functionality for the Render modal.
  *
- * @since Render 1.0.0
+ * @since 1.0.0
  *
  * @global Render_Data
  *

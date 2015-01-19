@@ -1,6 +1,20 @@
 <?php
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
-class Render_MenuPage extends Render {
+/**
+ * Class Render_AdminPage_Shortcodes
+ *
+ * Provides the admin page for viewing all shortcodes.
+ *
+ * @since 1.0.0
+ *
+ * @package Render
+ * @subpackage Admin
+ */
+class Render_AdminPage_Shortcodes extends Render {
 
 	public function __construct() {
 
@@ -101,4 +115,4 @@ class Render_MenuPage extends Render {
 	}
 }
 
-new Render_MenuPage();
+new Render_AdminPage_Shortcodes();

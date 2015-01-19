@@ -1,5 +1,10 @@
 <?php
 
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
 /**
  * Class Render_tinymce
  *
@@ -39,7 +44,7 @@ class Render_tinymce extends Render {
 	 *
 	 * Currently, I'm adding some extended_valid_elememnts so that tinymce doesn't strip my empty tags (mainly spans).
 	 *
-	 * @since Render 1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param array $mceinit The init settings for tinymce.
 	 *
@@ -123,7 +128,7 @@ class Render_tinymce extends Render {
 	/**
 	 * Links our custom script to our tinyMCE button.
 	 *
-	 * @since Render 1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param null|array $plugins The array of button scripts.
 	 *
@@ -140,7 +145,7 @@ class Render_tinymce extends Render {
 	/**
 	 * Adds our custom button to the tinyMCE buttons.
 	 *
-	 * @since Render 1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed|array $buttons All tinyMCE buttons.
 	 *

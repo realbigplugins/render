@@ -1,5 +1,19 @@
 <?php
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
+/**
+ * Class Render_ShortcodesTable
+ *
+ * Displays the WP table for the Render shortocdes page.
+ *
+ * @since 1.0.0
+ *
+ * @package Render
+ * @subpackage Admin
+ */
 class Render_ShortcodesTable extends WP_List_Table {
 
 	function __construct() {

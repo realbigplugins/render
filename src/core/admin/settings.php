@@ -1,6 +1,20 @@
 <?php
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
-class Render_OptionsPage extends Render {
+/**
+ * Class Render_AdminPage_Settings
+ *
+ * Provides the admin page for adjusting Render settings.
+ *
+ * @since 1.0.0
+ *
+ * @package Render
+ * @subpackage Admin
+ */
+class Render_AdminPage_Settings extends Render {
 
 	public function __construct() {
 
@@ -13,7 +27,7 @@ class Render_OptionsPage extends Render {
 	 */
 	public function menu() {
 
-		$hook = add_submenu_page(
+		add_submenu_page(
 			'render-settings',
 			'Settings',
 			'Settings',
@@ -58,7 +72,7 @@ class Render_OptionsPage extends Render {
 				<?php _e( 'Settings', 'Render' ); ?>
 			</h2>
 
-			<form method="post" action="options.php">
+			<form method="post" action="settings.php">
 
 				<?php settings_fields( 'render_options' ); ?>
 
@@ -86,4 +100,4 @@ class Render_OptionsPage extends Render {
 	}
 }
 
-new Render_OptionsPage();
+new Render_AdminPage_Settings();

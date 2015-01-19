@@ -8,7 +8,13 @@
  * @subpackage Shortcodes
  */
 
-$_shortcodes = array(
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
+// Loops through each shortcode and adds it to Render
+foreach ( array(
 	// Post meta
 	array(
 		'code'        => 'render_query',
@@ -105,12 +111,26 @@ $_shortcodes = array(
 		'render'      => true,
 		'wrapping'    => false
 	)
-);
+) as $shortcode ) {
 
-foreach ( $_shortcodes as $shortcode ) {
 	$shortcode['category'] = 'query';
 	$shortcode['source']   = 'Render';
-	render_add_shortcode( $shortcode );
+
+	// Adds shortcode to Render
+	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
+		$shortcodes[] = $shortcode;
+		return $shortcodes;
+	});
+
+	// Add shortcode category
+	add_filter( 'render_modal_categories', function( $categories ) {
+		$categories['query'] = array(
+			'label' => __( 'Query', 'Render' ),
+			// TODO Choose icon
+			'icon' => 'dashicons-admin-generic',
+		);
+		return $categories;
+	});
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * Adds the tinymce button.
  *
- * @since Render 1.0.0
+ * @since 1.0.0
  *
  * @global tinymce
  * @global Render_Modal

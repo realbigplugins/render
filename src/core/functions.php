@@ -1,109 +1,15 @@
 <?php
-// Create the new function for adding shortcodes
-function render_add_shortcode( $args ) {
-
-	global $Render, $shortcode_tags;
-
-	// Merge if it already exists
-	if ( isset( $shortcode_tags[ $args['code'] ] ) ) {
-		$args['function'] = $args['code'];
-	}
-
-	// Establish defaults
-	$args = wp_parse_args( $args, Render::$shortcode_defaults );
-
-	// Establish default attribute properties (if any exist)
-	if ( ! empty( $args['atts'] ) ) {
-
-		$defaults = array(
-			'required' => '0',
-			'disabled' => false,
-		);
-
-		foreach ( $args['atts'] as $i => $att ) {
-			$args['atts'][ $i ] = wp_parse_args( $args['atts'][ $i ], $defaults );
-		}
-	}
-
-	// Add the wrapping property to the render data
-	if ( $args['render'] ) {
-		if ( ! is_array( $args['render'] ) ) {
-			$args['render'] = array();
-		}
-		$args['render']['wrapping'] = $args['wrapping'];
-	}
-
-	// Create the actual shortcode if it hasn't yet been created
-	if ( ! array_key_exists( $args['code'], $shortcode_tags ) ) {
-		add_shortcode( $args['code'], $args['function'] );
-	}
-
-	// Add the shortcode info to our list if it hasn't yet been added
-	if ( empty( $Render->shortcodes ) || ! array_key_exists( $args['code'], $Render->shortcodes ) ) {
-
-		// TODO make this dynamic
-		$Render->shortcodes[ $args['code'] ] = array(
-			'title'       => $args['title'],
-			'atts'        => $args['atts'],
-			'source'      => $args['source'],
-			'tags'        => $args['tags'],
-			'description' => $args['description'],
-			'example'     => $args['example'],
-			'category'    => $args['category'],
-			'wrapping'    => $args['wrapping'],
-			'render'      => $args['render'],
-			'noDisplay'   => $args['noDisplay'],
-		);
-	}
-}
-
 /**
- * Merges the WP global shortcode array with the Render array.
+ * Provides global helper functions for Render.
  *
- * @since Render 1.0.0
+ * @since 1.0.0
  *
- * @return array The merged shortcode array.
+ * @package Render
  */
-function _render_get_merged_shortcodes() {
 
-	global $Render, $shortcode_tags;
-
-	// Setup the WP $shortcode_tags to be compatible with Render
-	$_shortcode_tags = array();
-	foreach ( $shortcode_tags as $code => $shortcode_func ) {
-
-		// Skips (shouldn't be many, mainly for duplicated shortcodes)
-		$skips = array(
-			'wp_caption',
-		);
-		if ( in_array( $code, $skips ) ) {
-			continue;
-		}
-
-		$_shortcode_tags[ $code ] = wp_parse_args( array(
-			'function' => $shortcode_func,
-			'title'    => render_translate_id_to_name( $code ),
-		), Render::$shortcode_defaults );
-	}
-
-	// Merge Other shortcodes with Render shortcodes
-	$all_shortcodes = array_merge( $_shortcode_tags, $Render->shortcodes );
-
-	// Sort the array alphabetically by shortcode title
-	uasort( $all_shortcodes, function ( $a, $b ) {
-		return strcmp( $a['title'], $b['title'] );
-	} );
-
-	return $all_shortcodes;
-}
-
-function _render_get_categories() {
-	return array_unique(
-		wp_list_pluck(
-			_render_get_merged_shortcodes(),
-			'category'
-		)
-	);
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
 }
 
 function render_translate_id_to_name( $id ) {

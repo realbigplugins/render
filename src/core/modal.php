@@ -1,5 +1,19 @@
 <?php
+// Exit if loaded directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
+/**
+ * Class Render_Modal
+ *
+ * Creates the Render modal.
+ *
+ * @since 1.0.0
+ *
+ * @package Render
+ * @subpackage Modal
+ */
 class Render_Modal {
 
 	public static $types = array(
@@ -43,9 +57,9 @@ class Render_Modal {
 
 	public static function localize_shortcodes( $data ) {
 
-		$all_shortcodes = _render_get_merged_shortcodes();
+		global $Render;
 
-		$data['all_shortcodes'] = $all_shortcodes;
+		$data['all_shortcodes'] = $Render->shortcodes;
 
 		return $data;
 	}
@@ -57,7 +71,7 @@ class Render_Modal {
 			/**
 			 * Allows the filtering of the current att in the loop.
 			 *
-			 * @since Render 1.0.0
+			 * @since 1.0.0
 			 */
 			$att = apply_filters( 'render_att_loop', $att, $att_id, $advanced, $wrapping );
 
@@ -467,31 +481,30 @@ class Render_Modal {
 
 	public static function output() {
 
-		$all_shortcodes = _render_get_merged_shortcodes();
+		global $Render;
 
-		// Setup categories
-		$categories = array(
-			'all',
+		/**
+		 * Shortcode categories in the modal.
+		 *
+		 * @since 1.0.0
+		 */
+		$categories = apply_filters( 'render_modal_categories', array(
+			'all' => array(
+				'label' => __( 'All', 'Render' ),
+				'icon' => 'dashicons-tagcloud',
+			),
+			'other' => array(
+				'label' => __( 'Other', 'Render' ),
+				'icon' => 'dashicons-admin-generic',
+			),
+		));
+
+		// Gets all categories in use
+		$used_categories = array_values(
+			array_unique(
+				wp_list_pluck( $Render->shortcodes, 'category' )
+			)
 		);
-
-		foreach ( $all_shortcodes as $shortcode ) {
-
-			// Add a category if it's set, not empty, and doesn't already exist in our $categories array
-			if ( ! empty( $shortcode['category'] ) && ! in_array( $shortcode['category'], $categories ) ) {
-				$categories[] = $shortcode['category'];
-			}
-		}
-
-		$category_icons = apply_filters( 'render_modal_category_icons', array(
-			'all'        => 'dashicons-tagcloud',
-			'design'     => 'dashicons-admin-appearance',
-			'post'       => 'dashicons-admin-post',
-			'site'       => 'dashicons-admin-home',
-			'time'       => 'dashicons-clock',
-			'user'       => 'dashicons-admin-users',
-			'media'      => 'dashicons-admin-media',
-			'visibility' => 'dashicons-visibility',
-		) );
 		?>
 		<div id="render-modal-backdrop"></div>
 		<div id="render-modal-wrap" style="display: none;">
@@ -517,15 +530,21 @@ class Render_Modal {
 					<div class="render-modal-categories-left dashicons dashicons-arrow-left-alt2"></div>
 					<ul>
 						<?php if ( ! empty( $categories ) ) : ?>
-							<?php $i = 0; ?>
-							<?php foreach ( $categories as $category ) : ?>
-								<?php $i ++; ?>
-								<li data-category="<?php echo $category; ?>"
+							<?php
+							$i = 0;
+							foreach ( $categories as $category_ID => $category ) :
+								$i ++;
+
+								// Skip if category is not in use (except all)
+								if ( $category_ID != 'all' && ! in_array( $category_ID, $used_categories ) ) {
+									continue;
+								}
+								?>
+								<li data-category="<?php echo $category_ID; ?>"
 								    class="<?php echo $i === 1 ? 'active' : ''; ?>">
-									<span class="dashicons <?php echo isset( $category_icons[ $category ] ) ?
-										$category_icons[ $category ] : 'dashicons-admin-generic'; ?>"></span>
+									<span class="dashicons <?php echo $category['icon']; ?>"></span>
 									<br/>
-									<?php echo ucwords( $category ); ?>
+									<?php echo $category['label'] ?>
 								</li>
 							<?php endforeach; ?>
 						<?php endif; ?>
@@ -536,14 +555,14 @@ class Render_Modal {
 				<div class="render-modal-shortcodes-container">
 
 					<ul class="render-modal-shortcodes accordion-container">
-						<?php if ( ! empty( $all_shortcodes ) ) : ?>
-							<?php foreach ( $all_shortcodes as $code => $shortcode ) :
+						<?php if ( ! empty( $Render->shortcodes ) ) : ?>
+							<?php foreach ( $Render->shortcodes as $code => $shortcode ) :
 								$wrapping          = isset( $shortcode['wrapping'] ) && $shortcode['wrapping'] ? true : false;
 
 								/**
 								 * Allows the filtering of the list of atts for the current shortcode.
 								 *
-								 * @since Render 1.0.0
+								 * @since 1.0.0
 								 */
 								$shortcode['atts'] = apply_filters( 'render_att_pre_loop', $shortcode['atts'], $code, $shortcode );
 
