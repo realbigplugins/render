@@ -325,15 +325,15 @@ function _render_sc_post_word_count( $atts ) {
 	// Get the filtered content
 	$content = $post->post_content;
 
-	// Strip shortcodes from count
-	$pattern = get_shortcode_regex();
-	$content = preg_replace( "/$pattern/s", '', $content );
-
-	// Convert nbsp to real space
-	$content = preg_replace( '/&nbsp;/', ' ', $content );
+	// Strip this shortcode out to count the rest
+	$content = preg_replace( "/\\[render_post_word_count]/s", '', $content );
+	$content = do_shortcode( $content );
 
 	// Strip tags
 	$content = strip_tags( $content );
+
+	// Convert nbsp to real space
+	$content = preg_replace( '/&nbsp;/', ' ', $content );
 
 	// And then count it!
 	return str_word_count( $content );
