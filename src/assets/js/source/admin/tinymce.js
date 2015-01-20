@@ -362,7 +362,7 @@ var Render_tinymce;
             var output = '[' + code;
 
             if (atts) {
-                atts = JSON.parse(render_encode_attr(atts, ['"']));
+                atts = JSON.parse(atts);
                 $.each(atts, function (name, value) {
                     if (value.length) {
                         output += ' ' + name + '=\'' + value + '\'';

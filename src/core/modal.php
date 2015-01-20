@@ -184,13 +184,14 @@ class Render_Modal {
 	private static function att_type_selectbox( $att_id, $att, $properties ) {
 
 		// If a callback is provided, use that to populate options
-		if ( isset( $properties['callback'] ) && is_callable( $properties['callback']['function'] ) ) {
-			$options = call_user_func( $properties['callback']['function'] );
+		if ( isset( $properties['callback'] ) && is_callable( $properties['callback'] ) ) {
+			$options = call_user_func( $properties['callback'] );
 		}
 
 		if ( ! empty( $options ) ) {
 
-			$which = isset( $properties['callback']['groups'] ) ? 'groups' : 'options';
+			// We need to merge our arrays, but we need to do it with either groups or options (whichever is in use)
+			$which = isset( $properties['groups'] ) ? 'groups' : 'options';
 			if ( ! empty( $properties[ $which ] ) ) {
 				$properties[ $which ] = array_merge( $options, $properties[ $which ] );
 			} else {

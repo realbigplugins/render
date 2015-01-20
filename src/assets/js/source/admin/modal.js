@@ -1267,8 +1267,8 @@ var Render_Modal;
                     }
 
                     // Add the att to the shortcode output
-                    if (value.length) {
-                        output += ' ' + name + '=\'' + render_encode_attr(value, ['\"']) + '\'';
+                    if (value && value.length) {
+                        output += ' ' + name + '=\'' + value + '\'';
                     }
                 });
             }
@@ -1519,7 +1519,7 @@ var Render_Modal;
         };
 
         this.setValue = function (value) {
-            this.$input.val(render_decode_attr(value));
+            this.$input.val(value);
         };
 
         this.setInvalid = function (msg) {
@@ -1596,6 +1596,33 @@ var Render_Modal;
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
+
+        this.setValue = function (value) {
+
+            if (!value) {
+                return;
+            }
+
+            // Custom input
+            if (!this.$container.find('option[value="' + value + '"]').length) {
+
+                var name = this.$input.attr('name');
+
+                this.$container.append('<input name="' + name + '" type="hidden" class="chosen-custom-input" value="' + value + '" />');
+                this.$container.find('.chosen-single > span').html(value);
+
+                return;
+            }
+
+            // Account for multi-select
+            if (value.indexOf(',') !== false) {
+                this.$input.val(value.split(','));
+            } else {
+                this.$input.val(value);
+            }
+
+            this.$input.trigger('chosen:updated');
+        };
 
         this.destroy = function () {
             this.$input.removeData('chosen');
@@ -1767,9 +1794,9 @@ var Render_Modal;
 
                 if (values[attObj.name]) {
                     // Att already set, append new value
-                    values[attObj.name] += '::sep::' + render_encode_attr(attObj.getValue());
+                    values[attObj.name] += '::sep::' + attObj.getValue();
                 } else {
-                    values[attObj.name] = render_encode_attr(attObj.getValue());
+                    values[attObj.name] = attObj.getValue();
                 }
             });
 
@@ -1964,29 +1991,4 @@ var Render_Modal;
             $placeholder.find('> span').html(custom_val);
         });
     }
-
-    window['render_encode_attr'] = function (attr, allowed) {
-
-        allowed = typeof allowed !== 'undefined' ? allowed : [];
-
-        return $('<div/>').text(attr.replace(/'|"|\n/g, function (match) {
-            match = match == '\'' && allowed.indexOf('\'') === -1 ? '::squot::' : match;
-            match = match == '"' && allowed.indexOf('"') === -1 ? '::dquot::' : match;
-            match = match == '\n' && allowed.indexOf('\n') === -1 ? '::br::' : match;
-            return match;
-        })).html();
-    };
-
-    window['render_decode_attr'] = function (attr, ignore) {
-
-        attr = typeof attr !== 'undefined' ? attr : '';
-        ignore = typeof ignore !== 'undefined' ? ignore : [];
-
-        return $('<div/>').text(attr.replace(/(::squot::)|(::dquot::)|(::br::)/g, function (match) {
-            match = match == '::squot::' && ignore.indexOf('::squot::') === -1 ? '\'' : match;
-            match = match == '::dquot::' && ignore.indexOf('::dquot::') === -1 ? '"' : match;
-            match = match == '::br::' && ignore.indexOf('::br::') === -1 ? '\n' : match;
-            return match;
-        })).html();
-    };
 })(jQuery);
