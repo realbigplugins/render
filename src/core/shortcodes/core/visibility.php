@@ -28,31 +28,20 @@ foreach ( array(
 				'type'       => 'selectbox',
 				'properties' => array(
 					'allowCustomInput' => true,
+					'default' => 'logged_in',
 					'options'          => array(
-						'logged_in' => __( 'User is logged in', 'Render' ),
-						'home'      => __( 'Current page is home page', 'Render' ),
-						'comments'  => __( 'Comments allowed', 'Render' ),
-						'single'    => __( 'Is single post', 'Render' ),
-						'page'      => __( 'Is page', 'Render' ),
-						'category'  => __( 'Is category page', 'Render' ),
-						'tag'       => __( 'Is tag page', 'Render' ),
-						'tax'       => __( 'Is taxonomy page', 'Render' ),
-						'author'    => __( 'Is archive of specific author', 'Render' ),
-						'archive'   => __( 'Current page is an archive page', 'Render' ),
-						'search'    => __( 'Current page is a search results page', 'Render' ),
-						'404'       => __( 'Current page is a 404', 'Render' ),
-					),
-				),
-			),
-			'arg2'     => array(
-				'label'      => __( 'Argument Two', 'Render' ),
-				'type'       => 'selectbox',
-				'properties' => array(
-					'allowCustomInput' => true,
-					'placeholder'      => __( 'True', 'Render' ),
-					'options'          => array(
-						'true'  => __( 'True', 'Render' ),
-						'false' => __( 'False', 'Render' ),
+						'logged_in' => __( 'If user is logged in', 'Render' ),
+						'home'      => __( 'If current page is home page', 'Render' ),
+						'comments'  => __( 'If comments allowed', 'Render' ),
+						'single'    => __( 'If is single post', 'Render' ),
+						'page'      => __( 'If is page', 'Render' ),
+						'category'  => __( 'If is category page', 'Render' ),
+						'tag'       => __( 'If is tag page', 'Render' ),
+						'tax'       => __( 'If is taxonomy page', 'Render' ),
+						'author'    => __( 'If is archive of specific author', 'Render' ),
+						'archive'   => __( 'If current page is an archive page', 'Render' ),
+						'search'    => __( 'If current page is a search results page', 'Render' ),
+						'404'       => __( 'If current page is a 404', 'Render' ),
 					),
 				),
 			),
@@ -61,16 +50,29 @@ foreach ( array(
 				'type'       => 'selectbox',
 				'properties' => array(
 					'allowCustomInput' => true,
-					'placeholder'      => __( 'Equals', 'Render' ),
+					'default'      => '==',
 					'options'          => array(
-						'===' => __( 'Identical', 'Render' ),
-						'=='  => __( 'Equals', 'Render' ),
-						'!='  => __( 'Does not equal', 'Render' ),
-						'!==' => __( 'Not identical', 'Render' ),
-						'<'   => __( 'Less than', 'Render' ),
-						'>'   => __( 'Greater than', 'Render' ),
-						'<='  => __( 'Less than or equal to', 'Render' ),
-						'>='  => __( 'Greater than or equal', 'Render' ),
+						'=='  => __( 'equals', 'Render' ),
+						'===' => __( 'is identical to', 'Render' ),
+						'!='  => __( 'does not equal', 'Render' ),
+						'!==' => __( 'is not identical to', 'Render' ),
+						'<'   => __( 'is less than', 'Render' ),
+						'>'   => __( 'is greater than', 'Render' ),
+						'<='  => __( 'is less than or equal to', 'Render' ),
+						'>='  => __( 'is greater than or equal to', 'Render' ),
+					),
+				),
+			),
+			'arg2'     => array(
+				'label'      => __( 'Argument Two', 'Render' ),
+				'description' => __( 'Feel free to enter something custom here.', 'Render' ),
+				'type'       => 'selectbox',
+				'properties' => array(
+					'allowCustomInput' => true,
+					'default'      => 'true',
+					'options'          => array(
+						'true'  => __( 'true', 'Render' ),
+						'false' => __( 'false', 'Render' ),
 					),
 				),
 			),
@@ -215,97 +217,106 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
 	// Escape atts
 	render_esc_atts( $atts );
 
-	$param = $atts['param'];
+	$parameter = $atts['param'];
 
 	// Correctly set arg1 to appropriate function
-	$arg1 = $atts['arg1'];
-	switch ( $arg1 ) {
+	$argument_1 = $atts['arg1'];
+	switch ( $argument_1 ) {
 		case 'logged_in':
-			$arg1 = is_user_logged_in();
+			$argument_1 = is_user_logged_in();
 			break;
 		case 'home':
-			$arg1 = is_home();
+			$argument_1 = is_home();
 			break;
 		case 'single':
-			$arg1 = is_single( $param );
+			$argument_1 = is_single( $parameter );
 			break;
 		case 'page':
-			$arg1 = is_page( $param );
+			$argument_1 = is_page( $parameter );
 			break;
 		case 'category':
-			$arg1 = is_category( $param );
+			$argument_1 = is_category( $parameter );
 			break;
 		case 'tag':
-			$arg1 = is_tag( $param );
+			$argument_1 = is_tag( $parameter );
 			break;
 		case 'tax':
-			$arg1 = is_tax( $param );
+			$argument_1 = is_tax( $parameter );
 			break;
 		case 'author':
-			$arg1 = is_author( $param );
+			$argument_1 = is_author( $parameter );
 			break;
 		case 'archive':
-			$arg1 = is_archive();
+			$argument_1 = is_archive();
 			break;
 		case 'search':
-			$arg1 = is_search();
+			$argument_1 = is_search();
 			break;
 		case '404':
-			$arg1 = is_404();
+			$argument_1 = is_404();
 			break;
 		case 'comments':
-			$arg1 = comments_open();
+			$argument_1 = comments_open();
 			break;
 		default:
-			$arg1 = true;
+			$argument_1 = true;
 	}
 
-	$arg1 = apply_filters( 'render_sc_logic_arg1', $arg1, $atts );
+	$argument_1 = apply_filters( 'render_sc_logic_arg1', $argument_1, $atts );
 
 	// Correctly set arg2 to boolean
-	$arg2 = $atts['arg2'] === 'false' ? false : true;
+	switch ( $atts['arg2'] ) {
+		case 'false':
+			$argument_2 = false;
+			break;
+		case 'true':
+			$argument_2 = true;
+			break;
+		default:
+			$argument_2 = $atts['arg2'];
+	}
 
 	// Checks for operator
 	$output   = '';
 	$operator = $atts['operator'];
 	switch ( $operator ) {
 		case '===':
-			if ( $arg1 === $arg2 ) {
+			if ( $argument_1 === $argument_2 ) {
 				$output = $content;
 			}
 			break;
 		case '==':
-			if ( $arg1 == $arg2 ) {
+			if ( $argument_1 == $argument_2 ) {
 				$output = $content;
 			}
 			break;
 		case '!=':
-			if ( $arg1 != $arg2 ) {
+			if ( $argument_1 != $argument_2 ) {
 				$output = $content;
 			}
 			break;
 		case '!==':
-			if ( $arg1 !== $arg2 ) {
+			if ( $argument_1 !== $argument_2 ) {
 				$output = $content;
 			}
 			break;
 		case '<':
-			if ( $arg1 < $arg2 ) {
+			if ( $argument_1 < $argument_2 ) {
 				$output = $content;
 			}
 			break;
 		case '>':
-			if ( $arg1 > $arg2 ) {
+			if ( $argument_1 > $argument_2 ) {
 				$output = $content;
 			}
 			break;
 		case '>=':
-			if ( $arg1 >= $arg2 ) {
+			if ( $argument_1 >= $argument_2 ) {
 				$output = $content;
 			}
 			break;
 		case '<=':
-			if ( $arg1 <= $arg2 ) {
+			if ( $argument_1 <= $argument_2 ) {
 				$output = $content;
 			}
 			break;
@@ -441,7 +452,7 @@ function render_tinymce_visibility_wrap( $content = '', $visibility = 'visible' 
 
 	$tag    = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
 
-	return "<$tag class='render-content-$visibility'>" . do_shortcode( $content ) . "</$tag>";
+	return "<$tag class='render-content-$visibility'>" . do_shortcode( $content ) . "<span class='render-visibility-icon dashicons dashicons-" . ( $visibility == 'visible' ? 'visibility' : 'no' ) . "'></span></$tag>";
 }
 
 function render_sc_timezone_dropdown() {

@@ -7,7 +7,7 @@ $tooltip-border-color: #aaa;
 
 .render-tinymce-shortcode-wrapper {
   position: relative;
-  transition: $primary-transition padding;
+  transition: $primary-transition all;
   display: inline-block;
 
   &.styled {
@@ -24,8 +24,16 @@ $tooltip-border-color: #aaa;
   }
 
   &.delete {
-    border: 2px dashed rgba(#f00, 0.3) !important;
-    padding: 5px;
+
+    &.styled {
+      background: #FFD4D4;
+      border-color: darken(#FFD4D4, 10%);
+    }
+
+    &:not(.styled) {
+      border: 2px dashed #FDAB9D !important;
+      padding: 5px;
+    }
 
     > .render-tinymce-shortcode-wrapper-delete {
       visibility: visible;
@@ -126,6 +134,20 @@ $tooltip-border-color: #aaa;
 
 .render-content-visible {
   // Nothing different.
+}
+
+.render-tinymce-shortcode-wrapper {
+  &:hover .render-visibility-icon {
+    opacity: 0.6;
+  }
+}
+
+.render-visibility-icon {
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  opacity: 0.2;
+  color: #333;
 }
 
 // Dividers
