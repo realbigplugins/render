@@ -371,7 +371,6 @@ var Render_Modal;
                                     return;
                                 }
 
-                                // FIXME This isn't working...
                                 $chosen.trigger('chosen:close');
 
                                 e.preventDefault();
@@ -1598,11 +1597,6 @@ var Render_Modal;
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
-        this.setValue = function (value) {
-            this.$input.val(render_decode_attr(value));
-            this.$input.trigger('chosen:updated');
-        };
-
         this.destroy = function () {
             this.$input.removeData('chosen');
             this.$input.show();
@@ -1673,8 +1667,6 @@ var Render_Modal;
         this.setValue = function (value) {
 
             var type = this.$input.siblings('.render-modal-att-media-upload').data('type');
-
-            console.log(type);
 
             switch (type) {
                 case 'image':

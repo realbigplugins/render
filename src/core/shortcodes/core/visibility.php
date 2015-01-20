@@ -16,7 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach ( array(
 	// Logic
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_logic',
 		'function'    => '_render_sc_logic',
@@ -85,7 +84,6 @@ foreach ( array(
 		'wrapping'    => true,
 	),
 	// Hide for times
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_hide_for_times',
 		'function'    => '_render_sc_hide_for_times',
@@ -96,20 +94,10 @@ foreach ( array(
 				'label'      => __( 'Visibility', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Hide for these times', 'Render' ),
+					'default' => 'hide',
 					'options'     => array(
 						'hide' => __( 'Hide for these times', 'Render' ),
 						'show' => __( 'Show for these times', 'Render' ),
-					),
-				),
-			),
-			'timezone' => array(
-				'label' => __( 'Timezone', 'Render' ),
-				'type' => 'selectbox',
-				'properties' => array(
-					'placeholder' => __( 'Defaults to timezone set in Settings -> General', 'Render' ),
-					'callback' => array(
-						'function' => 'render_sc_timezone_dropdown',
 					),
 				),
 			),
@@ -122,9 +110,7 @@ foreach ( array(
 						'time' => array(
 							'label'        => __( 'Hide / show between...', 'Render' ),
 							'type'         => 'slider',
-							'callback'     => array(
-								'function' => 'render_sc_time_slider',
-							),
+							'callback'     => 'render_sc_time_slider',
 							'initCallback' => 'timeSliderInit',
 							'properties'   => array(
 								'range' => true,
@@ -133,9 +119,20 @@ foreach ( array(
 					),
 				),
 			),
+			'timezone' => array(
+				'label' => __( 'Timezone', 'Render' ),
+				'type' => 'selectbox',
+				'advanced' => true,
+				'properties' => array(
+					'placeholder' => __( 'Defaults to timezone set in Settings -> General', 'Render' ),
+					'callback' => array(
+						'function' => 'render_sc_timezone_dropdown',
+					),
+				),
+			),
 		),
 		'wrapping'    => true,
-		'render'      => array(),
+		'render'      => true,
 	),
 	// Hide for users
 	// TODO Test and fix up
@@ -145,26 +142,24 @@ foreach ( array(
 		'title'       => __( 'Hide for Users', 'Render' ),
 		'description' => __( 'Allows content to be visible only for specific users', 'Render' ),
 		'atts'        => array(
+			'visibility' => array(
+				'label'      => __( 'Visibility', 'Render' ),
+				'type'       => 'selectbox',
+				'properties' => array(
+					'default' => 'hide',
+					'options'     => array(
+						'hide' => __( 'Hide for these users', 'Render' ),
+						'show' => __( 'Show for these users', 'Render' ),
+					),
+				),
+			),
 			'users'      => array(
 				'label'      => __( 'Users', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
 					'placeholder' => __( 'Select one or more users', 'Render' ),
 					'multi'       => true,
-					'callback'    => array(
-						'function' => '_render_user_dropdown',
-					),
-				),
-			),
-			'visibility' => array(
-				'label'      => __( 'Visibility', 'Render' ),
-				'type'       => 'selectbox',
-				'properties' => array(
-					'placeholder' => __( 'Hide for these users', 'Render' ),
-					'options'     => array(
-						'hide' => __( 'Hide for these users', 'Render' ),
-						'show' => __( 'Show for these users', 'Render' ),
-					),
+					'callback'    => '_render_user_dropdown',
 				),
 			),
 		),
@@ -276,6 +271,8 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
 			$argument_2 = $atts['arg2'];
 	}
 
+	$argument_2 = apply_filters( 'render_sc_logic_arg2', $argument_2, $atts );
+
 	// Checks for operator
 	$output   = '';
 	$operator = $atts['operator'];
@@ -323,6 +320,8 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
 		default:
 			$output = $content;
 	}
+
+	$output = apply_filters( 'render_sc_logic_operator', $output, $argument_1, $argument_2, $content, $atts );
 
 	return do_shortcode( $output );
 }
@@ -383,13 +382,25 @@ function _render_sc_hide_for_times( $atts = array(), $content = '' ) {
 
 	date_default_timezone_set( $orig_timezone );
 
-	// Differ for tinymce output
-	if ( defined( 'RENDER_TINYMCE' ) && RENDER_TINYMCE ) {
-		return '<div class="' . ( $hidden ? 'render-content-hidden' : 'render-content-visible' ) . '">' . $content . '</div>';
-	}
-
 	$content = $hidden ? '' : $content;
 	return $content;
+}
+
+/**
+ * The tinymce mirror for the Hide for Times shortcode.
+ *
+ * @since Render 1.0.0
+ * @access Private
+ *
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
+ *
+ * @return string The appropriately wrapped content.
+ */
+function _render_sc_hide_for_times_tinymce( $atts = array(), $content = '' ) {
+
+	$output = _render_sc_hide_for_times( $atts, $content );
+	return render_tinymce_visibility_wrap( $content, empty( $output ) ? 'hidden' : 'visible' );
 }
 
 /**
