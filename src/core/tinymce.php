@@ -172,7 +172,7 @@ class Render_tinymce extends Render {
 
 		global $render_shortcode_data;
 
-		define( 'Render_SHORTCODE_RENDERING', true );
+		define( 'RENDER_TINYMCE', true );
 		do_action( 'render_render_ajax' );
 
 		$content               = stripslashes( $_POST['content'] );
@@ -192,7 +192,7 @@ class Render_tinymce extends Render {
 
 	public static function replace_shortcodes( $matches ) {
 
-		global $render_shortcode_data;
+		global $render_shortcode_data, $shortcode_tags;
 
 		// "Extract" some of the found matches
 		$entire_code = $matches[0];
@@ -225,15 +225,11 @@ class Render_tinymce extends Render {
 			$entire_code = str_replace( '][', "]{$content}[", $entire_code );
 		}
 
-		// Match any of all block level elements
-		// https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
-		$block_regex = '/<(address|figcaption|ol|article|figure|output|aside|footer|p|audio|form|pre|blockquote|h[1-6]|section|canvas|header|table|dd|hgroup|tfoot|div|hr|ul|dl|video|fieldset|noscript)/';
-
 		// Properly wrap the content
 		if ( ! empty( $content ) ) {
 
 			// Wrap the content in a special element, but first decide if it needs to be div or span
-			$tag     = preg_match( $block_regex, $content ) ? 'div' : 'span';
+			$tag     = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
 			$content = "<$tag class='render-tinymce-shortcode-content render-tinymce-editable'>$content</$tag>";
 		}
 
@@ -253,11 +249,16 @@ class Render_tinymce extends Render {
 			}
 		}
 
+		// Check for tinymce callback
+		if ( is_callable( $shortcode_tags[ $code ] . '_tinymce' ) ) {
+			$shortcode_tags[ $code ] = $shortcode_tags[ $code ] . '_tinymce';
+		}
+
 		// Get the shortcode output
 		$shortcode_output = do_shortcode( $entire_code );
 
 		// If the output contains any block tags, make sure the wrapper tag is a div
-		$tag = preg_match( $block_regex, $shortcode_output ) ? 'div' : 'span';
+		$tag = preg_match( render_block_regex(), $shortcode_output ) ? 'div' : 'span';
 
 		$output = '';
 
@@ -310,4 +311,17 @@ function _render_init_tinymce( $screen ) {
 	if ( in_array( $screen->base, $allowed_screens ) ) {
 		new Render_tinymce();
 	}
+}
+
+/**
+ * Match any of all block level elements.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
+ *
+ * @since 1.0.0
+ *
+ * @return string The regex.
+ */
+function render_block_regex() {
+	return '/<(address|figcaption|ol|article|figure|output|aside|footer|p|audio|form|pre|blockquote|h[1-6]|section|canvas|header|table|dd|hgroup|tfoot|div|hr|ul|dl|video|fieldset|noscript)/';
 }

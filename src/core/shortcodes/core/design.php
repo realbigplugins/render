@@ -49,6 +49,7 @@ foreach ( array(
 		),
 	),
 	// Button
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_button',
 		'function'    => '_render_sc_button',
@@ -212,6 +213,7 @@ foreach ( array(
 		),
 	),
 	// Box
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_box',
 		'function'    => '_render_sc_box',
@@ -373,6 +375,7 @@ foreach ( array(
 		),
 	),
 	// Column 2
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_column_two',
 		'function'    => '_render_sc_column_two',
@@ -422,6 +425,7 @@ foreach ( array(
 		),
 	),
 	// Column 3
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_column_three',
 		'function'    => '_render_sc_column_three',
@@ -471,6 +475,7 @@ foreach ( array(
 		),
 	),
 	// Column 4
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_column_four',
 		'function'    => '_render_sc_column_four',
@@ -520,6 +525,7 @@ foreach ( array(
 		),
 	),
 	// Column 5
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_column_five',
 		'function'    => '_render_sc_column_five',
@@ -595,7 +601,7 @@ foreach ( array(
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param array $atts The attributes sent to the shortcode.
  *
  * @return string The accordion HTML.
  */
@@ -631,12 +637,12 @@ function _render_sc_accordion( $atts = array() ) {
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array  $atts    The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
  *
  * @return string The button HTML.
  */
-function _render_sc_button( $atts = array(), $content = null ) {
+function _render_sc_button( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
 		'link'                       => '#',
@@ -682,12 +688,12 @@ function _render_sc_button( $atts = array(), $content = null ) {
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array  $atts    The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
  *
  * @return string The box HTML.
  */
-function _render_sc_box( $atts = array(), $content = null ) {
+function _render_sc_box( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
 		'color'                      => RENDER_PRIMARY_COLOR,
@@ -728,12 +734,12 @@ function _render_sc_box( $atts = array(), $content = null ) {
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array  $atts    The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
  *
  * @return string The content in a column HTML.
  */
-function _render_sc_column_two( $atts = array(), $content = null ) {
+function _render_sc_column_two( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
 		'padding_left'  => '10px',
@@ -755,12 +761,12 @@ function _render_sc_column_two( $atts = array(), $content = null ) {
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array  $atts    The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
  *
  * @return string The content in a column HTML.
  */
-function _render_sc_column_three( $atts, $content = null ) {
+function _render_sc_column_three( $atts, $content = '' ) {
 
 	return '<div class="render-column-three">' . do_shortcode( $content ) . '</div>';
 }
@@ -772,12 +778,12 @@ function _render_sc_column_three( $atts, $content = null ) {
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array  $atts    The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
  *
  * @return string The content in a column HTML.
  */
-function _render_sc_column_four( $atts, $content = null ) {
+function _render_sc_column_four( $atts, $content = '' ) {
 
 	return '<div class="render-column-four">' . do_shortcode( $content ) . '</div>';
 }
@@ -789,12 +795,12 @@ function _render_sc_column_four( $atts, $content = null ) {
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array  $atts    The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
  *
  * @return string The content in a column HTML.
  */
-function _render_sc_column_five( $atts, $content = null ) {
+function _render_sc_column_five( $atts, $content = '' ) {
 
 	return '<div class="render-column-five">' . do_shortcode( $content ) . '</div>';
 }

@@ -79,9 +79,7 @@ foreach ( array(
 				'description' => __( 'Used in some conditions to further specify the condition.', 'Render' ),
 			),
 		),
-		'render'      => array(
-			'noStyle' => true,
-		),
+		'render'      => true,
 		'wrapping'    => true,
 	),
 	// Hide for times
@@ -200,12 +198,12 @@ foreach ( array(
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array  $atts    The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
  *
  * @return bool True if statement succeeds, false otherwise. Doy!
  */
-function _render_sc_logic( $atts = array(), $content = null ) {
+function _render_sc_logic( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
 		'arg1'     => 'logged_in',
@@ -315,12 +313,24 @@ function _render_sc_logic( $atts = array(), $content = null ) {
 			$output = $content;
 	}
 
-	// Differ for tinymce output
-	if ( defined( 'Render_SHORTCODE_RENDERING' ) && Render_SHORTCODE_RENDERING ) {
-		return '<div class="' . ( empty( $output ) ? 'hidden' : 'visible' ) . '">' . $content . '</div>';
-	}
+	return do_shortcode( $output );
+}
 
-	return $output;
+/**
+ * The tinymce mirror for the Logic shortcode.
+ *
+ * @since Render 1.0.0
+ * @access Private
+ *
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
+ *
+ * @return string The appropriately wrapped content.
+ */
+function _render_sc_logic_tinymce( $atts = array(), $content = '' ) {
+
+	$output = _render_sc_logic( $atts, $content );
+	return render_tinymce_visibility_wrap( $content, empty( $output ) ? 'hidden' : 'visible' );
 }
 
 /**
@@ -329,12 +339,12 @@ function _render_sc_logic( $atts = array(), $content = null ) {
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array  $atts    The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
  *
- * @return null|string The content, if it's returned
+ * @return string The content, if it's returned
  */
-function _render_sc_hide_for_times( $atts = array(), $content = null ) {
+function _render_sc_hide_for_times( $atts = array(), $content = '' ) {
 
 	$atts = wp_parse_args( $atts, array(
 		'visibility' => 'hide',
@@ -363,7 +373,7 @@ function _render_sc_hide_for_times( $atts = array(), $content = null ) {
 	date_default_timezone_set( $orig_timezone );
 
 	// Differ for tinymce output
-	if ( defined( 'Render_SHORTCODE_RENDERING' ) && Render_SHORTCODE_RENDERING ) {
+	if ( defined( 'RENDER_TINYMCE' ) && RENDER_TINYMCE ) {
 		return '<div class="' . ( $hidden ? 'render-content-hidden' : 'render-content-visible' ) . '">' . $content . '</div>';
 	}
 
@@ -377,12 +387,12 @@ function _render_sc_hide_for_times( $atts = array(), $content = null ) {
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array  $atts    The attributes sent to the shortcode.
- * @param null|string $content The content inside the shortcode.
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
  *
- * @return null|string The content, if it's returned
+ * @return string The content, if it's returned
  */
-function _render_sc_hide_for_users( $atts = array(), $content = null ) {
+function _render_sc_hide_for_users( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
 		'users'      => false,
@@ -410,11 +420,28 @@ function _render_sc_hide_for_users( $atts = array(), $content = null ) {
 	}
 
 	// Differ for tinymce output
-	if ( defined( 'Render_SHORTCODE_RENDERING' ) && Render_SHORTCODE_RENDERING ) {
+	if ( defined( 'RENDER_TINYMCE' ) && RENDER_TINYMCE ) {
 		return '<div class="' . ( empty( $output ) ? 'hidden' : 'visible' ) . '">' . $content . '</div>';
 	}
 
 	return $output;
+}
+
+/**
+ * Wraps content appropriately based on its existence, for use within the TinyMCE.
+ *
+ * @since 1.0.0
+ *
+ * @param string $content The content output.
+ * @param string $visibility Whether to hide or show content. Accepts 'hidden' or 'visible'.
+ *
+ * @return string The appropriately wrapped content.
+ */
+function render_tinymce_visibility_wrap( $content = '', $visibility = 'visible' ) {
+
+	$tag    = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
+
+	return "<$tag class='render-content-$visibility'>" . do_shortcode( $content ) . "</$tag>";
 }
 
 function render_sc_timezone_dropdown() {

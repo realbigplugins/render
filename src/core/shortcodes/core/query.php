@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach ( array(
 	// Post meta
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_query',
 		'function'    => '_render_query',
@@ -139,7 +140,7 @@ foreach ( array(
  * @since  0.3.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param array $atts The attributes sent to the shortcode.
  *
  * @return string
  */

@@ -70,7 +70,7 @@ foreach ( array(
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param array $atts The attributes sent to the shortcode.
  *
  * @return string The desired blog info.
  */

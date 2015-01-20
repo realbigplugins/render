@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach ( array(
 	// User Info
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_user_info',
 		'function'    => '_render_sc_user_info',
@@ -129,7 +130,7 @@ foreach ( array(
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param array $atts The attributes sent to the shortcode.
  *
  * @return string The specified current user property.
  */
@@ -370,7 +371,7 @@ function _render_sc_user_role( $user ) {
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param array $atts The attributes sent to the shortcode.
  *
  * @return string The the date the current user registered.
  */
@@ -468,7 +469,7 @@ function render_user_dropdown( $all = true ) {
  *
  * @param $atts
  *
- * @return null|string
+ * @return string
  */
 function _render_sc_login_form( $atts ) {
 

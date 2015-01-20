@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach ( array(
 	// Custom Date
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_date',
 		'function'    => '_render_sc_custom_date',
@@ -123,7 +124,7 @@ foreach ( array(
  * @since  Render 1.0.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param array $atts The attributes sent to the shortcode.
  *
  * @return string The specified date format.
  */

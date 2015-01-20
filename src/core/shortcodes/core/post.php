@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach ( array(
 	// Post meta
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_post_meta',
 		'function'    => '_render_sc_post_meta',
@@ -48,6 +49,7 @@ foreach ( array(
 		'render'      => true,
 	),
 	// Post published date
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_post_published_date',
 		'function'    => '_render_sc_post_published_date',
@@ -60,6 +62,7 @@ foreach ( array(
 		'render'      => true,
 	),
 	// Post word count
+	// TODO Test and fix up
 	array(
 		'code'        => 'render_post_word_count',
 		'function'    => '_render_sc_post_word_count',
@@ -97,7 +100,7 @@ foreach ( array(
  * @since  0.3.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param array $atts The attributes sent to the shortcode.
  *
  * @return int The post ID.
  */
@@ -270,7 +273,7 @@ function _render_sc_post_content( $post ) {
  * @since  0.3.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param array $atts The attributes sent to the shortcode.
  *
  * @return string The post publish date.
  */
@@ -304,7 +307,7 @@ function _render_sc_post_published_date( $atts ) {
  * @since  0.3.0
  * @access Private
  *
- * @param null|array $atts The attributes sent to the shortcode.
+ * @param array $atts The attributes sent to the shortcode.
  *
  * @return string The post word count.
  */
@@ -345,7 +348,7 @@ function _render_sc_post_word_count( $atts ) {
  * @since  1.0.0
  * @access Private
  *
- * @return null|array List of all posts
+ * @return array List of all posts
  */
 function _render_sc_post_list() {
 
