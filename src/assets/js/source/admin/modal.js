@@ -15,8 +15,8 @@ var Render_Modal;
         slide_transition = 150,
         categories_sliding = false,
         render_modal_open = false,
-        _search_timeout, search_loading, textbox_focused,
-        error_color = '#ec6750';
+        error_color = '#ec6750',
+        _search_timeout, search_loading, textbox_focused;
 
     Render_Modal = {
 
@@ -356,6 +356,8 @@ var Render_Modal;
                         // TODO Find a way to allow searching of option values as well as text
                         if ($chosen.hasClass('allow-custom-input')) {
 
+                            var $text_input = $container.find('.chosen-search input[type="text"]');
+
                             // Binds and such
                             chosen_custom_input($chosen);
 
@@ -364,18 +366,23 @@ var Render_Modal;
                                 return this.$container.find('*[name="' + this.name + '"]').last().val();
                             };
 
-                            // Pressing enter should set the value, not submit the entire form
-                            $container.find('.chosen-search input[type="text"]').keyup(function (e) {
+                            // Enter shouldn't submit the Modal, but just submit the custom input
+                            $text_input.keyup(function (e) {
+                                if (e.keyCode == 13) {
 
-                                if (!render_modal_open || e.which !== 13) {
-                                    return;
+                                    // Close the chosen (trigger('chosen:close') isn't working, because of return false)
+                                    $container.find('.chosen-container').removeClass('chosen-with-drop');
+                                    $chosen.trigger('chosen:hiding_dropdown');
+
+                                    // Stop Modal closing
+                                    e.preventDefault();
+                                    return false;
                                 }
-
-                                $chosen.trigger('chosen:close');
-
-                                e.preventDefault();
-                                return false;
                             });
+
+                            $chosen.on('chosen:hiding_dropdown', function () {
+                                $text_input.blur();
+                            })
                         }
                         break;
                     case 'colorpicker':

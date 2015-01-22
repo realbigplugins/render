@@ -91,7 +91,6 @@ foreach (
 			'render'      => true,
 		),
 		// Login form
-		// TODO Test and fix up
 		array(
 			'code'        => 'render_login_form',
 			'function'    => '_render_sc_login_form',
