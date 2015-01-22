@@ -184,8 +184,8 @@ class Render_Modal {
 	private static function att_type_selectbox( $att_id, $att, $properties ) {
 
 		// If a callback is provided, use that to populate options
-		if ( isset( $properties['callback'] ) && is_callable( $properties['callback'] ) ) {
-			$options = call_user_func( $properties['callback'] );
+		if ( isset( $properties['callback'] ) && is_callable( $properties['callback']['function'] ) ) {
+			$options = call_user_func( $properties['callback']['function'] );
 		}
 
 		if ( ! empty( $options ) ) {
@@ -200,7 +200,7 @@ class Render_Modal {
 		}
 
 		if ( empty( $properties['options'] ) && empty( $properties['groups'] ) ) {
-			echo 'No options!';
+			echo isset( $properties['no_options'] ) ? $properties['no_options'] : 'No options available.';
 
 			return;
 		}

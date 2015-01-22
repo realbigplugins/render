@@ -15,20 +15,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Loops through each shortcode and adds it to Render
 foreach ( array(
-	// Post meta
+	// Query
 	// TODO Test and fix up
 	array(
 		'code'        => 'render_query',
 		'function'    => '_render_query',
 		'title'       => __( 'Query', 'Render' ),
 		'description' => __( 'Queries the database for posts.', 'Render' ),
-		'tags'        => 'query database posts data loop',
+		'tags'        => 'data loop',
 		'atts'        => array(
 			'author'      => array(
 				'label'      => __( 'Author', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Author', 'Render' ),
+					'placeholder' => __( 'Select an author', 'Render' ),
 					'options'     => render_user_dropdown( false ),
 				),
 			),
@@ -37,9 +37,9 @@ foreach ( array(
 				'type'        => 'selectbox',
 				'description' => __( 'Available post types.', 'Render' ),
 				'properties'  => array(
-					'placeholder' => __( 'Post Type', 'Render' ),
+					'default' => 'post',
 					'callback'    => array(
-						'function' => 'get_post_types',
+						'function' => 'render_post_types_dropdown',
 					),
 				),
 			),
@@ -48,6 +48,7 @@ foreach ( array(
 				'type'        => 'selectbox',
 				'description' => __( 'Available categories.', 'Render' ),
 				'properties'  => array(
+					'no_options' => __( 'No categories available.', 'Render' ),
 					'placeholder' => __( '-- None --', 'Render' ),
 					'callback'    => array(
 						'function' => 'render_categories_dropdown'
@@ -59,6 +60,7 @@ foreach ( array(
 				'type'        => 'selectbox',
 				'description' => __( 'Available tags.', 'Render' ),
 				'properties'  => array(
+					'no_options' => __( 'No tags available.', 'Render' ),
 					'placeholder' => __( '-- None --', 'Render' ),
 					'callback'    => array(
 						'function' => 'render_tags_dropdown'
@@ -83,7 +85,7 @@ foreach ( array(
 				'type'       => 'selectbox',
 				'properties' => array(
 					'options' => array(
-						'DESC' => __( 'Descending', 'Render' ),
+						'DSC' => __( 'Descending', 'Render' ),
 						'ASC'  => __( 'Ascending', 'Render' ),
 					),
 				),
@@ -135,19 +137,19 @@ foreach ( array(
 }
 
 /**
- * Runs a WP_Query.
+ * Runs a WP_Query to provide a drop-down of posts.
  *
  * @since  0.3.0
  * @access Private
  *
  * @param array $atts The attributes sent to the shortcode.
  *
- * @return string
+ * @return string The drop-down HTML.
  */
-function _render_query( $atts ) {
+function _render_query( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
-		'post_type'   => '',
+		'post_type'   => 'post',
 		'author'      => '',
 		'cat'         => '',
 		'tag'         => '',
@@ -160,25 +162,13 @@ function _render_query( $atts ) {
 	// Escape atts
 	render_esc_atts( $atts );
 
-	$args = array(
-		'post_type'   => $atts['post_type'],
-		'author'      => $atts['author'],
-		'cat'         => $atts['cat'],
-		'tag'         => $atts['tag'],
-		's'           => $atts['s'],
-		'post_status' => $atts['post_status'],
-		'order'       => $atts['order'],
-		'orderby'     => $atts['orderby'],
-	);
-
 	$output = '';
-	$query  = new WP_Query( $args );
+	$posts  = get_posts( $atts );
 
-	if ( $query->have_posts() ) {
-		$output = '<ul>';
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$output .= '<a href="' . get_permalink() . '"><li>' . get_the_title() . '</li></a>';
+	if ( ! empty( $posts ) ) {
+		$output .= '<ul>';
+		foreach ( $posts as $post ) {
+			$output .= '<li><a href="' . get_permalink( $post->ID ) . '">' . get_the_title( $post-> ID ) . '</a></li>';
 		}
 		$output .= '</ul>';
 	} else {
@@ -223,6 +213,21 @@ function render_tags_dropdown() {
 		foreach ( $tags as $tag ) {
 			$output[ $tag->term_id ] = $tag->name;
 		}
+	}
+
+	return $output;
+}
+
+function render_post_types_dropdown() {
+
+	$post_types = get_post_types( array(
+		'public' => true,
+	), 'objects' );
+
+
+	$output = array();
+	foreach ( $post_types as $post_type ) {
+		$output[ $post_type->name ] = $post_type->label;
 	}
 
 	return $output;

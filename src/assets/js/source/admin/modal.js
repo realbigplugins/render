@@ -1608,14 +1608,14 @@ var Render_Modal;
 
                 var name = this.$input.attr('name');
 
-                this.$container.append('<input name="' + name + '" type="hidden" class="chosen-custom-input" value="' + value + '" />');
+                this.$container.find('.render-modal-att-field').append('<input name="' + name + '" type="hidden" class="chosen-custom-input" value="' + value + '" />');
                 this.$container.find('.chosen-single > span').html(value);
 
                 return;
             }
 
             // Account for multi-select
-            if (value.indexOf(',') !== false) {
+            if (this.$input.attr('multiple')) {
                 this.$input.val(value.split(','));
             } else {
                 this.$input.val(value);
@@ -1628,6 +1628,11 @@ var Render_Modal;
             this.$input.removeData('chosen');
             this.$input.show();
             this.$input.siblings('.chosen-container').remove();
+            this.$container.find('.chosen-custom-input').remove();
+        };
+
+        this.revert = function () {
+            this.$container.find('.chosen-custom-input').remove();
         };
 
         this.setInvalid = function (msg) {
@@ -1954,7 +1959,7 @@ var Render_Modal;
 
             var name = $(this).attr('name'),
                 $self = $(this),
-                $container = $chosen.siblings('.chosen-container'),
+                $container = $(this).siblings('.chosen-container'),
                 custom_val = $container.find('.chosen-search input[type="text"]').val(),
                 $placeholder = $container.find('.chosen-single'),
                 $custom_input = $container.parent().find('.chosen-custom-input');

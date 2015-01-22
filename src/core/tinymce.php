@@ -272,7 +272,7 @@ class Render_tinymce extends Render {
 			$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable $code $nostyle' data-code='$code' data-atts='$atts'>";
 		}
 
-		$output .= $shortcode_output;
+		$output .= ! empty( $shortcode_output ) ? $shortcode_output : '<span class="render-shortcode-no-output">(no output)</span>';
 
 		// Close the wrapper
 		if ( ! isset( $render_shortcode_data[ $code ]['noWrap'] ) ) {

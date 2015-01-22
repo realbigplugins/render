@@ -21,7 +21,7 @@ class Render_Widget extends WP_Widget {
 			'render_widget',
 			__( 'Render', 'Render' ),
 			array(
-				'description' => __( 'Adds a Render element to your sidebar.', 'Render' ),
+				'description' => __( 'Adds a shortcode to your sidebar.', 'Render' ),
 			)
 		);
 	}

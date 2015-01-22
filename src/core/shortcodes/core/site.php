@@ -74,7 +74,7 @@ foreach ( array(
  *
  * @return string The desired blog info.
  */
-function _render_sc_site_info( $atts ) {
+function _render_sc_site_info( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
 		'info' => 'name'

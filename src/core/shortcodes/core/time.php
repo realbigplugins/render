@@ -67,7 +67,7 @@ foreach ( array(
 						array(
 							'label'   => __( 'Month', 'Render' ),
 							'options' => array(
-								'W' => date( 'W' ),
+								'F' => date( 'F' ),
 								'M' => date( 'M' ),
 								'm' => date( 'm' ),
 								'n' => date( 'n' ),

@@ -15,8 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Loops through each shortcode and adds it to Render
 foreach ( array(
-	// User Info
-	// TODO Test and fix up
+	// User Information
 	array(
 		'code'        => 'render_user_info',
 		'function'    => '_render_sc_user_info',
@@ -68,7 +67,6 @@ foreach ( array(
 		'render'      => true,
 	),
 	// Registered Date
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_user_registered_date',
 		'function'    => '_render_sc_user_registered_date',
@@ -85,7 +83,9 @@ foreach ( array(
 					),
 				),
 			),
-			'date_format' => render_sc_attr_template( 'date_format' ),
+			'date_format' => render_sc_attr_template( 'date_format', array(
+				'advanced' => true,
+			) ),
 		),
 		'render'      => true,
 	),
@@ -379,8 +379,12 @@ function _render_sc_user_registered_date( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
 		'user'        => get_current_user_id(),
-		'date_format' => 'F jS, Y',
+		'date_format' => get_option( 'date_format', 'F j, Y' ),
 	), $atts );
+
+	if ( $atts['date_format'] == 'default_date' ) {
+		$atts['date_format'] = get_option( 'date_format', 'F jS, Y' );
+	}
 
 	if ( ! $user = render_sc_user_get_userdata( $atts['user'] ) ) {
 		return 'Cannot find specified user.';

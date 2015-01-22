@@ -289,6 +289,10 @@ function _render_sc_post_published_date( $atts ) {
 	// Escape atts
 	render_esc_atts( $atts );
 
+	if ( $atts['date_format'] == 'default_date' ) {
+		$atts['date_format'] = get_option( 'date_format', 'F jS, Y' );
+	}
+
 	// Get the post object
 	if ( ( $post = get_post( $atts['post'] ) ) === null ) {
 		return _render_sc_error( 'Cannot get post object.' );

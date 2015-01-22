@@ -97,12 +97,14 @@ function _render_sc_error( $message ) {
 	return "<span class='render-sc-error'>ERROR: $message</span>";
 }
 
-function render_sc_attr_template( $template ) {
+function render_sc_attr_template( $template, $extra = array() ) {
+
+	$output = array();
 
 	switch ( $template ) {
 		case 'date_format':
 
-			return array(
+			$output = array(
 				'label'       => __( 'Date Format', 'Render' ),
 				'type'        => 'selectbox',
 				'description' => sprintf(
@@ -130,7 +132,7 @@ function render_sc_attr_template( $template ) {
 
 		case 'post_list':
 
-			return array(
+			$output = array(
 				'label'      => __( 'Post', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
@@ -143,4 +145,10 @@ function render_sc_attr_template( $template ) {
 			);
 			break;
 	}
+
+	if ( ! empty( $extra ) ) {
+		$output = array_merge( $output, $extra );
+	}
+
+	return $output;
 }

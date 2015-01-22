@@ -128,7 +128,9 @@ foreach (
 					'properties' => array(
 						'placeholder' => __( 'Defaults to timezone set in Settings -> General', 'Render' ),
 						'callback'    => array(
-							'function' => 'render_sc_timezone_dropdown',
+							'function' => array(
+								'function' => 'render_sc_timezone_dropdown',
+							),
 						),
 					),
 				),
@@ -138,6 +140,7 @@ foreach (
 		),
 		// Hide for users
 		array(
+
 			'code'        => 'render_hide_for_users',
 			'function'    => '_render_sc_hide_for_users',
 			'title'       => __( 'Hide for Users', 'Render' ),
@@ -160,7 +163,9 @@ foreach (
 					'properties' => array(
 						'placeholder' => __( 'Select one or more users', 'Render' ),
 						'multi'       => true,
-						'callback'    => 'render_user_dropdown',
+						'callback'    => array(
+							'function' => 'render_user_dropdown',
+						),
 					),
 				),
 			),
