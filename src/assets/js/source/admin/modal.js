@@ -380,9 +380,14 @@ var Render_Modal;
                                 }
                             });
 
-                            $chosen.on('chosen:hiding_dropdown', function () {
+                            $chosen.on('chosen:hiding_dropdown change', function () {
                                 $text_input.blur();
-                            })
+                            });
+
+                            // Shouldn't see "no results, because it's custom"
+                            $chosen.on('chosen:no_results', function () {
+                                $container.find('.chosen-results').html('');
+                            });
                         }
                         break;
                     case 'colorpicker':
@@ -1973,7 +1978,7 @@ var Render_Modal;
     function chosen_custom_input($chosen) {
 
         // When hiding the dropdown (submitting the field), use our custom input
-        $chosen.on('chosen:hiding_dropdown', function () {
+        $chosen.on('chosen:hiding_dropdown', function (e, a) {
 
             var name = $(this).attr('name'),
                 $self = $(this),

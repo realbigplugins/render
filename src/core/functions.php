@@ -134,6 +134,82 @@ function render_sc_attr_template( $template, $extra = array() ) {
 			);
 			break;
 
+		case 'full_date_format':
+
+			$output = array(
+				'label'      => __( 'Format', 'Render' ),
+				'type'       => 'selectbox',
+				'description' => sprintf(
+					__( 'Format to display the date. Either choose one or input a custom date format using %s date format standards.', 'Render' ), '<a href="http://php.net/manual/en/function.date.php" target="_blank">PHP</a>' ),
+				'properties' => array(
+					'placeholder'      => __( 'Select a date format or enter a custom format.', 'Render' ),
+					'default'          => 'default_date',
+					'allowCustomInput' => true,
+					'groups'           => array(
+						array(
+							'label'   => __( 'Full Date', 'Render' ),
+							'options' => array(
+								'default_date'      => __( 'Date format set in Settings -> General', 'Render' ),
+								'l, F jS, Y - g:iA' => date( 'l, F jS, Y - g:iA' ),
+								'l, F jS, Y'        => date( 'l, F jS, Y' ),
+								'F jS, Y'           => date( 'F jS, Y' ),
+								'M jS, Y'           => date( 'M jS, Y' ),
+								'm-d-Y'             => date( 'm-d-Y' ),
+								'd-m-Y'             => date( 'd-m-Y' ),
+								'm-d-y'             => date( 'm-d-y' ),
+								'd-m-y'             => date( 'd-m-y' ),
+								'j-n-y'             => date( 'j-n-y' ),
+								'n-j-y'             => date( 'n-j-y' ),
+							),
+						),
+						array(
+							'label'   => __( 'Day', 'Render' ),
+							'options' => array(
+								'l'  => date( 'l' ),
+								'D'  => date( 'D' ),
+								'jS' => date( 'jS' ),
+								'd'  => date( 'd' ),
+								'j'  => date( 'j' ),
+							),
+						),
+						array(
+							'label'   => __( 'Week of Year', 'Render' ),
+							'options' => array(
+								'W' => date( 'W' ),
+							),
+						),
+						array(
+							'label'   => __( 'Month', 'Render' ),
+							'options' => array(
+								'F' => date( 'F' ),
+								'M' => date( 'M' ),
+								'm' => date( 'm' ),
+								'n' => date( 'n' ),
+							),
+						),
+						array(
+							'label'   => __( 'Year', 'Render' ),
+							'options' => array(
+								'Y' => date( 'Y' ),
+								'y' => date( 'y' ),
+							),
+						),
+						array(
+							'label'   => __( 'Time', 'Render' ),
+							'options' => array(
+								'default_time' => __( 'Time format set in Settings -> General', 'Render' ),
+								'g:i A'        => date( 'g:i A' ),
+								'g:i a'        => date( 'g:i a' ),
+								'h:i A'        => date( 'h:i A' ),
+								'h:i a'        => date( 'h:i a' ),
+								'H:i'          => date( 'H:i' ),
+							),
+						),
+					),
+				),
+			);
+			break;
+
 		case 'post_list':
 
 			$output = array(
