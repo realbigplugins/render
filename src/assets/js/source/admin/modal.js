@@ -762,6 +762,7 @@ var Render_Modal;
             elements.list.find('.render-modal-shortcode').show();
             clearTimeout(_search_timeout);
             this.closeShortcode();
+            this.invalidSearch(false);
             elements.list.stop().animate({opacity: 1}, time);
             search_loading = false;
         },
@@ -1215,7 +1216,12 @@ var Render_Modal;
             // Reset buttons
             elements.remove.hide();
 
-            elements.list.find('.current-shortcode').removeClass('current-shortcode');
+            // Refresh and remove the current-shortcode class
+            var $current_shortcode = elements.list.find('.current-shortcode');
+            if ($current_shortcode.length) {
+                this.refresh($current_shortcode);
+                $current_shortcode.removeClass('current-shortcode');
+            }
 
             this.modifying = false;
             this.current_shortcode = false;
@@ -1451,11 +1457,13 @@ var Render_Modal;
             });
         },
 
-        refresh: function () {
+        refresh: function (shortcode) {
 
-            if (elements.active_shortcode) {
+            shortcode = typeof shortcode !== 'undefined' ? shortcode : elements.active_shortcode;
 
-                elements.active_shortcode.find('.render-modal-att-row').each(function () {
+            if (shortcode) {
+
+                shortcode.find('.render-modal-att-row').each(function () {
 
                     var attObj = $(this).data('attObj');
 
@@ -1600,6 +1608,8 @@ var Render_Modal;
         this.setValue = function (value) {
 
             if (!value) {
+                this.$input.val('');
+                this.$input.trigger('chosen:updated');
                 return;
             }
 
@@ -1633,6 +1643,7 @@ var Render_Modal;
 
         this.revert = function () {
             this.$container.find('.chosen-custom-input').remove();
+            this.setValue(this.original_value);
         };
 
         this.setInvalid = function (msg) {

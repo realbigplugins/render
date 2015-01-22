@@ -14,114 +14,233 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Loops through each shortcode and adds it to Render
-foreach ( array(
-	// User Information
+foreach (
 	array(
-		'code'        => 'render_user_info',
-		'function'    => '_render_sc_user_info',
-		'title'       => __( 'User Information', 'Render' ),
-		'description' => __( 'Get a property of the specified user.', 'Render' ),
-		'tags'        => 'display name full first last user email id author url description role',
-		'atts'        => array(
-			'user'     => array(
-				'label'      => __( 'User', 'Render' ),
-				'type'       => 'selectbox',
-				'properties' => array(
-					'placeholder' => __( 'Defaults to the current user', 'Render' ),
-					'callback'    => array(
-						'function' => 'render_user_dropdown',
-					),
-				),
-			),
-			'property' => array(
-				'label'       => __( 'Property', 'Render' ),
-				'description' => __( 'Select what information to get or input custom information to get.', 'Render' ),
-				'required'    => true,
-				'type'        => 'selectbox',
-				'properties'  => array(
-					'groups' => array(
-						array(
-							'label'   => __( 'Name', 'Render' ),
-							'options' => array(
-								'display_name' => __( 'Display Name', 'Render' ),
-								'full_name'    => __( 'Full Name', 'Render' ),
-								'first_name'   => __( 'First Name', 'Render' ),
-								'last_name'    => __( 'Last Name', 'Render' ),
-								'username'     => __( 'User Name', 'Render' ),
-							),
-						),
-						array(
-							'label'   => __( 'Meta', 'Render' ),
-							'options' => array(
-								'email'       => __( 'Email Address', 'Render' ),
-								'id'          => __( 'ID', 'Render' ),
-								'author_url'  => __( 'Author Link', 'Render' ),
-								'description' => __( 'Description', 'Render' ),
-								'role'        => __( 'Role', 'Render' ),
-							),
+		// User Information
+		array(
+			'code'        => 'render_user_info',
+			'function'    => '_render_sc_user_info',
+			'title'       => __( 'User Information', 'Render' ),
+			'description' => __( 'Get a property of the specified user.', 'Render' ),
+			'tags'        => 'display name full first last user email id author url description role',
+			'atts'        => array(
+				'user'     => array(
+					'label'      => __( 'User', 'Render' ),
+					'type'       => 'selectbox',
+					'properties' => array(
+						'placeholder' => __( 'Defaults to the current user', 'Render' ),
+						'callback'    => array(
+							'function' => 'render_user_dropdown',
 						),
 					),
 				),
-			),
-		),
-		'render'      => true,
-	),
-	// Registered Date
-	array(
-		'code'        => 'render_user_registered_date',
-		'function'    => '_render_sc_user_registered_date',
-		'title'       => __( 'User Registered Date', 'Render' ),
-		'description' => __( 'Get the date the specified user registered.', 'Render' ),
-		'atts'        => array(
-			'user'        => array(
-				'label'      => __( 'User', 'Render' ),
-				'type'       => 'selectbox',
-				'properties' => array(
-					'placeholder' => __( 'Defaults to the current user', 'Render' ),
-					'callback'    => array(
-						'function' => 'render_user_dropdown',
+				'property' => array(
+					'label'       => __( 'Property', 'Render' ),
+					'description' => __( 'Select what information to get or input custom information to get.', 'Render' ),
+					'required'    => true,
+					'type'        => 'selectbox',
+					'properties'  => array(
+						'groups' => array(
+							array(
+								'label'   => __( 'Name', 'Render' ),
+								'options' => array(
+									'display_name' => __( 'Display Name', 'Render' ),
+									'full_name'    => __( 'Full Name', 'Render' ),
+									'first_name'   => __( 'First Name', 'Render' ),
+									'last_name'    => __( 'Last Name', 'Render' ),
+									'username'     => __( 'User Name', 'Render' ),
+								),
+							),
+							array(
+								'label'   => __( 'Meta', 'Render' ),
+								'options' => array(
+									'email'       => __( 'Email Address', 'Render' ),
+									'id'          => __( 'ID', 'Render' ),
+									'author_url'  => __( 'Author Link', 'Render' ),
+									'description' => __( 'Description', 'Render' ),
+									'role'        => __( 'Role', 'Render' ),
+								),
+							),
+						),
 					),
 				),
 			),
-			'date_format' => render_sc_attr_template( 'date_format', array(
-				'advanced' => true,
-			) ),
+			'render'      => true,
 		),
-		'render'      => true,
-	),
-	// Login form
-	// TODO Test and fix up
-	array(
-		'code'        => 'render_login_form',
-		'function'    => '_render_sc_login_form',
-		'title'       => __( 'Login form', 'Render' ),
-		'description' => __( 'Displays a login form to logged out users.', 'Render' ),
-		'atts'        => array(
-			'message' => array(
-				'label' => __( 'Message to logged in users', 'Render' ),
+		// Registered Date
+		array(
+			'code'        => 'render_user_registered_date',
+			'function'    => '_render_sc_user_registered_date',
+			'title'       => __( 'User Registered Date', 'Render' ),
+			'description' => __( 'Get the date the specified user registered.', 'Render' ),
+			'atts'        => array(
+				'user'        => array(
+					'label'      => __( 'User', 'Render' ),
+					'type'       => 'selectbox',
+					'properties' => array(
+						'placeholder' => __( 'Defaults to the current user', 'Render' ),
+						'callback'    => array(
+							'function' => 'render_user_dropdown',
+						),
+					),
+				),
+				'date_format' => render_sc_attr_template( 'date_format', array(
+					'advanced' => true,
+				) ),
 			),
+			'render'      => true,
 		),
-		'render'      => true,
-	),
-) as $shortcode ) {
+		// Login form
+		// TODO Test and fix up
+		array(
+			'code'        => 'render_login_form',
+			'function'    => '_render_sc_login_form',
+			'title'       => __( 'Login form', 'Render' ),
+			'description' => __( 'Displays a login form to logged out users.', 'Render' ),
+			'atts'        => array(
+				'message'  => array(
+					'label'       => __( 'Logged in Message', 'Render' ),
+					'description' => __( 'Message to display to already logged in users.', 'Render' ),
+					'properties' => array(
+						'placeholder' => __( 'You are already logged in.', 'Render' ),
+					),
+				),
+				'redirect' => array(
+					'label'       => __( 'Redirect', 'Render' ),
+					'description' => __( 'Redirect to this page after login.', 'Render' ),
+					'type'        => 'selectbox',
+					'properties'  => array(
+						'groups'           => array(),
+						'callback'         => array(
+							'groups'   => true,
+							'function' => '_render_sc_post_list',
+						),
+						'placeholder' => __( 'Same page', 'Render' ),
+					),
+				),
+				'remember' => array(
+					'label' => __( 'Remember Me', 'Render' ),
+					'type' => 'checkbox',
+					'properties' => array(
+						'value' => 'true',
+						'label' => __( 'Show "Remember Me" checkbox.', 'Render' ),
+					),
+				),
+				array(
+					'type' => 'section_break',
+					'label' => __( 'HTML ID\'s', 'Render' ),
+					'advanced' => true,
+				),
+				'form_id' => array(
+					'label' => __( 'Form', 'Render' ),
+					'advanced' => true,
+					'properties' => array(
+						'placeholder' => 'loginform',
+					),
+				),
+				'id_username' => array(
+					'label' => __( 'Username', 'Render' ),
+					'advanced' => true,
+					'properties' => array(
+						'placeholder' => 'user_login',
+					),
+				),
+				'id_password' => array(
+					'label' => __( 'Password', 'Render' ),
+					'advanced' => true,
+					'properties' => array(
+						'placeholder' => 'user_pass',
+					),
+				),
+				'id_remember' => array(
+					'label' => __( 'Remember Me', 'Render' ),
+					'advanced' => true,
+					'properties' => array(
+						'placeholder' => 'rememberme',
+					),
+				),
+				'id_submit' => array(
+					'label' => __( 'Submit', 'Render' ),
+					'advanced' => true,
+					'properties' => array(
+						'placeholder' => 'wp-submit',
+					),
+				),
+				array(
+					'type' => 'section_break',
+					'label' => __( 'Form Labels', 'Render' ),
+					'advanced' => true,
+				),
+				'label_username' => array(
+					'label' => __( 'Username', 'Render' ),
+					'advanced' => true,
+					'properties' => array(
+						'placeholder' => __( 'Username', 'Render' ),
+					),
+				),
+				'label_password' => array(
+					'label' => __( 'Password', 'Render' ),
+					'advanced' => true,
+					'properties' => array(
+						'placeholder' => __( 'Password', 'Render' ),
+					),
+				),
+				'label_remember' => array(
+					'label' => __( 'Remember Me', 'Render' ),
+					'advanced' => true,
+					'properties' => array(
+						'placeholder' => __( 'Remember Me', 'Render' ),
+					),
+				),
+				'Label_log_in' => array(
+					'label' => __( 'Log In', 'Render' ),
+					'advanced' => true,
+					'properties' => array(
+						'placeholder' => __( 'Log In', 'Render' ),
+					),
+				),
+				array(
+					'type' => 'section_break',
+					'label' => __( 'Default field values.', 'Render' ),
+					'advanced' => true,
+				),
+				'value_username' => array(
+					'label' => __( 'Username', 'Render' ),
+					'advanced' => true,
+				),
+				'value_remember' => array(
+					'label' => __( 'Remember Me', 'Render' ),
+					'advanced' => true,
+					'type' => 'checkbox',
+					'properties' => array(
+						'value' => 'true',
+					),
+				),
+			),
+			'render'      => true,
+		),
+	) as $shortcode
+) {
 
 	$shortcode['category'] = 'user';
 	$shortcode['source']   = 'Render';
 
 	// Adds shortcode to Render
-	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
+	add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
 		$shortcodes[] = $shortcode;
+
 		return $shortcodes;
-	});
+	} );
 
 	// Add shortcode category
-	add_filter( 'render_modal_categories', function( $categories ) {
+	add_filter( 'render_modal_categories', function ( $categories ) {
 		$categories['user'] = array(
 			'label' => __( 'User', 'Render' ),
-			'icon' => 'dashicons-admin-users',
+			'icon'  => 'dashicons-admin-users',
 		);
+
 		return $categories;
-	});
+	} );
 }
 
 /**
@@ -402,6 +521,55 @@ function _render_sc_user_registered_date( $atts = array() ) {
 }
 
 /**
+ * Outputs a login form for logged out users
+ *
+ * @since 1.0.0
+ *
+ * @param array $atts The attributes sent to the shortcode.
+ *
+ * @return string The HTML login form
+ */
+function _render_sc_login_form( $atts = array() ) {
+
+	$atts = shortcode_atts( array(
+		'message'        => __( 'You are already logged in.', 'Render' ),
+		'echo'           => false, // Not a visible option
+		'redirect'       => '',
+		'form_id'        => '',
+		'label_username' => '',
+		'label_password' => '',
+		'label_remember' => '',
+		'label_log_in'   => '',
+		'id_username'    => '',
+		'id_password'    => '',
+		'id_remember'    => '',
+		'id_submit'      => '',
+		'remember'       => false, // Show remember me checkbox or not
+		'value_username' => '',
+		'value_remember' => '',
+	), $atts );
+
+	$atts = render_esc_atts( $atts );
+
+	// Don't allow empty atts to be passed through
+	foreach ( $atts as $i => $att ) {
+		if ( $att === '' ) {
+			unset( $atts[ $i ] );
+		}
+	}
+
+	// Strip out message
+	$message = $atts['message'];
+	unset( $atts['message'] );
+
+	if ( is_user_logged_in() ) {
+		return "<p class='render-logged-in-message'>$message</p>";
+	} else {
+		return wp_login_form( $atts );
+	}
+}
+
+/**
  * Helper function for getting the user data.
  *
  * @since  Render 1.0.0
@@ -464,26 +632,4 @@ function render_user_dropdown( $all = true ) {
 	}
 
 	return $output;
-}
-
-/**
- * Outputs a login form for logged out users
- *
- * @since 1.0.0
- *
- * @param $atts
- *
- * @return string
- */
-function _render_sc_login_form( $atts ) {
-
-	$atts = shortcode_atts( array(
-		'message' => 'You are already logged in.',
-	), $atts );
-
-	if ( is_user_logged_in() ) {
-		return '<p>' . $atts["message"] . '</p>';
-	} else {
-		return wp_login_form( array( 'echo' => false ) );
-	}
 }

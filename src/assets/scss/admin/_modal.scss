@@ -535,6 +535,17 @@ $toolbar-height: 50px;
     margin: 0;
   }
 
+  // Checkbox
+  .render-modal-att-checkbox {
+    & + span {
+      color: #999;
+    }
+
+    &:checked + span {
+      color: inherit;
+    }
+  }
+
   // Slider
   .render-modal-att-slider {
     position: absolute;

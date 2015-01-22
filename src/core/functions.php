@@ -24,6 +24,10 @@ function render_esc_atts( $atts ) {
 
 	foreach ( $atts as $i => $att ) {
 		$atts[ $i ] = esc_attr( $att );
+
+		// Turn bool strings into actual bool
+		$atts[ $i ] = $att == 'true' ? true : $att;
+		$atts[ $i ] = $att == 'false' ? false : $att;
 	}
 
 	return $atts;
@@ -136,6 +140,7 @@ function render_sc_attr_template( $template, $extra = array() ) {
 				'label'      => __( 'Post', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
+					'groups' => array(),
 					'callback'    => array(
 						'groups'   => true,
 						'function' => '_render_sc_post_list',

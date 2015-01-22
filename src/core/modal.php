@@ -9,9 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Creates the Render modal.
  *
- * @since 1.0.0
+ * @since      1.0.0
  *
- * @package Render
+ * @package    Render
  * @subpackage Modal
  */
 class Render_Modal {
@@ -168,9 +168,21 @@ class Render_Modal {
 
 	private static function att_type_checkbox( $att_id, $att, $properties = array() ) {
 		?>
+		<?php if ( isset( $properties['label'] ) ) : ?>
+			<label class="render-modal-att-checkbox-label">
+		<?php endif; ?>
+
 		<input type="checkbox" class="render-modal-att-input render-modal-att-checkbox"
 		       name="<?php echo $att_id; ?>"
-		       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : ''; ?>"><?php
+		       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : ''; ?>"
+		       <?php echo isset( $properties['checked'] ) ? 'checked' : ''; ?>
+			>
+
+		<?php if ( isset( $properties['label'] ) ) : ?>
+			<span><?php echo $properties['label']; ?></span>
+			</label>
+		<?php endif; ?>
+	<?php
 	}
 
 	private static function att_type_textarea( $att_id, $att ) {
@@ -490,15 +502,15 @@ class Render_Modal {
 		 * @since 1.0.0
 		 */
 		$categories = apply_filters( 'render_modal_categories', array(
-			'all' => array(
+			'all'   => array(
 				'label' => __( 'All', 'Render' ),
-				'icon' => 'dashicons-tagcloud',
+				'icon'  => 'dashicons-tagcloud',
 			),
 			'other' => array(
 				'label' => __( 'Other', 'Render' ),
-				'icon' => 'dashicons-admin-generic',
+				'icon'  => 'dashicons-admin-generic',
 			),
-		));
+		) );
 
 		// Gets all categories in use
 		$used_categories = array_values(
