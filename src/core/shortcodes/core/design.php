@@ -16,7 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach ( array(
 	// Button
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_button',
 		'function'    => '_render_sc_button',
@@ -87,6 +86,7 @@ foreach ( array(
 			),
 			'link'                       => array(
 				'label' => __( 'HREF (link)', 'Render' ),
+				'description' => __( 'Links to a post / page. Also accepts custom input.', 'Render' ),
 				'type' => 'selectbox',
 				'properties' => array(
 					'allowCustomInput' => true,
@@ -191,7 +191,6 @@ foreach ( array(
 		),
 	),
 	// Box
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_box',
 		'function'    => '_render_sc_box',
@@ -243,21 +242,20 @@ foreach ( array(
 			'heading_tag'                => array(
 				'label'      => __( 'Heading Tag', 'Render' ),
 				'type'       => 'selectbox',
-				'default'    => 'h3',
 				'advanced'   => true,
 				'properties' => array(
 					'allowCustomInput' => true,
-					'placeholder'      => 'h3',
+					'default' => 'h3',
 					'options'          => array(
-						'h3'   => 'h3',
-						'h1'   => 'h1',
-						'h2'   => 'h2',
-						'h4'   => 'h4',
-						'h5'   => 'h5',
-						'h6'   => 'h6',
-						'p'    => 'p',
-						'span' => 'span',
-						'div'  => 'div',
+						'h1'   => 'Header 1',
+						'h2'   => 'Header 2',
+						'h3'   => 'Header 3',
+						'h4'   => 'Header 4',
+						'h5'   => 'Header 5',
+						'h6'   => 'Header 6',
+						'p'    => 'Paragraph',
+						'span' => 'Span',
+						'div'  => 'DIV',
 					),
 				),
 			),
@@ -372,6 +370,7 @@ foreach ( array(
 						),
 					),
 				),
+				'advanced' => true,
 			),
 			'padding_right' => array(
 				'label'      => __( 'Padding right', 'Render' ),
@@ -389,6 +388,7 @@ foreach ( array(
 						),
 					),
 				),
+				'advanced' => true,
 			),
 		),
 		'wrapping'    => true,
@@ -420,6 +420,7 @@ foreach ( array(
 						),
 					),
 				),
+				'advanced' => true,
 			),
 			'padding_right' => array(
 				'label'      => __( 'Padding right', 'Render' ),
@@ -437,6 +438,7 @@ foreach ( array(
 						),
 					),
 				),
+				'advanced' => true,
 			),
 		),
 		'wrapping'    => true,
@@ -468,6 +470,7 @@ foreach ( array(
 						),
 					),
 				),
+				'advanced' => true,
 			),
 			'padding_right' => array(
 				'label'      => __( 'Padding right', 'Render' ),
@@ -485,6 +488,7 @@ foreach ( array(
 						),
 					),
 				),
+				'advanced' => true,
 			),
 		),
 		'wrapping'    => true,
@@ -516,6 +520,7 @@ foreach ( array(
 						),
 					),
 				),
+				'advanced' => true,
 			),
 			'padding_right' => array(
 				'label'      => __( 'Padding right', 'Render' ),
@@ -533,6 +538,7 @@ foreach ( array(
 						),
 					),
 				),
+				'advanced' => true,
 			),
 		),
 		'wrapping'    => true,

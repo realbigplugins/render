@@ -23,9 +23,6 @@ var Render_MCECallbacks;
                 data,
                 function (response) {
 
-                    // Remove any previorendery existing dividers
-                    response = response.replace(/(<span>&#8203;<\/span>)+/g, '');
-
                     editor.setContent(response);
                     Render_tinymce.loading(false);
 
@@ -36,10 +33,14 @@ var Render_MCECallbacks;
 
         convertRenderedToLiteral: function (content) {
 
-            // FIXME Something (not necessarily here) is causing a JS error in WP JS when clicking around in the visual editor. To replicate, have sentence with button, then a column 2 with text in it.
+            var $container = $('<div />').append($(content));
 
-            var $container = $('<div />').append($(content)),
-                $shortcodes = $container.find('.render-tinymce-shortcode-wrapper').sortByDepth();
+            // Remove dummy containers
+            $container.find('.render-tinymce-dummy-container').each(function () {
+                $(this).replaceWith(this.childNodes);
+            });
+
+            var $shortcodes = $container.find('.render-tinymce-shortcode-wrapper').sortByDepth();
 
             $shortcodes.each(function () {
 

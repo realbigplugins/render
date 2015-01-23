@@ -180,8 +180,6 @@ class Render_tinymce extends Render {
 
 		$pattern = get_shortcode_regex();
 
-		// FIXME Weird paragraph tags
-		$content = preg_replace( '/<span class="render-tinymce-divider render-tinymce-noneditable">.*?<\/span>/', '', $content );
 		$content = render_strip_paragraphs_around_shortcodes( $content );
 		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $content );
 

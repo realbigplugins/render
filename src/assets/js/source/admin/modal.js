@@ -130,11 +130,6 @@ var Render_Modal;
                     case 13:
 
                         e.preventDefault();
-
-                        if (textbox_focused) {
-                            break;
-                        }
-
                         Render_Modal.update();
                         break;
 
@@ -737,14 +732,6 @@ var Render_Modal;
                     default:
 
                         attObj = new Textbox($(this));
-
-                        $(this).find('.render-modal-att-input').focusin(function () {
-                            textbox_focused = true;
-                        });
-
-                        $(this).find('.render-modal-att-input').focusout(function () {
-                            textbox_focused = false;
-                        });
                         break;
                 }
 
