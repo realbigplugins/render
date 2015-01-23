@@ -195,6 +195,7 @@ $render-modal-height: 800px;
     text-align: center;
     border: 1px solid transparent;
     box-sizing: border-box;
+    cursor: pointer;
 
     &.active, &:hover {
       color: $primary-color;

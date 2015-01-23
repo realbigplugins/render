@@ -97,7 +97,7 @@ function _render_decode_att( $att ) {
  * @param string $message The error message to display.
  * @return string The HTML error message.
  */
-function _render_sc_error( $message ) {
+function render_sc_error( $message ) {
 	return "<span class='render-sc-error'>ERROR: $message</span>";
 }
 
@@ -112,7 +112,9 @@ function render_sc_attr_template( $template, $extra = array() ) {
 				'label'       => __( 'Date Format', 'Render' ),
 				'type'        => 'selectbox',
 				'description' => sprintf(
-					__( 'Format to display the date. Either choose one or input a custom date format using %s date format standards.', 'Render' ), '<a href="http://php.net/manual/en/function.date.php" target="_blank">PHP</a>' ),
+					__( 'Format to display the date. Either choose one or input a custom date format using %s date format standards.', 'Render' ),
+					'<a href="http://php.net/manual/en/function.date.php" target="_blank">PHP</a>'
+				),
 				'properties'  => array(
 					'placeholder'      => __( 'Select a date format or enter a custom format.', 'Render' ),
 					'default'          => 'default_date',
@@ -218,10 +220,9 @@ function render_sc_attr_template( $template, $extra = array() ) {
 				'properties' => array(
 					'groups' => array(),
 					'callback'    => array(
-						'groups'   => true,
 						'function' => '_render_sc_post_list',
 					),
-					'placeholder' => __( 'Defaults to the current post.', 'Render' ),
+					'placeholder' => __( 'The current post', 'Render' ),
 				),
 			);
 			break;

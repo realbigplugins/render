@@ -14,84 +14,69 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Loops through each shortcode and adds it to Render
-foreach ( array(
-	// Post meta
-	// TODO Test and fix up
+foreach (
 	array(
-		'code'        => 'render_post_meta',
-		'function'    => '_render_sc_post_meta',
-		'title'       => __( 'Post Meta', 'Render' ),
-		'description' => __( 'Displays the supplied meta information about the post.', 'Render' ),
-		'tags'        => 'id author title word count published date status type excerpt',
-		'atts'        => array(
-			'post' => render_sc_attr_template( 'post_list' ),
-			'meta' => array(
-				'label'       => __( 'Meta', 'Render' ),
-				'type'        => 'selectbox',
-				'description' => __( 'The meta information of the post to show (custom input allowed).', 'Render' ),
-				'properties'  => array(
-					'placeholder'      => __( 'Title', 'Render' ),
-					'allowCustomInput' => true,
-					'options'          => array(
-						'title'          => __( 'Title', 'Render' ),
-						'author'         => __( 'Author', 'Render' ),
-						'status'         => __( 'Status', 'Render' ),
-						'type'           => __( 'Type', 'Render' ),
-						'excerpt'        => __( 'Excerpt', 'Render' ),
-						'content'        => __( 'Content', 'Render' ),
-						'published_date' => __( 'Published Date', 'Render' ),
-						'word_count'     => __( 'Word Count', 'Render' ),
-						'id'             => __( 'ID', 'Render' ),
+		// Post meta
+		array(
+			'code'        => 'render_post_meta',
+			'function'    => '_render_sc_post_meta',
+			'title'       => __( 'Post Meta', 'Render' ),
+			'description' => __( 'Displays the supplied meta information about the post.', 'Render' ),
+			'tags'        => 'id author title word count published date status type excerpt',
+			'atts'        => array(
+				'post' => render_sc_attr_template( 'post_list' ),
+				'meta' => array(
+					'label'       => __( 'Meta', 'Render' ),
+					'type'        => 'selectbox',
+					'description' => __( 'The meta information of the post to show (custom input allowed).', 'Render' ),
+					'properties'  => array(
+						'default'          => 'title',
+						'placeholder'      => __( 'Select which meta to get', 'Render' ),
+						'allowCustomInput' => true,
+						'options'          => array(
+							'title'          => __( 'Title', 'Render' ),
+							'author'         => __( 'Author', 'Render' ),
+							'status'         => __( 'Status', 'Render' ),
+							'type'           => __( 'Type', 'Render' ),
+							'excerpt'        => __( 'Excerpt', 'Render' ),
+							'content'        => __( 'Content', 'Render' ),
+							'published_date' => __( 'Published Date', 'Render' ),
+							'word_count'     => __( 'Word Count', 'Render' ),
+							'id'             => __( 'ID', 'Render' ),
+						),
 					),
 				),
+				'date_format' => render_sc_attr_template( 'date_format', array(
+					'description' => __( 'Only applies to some meta types.', 'Render' ),
+					'advanced' => true,
+				) ),
 			),
+			'render'      => true,
 		),
-		'render'      => true,
-	),
-	// Post published date
-	// TODO Test and fix up
-	array(
-		'code'        => 'render_post_published_date',
-		'function'    => '_render_sc_post_published_date',
-		'title'       => __( 'Post Published Date', 'Render' ),
-		'description' => __( 'Displays the published date of the supplied post.', 'Render' ),
-		'atts'        => array(
-			'post'        => render_sc_attr_template( 'post_list' ),
-			'date_format' => render_sc_attr_template( 'date_format' ),
-		),
-		'render'      => true,
-	),
-	// Post word count
-	// TODO Test and fix up
-	array(
-		'code'        => 'render_post_word_count',
-		'function'    => '_render_sc_post_word_count',
-		'title'       => __( 'Post Word Count', 'Render' ),
-		'description' => __( 'Displays the word count of the supplied post.', 'Render' ),
-		'atts'        => array(
-			'post' => render_sc_attr_template( 'post_list' ),
-		),
-		'render'      => true,
-	),
-) as $shortcode ) {
+	) as $shortcode
+) {
 
 	$shortcode['category'] = 'post';
 	$shortcode['source']   = 'Render';
 
 	// Adds shortcode to Render
-	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
+	add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
+
 		$shortcodes[] = $shortcode;
+
 		return $shortcodes;
-	});
+	} );
 
 	// Add shortcode category
-	add_filter( 'render_modal_categories', function( $categories ) {
+	add_filter( 'render_modal_categories', function ( $categories ) {
+
 		$categories['post'] = array(
 			'label' => __( 'Post', 'Render' ),
-			'icon' => 'dashicons-admin-post',
+			'icon'  => 'dashicons-admin-post',
 		);
+
 		return $categories;
-	});
+	} );
 }
 
 /**
@@ -104,19 +89,24 @@ foreach ( array(
  *
  * @return int The post ID.
  */
-function _render_sc_post_meta( $atts ) {
+function _render_sc_post_meta( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
-		'post' => get_the_ID(),
-		'meta' => 'title',
+		'post'        => get_the_ID(),
+		'meta'        => 'title',
+		'date_format' => get_option( 'date_format', 'F j, Y' ),
 	), $atts );
 
+	if ( $atts['date_format'] == 'default_date' ) {
+		$atts['date_format'] = get_option( 'date_format', 'F jS, Y' );
+	}
+
 	// Escape atts
-	render_esc_atts( $atts );
+	$atts = render_esc_atts( $atts );
 
 	// Get the post object
 	if ( ( $post = get_post( $atts['post'] ) ) === null ) {
-		return _render_sc_error( 'Cannot get post object.' );
+		return render_sc_error( 'Cannot get post object.' );
 	}
 
 	// Attempt to get the meta and return it
@@ -125,6 +115,16 @@ function _render_sc_post_meta( $atts ) {
 		case 'id':
 
 			return $atts['post'];
+			break;
+
+		case 'word_count':
+
+			return _render_sc_post_word_count( $atts );
+			break;
+
+		case 'published_date':
+
+			return _render_sc_post_published_date( $atts, $post );
 			break;
 
 		case 'author':
@@ -136,6 +136,8 @@ function _render_sc_post_meta( $atts ) {
 
 			if ( is_callable( "_render_sc_post_$atts[meta]" ) ) {
 				return call_user_func( "_render_sc_post_$atts[meta]", $post );
+			} else {
+				return render_sc_error( "Cannot get the post \"$atts[meta]\"." );
 			}
 			break;
 
@@ -144,7 +146,7 @@ function _render_sc_post_meta( $atts ) {
 			if ( isset( $post->{$atts['meta']} ) ) {
 				return $post->{$atts['meta']};
 			} else {
-				return _render_sc_error( "Cannot get post $atts[meta]." );
+				return render_sc_error( "Cannot get the post \"$atts[meta]\"." );
 			}
 			break;
 	}
@@ -169,7 +171,7 @@ function _render_sc_post_author( $post ) {
 			return $author;
 		}
 	} else {
-		return _render_sc_error( 'Cannot get post author.' );
+		return render_sc_error( 'Cannot get post author.' );
 	}
 }
 
@@ -189,7 +191,7 @@ function _render_sc_post_title( $post ) {
 	if ( ! empty( $title ) ) {
 		return $title;
 	} else {
-		return _render_sc_error( 'Cannot get post title.' );
+		return render_sc_error( 'Cannot get post title.' );
 	}
 }
 
@@ -208,7 +210,7 @@ function _render_sc_post_status( $post ) {
 	if ( isset( $post->post_status ) ) {
 		return $post->post_status;
 	} else {
-		return _render_sc_error( "Cannot get post status." );
+		return render_sc_error( "Cannot get post status." );
 	}
 }
 
@@ -227,7 +229,7 @@ function _render_sc_post_type( $post ) {
 	if ( isset( $post->post_type ) ) {
 		return $post->post_type;
 	} else {
-		return _render_sc_error( "Cannot get post type." );
+		return render_sc_error( "Cannot get post type." );
 	}
 }
 
@@ -246,7 +248,7 @@ function _render_sc_post_excerpt( $post ) {
 	if ( isset( $post->post_excerpt ) ) {
 		return ! empty( $post->post_excerpt ) ? $post->post_excerpt : 'No excerpt.';
 	} else {
-		return _render_sc_error( "Cannot get post excerpt." );
+		return render_sc_error( "Cannot get post excerpt." );
 	}
 }
 
@@ -274,34 +276,16 @@ function _render_sc_post_content( $post ) {
  * @access Private
  *
  * @param array $atts The attributes sent to the shortcode.
+ * @param array $post The post object to use.
  *
  * @return string The post publish date.
  */
-function _render_sc_post_published_date( $atts ) {
-
-	// TODO Once conditional atts are implemented, move this back into the main post meta shortcode and have the date attr be a conditional attr that only shows when the meta attr has date selected.
-
-	$atts = shortcode_atts( array(
-		'post'        => get_the_ID(),
-		'date_format' => get_option( 'date_format', 'F j, Y' ),
-	), $atts );
-
-	// Escape atts
-	render_esc_atts( $atts );
-
-	if ( $atts['date_format'] == 'default_date' ) {
-		$atts['date_format'] = get_option( 'date_format', 'F jS, Y' );
-	}
-
-	// Get the post object
-	if ( ( $post = get_post( $atts['post'] ) ) === null ) {
-		return _render_sc_error( 'Cannot get post object.' );
-	}
+function _render_sc_post_published_date( $atts = array(), $post ) {
 
 	if ( isset( $post->post_date ) ) {
 		return date( $atts['date_format'], strtotime( $post->post_date ) );
 	} else {
-		return _render_sc_error( "Cannot get post published date." );
+		return render_sc_error( "Cannot get post published date." );
 	}
 }
 
@@ -315,7 +299,7 @@ function _render_sc_post_published_date( $atts ) {
  *
  * @return string The post word count.
  */
-function _render_sc_post_word_count( $atts ) {
+function _render_sc_post_word_count( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
 		'post' => get_the_ID(),
@@ -326,7 +310,7 @@ function _render_sc_post_word_count( $atts ) {
 
 	// Get the post object
 	if ( ( $post = get_post( $atts['post'] ) ) === null ) {
-		return _render_sc_error( 'Cannot get post object.' );
+		return render_sc_error( 'Cannot get post object.' );
 	}
 
 	// Get the filtered content
@@ -356,6 +340,9 @@ function _render_sc_post_word_count( $atts ) {
  */
 function _render_sc_post_list() {
 
+	global $post;
+	$current_post = $post;
+
 	$posts = get_posts( array(
 			'post_type'   => 'any',
 			'numberposts' => '-1',
@@ -365,6 +352,11 @@ function _render_sc_post_list() {
 	$output = array();
 	if ( ! empty( $posts ) ) {
 		foreach ( $posts as $post ) {
+
+			if ( (int) $current_post->ID === (int) $post->ID ) {
+				continue;
+			}
+
 			$object = get_post_type_object( $post->post_type );
 
 			if ( ! isset( $output[ $object->labels->name ] ) ) {
@@ -373,6 +365,7 @@ function _render_sc_post_list() {
 					'options' => array(),
 				);
 			}
+
 			$output[ $object->labels->name ]['options'][ $post->ID ] = $post->post_title;
 		}
 	}

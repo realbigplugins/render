@@ -15,39 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Loops through each shortcode and adds it to Render
 foreach ( array(
-	// Accordion
-	// TODO Test and fix up
-	array(
-		'code'        => 'render_accordion',
-		'function'    => '_render_sc_accordion',
-		'title'       => __( 'Accordion', 'Render' ),
-		'description' => __( 'Creates a clickable dropdown for your content', 'Render' ),
-		'atts'        => array(
-			'sections' => array(
-				'label'      => __( 'Sections', 'Render' ),
-				'required'   => true,
-				'type'       => 'repeater',
-				'properties' => array(
-					'fields' => array(
-						'heading' => array(
-							'label'    => __( 'Heading', 'Render' ),
-							'required' => true,
-						),
-						'content' => array(
-							'label'        => __( 'Content', 'Render' ),
-							'required'     => true,
-							'type'         => 'textarea',
-							'initCallback' => 'accordionUseContentInit',
-						)
-					),
-				),
-			),
-		),
-		'noDisplay'   => true,
-		'render'      => array(
-			'noStyle'      => true,
-		),
-	),
 	// Button
 	// TODO Test and fix up
 	array(
@@ -135,7 +102,6 @@ foreach ( array(
 					'max'        => 200,
 					'unit'       => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -155,7 +121,6 @@ foreach ( array(
 					'max'        => 200,
 					'unit'       => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -175,7 +140,6 @@ foreach ( array(
 					'max'        => 200,
 					'unit'       => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -195,7 +159,6 @@ foreach ( array(
 					'max'        => 200,
 					'unit'       => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -285,7 +248,7 @@ foreach ( array(
 			),
 			array(
 				'type'        => 'section_break',
-				'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used.', 'Render' ),
+				'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used. Note that this will override the "Shape" defined above.', 'Render' ),
 				'advanced'    => true,
 			),
 			'border_top_left_radius'     => array(
@@ -297,7 +260,6 @@ foreach ( array(
 					'max'        => 200,
 					'unit'       => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -317,7 +279,6 @@ foreach ( array(
 					'max'        => 200,
 					'unit'       => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -337,7 +298,6 @@ foreach ( array(
 					'max'        => 200,
 					'unit'       => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -357,7 +317,6 @@ foreach ( array(
 					'max'        => 200,
 					'unit'       => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -389,7 +348,6 @@ foreach ( array(
 				'properties' => array(
 					'unit' => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -407,7 +365,6 @@ foreach ( array(
 				'properties' => array(
 					'unit' => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -439,7 +396,6 @@ foreach ( array(
 				'properties' => array(
 					'unit' => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -457,7 +413,6 @@ foreach ( array(
 				'properties' => array(
 					'unit' => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -489,7 +444,6 @@ foreach ( array(
 				'properties' => array(
 					'unit' => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -507,7 +461,6 @@ foreach ( array(
 				'properties' => array(
 					'unit' => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -539,7 +492,6 @@ foreach ( array(
 				'properties' => array(
 					'unit' => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -557,7 +509,6 @@ foreach ( array(
 				'properties' => array(
 					'unit' => array(
 						'default' => 'px',
-						'custom'  => true,
 						'allowed' => array(
 							'px',
 							'%',
@@ -593,42 +544,6 @@ foreach ( array(
 		);
 		return $categories;
 	});
-}
-
-/**
- * Outside wrapper for an accordion.
- *
- * @since  Render 1.0.0
- * @access Private
- *
- * @param array $atts The attributes sent to the shortcode.
- *
- * @return string The accordion HTML.
- */
-function _render_sc_accordion( $atts = array() ) {
-
-	$atts = shortcode_atts( array(
-		'sections' => false,
-	), $atts );
-
-	if ( $atts['sections'] === false ) {
-		return 'ERROR: No sections set!';
-	}
-
-	$atts = render_esc_atts( $atts );
-
-	$sections = render_associative_atts( $atts, 'sections' );
-
-	$output = '<div class="render-accordion">';
-
-	foreach ( $sections as $section ) {
-		$output .= "<h3 class='render-accordion-title'>$section[heading]</h3>";
-		$output .= '<div class="render-accordion-content">' . wpautop( do_shortcode( $section['content'] ) ) . '</div>';
-	}
-
-	$output .= '</div>'; // .render-accordion
-
-	return $output;
 }
 
 /**

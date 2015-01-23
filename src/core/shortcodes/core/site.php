@@ -25,7 +25,10 @@ foreach ( array(
 		'atts'        => array(
 			'info' => array(
 				'label'       => __( 'Info', 'Render' ),
-				'description' => __( 'Which information to get about the site. Either choose an option or input your own.', 'Render' ),
+				'description' => sprintf(
+					__( 'Which information to get about the site. Either choose an option or input your own from this list: %s.', 'Render' ),
+					'<a href="http://codex.wordpress.org/Function_Reference/get_bloginfo">codex</a>'
+				),
 				'type'        => 'selectbox',
 				'properties'  => array(
 					'allowCustomInput' => true,
@@ -83,5 +86,12 @@ function _render_sc_site_info( $atts = array() ) {
 	// Escape atts
 	render_esc_atts( $atts );
 
-	return get_bloginfo( $atts['info'] );
+	$output = get_bloginfo( $atts['info'] );
+
+	// Default bloginfo is the name, so if it returns name, but we didn't ask for name, it was an invalid option
+	if ( $output == get_bloginfo( 'name' ) && $atts['info'] !== 'name' ) {
+		$output = render_sc_error( 'Not a valid option.' );
+	}
+
+	return $output;
 }

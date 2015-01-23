@@ -16,7 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach ( array(
 	// Custom Date
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_date',
 		'function'    => '_render_sc_custom_date',

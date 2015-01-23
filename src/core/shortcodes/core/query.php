@@ -16,19 +16,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach ( array(
 	// Query
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_query',
 		'function'    => '_render_query',
 		'title'       => __( 'Query', 'Render' ),
-		'description' => __( 'Queries the database for posts.', 'Render' ),
+		'description' => __( 'Outputs a list of posts.', 'Render' ),
 		'tags'        => 'data loop',
 		'atts'        => array(
+			array(
+				'type' => 'section_break',
+				'label' => __('Refine Search', 'Render' ),
+			),
 			'author'      => array(
 				'label'      => __( 'Author', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'placeholder' => __( 'Select an author', 'Render' ),
+					'placeholder' => __( 'Any author', 'Render' ),
 					'options'     => render_user_dropdown( false ),
 				),
 			),
@@ -37,7 +40,7 @@ foreach ( array(
 				'type'        => 'selectbox',
 				'description' => __( 'Available post types.', 'Render' ),
 				'properties'  => array(
-					'default' => 'post',
+					'placeholder' => __( 'Any post type', 'Render' ),
 					'callback'    => array(
 						'function' => 'render_post_types_dropdown',
 					),
@@ -49,7 +52,7 @@ foreach ( array(
 				'description' => __( 'Available categories.', 'Render' ),
 				'properties'  => array(
 					'no_options' => __( 'No categories available.', 'Render' ),
-					'placeholder' => __( '-- None --', 'Render' ),
+					'placeholder' => __( 'Any category', 'Render' ),
 					'callback'    => array(
 						'function' => 'render_categories_dropdown'
 					),
@@ -67,18 +70,9 @@ foreach ( array(
 					),
 				),
 			),
-			's'           => array(
-				'label' => __( 'Search', 'Render' ),
-			),
-			'post_status' => array(
-				'label'      => __( 'Post Status', 'Render' ),
-				'type'       => 'selectbox',
-				'properties' => array(
-					'placeholder' => __( '-- N/A --', 'Render' ),
-					'callback'    => array(
-						'function' => 'get_post_stati'
-					),
-				),
+			array(
+				'type' => 'section_break',
+				'label' => __( 'Order', 'Render' ),
 			),
 			'order'       => array(
 				'label'      => __( 'Order', 'Render' ),
@@ -110,6 +104,21 @@ foreach ( array(
 					),
 				),
 			),
+			'post_status' => array(
+				'label'      => __( 'Post Status', 'Render' ),
+				'type'       => 'selectbox',
+				'properties' => array(
+					'placeholder' => __( 'Any status', 'Render' ),
+					'callback'    => array(
+						'function' => 'get_post_stati'
+					),
+				),
+				'advanced' => true,
+			),
+			's'           => array(
+				'label' => __( 'Search', 'Render' ),
+				'advanced' => true,
+			),
 		),
 		'render'      => true,
 		'wrapping'    => false
@@ -129,8 +138,7 @@ foreach ( array(
 	add_filter( 'render_modal_categories', function( $categories ) {
 		$categories['query'] = array(
 			'label' => __( 'Query', 'Render' ),
-			// TODO Choose icon
-			'icon' => 'dashicons-admin-generic',
+			'icon' => 'dashicons-download',
 		);
 		return $categories;
 	});
@@ -149,7 +157,7 @@ foreach ( array(
 function _render_query( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
-		'post_type'   => 'post',
+		'post_type'   => 'any',
 		'author'      => '',
 		'cat'         => '',
 		'tag'         => '',

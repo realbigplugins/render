@@ -346,6 +346,8 @@ var Render_Modal;
 
                                 var icon = 'dashicons ' + $chosen.val();
 
+                                console.log(icon);
+
                                 if (!$chosen.val()) {
                                     $container.find('.chosen-single .dashicons').remove();
                                 } else {
@@ -353,6 +355,11 @@ var Render_Modal;
                                         '<span class="' + icon + '"></span>'
                                     );
                                 }
+                            });
+
+                            // Trigger change when setting the value (for initial Modal opens)
+                            $chosen.on('render:att_setValue', function () {
+                                $chosen.trigger('change');
                             });
                         }
 
@@ -707,11 +714,8 @@ var Render_Modal;
 
                             $select.chosen({
                                 width: '100px',
-                                search_contains: true,
-                                allow_single_deselect: true
+                                disable_search: true
                             });
-
-                            chosen_custom_input($select);
                         }
 
                         break;
@@ -1573,6 +1577,7 @@ var Render_Modal;
             this.revert();
             this.setValid();
             this.$input.prop('disabled', false);
+            this.$input.trigger('render:att_revert');
 
         };
 
@@ -1581,11 +1586,13 @@ var Render_Modal;
         };
 
         this.getValue = function () {
+            this.$input.trigger('render:att_getValue');
             return this.$input.val();
         };
 
         this.setValue = function (value) {
             this.$input.val(value);
+            this.$input.trigger('render:att_setValue');
         };
 
         this.setInvalid = function (msg) {
@@ -1593,10 +1600,12 @@ var Render_Modal;
             this.$container.addClass('invalid');
             this.errorMsg(msg);
             highlight(this.$input);
+            this.$input.trigger('render:att_setInvalid');
         };
 
         this.setValid = function () {
             this.$container.removeClass('invalid');
+            this.$input.trigger('render:att_setValid');
         };
 
         this.errorMsg = function (msg) {
@@ -1618,6 +1627,9 @@ var Render_Modal;
         AttAPI.apply(this, arguments);
 
         this.getValue = function () {
+
+            this.$input.trigger('render:att_getValue');
+
             if (this.$input.prop('tagName') === 'textarea') {
                 return this.$input.text();
             } else {
@@ -1635,6 +1647,8 @@ var Render_Modal;
 
         this.getValue = function () {
 
+            this.$input.trigger('render:att_getValue');
+
             if (this.$input.prop('checked')) {
                 return this.$input.val();
             } else {
@@ -1649,6 +1663,8 @@ var Render_Modal;
             } else {
                 this.$input.prop('checked', false);
             }
+
+            this.$input.trigger('render:att_setValue');
         };
 
         this.revert = function () {
@@ -1665,15 +1681,15 @@ var Render_Modal;
 
         this.getValue = function () {
 
-            // Account for custom input
-            if (this.$input.hasClass('allow-custom-input')) {
-                var custom_text = this.$input.data('chosen-custom-input');
+            this.$input.trigger('render:att_getValue');
 
-                if (custom_text) {
-                    return custom_text;
-                } else {
-                    return this.$input.val();
-                }
+            // Account for custom input
+            var custom_text = this.$input.data('chosen-custom-input');
+
+            if (custom_text) {
+                return custom_text;
+            } else {
+                return this.$input.val();
             }
         };
 
@@ -1683,14 +1699,15 @@ var Render_Modal;
             if (!value) {
                 this.$input.val('');
                 this.$input.trigger('chosen:updated');
+                this.$input.trigger('render:att_setValue');
                 return;
             }
 
-            // Custom input
-            var custom_input = this.$input.data('chosen-custom-input');
-            if (custom_input) {
-                this.$container.find('.chosen-search input[type="text"]').val(custom_input);
+            // Custom input (value doesn't exist in options)
+            if (!this.$input.find('option[value="' + value + '"]').length) {
+                this.$container.find('.chosen-search input[type="text"]').val(value);
                 this.$input.trigger('chosen:hiding_dropdown');
+                this.$input.trigger('render:att_setValue');
                 return;
             }
 
@@ -1702,6 +1719,7 @@ var Render_Modal;
             }
 
             this.$input.trigger('chosen:updated');
+            this.$input.trigger('render:att_setValue');
         };
 
         this.destroy = function () {
@@ -1736,6 +1754,7 @@ var Render_Modal;
 
         this.setValue = function (value) {
             this.$input.iris('color', value);
+            this.$input.trigger('render:att_setValue');
         };
 
         this.destroy = function () {
@@ -1761,6 +1780,7 @@ var Render_Modal;
         this.setValue = function (value) {
             this.$input.val(value);
             this.$input.change();
+            this.$input.trigger('render:att_setValue');
         };
 
         this.destroy = function () {
@@ -1797,6 +1817,8 @@ var Render_Modal;
                     this.$input.val(value);
                     break;
             }
+
+            this.$input.trigger('render:att_setValue');
         };
 
         this.init($e);
@@ -1808,6 +1830,8 @@ var Render_Modal;
         AttAPI.apply(this, arguments);
 
         this.getValue = function () {
+
+            this.$input.trigger('render:att_getValue');
 
             var value = this.$input.val(),
                 unit = this.$container.find('.render-modal-counter-unit select').val();
@@ -1847,6 +1871,8 @@ var Render_Modal;
             if (values.length > 1) {
                 this.$container.find('.render-modal-counter-unit-input').val(values[1]); // The unit
             }
+
+            this.$input.trigger('render:att_setValue');
         };
 
         this.init($e);
@@ -1866,6 +1892,8 @@ var Render_Modal;
         };
 
         this.getValue = function () {
+
+            this.$input.trigger('render:att_getValue');
 
             var values = {};
 
@@ -1933,6 +1961,8 @@ var Render_Modal;
                     });
                 }
             }
+
+            this.$input.trigger('render:att_setValue');
         };
 
         this.init($e);
