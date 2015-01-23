@@ -346,8 +346,6 @@ var Render_Modal;
 
                                 var icon = 'dashicons ' + $chosen.val();
 
-                                console.log(icon);
-
                                 if (!$chosen.val()) {
                                     $container.find('.chosen-single .dashicons').remove();
                                 } else {
@@ -414,7 +412,10 @@ var Render_Modal;
 
                                 // Unfortunately, by this time the custom text has been used, so we have to manually
                                 // tell Chosen to use the option we clicked
-                                $chosen.val($chosen.find('option:eq(' + $(this).data('option-array-index') + ')').val())
+                                var Chosen = $chosen.data('chosen'),
+                                    value = Chosen.results_data[$(this).data('option-array-index')].value;
+
+                                $chosen.val(value)
                                     .trigger('chosen:updated')
                                     .removeData('chosen-custom-input');
                             });

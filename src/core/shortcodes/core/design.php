@@ -87,6 +87,21 @@ foreach ( array(
 			),
 			'link'                       => array(
 				'label' => __( 'HREF (link)', 'Render' ),
+				'type' => 'selectbox',
+				'properties' => array(
+					'allowCustomInput' => true,
+					'groups' => array(),
+					'callback' => array(
+						'function' => 'render_sc_post_list',
+					),
+				),
+			),
+			'link_new_window' => array(
+				'label' => __( 'Link Window', 'Render' ),
+				'type' => 'checkbox',
+				'properties' => array(
+					'label' => __( 'Open link in new tab', 'Render' ),
+				),
 			),
 			array(
 				'type'        => 'section_break',
@@ -561,6 +576,7 @@ function _render_sc_button( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
 		'link'                       => '#',
+		'link_new_window'            => false,
 		'size'                       => 'medium',
 		'color'                      => RENDER_PRIMARY_COLOR,
 		'color_hover'                => RENDER_PRIMARY_COLOR_DARK,
@@ -578,13 +594,18 @@ function _render_sc_button( $atts = array(), $content = '' ) {
 
 	$border_radius = render_sc_parse_border_radius( $atts );
 
+	// Att accepts post ID or custom value
+	$link = is_numeric( $atts['link'] ) ? get_permalink( $atts['link'] ) : $atts['link'];
+	$link = $link !== false ? $link : '#';
+
 	$class = 'render-button';
 	$class .= ! empty( $atts['size'] ) ? "-$atts[size]" : '';
 	$class .= ! empty( $atts['shape'] ) ? "-$atts[shape]" : '';
 	$class .= ! empty( $atts['icon'] ) ? "-icon" : '';
 
-	$output = "<a href='$atts[link]' class='$class'";
+	$output = "<a href='$link' class='$class'";
 	$output .= " style='background: $atts[color]; color: $atts[font_color]; $border_radius'";
+	$output .= $atts['link_new_window'] !== false ? " target='_blank'" : '';
 	$output .= '>';
 	$output .= "<span class='hover' style='background: $atts[color_hover]; $border_radius'></span>";
 	$output .= ! empty( $atts['icon'] ) ? "<span class='icon dashicons $atts[icon]'></span>" : '';

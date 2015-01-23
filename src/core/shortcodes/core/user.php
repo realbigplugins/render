@@ -112,7 +112,7 @@ foreach (
 						'groups'           => array(),
 						'callback'         => array(
 							'groups'   => true,
-							'function' => '_render_sc_post_list',
+							'function' => 'render_sc_post_list',
 						),
 						'placeholder' => __( 'Same page', 'Render' ),
 					),

@@ -334,11 +334,10 @@ function _render_sc_post_word_count( $atts = array() ) {
  * Helper function to get all posts.
  *
  * @since  1.0.0
- * @access Private
  *
  * @return array List of all posts
  */
-function _render_sc_post_list() {
+function render_sc_post_list() {
 
 	global $post;
 	$current_post = $post;
@@ -353,10 +352,6 @@ function _render_sc_post_list() {
 	if ( ! empty( $posts ) ) {
 		foreach ( $posts as $post ) {
 
-			if ( (int) $current_post->ID === (int) $post->ID ) {
-				continue;
-			}
-
 			$object = get_post_type_object( $post->post_type );
 
 			if ( ! isset( $output[ $object->labels->name ] ) ) {
@@ -366,7 +361,8 @@ function _render_sc_post_list() {
 				);
 			}
 
-			$output[ $object->labels->name ]['options'][ $post->ID ] = $post->post_title;
+			$title = $post->post_title . ( (int) $current_post->ID === (int) $post->ID ? ' (current post)' : '' );
+			$output[ $object->labels->name ]['options'][ $post->ID ] = $title;;
 		}
 	}
 

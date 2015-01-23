@@ -220,7 +220,7 @@ function render_sc_attr_template( $template, $extra = array() ) {
 				'properties' => array(
 					'groups' => array(),
 					'callback'    => array(
-						'function' => '_render_sc_post_list',
+						'function' => 'render_sc_post_list',
 					),
 					'placeholder' => __( 'The current post', 'Render' ),
 				),
