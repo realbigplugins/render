@@ -302,14 +302,18 @@ var Render_Modal;
 
                         // Apply Chosen
                         var $chosen = $(this).find('.chosen'),
-                            $container = $chosen.closest('.render-modal-att-field');
+                            $container = $chosen.closest('.render-modal-att-field'),
+                            options = {
+                                width: '100%',
+                                search_contains: true,
+                                allow_single_deselect: true
+                            };
 
-                        $chosen.chosen({
-                            width: '100%',
-                            search_contains: true,
-                            allow_single_deselect: true,
-                            disable_search: $chosen.hasClass('allow-icons')
-                        });
+                        if ($chosen.hasClass('allow-icons')) {
+                            options.disable_search = true;
+                        }
+
+                        $chosen.chosen(options);
 
                         // Fix scroll issue
                         $container.find('.chosen-results').bind('mousewheel', function (e) {
@@ -356,37 +360,79 @@ var Render_Modal;
                         // TODO Find a way to allow searching of option values as well as text
                         if ($chosen.hasClass('allow-custom-input')) {
 
-                            var $text_input = $container.find('.chosen-search input[type="text"]');
+                            var $input_text = $container.find('.chosen-search input[type="text"]');
 
-                            // Binds and such
-                            chosen_custom_input($chosen);
+                            // Hide the "no results..."
+                            $chosen.on('chosen:no_results', function () {
+                                $container.find('.no-results').remove();
+                            });
 
-                            // Make sure we get the new value and not the old
-                            attObj.getValue = function () {
-                                return this.$container.find('*[name="' + this.name + '"]').last().val();
-                            };
+                            // Use the custom value when hiding the dropdown
+                            $chosen.on('chosen:hiding_dropdown', function (e, a) {
 
-                            // Enter shouldn't submit the Modal, but just submit the custom input
-                            $text_input.keyup(function (e) {
-                                if (e.keyCode == 13) {
+                                var search_text = $input_text.val();
 
-                                    // Close the chosen (trigger('chosen:close') isn't working, because of return false)
-                                    $container.find('.chosen-container').removeClass('chosen-with-drop');
-                                    $chosen.trigger('chosen:hiding_dropdown');
+                                // If no searching, get outta here
+                                if (!search_text) {
+                                    $chosen.removeData('chosen-custom-input');
+                                    return;
+                                }
 
-                                    // Stop Modal closing
-                                    e.preventDefault();
-                                    return false;
+                                // Set the preview text to our custom input (and make it not look like the default text)
+                                $container.find('.chosen-single').removeClass('chosen-default')
+                                    .find('> span').html(search_text);
+
+                                // Tell the Modal to use this new custom data
+                                $chosen.data('chosen-custom-input', search_text);
+
+                                // Remove focus from input and clear any leftover input
+                                $input_text.val('').blur();
+                            });
+
+                            // Populate search text if using custom input
+                            $chosen.on('chosen:showing_dropdown', function () {
+
+                                var custom_text = $chosen.data('chosen-custom-input');
+
+                                if (custom_text) {
+                                    $input_text.val(custom_text);
                                 }
                             });
 
-                            $chosen.on('chosen:hiding_dropdown change', function () {
-                                $text_input.blur();
+                            // Clear search text on clicking an option and set to that option
+                            $container.on('click', 'li.active-result', function () {
+
+                                // Clear and de-select the custom input
+                                $input_text.val('').blur();
+
+                                // Unfortunately, by this time the custom text has been used, so we have to manually
+                                // tell Chosen to use the option we clicked
+                                $chosen.val($chosen.find('option:eq(' + $(this).data('option-array-index') + ')').val())
+                                    .trigger('chosen:updated')
+                                    .removeData('chosen-custom-input');
                             });
 
-                            // Shouldn't see "no results, because it's custom"
-                            $chosen.on('chosen:no_results', function () {
-                                $container.find('.chosen-results').html('');
+                            // Pressing enter when typing a custom value shouldn't close the Modal, just use the text
+                            $input_text.keyup(function (e) {
+
+                                if (e.which == 13) {
+
+                                    // Make sure we don't keep chosen focused
+                                    $input_text.blur();
+
+                                    // TODO Figure out why I can't just trigger "chosen:close"...
+
+                                    var Chosen = $chosen.data('chosen'),
+                                        custom_text = $input_text.val();
+
+                                    if (custom_text) {
+                                        Chosen.close_field();
+                                        $input_text.val(custom_text);
+                                        $chosen.trigger('chosen:hiding_dropdown');
+                                    }
+
+                                    return false;
+                                }
                             });
                         }
                         break;
@@ -1617,8 +1663,23 @@ var Render_Modal;
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
+        this.getValue = function () {
+
+            // Account for custom input
+            if (this.$input.hasClass('allow-custom-input')) {
+                var custom_text = this.$input.data('chosen-custom-input');
+
+                if (custom_text) {
+                    return custom_text;
+                } else {
+                    return this.$input.val();
+                }
+            }
+        };
+
         this.setValue = function (value) {
 
+            // Reset select (feed empty value)
             if (!value) {
                 this.$input.val('');
                 this.$input.trigger('chosen:updated');
@@ -1626,13 +1687,10 @@ var Render_Modal;
             }
 
             // Custom input
-            if (!this.$container.find('option[value="' + value + '"]').length) {
-
-                var name = this.$input.attr('name');
-
-                this.$container.find('.render-modal-att-field').append('<input name="' + name + '" type="hidden" class="chosen-custom-input" value="' + value + '" />');
-                this.$container.find('.chosen-single > span').html(value);
-
+            var custom_input = this.$input.data('chosen-custom-input');
+            if (custom_input) {
+                this.$container.find('.chosen-search input[type="text"]').val(custom_input);
+                this.$input.trigger('chosen:hiding_dropdown');
                 return;
             }
 
@@ -1972,51 +2030,6 @@ var Render_Modal;
             complete: function () {
                 $(this).removeAttr('style');
             }
-        });
-    }
-
-    function chosen_custom_input($chosen) {
-
-        // When hiding the dropdown (submitting the field), use our custom input
-        $chosen.on('chosen:hiding_dropdown', function (e, a) {
-
-            var name = $(this).attr('name'),
-                $self = $(this),
-                $container = $(this).siblings('.chosen-container'),
-                custom_val = $container.find('.chosen-search input[type="text"]').val(),
-                $placeholder = $container.find('.chosen-single'),
-                $custom_input = $container.parent().find('.chosen-custom-input');
-
-            // An existing value has been selected manually or there was no input
-            if (!custom_val.length) {
-                if ($custom_input.length) {
-                    $custom_input.remove();
-                }
-                return;
-            }
-
-            // See if value exists in selectbox, and if it does, set chosen to that value
-            var exists = false;
-            $(this).find('option').each(function () {
-                if ($(this).val() == custom_val) {
-                    $self.val(custom_val).trigger('chosen:updated');
-                    exists = true;
-                    return false;
-                }
-            });
-
-            if (exists) {
-                return;
-            }
-
-            if (!$custom_input.length) {
-                $container.parent().append('<input type="hidden" class="chosen-custom-input" name="' + name + '" />');
-                $custom_input = $container.parent().find('.chosen-custom-input');
-            }
-
-            $custom_input.val(custom_val);
-            $placeholder.removeClass('chosen-default');
-            $placeholder.find('> span').html(custom_val);
         });
     }
 })(jQuery);

@@ -174,28 +174,28 @@ foreach (
 					'label' => __( 'Username', 'Render' ),
 					'advanced' => true,
 					'properties' => array(
-						'placeholder' => __( 'Username', 'Render' ),
+						'placeholder' => __( 'Username' ),
 					),
 				),
 				'label_password' => array(
 					'label' => __( 'Password', 'Render' ),
 					'advanced' => true,
 					'properties' => array(
-						'placeholder' => __( 'Password', 'Render' ),
+						'placeholder' => __( 'Password' ),
 					),
 				),
 				'label_remember' => array(
 					'label' => __( 'Remember Me', 'Render' ),
 					'advanced' => true,
 					'properties' => array(
-						'placeholder' => __( 'Remember Me', 'Render' ),
+						'placeholder' => __( 'Remember Me' ),
 					),
 				),
 				'Label_log_in' => array(
 					'label' => __( 'Log In', 'Render' ),
 					'advanced' => true,
 					'properties' => array(
-						'placeholder' => __( 'Log In', 'Render' ),
+						'placeholder' => __( 'Log In' ),
 					),
 				),
 				array(
