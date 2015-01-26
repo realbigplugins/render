@@ -2,7 +2,7 @@
 /**
  * Contains all Render packaged shortcodes within the Site category.
  *
- * @since      Render 1.0.0
+ * @since      1.0.0
  *
  * @package    Render
  * @subpackage Shortcodes
@@ -70,7 +70,7 @@ foreach ( array(
 /**
  * Gets info about the current site.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array $atts The attributes sent to the shortcode.

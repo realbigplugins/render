@@ -15,6 +15,12 @@ var Render_Widget;
     var active_widget, self;
 
     Render_Widget = {
+
+        /**
+         * Initializes the object.
+         *
+         * @since 1.0.0
+         */
         init: function () {
 
             self = this;
@@ -25,6 +31,11 @@ var Render_Widget;
             }
         },
 
+        /**
+         * Sets up handlers.
+         *
+         * @since 1.0.0
+         */
         binds: function () {
 
             $(document).on('click', '.render-widget-add-shortcode', function () {
@@ -36,6 +47,13 @@ var Render_Widget;
             $(document).on('render-modal-remove', Render_Widget.remove);
         },
 
+        /**
+         * Fires when opening the Modal.
+         *
+         * @since 1.0.0
+         *
+         * @param $e The current widget.
+         */
         open: function ($e) {
 
             active_widget = $e.closest('.widget-content');
@@ -49,20 +67,42 @@ var Render_Widget;
             }
         },
 
+        /**
+         * Fires when submitting the Modal.
+         *
+         * @since 1.0.0
+         */
         update: function () {
 
             self.change(Render_Modal.output.all, Render_Modal.output.title, 'modify-remove', Render_Modal.output.title);
         },
 
+        /**
+         * Fires when removing the current shortcode.
+         *
+         * @since 1.0.0
+         */
         remove: function () {
 
             Render_Modal.close();
             self.change('', '', 'add', false);
         },
 
-        change: function (value, title, button_text, preview_text) {
+        /**
+         * Changes the shortcode in the widget.
+         *
+         * Changes the preview title, the button text, and the input value.
+         *
+         * @since 1.0.0
+         *
+         * @param value The shortcode to save.
+         * @param title The title of the shortcode.
+         * @param button Which button text to show.
+         * @param preview Which preview text to show.
+         */
+        change: function (value, title, button, preview) {
 
-            if (button_text == 'add') {
+            if (button == 'add') {
                 active_widget.find('.add').show();
                 active_widget.find('.modify-remove').hide();
             } else {
@@ -70,11 +110,11 @@ var Render_Widget;
                 active_widget.find('.add').hide();
             }
 
-            if (!preview_text) {
+            if (!preview) {
                 active_widget.find('.nothing-added').show();
                 active_widget.find('.shortcode-title').hide();
             } else {
-                active_widget.find('.shortcode-title').show().html(preview_text);
+                active_widget.find('.shortcode-title').show().html(preview);
                 active_widget.find('.nothing-added').hide();
             }
 

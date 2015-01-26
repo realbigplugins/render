@@ -10,6 +10,7 @@
  */
 var Render_Modal;
 (function ($) {
+
     var elements = {},
         shortcodes = {},
         slide_transition = 150,
@@ -26,6 +27,11 @@ var Render_Modal;
         selection: '',
         modifying: false,
 
+        /**
+         * Initializes the object.
+         *
+         * @since 1.0.0
+         */
         init: function () {
 
             this.establishElements();
@@ -35,13 +41,20 @@ var Render_Modal;
             this.search();
         },
 
-        load: function () {
-        },
-
+        /**
+         * Fires on window resize.
+         *
+         * @since 1.0.0
+         */
         resize: function () {
             this.listHeight();
         },
 
+        /**
+         * Sets up our various Modal elements.
+         *
+         * @since 1.0.0
+         */
         establishElements: function () {
             elements.wrap = $('#render-modal-wrap');
             elements.submit = $('#render-modal-submit');
@@ -59,6 +72,11 @@ var Render_Modal;
             elements.last_active_shortcode = false;
         },
 
+        /**
+         * Sets up handlers.
+         *
+         * @since 1.0.0
+         */
         binds: function () {
 
             // Active a shortcode
@@ -116,6 +134,11 @@ var Render_Modal;
             elements.categories.find('.render-modal-categories-right').click(Render_Modal.moveCategoriesRight);
         },
 
+        /**
+         * Provides keyboard navigation for the Modal.
+         *
+         * @since 1.0.0
+         */
         keyboardShortcuts: function () {
 
             $(document).keyup(function (e) {
@@ -239,6 +262,11 @@ var Render_Modal;
             });
         },
 
+        /**
+         * Moves the categories left when clicking the right arrow.
+         *
+         * @since 1.0.0
+         */
         moveCategoriesLeft: function () {
 
             var $list = elements.categories.find('ul'),
@@ -256,6 +284,11 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Moves the categories right when clicking the left arrow.
+         *
+         * @since 1.0.0
+         */
         moveCategoriesRight: function () {
 
             var $list = elements.categories.find('ul'),
@@ -277,6 +310,11 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Initializes all attributes in a shortcode, when the shortcode is opened.
+         *
+         * @since 1.0.0
+         */
         initAtts: function () {
 
             elements.active_shortcode.find('.render-modal-att-row').each(function () {
@@ -795,6 +833,11 @@ var Render_Modal;
             });
         },
 
+        /**
+         * Searches through the shortcodes.
+         *
+         * @since 1.0.0
+         */
         search: function () {
 
             var search_delay = 300,
@@ -856,6 +899,13 @@ var Render_Modal;
             });
         },
 
+        /**
+         * Clears the search and search errors.
+         *
+         * @since 1.0.0
+         *
+         * @param time How long the animation takes.
+         */
         clearSearch: function (time) {
 
             time = typeof time === 'undefined' ? 0 : time;
@@ -868,6 +918,13 @@ var Render_Modal;
             search_loading = false;
         },
 
+        /**
+         * Shows when searching for invalid characters.
+         *
+         * @since 1.0.0
+         *
+         * @param invalid Whether to show or hide.
+         */
         invalidSearch: function (invalid) {
 
             var $invalidsearch = elements.wrap.find('.render-modal-invalidsearch');
@@ -879,6 +936,15 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Activates a shortcode.
+         *
+         * Sets which shortcode is the currently activated shortcode in the Modal.
+         *
+         * @since 1.0.0
+         *
+         * @param $e Which shortcode to activate (by jQuery element).
+         */
         activateShortcode: function ($e) {
 
             var $container = $e.closest('.render-modal-shortcode');
@@ -935,6 +1001,14 @@ var Render_Modal;
             this.openShortcode();
         },
 
+        /**
+         * Opens and closes the toolbar at the top of each shortcode item.
+         *
+         * @since 1.0.0
+         *
+         * @param $this The toggle element.
+         * @param force Force it open or close.
+         */
         shortcodeToolbarTogggle: function ($this, force) {
 
             force = typeof force !== 'undefined' ? force : false;
@@ -959,6 +1033,11 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Restores a shortcode that was selected from the TinyMCE to its values that were previously set.
+         *
+         * @since 1.0.0
+         */
         restoreShortcode: function () {
 
             elements.active_shortcode.find('.render-modal-att-row').each(function () {
@@ -968,6 +1047,11 @@ var Render_Modal;
             this.populateShortcode(this.current_shortcode.atts);
         },
 
+        /**
+         * Clears error messages in the shortcode item.
+         *
+         * @since 1.0.0
+         */
         clearShortcodeErrors: function () {
 
             // Remove any previous error messages
@@ -978,6 +1062,13 @@ var Render_Modal;
                 });
         },
 
+        /**
+         * Shows and hides advanced shortcode attributes.
+         *
+         * @since 1.0.0
+         *
+         * @param $e The advanced attributes container.
+         */
         toggleAdvancedAtts: function ($e) {
 
             if ($e.hasClass('hidden')) {
@@ -987,6 +1078,13 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Shows the advanced attributes.
+         *
+         * @since 1.0.0
+         *
+         * @param $e The advanced attributes container.
+         */
         showAdvancedAtts: function ($e) {
 
             $e.removeClass('hidden');
@@ -995,6 +1093,13 @@ var Render_Modal;
             $e.find('.hide-text').show();
         },
 
+        /**
+         * Hides the advanced attributes.
+         *
+         * @since 1.0.0
+         *
+         * @param $e The advanced attributes container.
+         */
         hideAdvancedAtts: function ($e) {
 
             $e.addClass('hidden');
@@ -1003,6 +1108,11 @@ var Render_Modal;
             $e.find('.show-text').show();
         },
 
+        /**
+         * Prevents window scrolling when inside something that scrolls.
+         *
+         * @since 1.0.0
+         */
         preventWindowScroll: function () {
 
             elements.list.bind('mousewheel', function (e) {
@@ -1012,6 +1122,13 @@ var Render_Modal;
             });
         },
 
+        /**
+         * Filters viewable shortcodes by a category.
+         *
+         * @since 1.0.0
+         *
+         * @param $e The category element.
+         */
         filterByCategory: function ($e) {
 
             var category = $e.attr('data-category'),
@@ -1041,6 +1158,11 @@ var Render_Modal;
             this.refreshRows();
         },
 
+        /**
+         * Refreshes alternation of rows.
+         *
+         * @since 1.0.0
+         */
         refreshRows: function () {
 
             var i = 0;
@@ -1059,6 +1181,11 @@ var Render_Modal;
             })
         },
 
+        /**
+         * Sets the Modal shortcode list height.
+         *
+         * @since 1.0.0
+         */
         listHeight: function () {
 
             var height = elements.wrap.innerHeight()
@@ -1071,6 +1198,13 @@ var Render_Modal;
             elements.list.height(height);
         },
 
+        /**
+         * Shows or hides the "Remove Shortcode" button.
+         *
+         * @since 1.0.0
+         *
+         * @param which Hide or show.
+         */
         removeButton: function (which) {
 
             which = which.toLowerCase();
@@ -1082,6 +1216,13 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Toggles what the submit button is showing.
+         *
+         * @since 1.0.0
+         *
+         * @param which Which display to show.
+         */
         submitButton: function (which) {
 
             var _which = which.toLowerCase();
@@ -1138,6 +1279,13 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Opens the Modal with a specific shortcode from TinyMCE to edit.
+         *
+         * @since 1.0.0
+         *
+         * @param shortcode The literal shortcode text.
+         */
         modify: function (shortcode) {
 
             // Crop off any whitespace (generally preceding)
@@ -1187,6 +1335,13 @@ var Render_Modal;
             this.populateShortcode(atts);
         },
 
+        /**
+         * Sets the active shortcode in the Modal.
+         *
+         * @since 1.0.0
+         *
+         * @param shortcode Which code.
+         */
         setActiveShortcode: function (shortcode) {
 
             // Find our current shortcode
@@ -1197,6 +1352,13 @@ var Render_Modal;
             });
         },
 
+        /**
+         * Populates the shortcode item with attributes.
+         *
+         * @since 1.0.0
+         *
+         * @param atts The attributes to use.
+         */
         populateShortcode: function (atts) {
 
             $.each(atts, function (name, value) {
@@ -1209,6 +1371,11 @@ var Render_Modal;
             });
         },
 
+        /**
+         * Closes a shortcode item.
+         *
+         * @since 1.0.0
+         */
         closeShortcode: function () {
 
             if (elements.active_shortcode) {
@@ -1234,6 +1401,11 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Opens a shortcode item.
+         *
+         * @since 1.0.0
+         */
         openShortcode: function () {
 
             if (elements.active_shortcode) {
@@ -1272,6 +1444,11 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Opens the Modal.
+         *
+         * @since 1.0.0
+         */
         open: function () {
 
             render_modal_open = true;
@@ -1297,6 +1474,11 @@ var Render_Modal;
             $(document).trigger('render-modal-open');
         },
 
+        /**
+         * Closes the Modal.
+         *
+         * @since 1.0.0
+         */
         close: function () {
 
             render_modal_open = false;
@@ -1332,6 +1514,11 @@ var Render_Modal;
             $(document).trigger('render-modal-close');
         },
 
+        /**
+         * Submits the Modal.
+         *
+         * @since 1.0.0
+         */
         update: function () {
 
             if (!elements.active_shortcode || !this.validate() || elements.submit.hasClass('disabled')) {
@@ -1398,6 +1585,13 @@ var Render_Modal;
             this.close();
         },
 
+        /**
+         * Validates all attributes.
+         *
+         * @since 1.0.0
+         *
+         * @returns false If not validated.
+         */
         validate: function () {
 
             var validated = true;
@@ -1524,6 +1718,11 @@ var Render_Modal;
             return validated;
         },
 
+        /**
+         * Sanitizes all attributes.
+         *
+         * @since 1.0.0
+         */
         sanitize: function () {
 
             elements.active_shortcode.find('.render-modal-att-row').each(function () {
@@ -1558,6 +1757,13 @@ var Render_Modal;
             });
         },
 
+        /**
+         * Refreshes the shortcode to original attribute values.
+         *
+         * @since 1.0.0
+         *
+         * @param shortcode Which shortcode to refresh.
+         */
         refresh: function (shortcode) {
 
             shortcode = typeof shortcode !== 'undefined' ? shortcode : elements.active_shortcode;
@@ -1575,6 +1781,13 @@ var Render_Modal;
             }
         },
 
+        /**
+         * Converts a string to JSON object.
+         *
+         * @param string
+         * @returns {*}
+         * @private
+         */
         _stringToObject: function (string) {
 
             if (typeof string === 'undefined' || !string.length) {

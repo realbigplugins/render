@@ -16,45 +16,31 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Render_Modal {
 
-	public static $types = array(
-		'textbox',
-		'textarea',
-		'checkbox',
-		'selectbox',
-		'slider',
-		'colorpicker',
-		'repeater',
-	);
-
+	/**
+	 * Constructs the class.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct() {
 
+		// Localize the shortcodes
 		add_action( 'render_localized_data', array( __CLASS__, 'localize_shortcodes' ) );
+
+		// Enqueue styles and scripts for the modal
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_scripts' ) );
-		add_action( 'admin_footer', array( __CLASS__, 'output' ) );
+
+		// Output the Modal HTML
+		add_action( 'admin_footer', array( __CLASS__, '_modal_output' ) );
 	}
 
-	public static function admin_scripts() {
-
-		global $wp_scripts;
-		$jquery_ui = $wp_scripts->registered['jquery-ui-core'];
-
-		wp_enqueue_script( 'jquery-ui-slider' );
-		wp_enqueue_script( 'jquery-effects-shake' );
-		wp_enqueue_script( 'jquery-effects-drop' );
-		wp_enqueue_script( 'wp-color-picker' );
-		wp_enqueue_script( 'render-chosen' );
-		wp_enqueue_media();
-
-		wp_enqueue_style( 'render-chosen' );
-		wp_enqueue_style( 'wp-color-picker' );
-		wp_enqueue_style(
-			'jquery-ui',
-			"http://ajax.googleapis.com/ajax/libs/jqueryui/$jquery_ui->ver/themes/ui-lightness/jquery-ui.min.css",
-			null,
-			$jquery_ui->ver
-		);
-	}
-
+	/**
+	 * Localizes all shortcodes for the Render Modal.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $data Old data to be localized to Render.
+	 * @return array New data to be localized to Render.
+	 */
 	public static function localize_shortcodes( $data ) {
 
 		global $Render;
@@ -64,7 +50,68 @@ class Render_Modal {
 		return $data;
 	}
 
-	private static function atts_loop( $shortcode_atts, $advanced = false, $wrapping = false ) {
+	/**
+	 * Loads all required scripts and styles for the Modal.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @global array $wp_scripts Contains all registered scripts.
+	 */
+	public static function admin_scripts() {
+
+		// Get the version of jQuery UI for loading the matching jQuery UI stylesheets
+		global $wp_scripts;
+
+		/**
+		 * The version of the jQuery UI stylesheet to load.
+		 *
+		 * @since 1.0.0
+		 */
+		$jquery_ui_version = apply_filters(
+			'render_jquery_ui_style_version',
+			$wp_scripts->registered['jquery-ui-core']->ver
+		);
+
+		/**
+		 * The stylesheet URL for jQuery UI.
+		 *
+		 * @since 1.0.0
+		 */
+		$jquery_ui_url = apply_filters(
+			'render_jquery_ui_style_url',
+			"http://ajax.googleapis.com/ajax/libs/jqueryui/$jquery_ui_version/themes/ui-lightness/jquery-ui.min.css"
+		);
+
+		// Necessary scripts
+		wp_enqueue_script( 'jquery-ui-slider' );
+		wp_enqueue_script( 'jquery-effects-shake' );
+		wp_enqueue_script( 'jquery-effects-drop' );
+		wp_enqueue_script( 'wp-color-picker' );
+		wp_enqueue_script( 'render-chosen' );
+		wp_enqueue_media();
+
+		// Necessary styles
+		wp_enqueue_style( 'render-chosen' );
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_style(
+			'jquery-ui',
+			$jquery_ui_url,
+			null,
+			$jquery_ui_version
+		);
+	}
+
+	/**
+	 * Loops through all the current shortcode attributes and outputs them in the Modal.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param array $shortcode_atts All of the current shortcode's attributes.
+	 * @param bool $advanced Whether or not the shortcode should be categorized under "Advanced Atts".
+	 * @param bool $wrapping Whether or not the shortcode wraps around content.
+	 */
+	private static function _atts_loop( $shortcode_atts, $advanced = false, $wrapping = false ) {
 
 		foreach ( $shortcode_atts as $att_id => $att ) {
 
@@ -94,22 +141,30 @@ class Render_Modal {
 				}
 
 				// Validation
-				if ( ! isset( $att['validate'] ) ) {
-					$att['validate'] = array();
+				if ( isset( $att['validate'] ) ) {
+					$att['validate'] = implode( ',', (array) $att['validate'] );
 				}
-				$att['validate'] = implode( ',', $att['validate'] );
 
 				// Sanitation
-				if ( ! isset( $att['sanitize'] ) ) {
-					$att['sanitize'] = array();
+				if ( isset( $att['sanitize'] ) ) {
+					$att['sanitize'] = implode( ',', (array) $att['sanitize'] );
 				}
-				$att['sanitize'] = implode( ',', $att['sanitize'] );
 
 				self::att_content( $att_id, $att, $type );
 			}
 		}
 	}
 
+	/**
+	 * Outputs the HTML of each attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The ID of the attribute.
+	 * @param array $att Attribute properties.
+	 * @param string $type The field type of the attribute.
+	 */
 	private static function att_content( $att_id, $att, $type ) {
 		?>
 		<div class="render-modal-att-row <?php echo isset( $att['classes'] ) ? implode( ' ', $att['classes'] ) : ''; ?>"
@@ -118,7 +173,6 @@ class Render_Modal {
 		     data-required="<?php echo isset( $att['required'] ) ? $att['required'] : ''; ?>"
 		     data-validate="<?php echo isset( $att['validate'] ) ? $att['validate'] : ''; ?>"
 		     data-sanitize="<?php echo isset( $att['sanitize'] ) ? $att['sanitize'] : ''; ?>"
-		     data-disabled="<?php echo isset( $att['disabled'] ) ? $att['disabled'] : ''; ?>"
 		     data-init-callback="<?php echo isset( $att['initCallback'] ) ? $att['initCallback'] : ''; ?>"
 		     data-no-init="<?php echo isset( $att['noInit'] ) ? $att['noInit'] : ''; ?>">
 
@@ -157,6 +211,16 @@ class Render_Modal {
 	<?php
 	}
 
+	/**
+	 * Outputs the field HTML of the textbox attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The attribute ID.
+	 * @param array $att Properties of the attribute.
+	 * @param array $properties Properties of the attribute field type.
+	 */
 	private static function att_type_textbox( $att_id, $att, $properties = array() ) {
 		?>
 		<input type="text" class="render-modal-att-input render-modal-att-textbox"
@@ -166,6 +230,16 @@ class Render_Modal {
 	<?php
 	}
 
+	/**
+	 * Outputs the field HTML of the checkbox attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The attribute ID.
+	 * @param array $att Properties of the attribute.
+	 * @param array $properties Properties of the attribute field type.
+	 */
 	private static function att_type_checkbox( $att_id, $att, $properties = array() ) {
 		?>
 		<?php if ( isset( $properties['label'] ) ) : ?>
@@ -185,6 +259,15 @@ class Render_Modal {
 	<?php
 	}
 
+	/**
+	 * Outputs the field HTML of the textarea attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The attribute ID.
+	 * @param array $att Properties of the attribute.
+	 */
 	private static function att_type_textarea( $att_id, $att ) {
 		?>
 		<textarea class="render-modal-att-input render-modal-att-textarea" name="<?php echo $att_id; ?>"><?php
@@ -193,6 +276,16 @@ class Render_Modal {
 	<?php
 	}
 
+	/**
+	 * Outputs the field HTML of the selectbox attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The attribute ID.
+	 * @param array $att Properties of the attribute.
+	 * @param array $properties Properties of the attribute field type.
+	 */
 	private static function att_type_selectbox( $att_id, $att, $properties ) {
 
 		// If a callback is provided, use that to populate options
@@ -285,6 +378,16 @@ class Render_Modal {
 	<?php
 	}
 
+	/**
+	 * Outputs the field HTML of the slider attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The attribute ID.
+	 * @param array $att Properties of the attribute.
+	 * @param array $properties Properties of the attribute field type.
+	 */
 	private static function att_type_slider( $att_id, $att, $properties ) {
 
 		// Establish defaults
@@ -331,6 +434,16 @@ class Render_Modal {
 	<?php
 	}
 
+	/**
+	 * Outputs the field HTML of the color-picker attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The attribute ID.
+	 * @param array $att Properties of the attribute.
+	 * @param array $properties Properties of the attribute field type.
+	 */
 	private static function att_type_colorpicker( $att_id, $att, $properties ) {
 
 		?>
@@ -341,9 +454,17 @@ class Render_Modal {
 	<?php
 	}
 
+	/**
+	 * Outputs the field HTML of the counter attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The attribute ID.
+	 * @param array $att Properties of the attribute.
+	 * @param array $properties Properties of the attribute field type.
+	 */
 	private static function att_type_counter( $att_id, $att, $properties ) {
-
-		// TODO Unit type
 
 		// Establish defaults
 		$defaults   = array(
@@ -401,6 +522,16 @@ class Render_Modal {
 		<?php endif;
 	}
 
+	/**
+	 * Outputs the field HTML of the repeater attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The attribute ID.
+	 * @param array $att Properties of the attribute.
+	 * @param array $properties Properties of the attribute field type.
+	 */
 	private static function att_type_repeater( $att_id, $att, $properties ) {
 
 		// Setup defaults
@@ -441,7 +572,7 @@ class Render_Modal {
 				<input type="hidden" name="<?php echo $att_id; ?>" class="render-modal-att-input"/>
 
 				<div class="render-modal-repeater-inputs">
-					<?php self::atts_loop( $properties['fields'] ); ?>
+					<?php self::_atts_loop( $properties['fields'] ); ?>
 				</div>
 
 				<div class="render-modal-repeater-actions">
@@ -453,6 +584,16 @@ class Render_Modal {
 		endfor;
 	}
 
+	/**
+	 * Outputs the field HTML of the media attribute.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id The attribute ID.
+	 * @param array $att Properties of the attribute.
+	 * @param array $properties Properties of the attribute field type.
+	 */
 	private static function att_type_media( $att_id, $att, $properties ) {
 
 		$defaults = array(
@@ -490,7 +631,15 @@ class Render_Modal {
 	<?php
 	}
 
-	public static function output() {
+	/**
+	 * Outputs the Render Modal HTML.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @global Render $Render The main Render object.
+	 */
+	public static function _modal_output() {
 
 		global $Render;
 
@@ -611,7 +760,7 @@ class Render_Modal {
 
 											<div class="render-modal-shortcode-atts">
 
-												<?php self::atts_loop( $shortcode['atts'], $advanced = false, $wrapping ); ?>
+												<?php self::_atts_loop( $shortcode['atts'], $advanced = false, $wrapping ); ?>
 
 												<?php
 												// Figure out if any of the attributes belong to the advanced section
@@ -636,7 +785,7 @@ class Render_Modal {
 														</span>
 													</a>
 													<div class="render-modal-advanced-atts" style="display: none;">
-														<?php self::atts_loop( $shortcode['atts'], $advanced = true, $wrapping ); ?>
+														<?php self::_atts_loop( $shortcode['atts'], $advanced = true, $wrapping ); ?>
 													</div>
 												<?php endif; ?>
 											</div>

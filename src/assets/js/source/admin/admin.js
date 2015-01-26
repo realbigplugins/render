@@ -1,8 +1,18 @@
+/**
+ * Functionality for the Render admin, globally.
+ *
+ * @since 1.0.0
+ *
+ * @global Render_Data
+ *
+ * @package Render
+ * @subpackage Modal
+ */
 var Render_Admin;
 (function ($) {
     Render_Admin = {
         init: function () {
-
+            // ... get out of here!
         }
     };
 

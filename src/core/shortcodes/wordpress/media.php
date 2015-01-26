@@ -433,6 +433,13 @@ add_filter( 'render_add_shortcodes', function( $shortcodes ) {
 	return $shortcodes;
 }, 999 );
 
+/**
+ * Provides a Render selectbox with options for all registered image sizes.
+ *
+ * @since 1.0.0
+ *
+ * @return array All WP image sizes.
+ */
 function render_image_sizes_dropdown() {
 
 	$output = array(

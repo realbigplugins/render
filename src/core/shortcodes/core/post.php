@@ -2,7 +2,7 @@
 /**
  * Contains all Render packaged shortcodes within the Post category.
  *
- * @since      Render 1.0.0
+ * @since      1.0.0
  *
  * @package    Render
  * @subpackage Shortcodes

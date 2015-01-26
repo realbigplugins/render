@@ -21,6 +21,11 @@ var Render_tinymce;
 
     Render_tinymce = {
 
+        /**
+         * Initializes the object.
+         *
+         * @since 1.0.0
+         */
         init: function () {
 
             this.addToTinymce();
@@ -32,6 +37,11 @@ var Render_tinymce;
             this.createLoader();
         },
 
+        /**
+         * Sets up the handlers.
+         *
+         * @since 1.0.0
+         */
         binds: function () {
 
             $(document).on('render-modal-close', function () {
@@ -55,6 +65,13 @@ var Render_tinymce;
             });
         },
 
+        /**
+         * Sets up handlers within the TinyMCE body.
+         *
+         * @since 1.0.0
+         *
+         * @param $body The TinyMCE body element.
+         */
         editorBinds: function ($body) {
 
             $body.on('mouseover', '.render-tinymce-shortcode-wrapper', function (e) {
@@ -77,6 +94,11 @@ var Render_tinymce;
             })
         },
 
+        /**
+         * Integrates Render into the TinyMCE.
+         *
+         * @since 1.0.0
+         */
         addToTinymce: function () {
 
             tinymce.PluginManager.add('render', function (_editor) {
@@ -265,6 +287,11 @@ var Render_tinymce;
             });
         },
 
+        /**
+         * Creates the loading overlay of the TinyMCE.
+         *
+         * @since 1.0.0
+         */
         createLoader: function () {
 
             $editor.append('<div id="render-tinymce-loader" class="hide"><div class="spinner"></div><div class="text">></div></div>');
@@ -273,6 +300,8 @@ var Render_tinymce;
 
         /**
          * Renders literal shortcodes into visual shortcodes (Text -> Visual).
+         *
+         * @since 1.0.0
          */
         loadVisual: function () {
 
@@ -280,7 +309,7 @@ var Render_tinymce;
 
                 var content = editor.getContent();
                 content = Render_tinymce.loadText(content);
-                Render_MCECallbacks.convertLiteralToRendered(content, editor);
+                Render_tinymce.convertLiteralToRendered(content, editor);
             }
         },
 
@@ -310,15 +339,25 @@ var Render_tinymce;
 
         /**
          * Converts rendered shortcodes into literal shortcodes (Visual -> Text).
+         *
+         * @since 1.0.0
          */
         loadText: function (content) {
 
             content = content.replace(/&#8203;/g, '');
-            content = Render_MCECallbacks.convertRenderedToLiteral(content);
+            content = Render_tinymce.convertRenderedToLiteral(content);
 
             return content;
         },
 
+        /**
+         * Converts a shortcode element into a shortcode string.
+         *
+         * @since 1.0.0
+         *
+         * @param shortcode The shortcode element.
+         * @returns The shortcode.
+         */
         visualToLiteral: function (shortcode) {
 
             var code = $(shortcode).attr('data-code'),
@@ -345,6 +384,13 @@ var Render_tinymce;
             return output;
         },
 
+        /**
+         * Fires when opening the Modal.
+         *
+         * @since 1.0.0
+         *
+         * @param shortcode The shortcode that was activated.
+         */
         open: function (shortcode) {
 
             var $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
@@ -365,10 +411,20 @@ var Render_tinymce;
             }
         },
 
+        /**
+         * Fires when closing the Modal.
+         *
+         * @since 1.0.0
+         */
         close: function () {
             editor.focus();
         },
 
+        /**
+         * Fires when submitting the Modal.
+         *
+         * @since 1.0.0
+         */
         update: function () {
 
             var $shortcode = $(editor.dom.select('.render-tinymce-editing'));
@@ -384,6 +440,11 @@ var Render_tinymce;
             this.loadVisual();
         },
 
+        /**
+         * Removes a shortcode from the TinyMCE body.
+         *
+         * @since 1.0.0
+         */
         removeShortcode: function () {
 
             var node = editor.selection.getNode(),
@@ -396,6 +457,13 @@ var Render_tinymce;
             Render_Modal.close();
         },
 
+        /**
+         * Shows or hides the loading overlay and cycles the messages.
+         *
+         * @since 1.0.0
+         *
+         * @param loading Whether to show or hide the overlay.
+         */
         loading: function (loading) {
 
             if (loading) {
@@ -443,6 +511,14 @@ var Render_tinymce;
             }
         },
 
+        /**
+         * Fires when submitting the post (Publish).
+         *
+         * @since 1.0.0
+         *
+         * @param event
+         * @param $e
+         */
         submit: function (event, $e) {
 
             if (!submitted) {
@@ -460,8 +536,97 @@ var Render_tinymce;
             }
         },
 
+        /**
+         * Gets the editor (from within the confines of this object).
+         *
+         * @since 1.0.0
+         *
+         * @returns The active editor.
+         */
         getEditor: function () {
             return editor;
+        },
+
+        /**
+         * Converts literal shortcode within the content into rendered HTML.
+         *
+         * @since 1.0.0
+         *
+         * @param content The content to convert.
+         * @param editor The active editor.
+         */
+        convertLiteralToRendered: function (content, editor) {
+
+            Render_tinymce.loading(true);
+
+            var data;
+
+            if (typeof Render_Data.render_data !== 'undefined') {
+                data = Render_Data.render_data;
+            }
+
+            data.action = 'render_render_shortcodes';
+            data.content = content;
+            data.shortcode_data = Render_Data.rendered_shortcodes;
+
+            $.post(
+                ajaxurl,
+                data,
+                function (response) {
+
+                    editor.setContent(response);
+                    Render_tinymce.loading(false);
+
+                    $(document).trigger('render-tinymce-post-render');
+                }
+            );
+        },
+
+        /**
+         * Converts Rendered shortcode HTML in the content into literal shortcodes.
+         *
+         * @since 1.0.0
+         *
+         * @param content The content to convert.
+         * @returns The converted content.
+         */
+        convertRenderedToLiteral: function (content) {
+
+            var $container = $('<div />').append($(content));
+
+            // Remove dummy containers
+            $container.find('.render-tinymce-dummy-container').each(function () {
+                $(this).replaceWith(this.childNodes);
+            });
+
+            var $shortcodes = $container.find('.render-tinymce-shortcode-wrapper').sortByDepth();
+
+            $shortcodes.each(function () {
+
+                var atts = $(this).attr('data-atts'),
+                    code = $(this).attr('data-code'),
+                    shortcode_content = $(this).find('.render-tinymce-shortcode-content').first().html(),
+                    output = '[' + code;
+
+                if (atts) {
+                    atts = JSON.parse(atts);
+                    var _atts = '';
+                    $.each(atts, function (name, value) {
+                        _atts += ' ' + name + '=\'' + value + '\'';
+                    });
+                    output += _atts;
+                }
+
+                output += ']';
+
+                if (shortcode_content) {
+                    output += shortcode_content + '[/' + code + ']';
+                }
+
+                $(this).replaceWith(output);
+            });
+
+            return $container.html();
         }
     };
 

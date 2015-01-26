@@ -2,7 +2,7 @@
 /**
  * Contains all Render packaged shortcodes within the Query category.
  *
- * @since      Render 1.0.0
+ * @since      1.0.0
  *
  * @package    Render
  * @subpackage Shortcodes
@@ -32,7 +32,7 @@ foreach ( array(
 				'type'       => 'selectbox',
 				'properties' => array(
 					'placeholder' => __( 'Any author', 'Render' ),
-					'options'     => render_user_dropdown( false ),
+					'options'     => render_user_dropdown( 'edit_posts' ),
 				),
 			),
 			'post_type'   => array(
@@ -189,7 +189,7 @@ function _render_query( $atts = array() ) {
 /**
  * Helper function for populating the category selectbox.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  *
  * @return bool|array List of category terms.
  */
@@ -208,7 +208,7 @@ function render_categories_dropdown() {
 /**
  * Helper function for populating the tags selectbox.
  *
- * @since  Render 1.0.0
+ * @since 1.0.0
  *
  * @return bool|array List of tags.
  */
@@ -226,6 +226,13 @@ function render_tags_dropdown() {
 	return $output;
 }
 
+/**
+ * Provides selectbox options with all the public post types.
+ *
+ * @since 1.0.0
+ *
+ * @return array List of post types.
+ */
 function render_post_types_dropdown() {
 
 	$post_types = get_post_types( array(

@@ -6,10 +6,15 @@
  * @package Render
  */
 (function ($) {
-    /*
-     * Extend the slider to a time format
-     */
 
+    /**
+     * Initializes the custom time-format slider.
+     *
+     * @since 1.0.0
+     *
+     * @param $attRow The current attribute row.
+     * @param attObj The current attribute object.
+     */
     window['timeSliderInit'] = function ($attRow, attObj) {
 
         // Initialize the values to be in a time format
@@ -33,6 +38,16 @@
         }
     };
 
+    /**
+     * Fires whenever sliding the time-format slider bar.
+     *
+     * @since 1.0.0
+     *
+     * @param event
+     * @param ui
+     * @param $input
+     * @returns False if overlapping.
+     */
     window['timeSlider'] = function (event, ui, $input) {
 
         function translateTime(value) {

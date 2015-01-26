@@ -16,6 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Render_ShortcodesTable extends WP_List_Table {
 
+	/**
+	 * Constructs the class.
+	 *
+	 * @since 1.0.0
+	 */
 	function __construct() {
 
 		parent::__construct( array(
@@ -25,6 +30,13 @@ class Render_ShortcodesTable extends WP_List_Table {
 		) );
 	}
 
+	/**
+	 * Adds HTML to the top or bottom of the table.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $which Top or bottom of table.
+	 */
 	public function extra_tablenav( $which ) {
 
 		if ( $which === 'top' ) :
@@ -37,6 +49,11 @@ class Render_ShortcodesTable extends WP_List_Table {
 		endif;
 	}
 
+	/**
+	 * Provides the category dropdown for filtering.
+	 *
+	 * @since 1.0.0
+	 */
 	private function categories_dropdown() {
 
 		$categories  = render_get_shortcode_categories();
@@ -60,6 +77,13 @@ class Render_ShortcodesTable extends WP_List_Table {
 	<?php
 	}
 
+	/**
+	 * Tells WP which table columns are sortable.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Sortable columns.
+	 */
 	public function get_sortable_columns() {
 
 		return $sortable = array(
@@ -70,6 +94,13 @@ class Render_ShortcodesTable extends WP_List_Table {
 		);
 	}
 
+	/**
+	 * Tells WP what the table columns are.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Columns.
+	 */
 	public function get_columns() {
 
 		return $columns = array(
@@ -83,6 +114,13 @@ class Render_ShortcodesTable extends WP_List_Table {
 		);
 	}
 
+	/**
+	 * Adds bulk actions to the table.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Bulk actions.
+	 */
 	public function get_bulk_actions() {
 		return $actions = array(
 			'disable' => __( 'Disable', 'Render' ),
@@ -90,12 +128,27 @@ class Render_ShortcodesTable extends WP_List_Table {
 		);
 	}
 
+	/**
+	 * Adds a checkbox column on the left of the table.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $item The current row item.
+	 * @return string The checkbox HTML.
+	 */
 	public function column_cb( $item ) {
 		return sprintf(
 			'<input type="checkbox" name="shortcodes[]" value="%s" />', $item['code']
 		);
 	}
 
+	/**
+	 * Outputs the HTML to a table row.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param object $item The current row item.
+	 */
 	public function single_row( $item ) {
 
 		global $render_sc_table_disabled;
@@ -110,6 +163,11 @@ class Render_ShortcodesTable extends WP_List_Table {
 		echo '</tr>';
 	}
 
+	/**
+	 * Prepares the shortcodes for the WP table.
+	 *
+	 * @since 1.0.0
+	 */
 	public function prepare_items() {
 
 		global $Render;
@@ -185,6 +243,14 @@ class Render_ShortcodesTable extends WP_List_Table {
 		$this->items = array_slice( $items, ( ( $current_page - 1 ) * $per_page ), $per_page );
 	}
 
+	/**
+	 * Sets the name of each table row.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $item The current row item.
+	 * @return string The column name.
+	 */
 	public function column_name( $item ) {
 
 		global $render_sc_table_disabled;
@@ -222,6 +288,15 @@ class Render_ShortcodesTable extends WP_List_Table {
 		);
 	}
 
+	/**
+	 * Sets up each column's output.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $item The current row item.
+	 * @param string $column_name The name of the column.
+	 * @return mixed|string The shortcode column output.
+	 */
 	public function column_default( $item, $column_name ) {
 
 		global $render_sc_table_disabled;
@@ -269,6 +344,11 @@ class Render_ShortcodesTable extends WP_List_Table {
 		}
 	}
 
+	/**
+	 * Saves shortcode options (currently disable | enable ).
+	 *
+	 * @since 1.0.0
+	 */
 	public function save_shortcode_options() {
 
 		global $render_sc_table_disabled;
@@ -300,6 +380,11 @@ class Render_ShortcodesTable extends WP_List_Table {
 		}
 	}
 
+	/**
+	 * Message for if there are no shortcodes found.
+	 *
+	 * @since 1.0.0
+	 */
 	public function no_items() {
 		_e( 'Sorry, couldn\'t find any shortcodes.', 'Render' );
 	}

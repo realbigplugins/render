@@ -12,10 +12,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Transforms an ID to a name.
+ *
+ * @since 1.0.0
+ *
+ * @param string $id The generic ID.
+ * @return string The formatted name.
+ */
 function render_translate_id_to_name( $id ) {
 	return ucwords( str_replace( array( ' ', '_', '-' ), ' ', $id ) );
 }
 
+/**
+ * Escapes shortcode attributes.
+ *
+ * @since 1.0.0
+ *
+ * @param array $atts The un-escaped attributes.
+ * @return array The escaped attributes.
+ */
 function render_esc_atts( $atts ) {
 
 	if ( empty( $atts ) ) {
@@ -33,6 +49,14 @@ function render_esc_atts( $atts ) {
 	return $atts;
 }
 
+/**
+ * Strips <p> tags around shortcodes.
+ *
+ * @since 1.0.0
+ *
+ * @param string $content The content.
+ * @return string The formatted content.
+ */
 function render_strip_paragraphs_around_shortcodes( $content ) {
 
 	$array = array(
@@ -46,6 +70,18 @@ function render_strip_paragraphs_around_shortcodes( $content ) {
 	return $content;
 }
 
+/**
+ * Translates special Render associative shortcode attributes into a formatted array.
+ *
+ * Render uses JSON format for certain attributes (namely repeater fields). This function translates those JSON attributes
+ * into a formatted, PHP usable associative array.
+ *
+ * @since 1.0.0
+ *
+ * @param array $atts The shortcode attributes.
+ * @param array $keyname The name of the key to grab values from.
+ * @return array The new associative array.
+ */
 function render_associative_atts( $atts, $keyname ) {
 
 	$output = array();
@@ -83,10 +119,6 @@ function render_associative_atts( $atts, $keyname ) {
 	}
 
 	return $output;
-}
-
-function _render_decode_att( $att ) {
-	return str_replace( array( '::dquot::', '::squot::', '::br::' ), array( '"', '\'', '<br/>' ), $att );
 }
 
 /**
@@ -290,4 +322,27 @@ function render_sc_attr_template( $template, $extra = array() ) {
 	}
 
 	return $output;
+}
+
+/**
+ * Sets up the Render Modal.
+ *
+ * @since 1.0.0
+ */
+function render_enqueue_modal() {
+	include_once( RENDER_PATH . 'core/modal.php' );
+	new Render_Modal();
+}
+
+/**
+ * Match any of all block level elements.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
+ *
+ * @since 1.0.0
+ *
+ * @return string The regex.
+ */
+function render_block_regex() {
+	return '/<(address|figcaption|ol|article|figure|output|aside|footer|p|audio|form|pre|blockquote|h[1-6]|section|canvas|header|table|dd|hgroup|tfoot|div|hr|ul|dl|video|fieldset|noscript)/';
 }

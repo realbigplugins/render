@@ -26,6 +26,14 @@ class Render_Widget extends WP_Widget {
 		);
 	}
 
+	/**
+	 * Outputs the widget in sidebars.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $args The basic widget args.
+	 * @param array $instance The current widget instance.
+	 */
 	public function widget( $args, $instance ) {
 
 		echo $args['before_widget'];
@@ -43,6 +51,13 @@ class Render_Widget extends WP_Widget {
 		echo $args['after_widget'];
 	}
 
+	/**
+	 * Outputs the widget form.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $instance The current widget instance.
+	 */
 	public function form( $instance ) {
 
 		$title           = isset( $instance['title'] ) ? strip_tags( esc_attr( $instance['title'] ) ) : '';

@@ -16,6 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Render_AdminPage_Shortcodes extends Render {
 
+	/**
+	 * Constructs the class.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct() {
 
 		add_action( 'admin_menu', array( $this, 'menu' ) );
@@ -23,7 +28,9 @@ class Render_AdminPage_Shortcodes extends Render {
 	}
 
 	/**
-	 * Function for the admin menu to create a menu item in the settings tree
+	 * Function for the admin menu to create a menu item in the settings tree.
+	 *
+	 * @since 1.0.0
 	 */
 	public function menu() {
 
@@ -39,6 +46,11 @@ class Render_AdminPage_Shortcodes extends Render {
 		add_action( "load-$hook", array( __CLASS__, 'screen_options' ) );
 	}
 
+	/**
+	 * Adds screen options for the shortcodes
+	 *
+	 * @since 1.0.0
+	 */
 	public static function screen_options() {
 
 		global $RenderShortcodesTable;
@@ -61,6 +73,14 @@ class Render_AdminPage_Shortcodes extends Render {
 		$RenderShortcodesTable = new Render_ShortcodesTable();
 	}
 
+	/**
+	 * Adds on custom admin body classes.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $classes Admin body classes.
+	 * @return string New classes.
+	 */
 	public static function body_class( $classes ) {
 
 		$classes .= 'render render-shortcodes';
@@ -68,12 +88,19 @@ class Render_AdminPage_Shortcodes extends Render {
 		return $classes;
 	}
 
+	/**
+	 * Necessary for saving screen options.
+	 *
+	 * @since 1.0.0
+	 */
 	public static function save_screen_options( $status, $option, $value ) {
 		return $value;
 	}
 
 	/**
-	 * Display the admin page
+	 * Display the admin page HTML.
+	 *
+	 * @since 1.0.0
 	 */
 	public function page_output() {
 

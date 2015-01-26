@@ -16,6 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Render_AdminPage_Settings extends Render {
 
+	/**
+	 * Constructs the class.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct() {
 
 		add_action( 'admin_menu', array( $this, 'menu' ) );
@@ -23,7 +28,9 @@ class Render_AdminPage_Settings extends Render {
 	}
 
 	/**
-	 * Function for the admin menu to create a menu item in the settings tree
+	 * Function for the admin menu to create a menu item in the settings tree.
+	 *
+	 * @since 1.0.0
 	 */
 	public function menu() {
 
@@ -37,19 +44,36 @@ class Render_AdminPage_Settings extends Render {
 		);
 	}
 
+	/**
+	 * Actions hooked only into this admin page.
+	 *
+	 * @since 1.0.0
+	 */
 	public static function page_specific() {
 		add_action( 'admin_body_class', array( __CLASS__, 'body_class' ) );
 	}
 
+	/**
+	 * Registers Render settings for the options page.
+	 *
+	 * @since 1.0.0
+	 */
 	public static function register_settings() {
 
 		register_setting( 'render_options', 'render_render_visual' );
 
 		// EDD Licensing
 		register_setting( 'render_options', 'render_license_key', 'edd_sanitize_license' );
-
 	}
 
+	/**
+	 * Adds on custom admin body classes.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $classes Admin body classes.
+	 * @return string New classes.
+	 */
 	public static function body_class( $classes ) {
 
 		$classes .= 'render render-options';
@@ -58,7 +82,9 @@ class Render_AdminPage_Settings extends Render {
 	}
 
 	/**
-	 * Display the admin page
+	 * Display the admin page.
+	 *
+	 * @since 1.0.0
 	 */
 	public function page_output() {
 

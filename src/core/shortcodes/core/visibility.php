@@ -2,7 +2,7 @@
 /**
  * Contains all Render packaged shortcodes within the Visibility category.
  *
- * @since      Render 1.0.0
+ * @since      1.0.0
  *
  * @package    Render
  * @subpackage Shortcodes
@@ -198,7 +198,7 @@ foreach (
 /**
  * Returns the content if the condition is met, otherwise, returns nothing.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -372,7 +372,7 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
 /**
  * The tinymce mirror for the Logic shortcode.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -390,7 +390,7 @@ function _render_sc_logic_tinymce( $atts = array(), $content = '' ) {
 /**
  * Returns the content if the specified time properties are not met.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -434,7 +434,7 @@ function _render_sc_hide_for_times( $atts = array(), $content = '' ) {
 /**
  * The tinymce mirror for the Hide for Times shortcode.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -452,7 +452,7 @@ function _render_sc_hide_for_times_tinymce( $atts = array(), $content = '' ) {
 /**
  * Returns the content if the specified users are or are not logged in.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -493,7 +493,7 @@ function _render_sc_hide_for_users( $atts = array(), $content = '' ) {
 /**
  * The tinymce mirror for the Hide for Users shortcode.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -525,6 +525,13 @@ function render_tinymce_visibility_wrap( $content = '', $visibility = 'visible' 
 	return "<$tag class='render-content-$visibility'>" . do_shortcode( $content ) . "<span class='render-visibility-icon dashicons dashicons-" . ( $visibility == 'visible' ? 'visibility' : 'no' ) . "'></span></$tag>";
 }
 
+/**
+ * Provides a selectbox attribute with options of all timezones.
+ *
+ * @since 1.0.0
+ *
+ * @return array Timezones.
+ */
 function render_sc_timezone_dropdown() {
 
 	return $timeszones = array(
@@ -643,6 +650,15 @@ function render_sc_timezone_dropdown() {
 	);
 }
 
+/**
+ * Outputs the field HTML of a custom time-formatted slider attribute.
+ *
+ * @since 1.0.0
+ *
+ * @param string $att_id The attribute ID.
+ * @param array $att Properties of the attribute.
+ * @param array $properties Properties of the attribute field type.
+ */
 function render_sc_time_slider( $att_id, $att, $properties ) {
 
 	// Establish defaults

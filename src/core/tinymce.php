@@ -10,119 +10,33 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * All functionality for the tinyMCE button that Render adds to the standard editor.
  *
- * @since      Render 1.0.0
+ * @since      1.0.0
  *
  * @package    Render
  * @subpackage TinyMCE
  */
 class Render_tinymce extends Render {
 
-	public $rendered_shortcodes = array();
-
-	public $render_data = array();
-
+	/**
+	 * Constructs the class.
+	 *
+	 * @since 1.0.0
+	 */
 	function __construct() {
 
-		include_once( RENDER_PATH . 'core/modal.php' );
-		new Render_Modal();
+		// Que up the Render Modal
+		render_enqueue_modal();
 
-		$this->set_render_data();
-		self::add_tinymce_style();
+		// Adds styling for visual editor for Render shortcodes
+		add_editor_style( RENDER_URL . "/assets/css/render.min.css" );
 
+		// Setup TinyMCE
 		add_filter( 'mce_external_plugins', array( __CLASS__, 'add_tinymce_plugins' ) );
 		add_filter( 'mce_buttons', array( __CLASS__, 'register_tinymce_buttons' ) );
 		add_filter( 'tiny_mce_before_init', array( __CLASS__, 'modify_tinymce_init' ) );
 
-		add_action( 'render_localized_data', array( __CLASS__, 'loading_messages' ) );
+		// Localize data for rendering in the TinyMCE
 		add_action( 'render_localized_data', array( $this, 'rendering_data' ) );
-		add_action( 'render_localized_data', array( __CLASS__, 'tinymce_external_scripts' ) );
-		add_action( 'render_localized_data', array( __CLASS__, 'shortcode_regex' ) );
-	}
-
-	/**
-	 * This filter allows the tinymce.init() args to be modified.
-	 *
-	 * Currently, I'm adding some extended_valid_elememnts so that tinymce doesn't strip my empty tags (mainly spans).
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $mceinit The init settings for tinymce.
-	 *
-	 * @return mixed The modified init array.
-	 */
-	public static function modify_tinymce_init( $mceinit ) {
-
-		$mceinit['noneditable_noneditable_class'] = 'render-tinymce-noneditable';
-		$mceinit['noneditable_editable_class']    = 'render-tinymce-editable';
-		$mceinit['extended_valid_elements']       = 'span[*]';
-		$mceinit['entity_encoding']               = 'numeric';
-
-		return $mceinit;
-	}
-
-	public static function tinymce_external_scripts( $data ) {
-
-		$data['tinymceExternalScripts'][] = RENDER_URL . '/assets/js/render.min.js';
-
-		return $data;
-	}
-
-	public static function shortcode_regex( $data ) {
-
-		$data['shortcode_regex'] = get_shortcode_regex();
-
-		return $data;
-	}
-
-	public static function loading_messages( $data ) {
-
-		$data['loading_messages'] = apply_filters( 'render_loading_messages', array(
-			__( 'Awesome-ifying your content...', 'Render' ),
-			__( 'Cleaning up the bathroom...', 'Render' ),
-			__( 'Making a cup of coffee for your content...', 'Render' ),
-			__( 'Playing catch with the WYSIWYG...', 'Render' ),
-			__( 'Taking your content to the next level...', 'Render' ),
-			__( 'Making your dreams come true...', 'Render' ),
-			__( 'Reducing synchronized load caching errors...', 'Render' ),
-			__( 'Taking out the trash (you\'re welcome!)...', 'Render' ),
-			__( 'Sending your content to the moon, and back...', 'Render' ),
-			__( 'Giving your content a bubble bath...', 'Render' ),
-			__( 'Taking your content to a classy restaurant...', 'Render' ),
-			__( 'Showing your content a good time...', 'Render' ),
-			__( 'Playing cards with the Automattic team...', 'Render' ),
-			__( 'Strapping a jetpack onto your content...', 'Render' ),
-		) );
-
-		return $data;
-	}
-
-	public function set_render_data() {
-
-		$this->render_data['post'] = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
-
-		$this->render_data = apply_filters( 'render_render_data', $this->render_data );
-	}
-
-	public static function add_tinymce_style() {
-		add_editor_style( RENDER_URL . "/assets/css/render.min.css" );
-	}
-
-	public function rendering_data( $data ) {
-
-		global $Render;
-
-		$rendered = array();
-		foreach ( $Render->shortcodes as $code => $shortcode ) {
-			if ( $shortcode['render'] ) {
-				$rendered[ $code ] = $shortcode['render'];
-			}
-		}
-		$data['rendered_shortcodes'] = $rendered;
-		$data['render_data']         = $this->render_data;
-
-		$data['do_render'] = get_option( 'render_render_visual', true );
-
-		return $data;
 	}
 
 	/**
@@ -159,6 +73,90 @@ class Render_tinymce extends Render {
 		return $buttons;
 	}
 
+	/**
+	 * This filter allows the tinymce.init() args to be modified.
+	 *
+	 * Currently, I'm adding some extended_valid_elements so that tinymce doesn't strip my empty tags (mainly spans).
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $mceinit The init settings for tinymce.
+	 *
+	 * @return mixed The modified init array.
+	 */
+	public static function modify_tinymce_init( $mceinit ) {
+
+		$mceinit['noneditable_noneditable_class'] = 'render-tinymce-noneditable';
+		$mceinit['noneditable_editable_class']    = 'render-tinymce-editable';
+		$mceinit['extended_valid_elements']       = 'span[*]';
+		$mceinit['entity_encoding']               = 'numeric';
+
+		return $mceinit;
+	}
+
+	/**
+	 * Adds localized data for rendering.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @global Render $Render The main Render object.
+	 *
+	 * @param array   $data   The previous rendering data.
+	 * @return array The new rendering data.
+	 */
+	public function rendering_data( $data ) {
+
+		global $Render;
+
+		// Whether or not to render at all
+		if ( ! $data['do_render'] = get_option( 'render_render_visual', true ) ) {
+			return $data;
+		}
+
+		// Provides a list of shortcodes that allow rendering
+		$rendered = array();
+		foreach ( $Render->shortcodes as $code => $shortcode ) {
+			if ( $shortcode['render'] ) {
+				$rendered[ $code ] = $shortcode['render'];
+			}
+		}
+		$data['rendered_shortcodes'] = $rendered;
+
+		/**
+		 * Extra filterable data used when rendering in the TinyMCE.
+		 *
+		 * @since 1.0.0
+		 */
+		$data['render_data'] = apply_filters( 'render_rendering_data',
+			array(
+				'post' => isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0,
+			)
+		);
+
+		// WP shortcode regex
+		$data['shortcode_regex'] = get_shortcode_regex();
+
+		// Messages to display when loading
+		$data['loading_messages'] = apply_filters( 'render_loading_messages', array(
+			__( 'Awesome-ifying your content...', 'Render' ),
+			__( 'Cleaning up the bathroom...', 'Render' ),
+			__( 'Making a cup of coffee for your content...', 'Render' ),
+			__( 'Playing catch with the WYSIWYG...', 'Render' ),
+			__( 'Taking your content to the next level...', 'Render' ),
+			__( 'Making your dreams come true...', 'Render' ),
+			__( 'Reducing synchronized load caching errors...', 'Render' ),
+			__( 'Taking out the trash (you\'re welcome!)...', 'Render' ),
+			__( 'Sending your content to the moon, and back...', 'Render' ),
+			__( 'Giving your content a bubble bath...', 'Render' ),
+			__( 'Taking your content to a classy restaurant...', 'Render' ),
+			__( 'Showing your content a good time...', 'Render' ),
+			__( 'Playing cards with the Automattic team...', 'Render' ),
+			__( 'Strapping a jetpack onto your content...', 'Render' ),
+		) );
+
+		return $data;
+	}
+
 	public static function render_ajax() {
 
 		global $post;
@@ -173,27 +171,52 @@ class Render_tinymce extends Render {
 		global $render_shortcode_data, $Render;
 
 		define( 'RENDER_TINYMCE', true );
-		do_action( 'render_render_ajax' );
-
-		$content               = stripslashes( $_POST['content'] );
-		$render_shortcode_data = $_POST['shortcode_data'];
 
 		// Remove any disabled shortcodes
 		foreach ( render_get_disabled_shortcodes() as $code ) {
 			$Render->remove_shortcode( $code );
 		}
 
+		/**
+		 * Allows hooking into the tinymce AJAX rendering call.
+		 *
+		 * Plugins may find this useful to globalize data for their tinymce shortcode callback.
+		 *
+		 * @hooked $this->render_ajax() 10
+		 *
+		 * @since 1.0.0
+		 */
+		do_action( 'render_tinymce_ajax' );
+
+		$render_shortcode_data = $_POST['shortcode_data'];
+
+		$content = stripslashes( $_POST['content'] );
+
 		$pattern = get_shortcode_regex();
 
 		$content = render_strip_paragraphs_around_shortcodes( $content );
-		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $content );
+		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, '_replace_shortcodes' ), $content );
 
 		echo $content;
 
 		die();
 	}
 
-	public static function replace_shortcodes( $matches ) {
+	/**
+	 * Callback for RegEx replacement of shortcodes.
+	 *
+	 * Calls and wraps all shortcodes in the content.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @global array $render_shortcode_data Extra data supplied from JS.
+	 * @global array $shortcode_tags WP registered shortcodes.
+	 *
+	 * @param array $matches Matches supplied from preg_replace_callback(),
+	 * @return string The substituted output.
+	 */
+	public static function _replace_shortcodes( $matches ) {
 
 		global $render_shortcode_data, $shortcode_tags;
 
@@ -206,7 +229,7 @@ class Render_tinymce extends Render {
 		// Search again for any nested shortcodes (loops infinitely)
 		if ( ! empty( $_content ) ) {
 			$pattern = get_shortcode_regex();
-			$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, 'replace_shortcodes' ), $_content );
+			$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, '_replace_shortcodes' ), $_content );
 		}
 
 		// Get out of here if rendering is not set
@@ -296,12 +319,13 @@ class Render_tinymce extends Render {
 	}
 }
 
-add_action( 'current_screen', '_render_init_tinymce' );
-
 // Always add the AJAX
-add_action( 'render_render_ajax', array( 'Render_tinymce', 'render_ajax' ) );
+add_action( 'render_tinymce_ajax', array( 'Render_tinymce', 'render_ajax' ) );
 add_action( 'wp_ajax_render_render_shortcode', array( 'Render_tinymce', 'render_shortcode' ) );
 add_action( 'wp_ajax_render_render_shortcodes', array( 'Render_tinymce', 'render_shortcodes' ) );
+
+// Instantiates the class if on a screen that uses it
+add_action( 'current_screen', '_render_init_tinymce' );
 
 function _render_init_tinymce( $screen ) {
 
@@ -314,17 +338,4 @@ function _render_init_tinymce( $screen ) {
 	if ( in_array( $screen->base, $allowed_screens ) ) {
 		new Render_tinymce();
 	}
-}
-
-/**
- * Match any of all block level elements.
- *
- * https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
- *
- * @since 1.0.0
- *
- * @return string The regex.
- */
-function render_block_regex() {
-	return '/<(address|figcaption|ol|article|figure|output|aside|footer|p|audio|form|pre|blockquote|h[1-6]|section|canvas|header|table|dd|hgroup|tfoot|div|hr|ul|dl|video|fieldset|noscript)/';
 }

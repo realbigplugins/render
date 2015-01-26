@@ -2,7 +2,7 @@
 /**
  * Contains all Render packaged shortcodes within the Design category.
  *
- * @since      Render 1.0.0
+ * @since      1.0.0
  *
  * @package    Render
  * @subpackage Shortcodes
@@ -566,7 +566,7 @@ foreach ( array(
 /**
  * Wraps the content within a styled button.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -623,7 +623,7 @@ function _render_sc_button( $atts = array(), $content = '' ) {
 /**
  * Wraps the content within a styled box.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -669,7 +669,7 @@ function _render_sc_box( $atts = array(), $content = '' ) {
 /**
  * Wraps the content within a half-width column.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -696,7 +696,7 @@ function _render_sc_column_two( $atts = array(), $content = '' ) {
 /**
  * Wraps the content within a third-width column.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -713,7 +713,7 @@ function _render_sc_column_three( $atts, $content = '' ) {
 /**
  * Wraps the content within a quarter-width column.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -730,7 +730,7 @@ function _render_sc_column_four( $atts, $content = '' ) {
 /**
  * Wraps the content within a fifth-width column.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -746,9 +746,7 @@ function _render_sc_column_five( $atts, $content = '' ) {
 /**
  * Helper function for populating the icon list selectbox.
  *
- * @since  Render 1.0.0
- * @access Private
- *
+ * @since  1.0.0
  * @return bool|array List of icons.
  */
 function render_sc_icon_list() {
@@ -970,6 +968,14 @@ function render_sc_icon_list() {
 	return $output;
 }
 
+/**
+ * Provides back the CSS formatted border radius based off of attirbutes.
+ *
+ * @since 1.0.0
+ *
+ * @param array $atts The shortcode atts.
+ * @return string The parsed border radius'.
+ */
 function render_sc_parse_border_radius( $atts ) {
 
 	// Prepare border radius'

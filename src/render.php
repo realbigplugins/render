@@ -127,7 +127,10 @@ if ( ! class_exists( 'Render' ) ) {
 			// Initialize functions
 			$this->_require_files();
 			$this->_add_actions();
-			$this->_admin();
+
+			if ( is_admin() ) {
+				$this->_admin();
+			}
 		}
 
 		private final function __clone() {
@@ -167,35 +170,58 @@ if ( ! class_exists( 'Render' ) ) {
 			require_once __DIR__ . '/core/widget.php';
 		}
 
-		private function _admin() {
+		/**
+		 * Adds all startup WP actions.
+		 *
+		 * @since 1.0.0
+		 */
+		private function _add_actions() {
 
-			if ( is_admin() ) {
+			// Files and scripts
+			add_action( 'init', array( __CLASS__, '_register_files' ) );
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_files' ) );
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_admin_enqueue_files' ) );
 
-				add_action( 'admin_menu', 'admin_page' );
+			// Translations
+			add_action( 'init', array( __CLASS__, 'i18n' ) );
 
-				function admin_page() {
-					add_menu_page(
-						'Render',
-						'Render',
-						'manage_options',
-						'render-settings',
-						null,
-						'dashicons-admin-generic',
-						82.9
-					);
-				}
+			// Filter content
+			add_filter( 'the_content', 'render_strip_paragraphs_around_shortcodes' );
 
-				include_once __DIR__ . '/core/admin/settings.php';
-				include_once __DIR__ . '/core/admin/shortcodes.php';
-//				include_once __DIR__ . '/core/admin/addons.php';
+			// Add shortcodes
+			add_action( 'init', array( __CLASS__, 'add_shortcodes' ) );
+
+			// Remove disabled shortcodes
+			if ( ! is_admin() ) {
+				add_action( 'init', array( $this, 'remove_disabled_shortcodes' ) );
 			}
 		}
 
-		public static function _disable_shortcodes() {
+		/**
+		 * Admin-only related tasks.
+		 *
+		 * Includes menu pages and files.
+		 *
+		 * @since 1.0.0
+		 */
+		private function _admin() {
 
-			foreach ( render_get_disabled_shortcodes() as $shortcode ) {
-				remove_shortcode( $shortcode );
+			add_action( 'admin_menu', 'admin_page' );
+
+			function admin_page() {
+				add_menu_page(
+					'Render',
+					'Render',
+					'manage_options',
+					'render-settings',
+					null,
+					'dashicons-admin-generic',
+					82.9
+				);
 			}
+
+			include_once __DIR__ . '/core/admin/settings.php';
+			include_once __DIR__ . '/core/admin/shortcodes.php';
 		}
 
 		/**
@@ -210,36 +236,6 @@ if ( ! class_exists( 'Render' ) ) {
 				foreach ( $categories as $category ) {
 					require_once RENDER_PATH . "core/shortcodes/$type/$category.php";
 				}
-			}
-		}
-
-		/**
-		 * Adds all startup WP actions.
-		 *
-		 * @since 1.0.0
-		 */
-		private function _add_actions() {
-
-			// Files and scripts
-			add_action( 'init', array( __CLASS__, '_register_files' ) );
-			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_files' ) );
-			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_admin_enqueue_files' ) );
-
-			// Disabled shortcodes
-			add_action( 'init', array( __CLASS__, '_disable_shortcodes' ) );
-
-			// Translations
-			add_action( 'init', array( __CLASS__, 'i18n' ) );
-
-			// Filter content
-			add_filter( 'the_content', 'render_strip_paragraphs_around_shortcodes' );
-
-			// Add shortcodes
-			add_action( 'init', array( __CLASS__, 'add_shortcodes' ) );
-
-			// Remove dissabled shortcodes
-			if ( ! is_admin() ) {
-				add_action( 'init', array( $this, 'remove_disabled_shortcodes' ) );
 			}
 		}
 
@@ -331,12 +327,13 @@ if ( ! class_exists( 'Render' ) ) {
 		 * Adds all shortcodes into Render and / or WordPress.
 		 *
 		 * @since 1.0.0
+		 *
+		 * @global Render $Render         The main Render object.
+		 * @global array  $shortcode_tags All registered shortcodes.
 		 */
 		public static function add_shortcodes() {
 
 			global $Render, $shortcode_tags;
-
-			$disabled_shortcodes = render_get_disabled_shortcodes();
 
 			// Add in all existing shortcode tags first (to account for "unregistered with Render" shortcodes)
 			if ( ! empty( $shortcode_tags ) ) {
@@ -349,6 +346,7 @@ if ( ! class_exists( 'Render' ) ) {
 					// Add shortcode to Render
 					add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
 						$shortcodes[] = $shortcode;
+
 						return $shortcodes;
 					} );
 				}
@@ -367,21 +365,21 @@ if ( ! class_exists( 'Render' ) ) {
 					 *
 					 * @since 1.0.0
 					 *
-					 * @param array $defaults {
-					 *     @var string     $code        The shortcode "code" itself.
-					 *     @var string     $function    The callback function for the shortcode.
-					 *     @var string     $title       Title to show when identifying shortcode.
-					 *     @var string     $description Description to show when identifying shortcode.
-					 *     @var string     $source      Where the shortcode comes from (EG: Render, WordPress, Gravity Forms).
-					 *     @var string     $tags        Searchable tags that describe the shortcode (comma delimited).
-					 *     @var array      $category    Category for the shortcode (must be a registered category).
-					 *     @var array      $atts        Shortcode attributes.
-					 *     @var string     $example     Example of shortcode in use.
-					 *     @var bool       $wrapping    Whether or not this shortcode accepts content.
-					 *     @var bool|array $render      Whether or not to render this shortcode, also accepts properties.
-					 *     @var bool       $noDisplay   Hides the shortcode from the modal if set to true.
-					 * }
-					 * @param array $args The current shortcode args.
+					 * @param array    $defaults    {
+					 * @var string     $code        The shortcode "code" itself.
+					 * @var string     $function    The callback function for the shortcode.
+					 * @var string     $title       Title to show when identifying shortcode.
+					 * @var string     $description Description to show when identifying shortcode.
+					 * @var string     $source      Where the shortcode comes from (EG: Render, WordPress, Gravity Forms).
+					 * @var string     $tags        Searchable tags that describe the shortcode (comma delimited).
+					 * @var array      $category    Category for the shortcode (must be a registered category).
+					 * @var array      $atts        Shortcode attributes.
+					 * @var string     $example     Example of shortcode in use.
+					 * @var bool       $wrapping    Whether or not this shortcode accepts content.
+					 * @var bool|array $render      Whether or not to render this shortcode, also accepts properties.
+					 * @var bool       $noDisplay   Hides the shortcode from the modal if set to true.
+					 *                              }
+					 * @param array    $args        The current shortcode args.
 					 */
 					$defaults = apply_filters( 'render_shortcode_defaults', array(
 						'code'        => '',
@@ -397,7 +395,7 @@ if ( ! class_exists( 'Render' ) ) {
 						'render'      => false,
 						'noDisplay'   => false,
 					), $args );
-					$args = wp_parse_args( $args, $defaults);
+					$args     = wp_parse_args( $args, $defaults );
 
 					/**
 					 * Defaults for a shortcode attribute.
@@ -407,15 +405,15 @@ if ( ! class_exists( 'Render' ) ) {
 					 * @since 1.0.0
 					 *
 					 * @param array $att_defaults {
-					 *     @var bool $required Whether or not this attribute is required for the shortcode.
-					 *     @var bool $disabled Disables the attribute if set to true.
-					 * }
-					 * @param array $args The current shortcode args.
+					 * @var bool    $required     Whether or not this attribute is required for the shortcode.
+					 * @var bool    $disabled     Disables the attribute if set to true.
+					 *                            }
+					 * @param array $args         The current shortcode args.
 					 */
 					$att_defaults = apply_filters( 'render_shortcode_att_defaults', array(
 						'required' => false,
-						// TODO See if this is still in use, or has been deprecated.
-						'disabled' => false,
+						'validate' => array(),
+						'sanitize' => array(),
 					), $args );
 
 					// Establish default attribute properties (if any exist)
@@ -469,11 +467,11 @@ if ( ! class_exists( 'Render' ) ) {
 		 *
 		 * @hooked init 10
 		 *
-		 * @since 1.0.0
+		 * @since  1.0.0
 		 */
 		public function remove_disabled_shortcodes() {
 
-			foreach( render_get_disabled_shortcodes() as $code ) {
+			foreach ( render_get_disabled_shortcodes() as $code ) {
 				$this->remove_shortcode( $code );
 			}
 		}

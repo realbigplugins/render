@@ -2,7 +2,7 @@
 /**
  * Contains all Render packaged shortcodes within the User category.
  *
- * @since      Render 1.0.0
+ * @since      1.0.0
  *
  * @package    Render
  * @subpackage Shortcodes
@@ -245,7 +245,7 @@ foreach (
 /**
  * Gets specified current user property.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array $atts The attributes sent to the shortcode.
@@ -305,7 +305,7 @@ function _render_sc_user_info( $atts = array() ) {
 /**
  * Gets the current user full name.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param object $user The user object.
@@ -324,7 +324,7 @@ function _render_sc_user_full_name( $user ) {
 /**
  * Gets the current user first name.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param object $user The user object.
@@ -343,7 +343,7 @@ function _render_sc_user_first_name( $user ) {
 /**
  * Gets the current user last name.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param object $user The user object.
@@ -362,7 +362,7 @@ function _render_sc_user_last_name( $user ) {
 /**
  * Gets the current user username.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param object $user The user object.
@@ -381,7 +381,7 @@ function _render_sc_user_username( $user ) {
 /**
  * Gets the current user email.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param object $user The user object.
@@ -400,7 +400,7 @@ function _render_sc_user_email( $user ) {
 /**
  * Gets the current user display name.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param object $user The user object.
@@ -419,7 +419,7 @@ function _render_sc_user_display_name( $user ) {
 /**
  * Gets the current user author url.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param object $user The user object.
@@ -439,7 +439,7 @@ function _render_sc_user_author_url( $user ) {
 /**
  * Gets the current user description.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param object $user The user object.
@@ -458,7 +458,7 @@ function _render_sc_user_description( $user ) {
 /**
  * Gets the current user role.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param object $user The user object.
@@ -486,7 +486,7 @@ function _render_sc_user_role( $user ) {
 /**
  * Gets the date the current user registered.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  * @access Private
  *
  * @param array $atts The attributes sent to the shortcode.
@@ -571,7 +571,7 @@ function _render_sc_login_form( $atts = array() ) {
 /**
  * Helper function for getting the user data.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  *
  * @param string $user_ID The user ID to get.
  *
@@ -607,25 +607,19 @@ function render_sc_user_get_userdata( $user_ID ) {
 /**
  * Helper function for populating the user selectbox.
  *
- * @since  Render 1.0.0
+ * @since  1.0.0
  *
- * @param bool $all Whether to show all users or only those that can edit posts
+ * @param string $capability Min capability required to include user in drop-down.
  *
  * @return bool|array List of registered users.
  */
-function render_user_dropdown( $all = true ) {
-
-	// TODO Change bool $all to parameter that accepts specific capabilities to filter users through (even arrays)
+function render_user_dropdown( $capability = 'read' ) {
 
 	$users = get_users();
 
 	$output = array();
 	foreach ( $users as $user ) {
-		if ( $all === false ) {
-			if ( isset( $user->allcaps['edit_posts'] ) ) {
-				$output[ $user->ID ] = $user->display_name;
-			}
-		} else {
+		if ( isset( $user->allcaps[ $capability ] ) ) {
 			$output[ $user->ID ] = $user->display_name;
 		}
 	}
