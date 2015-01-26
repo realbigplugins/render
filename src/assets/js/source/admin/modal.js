@@ -510,17 +510,66 @@ var Render_Modal;
                         $(this).find('.render-modal-att-slider').each(function () {
 
                             var $this = $(this),
-                                data = $this.data(),
-                                $input = $this.siblings('.render-modal-att-slider-value');
+                                $input = $this.siblings('.render-modal-att-slider-value'),
+                                data = {}, i;
 
                             // Skip if the slider's already been initilaized
-                            if (typeof data.uiSlider !== 'undefined') {
+                            if (typeof $(this).data('uiSlider') !== 'undefined') {
                                 return true; // Continue $.each
+                            }
+
+                            // Get the data
+                            var allowed_data = [
+                                'animate',
+                                'disabled',
+                                'max',
+                                'min',
+                                'orientation',
+                                'step',
+                                'value',
+                                'values',
+                                'range',
+                                'slide'
+                            ];
+
+                            for (i = 0; i < allowed_data.length; i++) {
+
+                                var _data = $this.attr('data-' + allowed_data[i]);
+                                if (_data) {
+                                    data[allowed_data[i]] = _data;
+                                }
+                            }
+
+                            // Make sure various values are int
+                            var int_vals = [
+                                'max',
+                                'min',
+                                'step',
+                                'value'
+                            ];
+
+                            for (i = 0; i < int_vals.length; i++) {
+                                if (data[int_vals[i]]) {
+                                    data[int_vals[i]] = parseInt(data[int_vals[i]]);
+                                }
+                            }
+
+                            // Bool values
+                            var bool_vals = [
+                                'range',
+                                'disabled',
+                                'animate'
+                            ];
+
+                            for (i = 0; i < bool_vals.length; i++) {
+                                if (data[bool_vals[i]]) {
+                                    data[bool_vals[i]] = data[bool_vals[i]] === '1';
+                                }
                             }
 
                             // If the input had a number, and a default isn't set, use it
                             if ($input.val() && !data.value) {
-                                if (data.range) {
+                                if (data.values) {
                                     data.values = $input.val();
                                 } else {
                                     data.value = $input.val();
@@ -536,7 +585,7 @@ var Render_Modal;
                                     return window[slide_callback](event, ui, $input);
                                 }
                             } else {
-                                if (data.range) {
+                                if (data.values) {
                                     data.slide = function (event, ui) {
 
                                         // Prevent overlap
@@ -560,7 +609,7 @@ var Render_Modal;
                             }
 
                             // Set the values to an array (if a range slider)
-                            if (data.range) {
+                            if (data.values) {
                                 data.values = data.values.split('-');
                             }
 
@@ -614,6 +663,8 @@ var Render_Modal;
                                     $(this).val(parseInt($(this).val(), 10));
                                 }
                             });
+
+                            console.log(data);
 
                             // Initialize the slider
                             $this.slider(data);

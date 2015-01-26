@@ -77,8 +77,6 @@ class Render_AdminPage_Shortcodes extends Render {
 	 */
 	public function page_output() {
 
-		// TODO Sort by disabled shortcodes
-
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}

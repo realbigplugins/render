@@ -51,14 +51,12 @@ var Render_Widget;
 
         update: function () {
 
-            // TODO Make this translatable
             self.change(Render_Modal.output.all, Render_Modal.output.title, 'modify-remove', Render_Modal.output.title);
         },
 
         remove: function () {
 
             Render_Modal.close();
-            // TODO Make this translatable
             self.change('', '', 'add', false);
         },
 

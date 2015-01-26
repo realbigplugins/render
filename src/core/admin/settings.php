@@ -62,7 +62,6 @@ class Render_AdminPage_Settings extends Render {
 	 */
 	public function page_output() {
 
-		// TODO Brand and style this page
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}

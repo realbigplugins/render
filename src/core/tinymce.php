@@ -170,13 +170,18 @@ class Render_tinymce extends Render {
 
 	public static function render_shortcodes() {
 
-		global $render_shortcode_data;
+		global $render_shortcode_data, $Render;
 
 		define( 'RENDER_TINYMCE', true );
 		do_action( 'render_render_ajax' );
 
 		$content               = stripslashes( $_POST['content'] );
 		$render_shortcode_data = $_POST['shortcode_data'];
+
+		// Remove any disabled shortcodes
+		foreach ( render_get_disabled_shortcodes() as $code ) {
+			$Render->remove_shortcode( $code );
+		}
 
 		$pattern = get_shortcode_regex();
 

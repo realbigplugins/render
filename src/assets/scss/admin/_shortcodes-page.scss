@@ -1,10 +1,14 @@
 body.render-shortcodes {
   .wp-list-table.render_shortcodes_tables {
     .disabled {
-      background: #FFCBCB;
+      background: #E5E5E5;
+
+      &.alternate {
+        background: darken(#E5E5E5, 2%);
+      }
 
       td {
-        color: #828282;
+        color: #979797;
       }
     }
   }
@@ -14,5 +18,9 @@ body.render-shortcodes {
     color: #888;
     margin: 10px 0;
     font-size: 120%;
+  }
+
+  .render-sc-list-disabled {
+    opacity: 0.6;
   }
 }

@@ -39,8 +39,10 @@ class Render_ShortcodesTable extends WP_List_Table {
 
 	private function categories_dropdown() {
 
-		$categories  = _render_get_categories();
+		$categories  = render_get_shortcode_categories();
 		$current_cat = isset( $_GET['category'] ) ? $_GET['category'] : '';
+
+		unset( $categories['all'] );
 		?>
 
 		<label for="filter-by-category" class="screen-reader-text">
@@ -49,10 +51,9 @@ class Render_ShortcodesTable extends WP_List_Table {
 
 		<select name="category" id="filter-by-category" class="postform">
 			<option value="0"><?php _e( 'All categories', 'Render' ); ?></option>
-
-			<?php foreach ( $categories as $category ) : ?>
-				<option class="level-0" value="<?php echo $category; ?>" <?php selected( $category, $current_cat ); ?>>
-					<?php echo render_translate_id_to_name( $category ); ?>
+			<?php foreach ( $categories as $category_ID => $category ) : ?>
+				<option class="level-0" value="<?php echo $category_ID; ?>" <?php selected( $category_ID, $current_cat ); ?>>
+					<?php echo $category['label']; ?>
 				</option>
 			<?php endforeach; ?>
 		</select>
@@ -95,39 +96,14 @@ class Render_ShortcodesTable extends WP_List_Table {
 		);
 	}
 
-	public function column_name( $item ) {
-
-		$extra_params = isset( $_REQUEST['category'] ) ? "&category=$_REQUEST[category]" : '';
-
-		$actions = array(
-			'delete' => sprintf(
-				"<a href='?page=%s&action=%s&shortcodes=%s%s'>%s</a>",
-				$_REQUEST['page'],
-				'disable',
-				$item['code'],
-				$extra_params,
-				__( 'Disable', 'Render' )
-			),
-			'enable' => sprintf(
-				"<a href='?page=%s&action=%s&shortcodes=%s%s'>%s</a>",
-				$_REQUEST['page'],
-				'enable',
-				$item['code'],
-				$extra_params,
-				__( 'Enable', 'Render' )
-			),
-		);
-
-		return sprintf(
-			'%1$s %2$s', $item['name'], $this->row_actions( $actions )
-		);
-	}
-
 	public function single_row( $item ) {
 
+		global $render_sc_table_disabled;
+
 		static $alternate = '';
+
 		$alternate = ( $alternate == '' ? 'alternate' : '' );
-		$disabled  = isset( $this->shortcodes ) && in_array( $item['code'], $this->shortcodes ) ? 'disabled' : '';
+		$disabled  = isset( $render_sc_table_disabled ) && in_array( $item['code'], $render_sc_table_disabled ) ? 'disabled' : '';
 
 		echo "<tr class='$alternate $disabled'>";
 		$this->single_row_columns( $item );
@@ -135,6 +111,8 @@ class Render_ShortcodesTable extends WP_List_Table {
 	}
 
 	public function prepare_items() {
+
+		global $Render;
 
 		// Save previous data
 		$this->save_shortcode_options();
@@ -144,7 +122,7 @@ class Render_ShortcodesTable extends WP_List_Table {
 
 		// Get our items and setup the basic array
 		$items          = array();
-		$all_shortcodes = _render_get_merged_shortcodes();
+		$all_shortcodes = $Render->shortcodes;
 
 		foreach ( $all_shortcodes as $code => $shortcode ) {
 
@@ -207,23 +185,67 @@ class Render_ShortcodesTable extends WP_List_Table {
 		$this->items = array_slice( $items, ( ( $current_page - 1 ) * $per_page ), $per_page );
 	}
 
+	public function column_name( $item ) {
+
+		global $render_sc_table_disabled;
+
+		$extra_params = isset( $_REQUEST['category'] ) ? "&category=$_REQUEST[category]" : '';
+
+		if ( in_array( $item['code'], (array) $render_sc_table_disabled ) ) {
+
+			$actions['enable'] = sprintf(
+				"<a href='?page=%s&action=%s&shortcodes=%s%s'>%s</a>",
+				$_REQUEST['page'],
+				'enable',
+				$item['code'],
+				$extra_params,
+				__( 'Enable', 'Render' )
+			);
+		} else {
+
+			$actions['delete'] = sprintf(
+				"<a href='?page=%s&action=%s&shortcodes=%s%s'>%s</a>",
+				$_REQUEST['page'],
+				'disable',
+				$item['code'],
+				$extra_params,
+				__( 'Disable', 'Render' )
+			);
+		}
+
+		$disabled = in_array( $item['code'], (array) $render_sc_table_disabled ) ? ' (' . __( 'disabled', 'Render' ) . ')' : '';
+
+		return sprintf(
+			'%1$s %2$s',
+			$item['name'] . " <span class='render-sc-list-disabled'>$disabled</span>",
+			$this->row_actions( $actions )
+		);
+	}
+
 	public function column_default( $item, $column_name ) {
 
+		global $render_sc_table_disabled;
+
+		$render_sc_table_disabled = (array) $render_sc_table_disabled;
+
+		$categories = render_get_shortcode_categories();
+
 		switch ( $column_name ) {
-			case 'name':
-				return $item[ $column_name ];
-
 			case 'code':
-				return $item[ $column_name ];
-
 			case 'source':
-				return $item[ $column_name ];
-
 			case 'description':
-				return $item[ $column_name ];
+
+			return $item[ $column_name ];
+				break;
 
 			case 'category':
-				return render_translate_id_to_name( $item[ $column_name ] );
+
+				if ( isset( $categories[ $item[ $column_name ] ] ) ) {
+					return $categories[ $item[ $column_name ] ]['label'];
+				} else {
+					return $item[ $column_name ];
+				}
+				break;
 
 			case 'attributes':
 
@@ -249,13 +271,11 @@ class Render_ShortcodesTable extends WP_List_Table {
 
 	public function save_shortcode_options() {
 
-		$shortcodes = get_option( 'render_disabled_shortcodes', array() );
+		global $render_sc_table_disabled;
 
-		if ( ! isset( $_REQUEST['action'] ) ) {
-			return;
-		}
+		$shortcodes = render_get_disabled_shortcodes();
 
-		if ( isset( $_REQUEST['shortcodes'] ) ) {
+		if ( isset( $_REQUEST['action'] ) && isset( $_REQUEST['shortcodes'] ) ) {
 
 			$_shortcodes = array();
 			if ( is_array( $_REQUEST['shortcodes'] ) ) {
@@ -275,7 +295,9 @@ class Render_ShortcodesTable extends WP_List_Table {
 			update_option( 'render_disabled_shortcodes', array_unique( $shortcodes ) );
 		}
 
-		$this->shortcodes = $shortcodes;
+		if ( ! empty( $shortcodes ) ) {
+			$render_sc_table_disabled = array_unique( $shortcodes );
+		}
 	}
 
 	public function no_items() {

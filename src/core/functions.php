@@ -2,7 +2,7 @@
 /**
  * Provides global helper functions for Render.
  *
- * @since 1.0.0
+ * @since   1.0.0
  *
  * @package Render
  */
@@ -101,6 +101,63 @@ function render_sc_error( $message ) {
 	return "<span class='render-sc-error'>ERROR: $message</span>";
 }
 
+/**
+ * Returns all shortcodes disabled through Render.
+ *
+ * @since 1.0.0
+ *
+ * @return array Disabled shortcodes, or an empty array
+ */
+function render_get_disabled_shortcodes() {
+	return get_option( 'render_disabled_shortcodes', array() );
+}
+
+/**
+ * Gets all "registered" Render shortcode categories.
+ *
+ * @since 1.0.0
+ *
+ * @return mixed|void Array of Render shortcode categories.
+ */
+function render_get_shortcode_categories() {
+
+	/**
+	 * Shortcode categories in the modal.
+	 *
+	 * @since 1.0.0
+	 */
+	return apply_filters( 'render_modal_categories', array(
+		'all'   => array(
+			'label' => __( 'All', 'Render' ),
+			'icon'  => 'dashicons-tagcloud',
+		),
+		'other' => array(
+			'label' => __( 'Other', 'Render' ),
+			'icon'  => 'dashicons-admin-generic',
+		),
+	) );
+}
+
+/**
+ * Returns all shortcode categories currently in use.
+ *
+ * @since 1.0.0
+ *
+ * @return array Categories in use.
+ */
+function render_get_shortcode_used_categories() {
+
+	global $Render;
+
+	$used_categories = array_values(
+		array_unique(
+			wp_list_pluck( $Render->shortcodes, 'category' )
+		)
+	);
+
+	return array_intersect_key( render_get_shortcode_categories(), array_flip( $used_categories ) );
+}
+
 function render_sc_attr_template( $template, $extra = array() ) {
 
 	$output = array();
@@ -139,11 +196,11 @@ function render_sc_attr_template( $template, $extra = array() ) {
 		case 'full_date_format':
 
 			$output = array(
-				'label'      => __( 'Format', 'Render' ),
-				'type'       => 'selectbox',
+				'label'       => __( 'Format', 'Render' ),
+				'type'        => 'selectbox',
 				'description' => sprintf(
 					__( 'Format to display the date. Either choose one or input a custom date format using %s date format standards.', 'Render' ), '<a href="http://php.net/manual/en/function.date.php" target="_blank">PHP</a>' ),
-				'properties' => array(
+				'properties'  => array(
 					'placeholder'      => __( 'Select a date format or enter a custom format.', 'Render' ),
 					'default'          => 'default_date',
 					'allowCustomInput' => true,
@@ -218,7 +275,7 @@ function render_sc_attr_template( $template, $extra = array() ) {
 				'label'      => __( 'Post', 'Render' ),
 				'type'       => 'selectbox',
 				'properties' => array(
-					'groups' => array(),
+					'groups'      => array(),
 					'callback'    => array(
 						'function' => 'render_sc_post_list',
 					),

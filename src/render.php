@@ -87,6 +87,15 @@ if ( ! class_exists( 'Render' ) ) {
 		public $shortcodes = array();
 
 		/**
+		 * Copy of $shortcodes, but not effected by anything that removes shortcodes.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @var array
+		 */
+		public $admin_shortcodes = array();
+
+		/**
 		 * All core shortcodes to include.
 		 *
 		 * @since 1.0.0
@@ -184,7 +193,7 @@ if ( ! class_exists( 'Render' ) ) {
 
 		public static function _disable_shortcodes() {
 
-			foreach ( get_option( 'render_disabled_shortcodes', array() ) as $shortcode ) {
+			foreach ( render_get_disabled_shortcodes() as $shortcode ) {
 				remove_shortcode( $shortcode );
 			}
 		}
@@ -227,6 +236,11 @@ if ( ! class_exists( 'Render' ) ) {
 
 			// Add shortcodes
 			add_action( 'init', array( __CLASS__, 'add_shortcodes' ) );
+
+			// Remove dissabled shortcodes
+			if ( ! is_admin() ) {
+				add_action( 'init', array( $this, 'remove_disabled_shortcodes' ) );
+			}
 		}
 
 		/**
@@ -321,6 +335,8 @@ if ( ! class_exists( 'Render' ) ) {
 		public static function add_shortcodes() {
 
 			global $Render, $shortcode_tags;
+
+			$disabled_shortcodes = render_get_disabled_shortcodes();
 
 			// Add in all existing shortcode tags first (to account for "unregistered with Render" shortcodes)
 			if ( ! empty( $shortcode_tags ) ) {
@@ -433,6 +449,32 @@ if ( ! class_exists( 'Render' ) ) {
 						$Render->shortcodes[ $code ] = $args;
 					}
 				}
+			}
+		}
+
+		/**
+		 * Removes a shortcode from Render.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $code The shortcode to remove.
+		 */
+		public function remove_shortcode( $code ) {
+			unset( $this->shortcodes[ $code ] );
+			remove_shortcode( $code );
+		}
+
+		/**
+		 * Removes all shortcodes disabled through Render on the front-end.
+		 *
+		 * @hooked init 10
+		 *
+		 * @since 1.0.0
+		 */
+		public function remove_disabled_shortcodes() {
+
+			foreach( render_get_disabled_shortcodes() as $code ) {
+				$this->remove_shortcode( $code );
 			}
 		}
 	}

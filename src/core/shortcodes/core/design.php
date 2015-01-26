@@ -347,7 +347,6 @@ foreach ( array(
 		),
 	),
 	// Column 2
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_column_two',
 		'function'    => '_render_sc_column_two',
@@ -397,7 +396,6 @@ foreach ( array(
 		),
 	),
 	// Column 3
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_column_three',
 		'function'    => '_render_sc_column_three',
@@ -447,7 +445,6 @@ foreach ( array(
 		),
 	),
 	// Column 4
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_column_four',
 		'function'    => '_render_sc_column_four',
@@ -497,7 +494,6 @@ foreach ( array(
 		),
 	),
 	// Column 5
-	// TODO Test and fix up
 	array(
 		'code'        => 'render_column_five',
 		'function'    => '_render_sc_column_five',

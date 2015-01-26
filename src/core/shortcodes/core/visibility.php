@@ -140,7 +140,6 @@ foreach (
 		),
 		// Hide for users
 		array(
-
 			'code'        => 'render_hide_for_users',
 			'function'    => '_render_sc_hide_for_users',
 			'title'       => __( 'Hide for Users', 'Render' ),

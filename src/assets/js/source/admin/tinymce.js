@@ -92,6 +92,7 @@ var Render_tinymce;
                     var selection = editor.selection.getContent({format: 'html'}),
                         $selection = '<div>' + selection + '</div>';
 
+                    // TODO Trim whitespace
                     // Load text with dummy divs, then slice off the divs to use for selection
                     Render_Modal.selection = Render_tinymce.loadText($selection)
                         .slice(5, Render_Modal.selection.length - 6);
@@ -240,13 +241,27 @@ var Render_tinymce;
                     $texteditor.val(window.switchEditors.pre_wpautop(Render_tinymce.loadText(content)));
                 });
 
-                // TODO Do something like this to prevent undo-ing rendering (taken from wpview tinymce plugin)
-                // Prevent adding undo levels on changes inside a view wrapper
-                //editor.on( 'BeforeAddUndo', function( event ) {
-                //    if ( event.lastLevel && emptyViews( event.level.content ) === emptyViews( event.lastLevel.content ) ) {
-                //        event.preventDefault();
-                //    }
-                //});
+                // Prevent adding undo levels on rendering shortcodes
+                editor.on( 'BeforeAddUndo', function( event ) {
+
+                    // Get any unmodified shortcodes
+                    var wp_regex = Render_Data.shortcode_regex.match(/\((\w+\|?)+\)/),
+                        shortodeRegEx, codes;
+
+                    if (wp_regex) {
+                        shortodeRegEx = new RegExp('\\[' + wp_regex[0], 'g');
+
+                        if (event.level.content.length) {
+                            codes = event.level.content.match(shortodeRegEx);
+                        }
+                    }
+
+                    // If we found any unmodified shortcodes, then this is the undo level that renders shortcodes, so
+                    // we DON'T want to add it to the undo levels
+                    if (codes) {
+                        event.preventDefault();
+                    }
+                });
             });
         },
 
@@ -290,11 +305,6 @@ var Render_tinymce;
 
                     $(this).after($dummy_node);
                 }
-
-                //var tag = $(this).prop('tagName').toLowerCase(),
-                //    $dummy_node = $('<' + tag + ' class="render-tinymce-dummy-container">&#8203;</' + tag + '>');
-                //
-                //$(this).after($dummy_node);
             });
         },
 
@@ -394,7 +404,7 @@ var Render_tinymce;
                 min_load_time = true;
                 setTimeout(function () {
                     min_load_time = false;
-                }, 1500);
+                }, 1000);
 
                 // Get a random loading message
                 var loading_messages = Render_Data.loading_messages,

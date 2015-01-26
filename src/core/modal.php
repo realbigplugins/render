@@ -287,8 +287,6 @@ class Render_Modal {
 
 	private static function att_type_slider( $att_id, $att, $properties ) {
 
-		// FIXME range not showing
-
 		// Establish defaults
 		$defaults   = array(
 			'value' => isset( $att['default'] ) ? $att['default'] : 0,
@@ -496,28 +494,12 @@ class Render_Modal {
 
 		global $Render;
 
-		/**
-		 * Shortcode categories in the modal.
-		 *
-		 * @since 1.0.0
-		 */
-		$categories = apply_filters( 'render_modal_categories', array(
-			'all'   => array(
-				'label' => __( 'All', 'Render' ),
-				'icon'  => 'dashicons-tagcloud',
-			),
-			'other' => array(
-				'label' => __( 'Other', 'Render' ),
-				'icon'  => 'dashicons-admin-generic',
-			),
-		) );
+		foreach ( render_get_disabled_shortcodes() as $code ) {
+			$Render->remove_shortcode( $code );
+		}
 
 		// Gets all categories in use
-		$used_categories = array_values(
-			array_unique(
-				wp_list_pluck( $Render->shortcodes, 'category' )
-			)
-		);
+		$used_categories = render_get_shortcode_used_categories();
 		?>
 		<div id="render-modal-backdrop"></div>
 		<div id="render-modal-wrap" style="display: none;">
@@ -542,16 +524,11 @@ class Render_Modal {
 				<div class="render-modal-categories">
 					<div class="render-modal-categories-left dashicons dashicons-arrow-left-alt2"></div>
 					<ul>
-						<?php if ( ! empty( $categories ) ) : ?>
+						<?php if ( ! empty( $used_categories ) ) : ?>
 							<?php
 							$i = 0;
-							foreach ( $categories as $category_ID => $category ) :
+							foreach ( $used_categories as $category_ID => $category ) :
 								$i ++;
-
-								// Skip if category is not in use (except all)
-								if ( $category_ID != 'all' && ! in_array( $category_ID, $used_categories ) ) {
-									continue;
-								}
 								?>
 								<li data-category="<?php echo $category_ID; ?>"
 								    class="<?php echo $i === 1 ? 'active' : ''; ?>">

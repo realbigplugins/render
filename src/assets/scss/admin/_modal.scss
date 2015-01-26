@@ -566,6 +566,11 @@ $toolbar-height: 50px;
     }
   }
 
+  .ui-widget-header {
+    border: 1px solid darken($primary-color, 10%);
+    @include primary-gradient-gloss;
+  }
+
   input[type="text"].render-modal-att-slider-value {
     width: 20%;
     text-align: center;
