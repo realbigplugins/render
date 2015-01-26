@@ -10,7 +10,6 @@
  * @subpackage Widget
  */
 
-    // FIXME Translation ready
 var Render_Widget;
 (function ($) {
     var active_widget, self;

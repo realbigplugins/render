@@ -67,15 +67,6 @@ var Render_MCECallbacks;
                 $(this).replaceWith(output);
             });
 
-            function replaceShortcodes($e) {
-
-                //$e.children().each(function () {
-                //    $e = replaceShortcodes($(this));
-                //});
-
-                return $e;
-            }
-
             return $container.html();
         },
 

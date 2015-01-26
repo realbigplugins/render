@@ -23,8 +23,6 @@ var Render_tinymce;
 
         init: function () {
 
-            // TODO Shortcode drag and drop
-
             this.addToTinymce();
             this.binds();
 
@@ -83,6 +81,8 @@ var Render_tinymce;
 
             tinymce.PluginManager.add('render', function (_editor) {
 
+                var $body;
+
                 // Set the active editor
                 editor = _editor;
 
@@ -127,8 +127,8 @@ var Render_tinymce;
                 _editor.onClick.add(function (editor, event) {
 
                     // Remove delete overlay for all shortcodes
-                    var $body = $(editor.getBody()),
-                        $shortcode, content, container_html, shortcode;
+                    var $shortcode, content, container_html, shortcode;
+                    $body = $(editor.getBody());
 
                     $body.find('.render-tinymce-shortcode-wrapper.delete').removeClass('delete');
 
@@ -157,21 +157,38 @@ var Render_tinymce;
                     }
                 });
 
-                // Keydown (ANY key) in the editor
-                // FIXME Deprecated
-                _editor.onKeyDown.add(function (editor, event) {
+                /**
+                 * Returns information about the character that's about to be deleted.
+                 *
+                 * Needs to be fired within the keyDown handler on the editor, and needs to be inside a check to make sure
+                 * the backspace key is being pressed. (not currently in use)
+                 *
+                 * @since 1.0.0
+                 *
+                 * @returns object Character to be deleted and its char code.
+                 */
+                function get_char_to_be_deleted() {
 
-                    // Delete overlay (backspace key)
-                    if (event.keyCode === 8) {
-                        // TODO Delete message for shortcodes
-                    }
+                    //insert special marker char
+                    var dummy_node = '<span id="__dummycaret">\u2060</span>',
+                        current_node = editor.selection.getNode();
 
-                    // Remove delete overlay for all shortcodes when not hitting backspace
-                    if (event.keyCode !== 8) {
-                        var $body = $(editor.getBody());
-                        $body.find('.render-tinymce-shortcode-wrapper.delete').removeClass('delete');
+                    editor.selection.setContent(dummy_node, {format : 'raw', no_events: 1});
+
+                    var node_content = $(current_node).text();
+
+                    var cursor_position = node_content.search('\u2060');
+
+                    // this is the character
+                    var char_before_cursor = cursor_position != 0 ? node_content.slice(cursor_position - 1, cursor_position) : 'NA';
+
+                    $(editor.getBody()).find('#__dummycaret').remove();
+
+                    return {
+                        char: char_before_cursor,
+                        char_code: node_content.charCodeAt(cursor_position - 1)
                     }
-                });
+                }
 
                 // Keypress (printable keys) in the editor
                 _editor.onKeyPress.add(function (editor, event) {
@@ -223,18 +240,6 @@ var Render_tinymce;
                     $texteditor.val(window.switchEditors.pre_wpautop(Render_tinymce.loadText(content)));
                 });
 
-                _editor.on('click', function (event) {
-                    var x = event.clientX,
-                        y = event.clientY,
-                        body = editor.getBody(),
-                        bodyRect = body.getBoundingClientRect(),
-                        first = body.firstChild,
-                        firstRect = first.getBoundingClientRect(),
-                        last = body.lastChild,
-                        lastRect = last.getBoundingClientRect(),
-                        view;
-                });
-
                 // TODO Do something like this to prevent undo-ing rendering (taken from wpview tinymce plugin)
                 // Prevent adding undo levels on changes inside a view wrapper
                 //editor.on( 'BeforeAddUndo', function( event ) {
@@ -259,23 +264,17 @@ var Render_tinymce;
             if (Render_Data.do_render) {
 
                 var content = editor.getContent();
-                //content = content.replace(/&#8203;/g, '');
                 content = Render_tinymce.loadText(content);
                 Render_MCECallbacks.convertLiteralToRendered(content, editor);
             }
         },
 
+        /**
+         * Fires after rendering the visual editor.
+         *
+         * @since 1.0.0
+         */
         postRender: function () {
-
-            //var $body = $(editor.getBody());
-            //
-            //$body.find('.render-tinymce-shortcode-wrapper').each(function () {
-            //    var $next = $(this).next();
-            //
-            //    if (!$next.length || !$next.hasClass('render-tinymce-shortcode-wrapper')) {
-            //        $(this).after('&#8203;');
-            //    }
-            //});
 
             var $body = $(editor.getBody());
 
@@ -285,12 +284,17 @@ var Render_tinymce;
                 var contents = $(this).parent().contents();
                 if (contents[contents.length - 1] == $(this).get(0)) {
 
-                    // Okay it is, so insert a dummy container afterwords
+                    //Okay it is, so insert a dummy container afterwords
                     var tag = $(this).prop('tagName').toLowerCase(),
                         $dummy_node = $('<' + tag + ' class="render-tinymce-dummy-container">&#8203;</' + tag + '>');
 
                     $(this).after($dummy_node);
                 }
+
+                //var tag = $(this).prop('tagName').toLowerCase(),
+                //    $dummy_node = $('<' + tag + ' class="render-tinymce-dummy-container">&#8203;</' + tag + '>');
+                //
+                //$(this).after($dummy_node);
             });
         },
 
