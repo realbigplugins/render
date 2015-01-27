@@ -108,6 +108,9 @@ class Render_tinymce extends Render {
 
 		global $Render;
 
+		// WP shortcode regex
+		$data['shortcode_regex'] = get_shortcode_regex();
+
 		// Whether or not to render at all
 		if ( ! $data['do_render'] = get_option( 'render_render_visual', true ) ) {
 			return $data;
@@ -132,9 +135,6 @@ class Render_tinymce extends Render {
 				'post' => isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0,
 			)
 		);
-
-		// WP shortcode regex
-		$data['shortcode_regex'] = get_shortcode_regex();
 
 		// Messages to display when loading
 		$data['loading_messages'] = apply_filters( 'render_loading_messages', array(

@@ -361,7 +361,9 @@ function render_sc_post_list() {
 				);
 			}
 
-			$title = $post->post_title . ( (int) $current_post->ID === (int) $post->ID ? ' (current post)' : '' );
+			$title = $post->post_title;
+			$title .= $current_post && (int) $current_post->ID === (int) $post->ID ? ' (current post)' : '';
+
 			$output[ $object->labels->name ]['options'][ $post->ID ] = $title;;
 		}
 	}
