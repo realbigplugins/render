@@ -583,6 +583,7 @@ var Render_tinymce;
                 function (response) {
 
                     editor.setContent(response);
+
                     Render_tinymce.loading(false);
 
                     $(document).trigger('render-tinymce-post-render');

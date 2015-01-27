@@ -59,24 +59,12 @@ foreach (
 	$shortcode['category'] = 'post';
 	$shortcode['source']   = 'Render';
 
-	// Adds shortcode to Render
-	add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
-
-		$shortcodes[] = $shortcode;
-
-		return $shortcodes;
-	} );
-
-	// Add shortcode category
-	add_filter( 'render_modal_categories', function ( $categories ) {
-
-		$categories['post'] = array(
-			'label' => __( 'Post', 'Render' ),
-			'icon'  => 'dashicons-admin-post',
-		);
-
-		return $categories;
-	} );
+	render_add_shortcode( $shortcode );
+	render_add_shortcode_category( array(
+		'id' => 'post',
+		'label' => __( 'Post', 'Render'),
+		'icon' => 'dashicons-admin-post',
+	) );
 }
 
 /**

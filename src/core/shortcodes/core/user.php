@@ -224,22 +224,12 @@ foreach (
 	$shortcode['category'] = 'user';
 	$shortcode['source']   = 'Render';
 
-	// Adds shortcode to Render
-	add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
-		$shortcodes[] = $shortcode;
-
-		return $shortcodes;
-	} );
-
-	// Add shortcode category
-	add_filter( 'render_modal_categories', function ( $categories ) {
-		$categories['user'] = array(
-			'label' => __( 'User', 'Render' ),
-			'icon'  => 'dashicons-admin-users',
-		);
-
-		return $categories;
-	} );
+	render_add_shortcode( $shortcode );
+	render_add_shortcode_category( array(
+		'id' => 'user',
+		'label' => __( 'User', 'Render'),
+		'icon' => 'dashicons-admin-users',
+	) );
 }
 
 /**

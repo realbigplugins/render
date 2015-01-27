@@ -547,20 +547,12 @@ foreach ( array(
 	$shortcode['category'] = 'design';
 	$shortcode['source']   = 'Render';
 
-	// Add shortcode to Render
-	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
-		$shortcodes[] = $shortcode;
-		return $shortcodes;
-	});
-
-	// Add shortcode category
-	add_filter( 'render_modal_categories', function( $categories ) {
-		$categories['design'] = array(
-			'label' => __( 'Design', 'Render' ),
-			'icon' => 'dashicons-admin-appearance',
-		);
-		return $categories;
-	});
+	render_add_shortcode( $shortcode );
+	render_add_shortcode_category( array(
+		'id' => 'design',
+		'label' => __( 'Design', 'Render'),
+		'icon' => 'dashicons-admin-appearance',
+	) );
 }
 
 /**

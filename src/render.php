@@ -123,14 +123,8 @@ if ( ! class_exists( 'Render' ) ) {
 		 * @since 1.0.0
 		 */
 		private function __construct() {
-
-			// Initialize functions
-			$this->_require_files();
-			$this->_add_actions();
-
-			if ( is_admin() ) {
-				$this->_admin();
-			}
+			add_action( 'init', array( __CLASS__, 'pre_init' ), 5 );
+			add_action( 'init', array( $this, 'post_init' ), 100 );
 		}
 
 		private final function __clone() {
@@ -159,42 +153,68 @@ if ( ! class_exists( 'Render' ) ) {
 		}
 
 		/**
-		 * Requires all plugin necessities.
+		 * Initializes and loads the plugin early stages.
 		 *
 		 * @since 1.0.0
 		 */
-		private function _require_files() {
+		public static function pre_init() {
 
-			require_once __DIR__ . '/core/tinymce.php';
-			require_once __DIR__ . '/core/functions.php';
-			require_once __DIR__ . '/core/widget.php';
-		}
+			// Initialize functions
+			self::_require_files();
 
-		/**
-		 * Adds all startup WP actions.
-		 *
-		 * @since 1.0.0
-		 */
-		private function _add_actions() {
+			if ( is_admin() ) {
+				self::_admin();
+			}
 
 			// Files and scripts
-			add_action( 'init', array( __CLASS__, '_register_files' ) );
+			self::_register_files();
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_files' ) );
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_admin_enqueue_files' ) );
 
 			// Translations
-			add_action( 'init', array( __CLASS__, 'i18n' ) );
+			load_plugin_textdomain( 'Render', false, RENDER_PATH . 'languages' );
 
 			// Filter content
 			add_filter( 'the_content', 'render_strip_paragraphs_around_shortcodes' );
 
+			// Initialize Render shortcodes
+			self::_shortcodes_init();
+		}
+
+		/**
+		 * Initializes and loads the plugin late stages.
+		 *
+		 * @since 1.0.0
+		 */
+		public function post_init() {
+
 			// Add shortcodes
-			add_action( 'init', array( __CLASS__, 'add_shortcodes' ) );
+			self::add_shortcodes();
 
 			// Remove disabled shortcodes
 			if ( ! is_admin() ) {
-				add_action( 'init', array( $this, 'remove_disabled_shortcodes' ) );
+				$this->remove_disabled_shortcodes();
 			}
+
+			// Add editor styles
+			self::add_editor_styles();
+		}
+
+		/**
+		 * Requires all plugin necessities.
+		 *
+		 * @since 1.0.0
+		 */
+		private static function _require_files() {
+
+			// Global functions
+			require_once __DIR__ . '/core/functions.php';
+
+			// Any page requiring tinymce functionality
+			require_once __DIR__ . '/core/tinymce.php';
+
+			// Any page requiring widget functionality
+			require_once __DIR__ . '/core/widget.php';
 		}
 
 		/**
@@ -204,7 +224,7 @@ if ( ! class_exists( 'Render' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		private function _admin() {
+		private static function _admin() {
 
 			add_action( 'admin_menu', 'admin_page' );
 
@@ -314,13 +334,6 @@ if ( ! class_exists( 'Render' ) ) {
 
 			wp_enqueue_script( 'render-admin' );
 			wp_enqueue_style( 'render-admin' );
-		}
-
-		/**
-		 * Sets up internationalization for translations.
-		 */
-		public static function i18n() {
-			load_plugin_textdomain( 'Render', false, RENDER_PATH . 'languages' );
 		}
 
 		/**
@@ -451,6 +464,37 @@ if ( ! class_exists( 'Render' ) ) {
 		}
 
 		/**
+		 * Easy way of adding extra styles to TinyMCE, via Render.
+		 *
+		 * This is also where add_theme_support() for Render will add the custom stylesheet.
+		 *
+		 * @since 1.0.0
+		 */
+		public static function add_editor_styles() {
+
+			global $_wp_theme_features;
+
+			$styles = array(
+				RENDER_URL . '/assets/css/render.min.css',
+			);
+
+			if ( isset( $_wp_theme_features['render'] ) ) {
+				$styles[] = $_wp_theme_features['render'];
+			}
+
+			/**
+			 * Allows developers to easily add or remove Render added styles from TinyMCE.
+			 *
+			 * @since 1.0.0
+			 */
+			$styles = apply_filters( 'render_editor_styles', $styles );
+
+			foreach ( $styles as $style ) {
+				add_editor_style( $style );
+			}
+		}
+
+		/**
 		 * Removes a shortcode from Render.
 		 *
 		 * @since 1.0.0
@@ -479,5 +523,4 @@ if ( ! class_exists( 'Render' ) ) {
 
 	// Instantiate the class and then initialize the shortcodes
 	$Render = Render::_getInstance();
-	$Render::_shortcodes_init();
 }

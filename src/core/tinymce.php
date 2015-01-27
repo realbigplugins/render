@@ -27,9 +27,6 @@ class Render_tinymce extends Render {
 		// Que up the Render Modal
 		render_enqueue_modal();
 
-		// Adds styling for visual editor for Render shortcodes
-		add_editor_style( RENDER_URL . "/assets/css/render.min.css" );
-
 		// Setup TinyMCE
 		add_filter( 'mce_external_plugins', array( __CLASS__, 'add_tinymce_plugins' ) );
 		add_filter( 'mce_buttons', array( __CLASS__, 'register_tinymce_buttons' ) );
@@ -232,11 +229,6 @@ class Render_tinymce extends Render {
 			$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, '_replace_shortcodes' ), $_content );
 		}
 
-		// Get out of here if rendering is not set
-		if ( ! isset( $render_shortcode_data[ $code ] ) ) {
-			return $entire_code;
-		}
-
 		// If this is a wrapping code, but no content is provided, use dummy content
 		if ( empty( $content ) &&
 		     isset( $render_shortcode_data[ $code ]['wrapping'] ) &&
@@ -280,11 +272,20 @@ class Render_tinymce extends Render {
 			$shortcode_tags[ $code ] = $shortcode_tags[ $code ] . '_tinymce';
 		}
 
-		// Get the shortcode output
-		$shortcode_output = do_shortcode( $entire_code );
+		// Get the shortcode output (if rendering set)
+		if ( ! isset( $render_shortcode_data[ $code ] ) ) {
+			$shortcode_output = $entire_code;
+		} elseif ( isset( $render_shortcode_data[ $code ]['useText'] ) ) {
+			$shortcode_output = $render_shortcode_data[ $code ]['useText'];
+		} else {
+			$shortcode_output = do_shortcode( $entire_code );
+		}
 
 		// If the output contains any block tags, make sure the wrapper tag is a div
 		$tag = preg_match( render_block_regex(), $shortcode_output ) ? 'div' : 'span';
+
+		// Override tag
+		$tag = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'div' : $tag;
 
 		$output = '';
 

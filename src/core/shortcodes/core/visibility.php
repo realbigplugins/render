@@ -177,22 +177,12 @@ foreach (
 	$shortcode['category'] = 'visibility';
 	$shortcode['source']   = 'Render';
 
-	// Adds shortcode to Render
-	add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
-		$shortcodes[] = $shortcode;
-
-		return $shortcodes;
-	} );
-
-	// Add shortcode category
-	add_filter( 'render_modal_categories', function ( $categories ) {
-		$categories['visibility'] = array(
-			'label' => __( 'Visibility', 'Render' ),
-			'icon'  => 'dashicons-visibility',
-		);
-
-		return $categories;
-	} );
+	render_add_shortcode( $shortcode );
+	render_add_shortcode_category( array(
+		'id' => 'visibility',
+		'label' => __( 'Visibility', 'Render'),
+		'icon' => 'dashicons-visibility',
+	) );
 }
 
 /**

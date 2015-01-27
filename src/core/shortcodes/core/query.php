@@ -128,20 +128,12 @@ foreach ( array(
 	$shortcode['category'] = 'query';
 	$shortcode['source']   = 'Render';
 
-	// Adds shortcode to Render
-	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
-		$shortcodes[] = $shortcode;
-		return $shortcodes;
-	});
-
-	// Add shortcode category
-	add_filter( 'render_modal_categories', function( $categories ) {
-		$categories['query'] = array(
-			'label' => __( 'Query', 'Render' ),
-			'icon' => 'dashicons-download',
-		);
-		return $categories;
-	});
+	render_add_shortcode( $shortcode );
+	render_add_shortcode_category( array(
+		'id' => 'query',
+		'label' => __( 'Query', 'Render'),
+		'icon' => 'dashicons-download',
+	) );
 }
 
 /**

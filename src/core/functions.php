@@ -13,6 +13,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Adds a shortcode to Render.
+ *
+ * @since 1.0.0
+ *
+ * @param array $shortcode The shortcode to add.
+ */
+function render_add_shortcode( $shortcode ) {
+
+	// Add shortcode to Render
+	add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
+		$shortcodes[] = $shortcode;
+
+		return $shortcodes;
+	} );
+}
+
+/**
+ * Adds a shortcode category to Render.
+ *
+ * @since 1.0.0
+ *
+ * @param array $category The category to add.
+ */
+function render_add_shortcode_category( $category ) {
+
+	add_filter( 'render_modal_categories', function ( $categories ) use ( $category ) {
+		$categories[ $category['id'] ] = array(
+			'label' => $category['label'],
+			'icon'  => $category['icon'],
+		);
+
+		return $categories;
+	} );
+}
+
+/**
  * Transforms an ID to a name.
  *
  * @since 1.0.0
@@ -73,12 +109,12 @@ function render_strip_paragraphs_around_shortcodes( $content ) {
 /**
  * Translates special Render associative shortcode attributes into a formatted array.
  *
- * Render uses JSON format for certain attributes (namely repeater fields). This function translates those JSON attributes
- * into a formatted, PHP usable associative array.
+ * Render uses JSON format for certain attributes (namely repeater fields). This function translates those JSON
+ * attributes into a formatted, PHP usable associative array.
  *
  * @since 1.0.0
  *
- * @param array $atts The shortcode attributes.
+ * @param array $atts    The shortcode attributes.
  * @param array $keyname The name of the key to grab values from.
  * @return array The new associative array.
  */
@@ -187,9 +223,26 @@ function render_get_shortcode_used_categories() {
 		)
 	);
 
-	return array_intersect_key( render_get_shortcode_categories(), array_flip( $used_categories ) );
+	return array_merge(
+		array(
+			'all'   => array(
+				'label' => __( 'All', 'Render' ),
+				'icon'  => 'dashicons-tagcloud',
+			),
+		),
+		array_intersect_key( render_get_shortcode_categories(), array_flip( $used_categories ) )
+	);
 }
 
+/**
+ * Outputs an attribute template.
+ *
+ * @since 1.0.0
+ *
+ * @param string $template Which template to use.
+ * @param array $extra Extra attribute parameters to use (or override).
+ * @return array Attribute.
+ */
 function render_sc_attr_template( $template, $extra = array() ) {
 
 	$output = array();

@@ -361,7 +361,7 @@ class Render_Modal {
 						<?php echo isset( $option['icon'] ) ?
 							"data-icon='$option[icon]'" : ''; ?>
 						value="<?php echo $option_value; ?>"
-						<?php selected( $option_value, isset( $properties['default'] ) ? $properties['default'] : '' ); ?>
+						<?php selected( $option_value, isset( $att['default'] ) ? $att['default'] : '' ); ?>
 						>
 						<?php echo ! isset( $option['label'] ) ? 'MOTHER EFF' : ''; ?>
 						<?php echo $option['label']; ?>
@@ -646,6 +646,8 @@ class Render_Modal {
 		foreach ( render_get_disabled_shortcodes() as $code ) {
 			$Render->remove_shortcode( $code );
 		}
+
+		ksort( $Render->shortcodes );
 
 		// Gets all categories in use
 		$used_categories = render_get_shortcode_used_categories();

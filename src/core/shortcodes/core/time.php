@@ -31,20 +31,12 @@ foreach ( array(
 	$shortcode['category'] = 'time';
 	$shortcode['source']   = 'Render';
 
-	// Adds shortcode to Render
-	add_filter( 'render_add_shortcodes', function( $shortcodes ) use ( $shortcode ) {
-		$shortcodes[] = $shortcode;
-		return $shortcodes;
-	});
-
-	// Add shortcode category
-	add_filter( 'render_modal_categories', function( $categories ) {
-		$categories['time'] = array(
-			'label' => __( 'Time', 'Render' ),
-			'icon' => 'dashicons-clock',
-		);
-		return $categories;
-	});
+	render_add_shortcode( $shortcode );
+	render_add_shortcode_category( array(
+		'id' => 'time',
+		'label' => __( 'Time', 'Render'),
+		'icon' => 'dashicons-clock',
+	) );
 }
 
 /**

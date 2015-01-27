@@ -702,8 +702,6 @@ var Render_Modal;
                                 }
                             });
 
-                            console.log(data);
-
                             // Initialize the slider
                             $this.slider(data);
                         });
@@ -2069,8 +2067,6 @@ var Render_Modal;
          * @returns {*} The attribute field value.
          */
         this.getValue = function () {
-
-            console.log(this.name);
 
             if (this.$input.prop('checked')) {
                 return this.$input.val();
