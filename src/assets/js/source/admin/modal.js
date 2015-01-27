@@ -17,7 +17,7 @@ var Render_Modal;
         categories_sliding = false,
         render_modal_open = false,
         error_color = '#ec6750',
-        _search_timeout, search_loading, textbox_focused;
+        _search_timeout, search_loading;
 
     Render_Modal = {
 
@@ -1366,7 +1366,7 @@ var Render_Modal;
                 var attObj = elements.active_shortcode.find('.render-modal-att-row[data-att-name="' + name + '"]').data('attObj');
 
                 if (attObj) {
-                    attObj.setValue(value);
+                    attObj._setValue(value);
                 }
             });
         },
@@ -1527,6 +1527,7 @@ var Render_Modal;
 
             this.sanitize();
 
+
             var code = elements.active_shortcode.attr('data-code'),
                 title = elements.active_shortcode.attr('data-title'),
                 props, output, atts = {}, selection = this.selection;
@@ -1541,9 +1542,7 @@ var Render_Modal;
                     return true; // Continue $.each
                 }
 
-                if (!attObj.disabled) {
-                    atts[attObj.name] = attObj.getValue();
-                }
+                atts[attObj.name] = attObj._getValue();
             });
 
             props = Render_Data.all_shortcodes[code];
@@ -1607,7 +1606,7 @@ var Render_Modal;
 
                 var required = attObj.$container.attr('data-required'),
                     validate = attObj.$container.attr('data-validate'),
-                    att_value = attObj.getValue(),
+                    att_value = attObj._getValue(),
                     att_valid = true;
 
                 // Basic required and field being empty
@@ -1735,7 +1734,7 @@ var Render_Modal;
                 }
 
                 var sanitize = Render_Modal._stringToObject($(this).attr('data-sanitize')),
-                    att_value = attObj.getValue();
+                    att_value = attObj._getValue();
 
                 if (sanitize && att_value !== null && att_value.length) {
                     $.each(sanitize, function (type, value) {
@@ -1743,7 +1742,7 @@ var Render_Modal;
                         switch (type) {
                             case 'url':
                                 if (!att_value.match(/https?:\/\//)) {
-                                    attObj.setValue('http://' + att_value);
+                                    attObj._setValue('http://' + att_value);
                                 }
                                 break;
 
@@ -1799,31 +1798,110 @@ var Render_Modal;
         }
     };
 
+    /**
+     * Object for shortcode attributes.
+     *
+     * This is the base object for every attribute field type. Each attribute row is assigned its own version of the
+     * AttAPI, and the AttAPI manages that attribute (things like getting the value, setting the value, reverting,
+     * etc.
+     *
+     * @since 1.0.0
+     *
+     * @constructor
+     */
     function AttAPI() {
 
-        this.name = null;
+        /**
+         * The name (title) of the attribute.
+         *
+         * @since 1.0.0
+         *
+         * @type {string}
+         */
+        this.name = '';
+
+        /**
+         * The original value (on load) of the attribute field (used in reverting).
+         *
+         * @since 1.0.0
+         *
+         * @type {*}
+         */
         this.original_value = null;
-        this.fieldname = null;
-        this.shortcode = null;
+
+        /**
+         * The name tag of the attribute field.
+         *
+         * @since 1.0.0
+         *
+         * @type {null}
+         */
+        this.fieldname = '';
+
+        /**
+         * The code itself ([example_code]).
+         *
+         * @since 1.0.0
+         *
+         * @type {string}
+         */
+        this.shortcode = '';
+
+        /**
+         * The attribute row container.
+         *
+         * @since 1.0.0
+         *
+         * @type {HTMLElement}
+         */
         this.$container = null;
+
+        /**
+         * The attribute input field.
+         *
+         * @since 1.0.0
+         *
+         * @type {HTMLElement}
+         */
         this.$input = null;
 
+        /**
+         * Initializes the object.
+         *
+         * @since 1.0.0
+         *
+         * @param {HTMLElement} $e The attribute row container.
+         */
         this.init = function ($e) {
 
+            // Setup properties
             this.$container = $e;
             this.$input = this.$container.find('.render-modal-att-input');
             this.name = $e.attr('data-att-name');
             this.fieldname = this.$container.find('.render-modal-att-name').text().trim();
             this.shortcode = this.$container.closest('.render-modal-shortcode').attr('data-code');
-            this.disabled = this.$container.attr('data-disabled') ? true : false;
 
             this.storeOriginalValue();
         };
 
+        /**
+         * Stores the attribute's initial load value (for reverting later).
+         *
+         * @since 1.0.0
+         */
         this.storeOriginalValue = function () {
             this.original_value = this.$input.val();
         };
 
+        /**
+         * Reverts the attribute to its original values.
+         *
+         * This will always run and cannot be changed or bypass. The attribute can have its own revert method though
+         * that will run first in this method.
+         *
+         * @since 1.0.0
+         * @private
+         */
         this._revert = function () {
 
             this.revert();
@@ -1833,20 +1911,72 @@ var Render_Modal;
 
         };
 
+        /**
+         * Reverts the attribute to its original values (can be overridden).
+         *
+         * @since 1.0.0
+         */
         this.revert = function () {
-            this.setValue(this.original_value);
+            this._setValue(this.original_value);
         };
 
-        this.getValue = function () {
+        /**
+         * Fires the trigger and launches the getValue function.
+         *
+         * @since 1.0.0
+         *
+         * @private
+         */
+        this._getValue = function () {
             this.$input.trigger('render:att_getValue');
+            return this.getValue();
+        };
+
+        /**
+         * Gets the attribute field current value (can be overridden).
+         *
+         * @since 1.0.0
+         *
+         * @returns {*} The input value.
+         */
+        this.getValue = function () {
             return this.$input.val();
         };
 
+        /**
+         * Fires the trigger and launches the setValue function.
+         *
+         * @since 1.0.0
+         * @private
+         *
+         * @param {*} value The value to set to.
+         */
+        this._setValue = function (value) {
+            this.$input.trigger('render:att_setValue');
+            this.setValue(value);
+        };
+
+        /**
+         * Sets the attribute field to a specified value (can be overridden).
+         *
+         * @since 1.0.0
+         *
+         * @param {*} value The value to set to.
+         */
         this.setValue = function (value) {
             this.$input.val(value);
             this.$input.trigger('render:att_setValue');
         };
 
+        /**
+         * Sets the attribute row to invalid (can be overridden).
+         *
+         * Displays a message and does not allow submitting the Modal.
+         *
+         * @since 1.0.0
+         *
+         * @param {string} msg The validation message to show the user.
+         */
         this.setInvalid = function (msg) {
 
             this.$container.addClass('invalid');
@@ -1855,11 +1985,23 @@ var Render_Modal;
             this.$input.trigger('render:att_setInvalid');
         };
 
+        /**
+         * Sets the attribute from invalid to valid (can be overridden).
+         *
+         * @since 1.0.0
+         */
         this.setValid = function () {
             this.$container.removeClass('invalid');
             this.$input.trigger('render:att_setValid');
         };
 
+        /**
+         * Displays the validation message (can be overridden).
+         *
+         * @since 1.0.0
+         *
+         * @param {string} msg The message to show.
+         */
         this.errorMsg = function (msg) {
 
             if (typeof this.$errormsg === 'undefined') {
@@ -1868,19 +2010,31 @@ var Render_Modal;
 
             this.$errormsg.html(msg);
         };
-
-        this.destroy = function () {
-        };
     }
 
+    /**
+     * Modulation of AttAPI for the Textbox attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
     var Textbox = function ($e) {
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
+        /**
+         * Gets the attribute field current value.
+         *
+         * This AttAPI applies to both textbox and text area, so we need to account for that.
+         *
+         * @since 1.0.0
+         *
+         * @returns {*} The attribute field value.
+         */
         this.getValue = function () {
-
-            this.$input.trigger('render:att_getValue');
 
             if (this.$input.prop('tagName') === 'textarea') {
                 return this.$input.text();
@@ -1892,14 +2046,31 @@ var Render_Modal;
         this.init($e);
     };
 
+    /**
+     * Modulation of AttAPI for the Checkbox attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
     var Checkbox = function ($e) {
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
+        /**
+         * Gets the attribute field current value.
+         *
+         * Getting the value here is just seeing if it's checked.
+         *
+         * @since 1.0.0
+         *
+         * @returns {*} The attribute field value.
+         */
         this.getValue = function () {
 
-            this.$input.trigger('render:att_getValue');
+            console.log(this.name);
 
             if (this.$input.prop('checked')) {
                 return this.$input.val();
@@ -1908,6 +2079,15 @@ var Render_Modal;
             }
         };
 
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Checks or unchecks the checkbox.
+         *
+         * @since 1.0.0
+         *
+         * @param {*} value The value to set to.
+         */
         this.setValue = function (value) {
 
             if (value) {
@@ -1915,25 +2095,45 @@ var Render_Modal;
             } else {
                 this.$input.prop('checked', false);
             }
-
-            this.$input.trigger('render:att_setValue');
         };
 
+        /**
+         * Reverts the attribute to its original values.
+         *
+         * Reverts by setting the value to false.
+         *
+         * @since 1.0.0
+         */
         this.revert = function () {
-            this.setValue(false);
+            this._setValue(false);
         };
 
         this.init($e);
     };
 
+    /**
+     * Modulation of AttAPI for the Selectbox attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
     var Selectbox = function ($e) {
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
+        /**
+         * Gets the attribute field current value.
+         *
+         * Checks for custom input first.
+         *
+         * @since 1.0.0
+         *
+         * @returns {*} The attribute field value.
+         */
         this.getValue = function () {
-
-            this.$input.trigger('render:att_getValue');
 
             // Account for custom input
             var custom_text = this.$input.data('chosen-custom-input');
@@ -1945,6 +2145,15 @@ var Render_Modal;
             }
         };
 
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Many variables to account for, including: reset field on empty value, custom input, multi-select.
+         *
+         * @since 1.0.0
+         *
+         * @param {*} value The value to set to.
+         */
         this.setValue = function (value) {
 
             // Reset select (feed empty value)
@@ -1971,21 +2180,29 @@ var Render_Modal;
             }
 
             this.$input.trigger('chosen:updated');
-            this.$input.trigger('render:att_setValue');
         };
 
-        this.destroy = function () {
-            this.$input.removeData('chosen');
-            this.$input.show();
-            this.$input.siblings('.chosen-container').remove();
-            this.$container.find('.chosen-custom-input').remove();
-        };
-
+        /**
+         * Reverts the attribute to its original values.
+         *
+         * Removes the custom value first, then sets to the original value.
+         *
+         * @since 1.0.0
+         */
         this.revert = function () {
             this.$container.find('.chosen-custom-input').remove();
-            this.setValue(this.original_value);
+            this._setValue(this.original_value);
         };
 
+        /**
+         * Sets the attribute row to invalid.
+         *
+         * Makes sure not to highlight the selectbox, it should remain hidden.
+         *
+         * @since 1.0.0
+         *
+         * @param {string} msg The validation message to show the user.
+         */
         this.setInvalid = function (msg) {
 
             this.$container.addClass('invalid');
@@ -1995,60 +2212,87 @@ var Render_Modal;
         this.init($e);
     };
 
+    /**
+     * Modulation of AttAPI for the ColorPicker attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
     var Colorpicker = function ($e) {
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
-        this.revert = function () {
-            this.setValue(this.original_value);
-        };
-
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Triggers Iris colorpicker with new color.
+         *
+         * @since 1.0.0
+         *
+         * @param {*} value The value to set to.
+         */
         this.setValue = function (value) {
             this.$input.iris('color', value);
-            this.$input.trigger('render:att_setValue');
-        };
-
-        this.destroy = function () {
-
-            this.$input.removeData('wpWpColorPicker');
-            this.$input.removeData('a8cIris');
-            this.$container.find('.wp-picker-container').remove();
-            this.$container.find('.render-modal-att-field').prepend(this.$input);
         };
 
         this.init($e);
     };
 
+    /**
+     * Modulation of AttAPI for the Slider attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
     var Slider = function ($e) {
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
-        this.revert = function () {
-            this.setValue(this.original_value);
-        };
-
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Triggers the change to update jQuery UI Slider.
+         *
+         * @since 1.0.0
+         *
+         * @param {*} value The value to set to.
+         */
         this.setValue = function (value) {
             this.$input.val(value);
             this.$input.change();
-            this.$input.trigger('render:att_setValue');
-        };
-
-        this.destroy = function () {
-            var $slider = this.$container.find('.render-modal-att-slider');
-            $slider.slider('destroy');
-            $slider.removeData();
         };
 
         this.init($e);
     };
 
+    /**
+     * Modulation of AttAPI for the Media attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
     var Media = function ($e) {
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Renders the preview along with setting the value.
+         *
+         * @since 1.0.0
+         *
+         * @param {*} value The value to set to.
+         */
         this.setValue = function (value) {
 
             var type = this.$input.siblings('.render-modal-att-media-upload').data('type');
@@ -2069,21 +2313,34 @@ var Render_Modal;
                     this.$input.val(value);
                     break;
             }
-
-            this.$input.trigger('render:att_setValue');
         };
 
         this.init($e);
     };
 
+    /**
+     * Modulation of AttAPI for the Counter attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
     var Counter = function ($e) {
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
+        /**
+         * Gets the attribute field current value.
+         *
+         * Returns the value with the unit appended (if there is a unit type set).
+         *
+         * @since 1.0.0
+         *
+         * @returns {*} The attribute field value.
+         */
         this.getValue = function () {
-
-            this.$input.trigger('render:att_getValue');
 
             var value = this.$input.val(),
                 unit = this.$container.find('.render-modal-counter-unit select').val();
@@ -2095,6 +2352,15 @@ var Render_Modal;
             return value;
         };
 
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Deals with changing the value, the unit, and managing the buttons.
+         *
+         * @since 1.0.0
+         *
+         * @param {*} value The value to set to.
+         */
         this.setValue = function (value) {
 
             // Divide value from units
@@ -2123,18 +2389,31 @@ var Render_Modal;
             if (values.length > 1) {
                 this.$container.find('.render-modal-counter-unit-input').val(values[1]); // The unit
             }
-
-            this.$input.trigger('render:att_setValue');
         };
 
         this.init($e);
     };
 
+    /**
+     * Modulation of AttAPI for the Repeater attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
     var Repeater = function ($e) {
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
+        /**
+         * Reverts the attribute to its original values.
+         *
+         * Removes all extra repeat fields.
+         *
+         * @since 1.0.0
+         */
         this.revert = function () {
             this.$container.find('.render-modal-repeater-field').each(function () {
                 if ($(this).index() > 1) {
@@ -2143,9 +2422,16 @@ var Render_Modal;
             });
         };
 
+        /**
+         * Gets the attribute field current value.
+         *
+         * Gets the attribute field values for every repeater field.
+         *
+         * @since 1.0.0
+         *
+         * @returns {*} The attribute field value.
+         */
         this.getValue = function () {
-
-            this.$input.trigger('render:att_getValue');
 
             var values = {};
 
@@ -2160,15 +2446,24 @@ var Render_Modal;
 
                 if (values[attObj.name]) {
                     // Att already set, append new value
-                    values[attObj.name] += '::sep::' + attObj.getValue();
+                    values[attObj.name] += '::sep::' + attObj._getValue();
                 } else {
-                    values[attObj.name] = attObj.getValue();
+                    values[attObj.name] = attObj._getValue();
                 }
             });
 
             return JSON.stringify(values);
         };
 
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Sets every field within the Repeater by adding as many fields as necessary.
+         *
+         * @since 1.0.0
+         *
+         * @param {*} object The value to set to (in JSON format).
+         */
         this.setValue = function (object) {
 
             var self = this;
@@ -2209,30 +2504,38 @@ var Render_Modal;
 
                     $.each(fields[i], function (name, value) {
                         self.$container.find('.render-modal-repeater-field:eq(' + ( i + 1 ) + ')').
-                            find('.render-modal-att-row[data-att-name="' + name + '"]').data('attObj').setValue(value);
+                            find('.render-modal-att-row[data-att-name="' + name + '"]').data('attObj')._setValue(value);
                     });
                 }
             }
-
-            this.$input.trigger('render:att_setValue');
         };
 
         this.init($e);
     };
 
+    // Fires on document ready
     $(function () {
         Render_Modal.init();
     });
 
-    $(window).load(function () {
-        Render_Modal.load();
-    });
-
+    // Fires whenever the window is resized
     $(window).resize(function () {
         Render_Modal.resize();
     });
 
-    // Helper functions
+    // ---------------- //
+    // Helper functions //
+    // ---------------- //
+
+    /**
+     * Initializes the repeater field buttons.
+     *
+     * Sets up handlers for the repeater field add and remove buttons.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     */
     function initRepeaterButtons($e) {
 
         var $container = $e.find('.render-modal-att-field');
@@ -2284,6 +2587,16 @@ var Render_Modal;
         });
     }
 
+    /**
+     * jQuery animation for highlighting input fields.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The input field to highlight.
+     * @param {string} color The color to highlight.
+     * @param {string} font_color The color of the font to use when highlighting.
+     * @param {int} transition The animation time.
+     */
     function highlight($e, color, font_color, transition) {
 
         color = typeof color !== 'undefined' ? color : error_color;

@@ -248,7 +248,7 @@ class Render_Modal {
 
 		<input type="checkbox" class="render-modal-att-input render-modal-att-checkbox"
 		       name="<?php echo $att_id; ?>"
-		       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : ''; ?>"
+		       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : '1'; ?>"
 		       <?php echo isset( $properties['checked'] ) ? 'checked' : ''; ?>
 			>
 
