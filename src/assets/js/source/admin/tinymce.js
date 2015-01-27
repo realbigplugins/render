@@ -16,8 +16,7 @@ var Render_tinymce;
     var editor, $texteditor, $editor, $loader,
         min_load_time = false,
         last_message = 0,
-        submitted = false,
-        $lastNode = '';
+        submitted = false;
 
     Render_tinymce = {
 
@@ -108,25 +107,6 @@ var Render_tinymce;
                 // Set the active editor
                 editor = _editor;
 
-                // Fires when clicking the shortcode <> button in the tinymce toolbar
-                _editor.addCommand('Render_Open', function () {
-
-                    var selection = editor.selection.getContent({format: 'html'}),
-                        $selection = '<div>' + selection + '</div>';
-
-                    // TODO Trim whitespace
-                    // Load text with dummy divs, then slice off the divs to use for selection
-                    Render_Modal.selection = Render_tinymce.loadText($selection)
-                        .slice(5, Render_Modal.selection.length - 6);
-
-                    Render_tinymce.open();
-                });
-
-                // Refresh the editor
-                _editor.addCommand('Render_Refresh', function () {
-                    Render_tinymce.loadVisual();
-                });
-
                 _editor.addButton('render_open', {
 
                     // Establishes an icon class for the button with the prefix "mce-i-"
@@ -134,6 +114,34 @@ var Render_tinymce;
                     cmd: 'Render_Open',
                     tooltip: 'Add Shortcode'
                 });
+
+                // Fires when clicking the shortcode <> button in the tinymce toolbar
+                _editor.addCommand('Render_Open', function () {
+
+                    var selection, $selection;
+
+                    if (Render_Data.do_render) {
+
+                        selection = editor.selection.getContent({format: 'html'});
+                        $selection = '<div>' + selection + '</div>';
+
+                        // TODO Trim whitespace
+                        // Load text with dummy divs, then slice off the divs to use for selection
+                        Render_Modal.selection = Render_tinymce.loadText($selection)
+                            .slice(5, Render_Modal.selection.length - 6);
+                    } else {
+                        Render_Modal.selection = editor.selection.getContent();
+                    }
+
+                    Render_tinymce.open();
+                });
+
+                // WP default shortcut
+                _editor.addShortcut('alt+shift+s', '', 'render-open');
+
+                if (!Render_Data.do_render) {
+                    return;
+                }
 
                 _editor.addButton('render_refresh', {
 
@@ -143,8 +151,10 @@ var Render_tinymce;
                     tooltip: 'Refresh Editor'
                 });
 
-                // WP default shortcut
-                _editor.addShortcut('alt+shift+s', '', 'render-open');
+                // Refresh the editor
+                _editor.addCommand('Render_Refresh', function () {
+                    Render_tinymce.loadVisual();
+                });
 
                 // Click the editor
                 _editor.onClick.add(function (editor, event) {
@@ -196,7 +206,7 @@ var Render_tinymce;
                     var dummy_node = '<span id="__dummycaret">\u2060</span>',
                         current_node = editor.selection.getNode();
 
-                    editor.selection.setContent(dummy_node, {format : 'raw', no_events: 1});
+                    editor.selection.setContent(dummy_node, {format: 'raw', no_events: 1});
 
                     var node_content = $(current_node).text();
 
@@ -264,7 +274,7 @@ var Render_tinymce;
                 });
 
                 // Prevent adding undo levels on rendering shortcodes
-                editor.on( 'BeforeAddUndo', function( event ) {
+                editor.on('BeforeAddUndo', function (event) {
 
                     // Get any unmodified shortcodes
                     var wp_regex = Render_Data.shortcode_regex.match(/\((\w+\|?)+\)/),
@@ -305,12 +315,9 @@ var Render_tinymce;
          */
         loadVisual: function () {
 
-            if (Render_Data.do_render) {
-
-                var content = editor.getContent();
-                content = Render_tinymce.loadText(content);
-                Render_tinymce.convertLiteralToRendered(content, editor);
-            }
+            var content = editor.getContent();
+            content = Render_tinymce.loadText(content);
+            Render_tinymce.convertLiteralToRendered(content, editor);
         },
 
         /**
@@ -395,7 +402,6 @@ var Render_tinymce;
 
             var $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
 
-
             if (typeof shortcode !== 'undefined') {
                 $modal_shortcodes.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
                 Render_Modal.modify(shortcode);
@@ -437,7 +443,9 @@ var Render_tinymce;
             }
 
             // Render the shortcodes
-            this.loadVisual();
+            if (Render_Data.do_render) {
+                this.loadVisual();
+            }
         },
 
         /**
