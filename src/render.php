@@ -478,8 +478,8 @@ if ( ! class_exists( 'Render' ) ) {
 				RENDER_URL . '/assets/css/render.min.css',
 			);
 
-			if ( isset( $_wp_theme_features['render'] ) ) {
-				$styles[] = $_wp_theme_features['render'];
+			if ( isset( $_wp_theme_features['render'] ) && is_array( $_wp_theme_features['render'] ) ) {
+				$styles = array_merge( $styles, $_wp_theme_features['render'] );
 			}
 
 			/**

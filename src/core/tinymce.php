@@ -165,7 +165,7 @@ class Render_tinymce extends Render {
 
 	public static function render_shortcodes() {
 
-		global $render_shortcode_data, $Render;
+		global $render_shortcode_data, $Render, $current_user;
 
 		define( 'RENDER_TINYMCE', true );
 
@@ -184,6 +184,16 @@ class Render_tinymce extends Render {
 		 * @since 1.0.0
 		 */
 		do_action( 'render_tinymce_ajax' );
+
+		/**
+		 * Log out for TinyMCE display purposes.
+		 *
+		 * @since 1.0.0
+		 */
+		if ( apply_filters( 'render_tinyme_logged_out', true ) ) {
+			$current_user = null;
+			add_filter( 'determine_current_user', '__return_false', 9999 );
+		}
 
 		$render_shortcode_data = $_POST['shortcode_data'];
 
@@ -256,9 +266,6 @@ class Render_tinymce extends Render {
 			$entire_code = str_replace( "]{$_content}[", "]{$content}[", $entire_code );
 		}
 
-		// Whether or not to style the code
-		$nostyle = isset( $render_shortcode_data[ $code ]['noStyle'] ) ? '' : ' styled';
-
 		// Get the atts prepared for JSON
 		if ( ! empty( $atts ) ) {
 			$atts = shortcode_parse_atts( $atts );
@@ -287,6 +294,11 @@ class Render_tinymce extends Render {
 		// Override tag
 		$tag = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'div' : $tag;
 
+		// Whether or not to style the code
+		$nostyle = isset( $render_shortcode_data[ $code ]['noStyle'] ) ? '' : ' styled';
+
+		$block = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'block' : '';
+
 		$output = '';
 
 		// Start the wrapper
@@ -296,7 +308,7 @@ class Render_tinymce extends Render {
 				$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
 			}
 
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable $code $nostyle' data-code='$code' data-atts='$atts'>";
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable $code $nostyle $block' data-code='$code' data-atts='$atts'>";
 		}
 
 		$output .= ! empty( $shortcode_output ) ? $shortcode_output : '<span class="render-shortcode-no-output">(no output)</span>';

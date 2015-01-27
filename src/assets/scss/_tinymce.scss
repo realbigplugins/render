@@ -5,6 +5,10 @@ $tooltip-height: 30px;
 $tooltip-color: #f5f5f5;
 $tooltip-border-color: #aaa;
 
+body#tinymce {
+  background: #fff;
+}
+
 .render-tinymce-shortcode-wrapper {
   position: relative;
   transition: $primary-transition all;
@@ -20,6 +24,10 @@ $tooltip-border-color: #aaa;
 
     &:hover {
       border-color: #888;
+    }
+
+    &.block {
+      display: block;
     }
 
     > *:last-child, p:last-of-type, ul, table {
@@ -123,6 +131,7 @@ $tooltip-border-color: #aaa;
   // Action buttons
   .render-tinymce-shortcode-wrapper-actions {
     min-width: 60px;
+    box-sizing: content-box;
 
     // Edit and remove buttons
     .render-tinymce-shortcode-wrapper-edit, .render-tinymce-shortcode-wrapper-remove {

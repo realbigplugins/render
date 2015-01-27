@@ -647,7 +647,10 @@ class Render_Modal {
 			$Render->remove_shortcode( $code );
 		}
 
-		ksort( $Render->shortcodes );
+		// Sort alphabetically by title.
+		uasort( $Render->shortcodes, function( $a, $b ) {
+			return strcmp($a['title'], $b['title']);
+		});
 
 		// Gets all categories in use
 		$used_categories = render_get_shortcode_used_categories();
