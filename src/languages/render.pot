@@ -1,1043 +1,1385 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Render\n"
-"POT-Creation-Date: 2014-12-02 10:26-0500\n"
-"PO-Revision-Date: 2014-12-02 10:26-0500\n"
+"POT-Creation-Date: 2015-01-27 11:36-0500\n"
+"PO-Revision-Date: 2015-01-27 11:37-0500\n"
 "Last-Translator: \n"
-"Language-Team: Real Big Marketing <joel@realbigmarketing.com>\n"
+"Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.11\n"
-"X-Poedit-Basepath: ../\n"
+"X-Generator: Poedit 1.7.4\n"
+"X-Poedit-Basepath: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../src/core/admin/addons.php:15
-msgid "Shortcode Addons"
-msgstr ""
-
-#: ../src/core/admin/addons.php:16
-msgid "Addons"
-msgstr ""
-
-#: ../src/core/admin/addons.php:29 ../src/core/admin/options.php:51
-#: ../src/core/admin/shortcodes.php:69
+#: ../core/admin/settings.php:92 ../core/admin/shortcodes.php:108
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: ../src/core/admin/options.php:58
-msgid "Ultimate Shortcode Library Options"
+#: ../core/admin/settings.php:104
+msgid "Settings"
 msgstr ""
 
-#: ../src/core/admin/options.php:67
+#: ../core/admin/settings.php:114
+msgid "License Key"
+msgstr ""
+
+#: ../core/admin/settings.php:126 ../core/admin/settings.php:144
+msgid "Activate License"
+msgstr ""
+
+#: ../core/admin/settings.php:133
+msgid "active"
+msgstr ""
+
+#: ../core/admin/settings.php:136
+msgid "Deactivate License"
+msgstr ""
+
+#: ../core/admin/settings.php:141
+msgid "inactive"
+msgstr ""
+
+#: ../core/admin/settings.php:151
 msgid "Use the magical visual renderer?"
 msgstr ""
 
-#: ../src/core/admin/options.php:72
-msgid "Heck Yes!"
-msgstr ""
-
-#: ../src/core/admin/shortcodes.php:78 ../src/core/modal.php:277
+#: ../core/admin/shortcodes.php:118
 msgid "Shortcodes"
 msgstr ""
 
-#: ../src/core/admin/shortcodes.php:82
+#: ../core/admin/shortcodes.php:129
 #, php-format
 msgid "Search results for %s"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:20
+#: ../core/admin/views/shortcodes-table.php:46
 msgid "Filter"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:33
+#: ../core/admin/views/shortcodes-table.php:66
 msgid "Filter by category"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:37
+#: ../core/admin/views/shortcodes-table.php:70
 msgid "All categories"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:61
+#: ../core/admin/views/shortcodes-table.php:108
+#: ../core/shortcodes/core/user.php:45
 msgid "Name"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:62
-msgid "Code"
-msgstr ""
-
-#: ../src/core/admin/views/shortcodes-table.php:63
+#: ../core/admin/views/shortcodes-table.php:109
+#: ../core/shortcodes/core/user.php:60
 msgid "Description"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:64
+#: ../core/admin/views/shortcodes-table.php:110
+#: ../core/shortcodes/core/query.php:50
 msgid "Category"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:65
+#: ../core/admin/views/shortcodes-table.php:111
+#: ../core/shortcodes/wordpress/media.php:293
+#: ../core/shortcodes/wordpress/media.php:340
+msgid "Source"
+msgstr ""
+
+#: ../core/admin/views/shortcodes-table.php:112
 msgid "Attributes"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:71
-#: ../src/core/admin/views/shortcodes-table.php:93
+#: ../core/admin/views/shortcodes-table.php:113
+msgid "Code"
+msgstr ""
+
+#: ../core/admin/views/shortcodes-table.php:126
+#: ../core/admin/views/shortcodes-table.php:278
 msgid "Disable"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:72
-#: ../src/core/admin/views/shortcodes-table.php:101
+#: ../core/admin/views/shortcodes-table.php:127
+#: ../core/admin/views/shortcodes-table.php:268
 msgid "Enable"
 msgstr ""
 
-#: ../src/core/admin/views/shortcodes-table.php:262
+#: ../core/admin/views/shortcodes-table.php:282
+msgid "disabled"
+msgstr ""
+
+#: ../core/admin/views/shortcodes-table.php:389
 msgid "Sorry, couldn't find any shortcodes."
 msgstr ""
 
-#: ../src/core/modal.php:279
-msgid "Close"
+#: ../core/functions.php:163
+msgid "All"
 msgstr ""
 
-#: ../src/core/modal.php:285
-msgid "Search"
+#: ../core/functions.php:167
+msgid "Other"
 msgstr ""
 
-#: ../src/core/modal.php:289
-msgid "Sorry, but you can't search for that."
+#: ../core/functions.php:201
+msgid "Date Format"
 msgstr ""
 
-#: ../src/core/modal.php:366
-msgid "Show advanced options"
+#: ../core/functions.php:204 ../core/functions.php:234
+#, php-format
+msgid ""
+"Format to display the date. Either choose one or input a custom date format "
+"using %s date format standards."
 msgstr ""
 
-#: ../src/core/modal.php:385
-msgid "Cancel"
+#: ../core/functions.php:208 ../core/functions.php:236
+msgid "Select a date format or enter a custom format."
 msgstr ""
 
-#: ../src/core/modal.php:388 ../src/core/widget.php:56
-msgid "Add Shortcode"
+#: ../core/functions.php:212 ../core/functions.php:243
+msgid "Date format set in Settings -> General"
 msgstr ""
 
-#: ../src/core/modal.php:391
-msgid "Remove Shortcode"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:17
-#: ../src/core/shortcodes/core/design.php:75
-msgid "Button"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:18
-msgid "Creates a sweet button"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:21
-#: ../src/core/shortcodes/core/design.php:86
-msgid "Color"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:26
-msgid "Color Hover"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:31
-#: ../src/core/shortcodes/core/design.php:90
-msgid "Font Color"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:36
-#: ../src/core/shortcodes/wordpress/media.php:98
-msgid "Size"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:39
-msgid "Large"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:40
-msgid "Medium"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:41
-msgid "Small"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:46
-#: ../src/core/shortcodes/core/design.php:94
-msgid "Shape"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:49
-#: ../src/core/shortcodes/core/design.php:97
-msgid "Square"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:50
-#: ../src/core/shortcodes/core/design.php:98
-msgid "Rounded"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:51
-#: ../src/core/shortcodes/core/design.php:99
-msgid "Circle"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:56
-#: ../src/core/shortcodes/wordpress/media.php:121
-msgid "Link"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:65
-msgid "Icon"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:68
-msgid "Select an icon (no icon by default)"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:82
-msgid "Box"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:83
-msgid "Creates a nice box for your content."
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:104
-msgid "Heading"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:117
-msgid "Column 2"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:118
-msgid "Creates a nice column that is half the width of the container."
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:130
-msgid "Column 3"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:131
-msgid "Creates a nice column that is a third the width of the container."
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:143
-msgid "Column 4"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:144
-msgid "Creates a nice column that is a quarter the width of the container."
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:156
-msgid "Column 5"
-msgstr ""
-
-#: ../src/core/shortcodes/core/design.php:157
-msgid "Creates a nice column that is a fifth the width of the container."
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:16
-msgid "If"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:17
-msgid "Allows for the use of conditional statements for showing content."
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:20
-msgid "Argument One"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:24
-msgid "User is logged in"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:25
-msgid "Current page is home page"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:26
-msgid "Comments allowed"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:27
-msgid "Is single post"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:28
-msgid "Is page"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:29
-msgid "Is category page"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:30
-msgid "Is tag page"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:31
-msgid "Is taxonomy page"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:32
-msgid "Is archive of specific author"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:33
-msgid "Current page is an archive page"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:34
-msgid "Current page is a search results page"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:35
-msgid "Current page is a 404"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:40
-msgid "Argument Two"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:43
-#: ../src/core/shortcodes/core/logic.php:45
-#: ../src/core/shortcodes/wordpress/media.php:185
-#: ../src/core/shortcodes/wordpress/media.php:194
-#: ../src/core/shortcodes/wordpress/media.php:203
-#: ../src/core/shortcodes/wordpress/media.php:212
-msgid "True"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:46
-#: ../src/core/shortcodes/wordpress/media.php:186
-#: ../src/core/shortcodes/wordpress/media.php:195
-#: ../src/core/shortcodes/wordpress/media.php:204
-#: ../src/core/shortcodes/wordpress/media.php:213
-msgid "False"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:51
-msgid "Operator"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:54
-#: ../src/core/shortcodes/core/logic.php:57
-msgid "Equals"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:56
-msgid "Identical"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:58
-msgid "Does not equal"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:59
-msgid "Not identical"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:60
-msgid "Less than"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:61
-msgid "Greater than"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:62
-msgid "Less than or equal to"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:63
-msgid "Greater than or equal"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:68
-msgid "Parameter (optional)"
-msgstr ""
-
-#: ../src/core/shortcodes/core/logic.php:69
-msgid "Used in some conditions to further specify the condition."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:17
-msgid "Post ID"
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:18
-msgid "Displays the ID of the post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:21
-#: ../src/core/shortcodes/core/post.php:38
-#: ../src/core/shortcodes/core/post.php:55
-#: ../src/core/shortcodes/core/post.php:72
-#: ../src/core/shortcodes/core/post.php:90
-#: ../src/core/shortcodes/core/post.php:107
-#: ../src/core/shortcodes/core/post.php:124
-#: ../src/core/shortcodes/core/post.php:140
-msgid "Post"
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:24
-#: ../src/core/shortcodes/core/post.php:41
-#: ../src/core/shortcodes/core/post.php:58
-#: ../src/core/shortcodes/core/post.php:76
-#: ../src/core/shortcodes/core/post.php:93
-#: ../src/core/shortcodes/core/post.php:110
-#: ../src/core/shortcodes/core/post.php:127
-#: ../src/core/shortcodes/core/post.php:143
-msgid "Defaults to the current post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:34
-msgid "Post Author"
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:35
-msgid "Displays the author of the post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:51
-msgid "Post Title"
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:52
-msgid "Displays the title of the post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:68
-msgid "Post Word Count"
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:69
-msgid "Outputs the total word count for the post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:73
-msgid "NOTE: To update the word count, update the post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:86
-msgid "Post Published"
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:87
-msgid "Displays the published date of the post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:103
-msgid "Post Status"
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:104
-msgid "Displays the status of the post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:120
-msgid "Post Type"
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:121
-msgid "Displays the type of the post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:136
-msgid "Post Excerpt"
-msgstr ""
-
-#: ../src/core/shortcodes/core/post.php:137
-msgid "Displays the excerpt of the post."
-msgstr ""
-
-#: ../src/core/shortcodes/core/site.php:16
-msgid "Site Information"
-msgstr ""
-
-#: ../src/core/shortcodes/core/site.php:17
-msgid "Gets specified info about the current site."
-msgstr ""
-
-#: ../src/core/shortcodes/core/site.php:20
-msgid "Info"
-msgstr ""
-
-#: ../src/core/shortcodes/core/site.php:29
-msgid "Site Title"
-msgstr ""
-
-#: ../src/core/shortcodes/core/site.php:30
-msgid "Gets the title of the current site."
-msgstr ""
-
-#: ../src/core/shortcodes/core/site.php:37
-msgid "Site Tagline"
-msgstr ""
-
-#: ../src/core/shortcodes/core/site.php:38
-msgid "Gets the tagline of the current site."
-msgstr ""
-
-#: ../src/core/shortcodes/core/site.php:45
-msgid "Site Admin Email"
-msgstr ""
-
-#: ../src/core/shortcodes/core/site.php:46
-msgid "Gets the admin email the current site."
-msgstr ""
-
-#: ../src/core/shortcodes/core/time.php:17
-msgid "Custom Date"
-msgstr ""
-
-#: ../src/core/shortcodes/core/time.php:18
-msgid "Outputs the current date in a custom format."
-msgstr ""
-
-#: ../src/core/shortcodes/core/time.php:21
+#: ../core/functions.php:231
 msgid "Format"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:31
-msgid "Current Month"
+#: ../core/functions.php:241
+msgid "Full Date"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:32
-msgid "Outputs the current month."
+#: ../core/functions.php:257
+msgid "Day"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:39
-msgid "Current Year"
+#: ../core/functions.php:267
+msgid "Week of Year"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:40
-msgid "Outputs the current year."
+#: ../core/functions.php:273
+msgid "Month"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:47
-msgid "Current Day of the Month"
+#: ../core/functions.php:282
+msgid "Year"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:48
-msgid "Outputs the current day of the month."
+#: ../core/functions.php:289 ../core/shortcodes/core/time.php:43
+msgid "Time"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:55
-msgid "Current Day of the Week"
+#: ../core/functions.php:291
+msgid "Time format set in Settings -> General"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:56
-msgid "Outputs the current day of the week."
+#: ../core/functions.php:307 ../core/shortcodes/core/post.php:74
+msgid "Post"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:63
-msgid "Current Day of the Year"
+#: ../core/functions.php:314
+msgid "The current post"
 msgstr ""
 
-#: ../src/core/shortcodes/core/time.php:64
-msgid "Outputs the current day of the year."
+#: ../core/licensing/EDD_SL_Plugin_Updater.php:190
+#, php-format
+msgid ""
+"There is a new version of %1$s available. <a target=\"_blank\" class="
+"\"thickbox\" href=\"%2$s\">View version %3$s details</a>."
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:17
-msgid "User Full Name"
+#: ../core/licensing/EDD_SL_Plugin_Updater.php:197
+#, php-format
+msgid ""
+"There is a new version of %1$s available. <a target=\"_blank\" class="
+"\"thickbox\" href=\"%2$s\">View version %3$s details</a> or <a href=\"%4$s"
+"\">update now</a>."
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:18
-msgid "Get the full name of the specified user."
+#: ../core/licensing/EDD_SL_Plugin_Updater.php:337
+msgid "You do not have permission to install plugin updates"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:21
-#: ../src/core/shortcodes/core/user.php:38
-#: ../src/core/shortcodes/core/user.php:55
-#: ../src/core/shortcodes/core/user.php:72
-#: ../src/core/shortcodes/core/user.php:89
-#: ../src/core/shortcodes/core/user.php:106
-#: ../src/core/shortcodes/core/user.php:123
-#: ../src/core/shortcodes/core/user.php:140
-#: ../src/core/shortcodes/core/user.php:176
-#: ../src/core/shortcodes/core/user.php:193
-#: ../src/core/shortcodes/core/user.php:210
-#: ../src/core/shortcodes/core/user.php:227
-#: ../src/core/shortcodes/core/user.php:244
-#: ../src/core/shortcodes/core/user.php:261
+#: ../core/licensing/EDD_SL_Plugin_Updater.php:337
+msgid "Error"
+msgstr ""
+
+#: ../core/modal.php:503
+msgid "Unit"
+msgstr ""
+
+#: ../core/modal.php:658
+msgid "Close"
+msgstr ""
+
+#: ../core/modal.php:665
+msgid "Search by name, description, code, category, or source"
+msgstr ""
+
+#: ../core/modal.php:669
+msgid "Sorry, but you can't search for that."
+msgstr ""
+
+#: ../core/modal.php:747
+msgid "Restore Shortcode"
+msgstr ""
+
+#: ../core/modal.php:752
+msgid "Templates (coming soon!)"
+msgstr ""
+
+#: ../core/modal.php:779
+msgid "Show advanced options"
+msgstr ""
+
+#: ../core/modal.php:783
+msgid "Hide advanced options"
+msgstr ""
+
+#: ../core/modal.php:804
+msgid "Cancel"
+msgstr ""
+
+#: ../core/modal.php:810
+msgid "Add Shortcode"
+msgstr ""
+
+#: ../core/modal.php:815
+msgid "Modify Current Shortcode"
+msgstr ""
+
+#: ../core/modal.php:820
+msgid "Change To New Shortcode"
+msgstr ""
+
+#: ../core/modal.php:825
+msgid "Remove Current Shortcode"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:22
+msgid "Button"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:23
+msgid "Creates a sweet button"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:27
+#: ../core/shortcodes/core/design.php:209
+msgid "Colors"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:30
+msgid "Background"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:35
+msgid "Background (Hover)"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:40
+msgid "Font"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:46
+#: ../core/shortcodes/core/design.php:228
+msgid "Visual"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:49
+#: ../core/shortcodes/wordpress/media.php:133
+msgid "Size"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:52
+#: ../core/shortcodes/core/design.php:55
+msgid "Medium"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:54
+msgid "Large"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:56
+msgid "Small"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:61
+#: ../core/shortcodes/core/design.php:231
+msgid "Shape"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:64
+#: ../core/shortcodes/core/design.php:66
+#: ../core/shortcodes/core/design.php:234
+#: ../core/shortcodes/core/design.php:236
+msgid "Rectangle"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:67
+#: ../core/shortcodes/core/design.php:237
+msgid "Rounded"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:68
+#: ../core/shortcodes/core/design.php:238
+msgid "Ellipse"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:73
+msgid "Icon"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:80
+msgid "Select an icon (no icon by default)"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:85 ../core/shortcodes/core/post.php:29
+#: ../core/shortcodes/core/user.php:55
+msgid "Meta"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:88
+msgid "HREF (link)"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:89
+msgid "Links to a post / page. Also accepts custom input."
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:100
+msgid "Link Window"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:103
+msgid "Open link in new tab"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:108
+msgid ""
+"If all border-radius' are set to 0, none will be used. If at least one is "
+"set, all will be used."
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:112
+#: ../core/shortcodes/core/design.php:268
+msgid "Border Top Left Radius"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:131
+#: ../core/shortcodes/core/design.php:287
+msgid "Border Top Right Radius"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:150
+#: ../core/shortcodes/core/design.php:306
+msgid "Border Bottom Left Radius"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:169
+#: ../core/shortcodes/core/design.php:325
+msgid "Border Bottom Right Radius"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:197
+msgid "Box"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:198
+msgid "Creates a nice box for your content."
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:202 ../core/shortcodes/core/post.php:42
+#: ../core/widget.php:151
+msgid "Content"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:205
+msgid "Heading"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:212
+msgid "Box Background"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:217
+msgid "Body Font"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:222
+msgid "Heading Font"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:243
+msgid "Heading Tag"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:264
+msgid ""
+"If all border-radius' are set to 0, none will be used. If at least one is "
+"set, all will be used. Note that this will override the \"Shape\" defined "
+"above."
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:353
+msgid "Column 2"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:354
+msgid "Creates a nice column that is half the width of the container."
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:357
+#: ../core/shortcodes/core/design.php:406
+#: ../core/shortcodes/core/design.php:455
+#: ../core/shortcodes/core/design.php:504
+msgid "Padding left"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:375
+#: ../core/shortcodes/core/design.php:424
+#: ../core/shortcodes/core/design.php:473
+#: ../core/shortcodes/core/design.php:522
+msgid "Padding right"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:402
+msgid "Column 3"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:403
+msgid "Creates a nice column that is a third the width of the container."
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:451
+msgid "Column 4"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:452
+msgid "Creates a nice column that is a quarter the width of the container."
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:500
+msgid "Column 5"
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:501
+msgid "Creates a nice column that is a fifth the width of the container."
+msgstr ""
+
+#: ../core/shortcodes/core/design.php:559
+msgid "Design"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:23
+msgid "Post Meta"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:24
+msgid "Displays the supplied meta information about the post."
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:31
+msgid "The meta information of the post to show (custom input allowed)."
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:34
+msgid "Select which meta to get"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:37 ../core/shortcodes/core/query.php:95
+#: ../core/shortcodes/core/site.php:37
+#: ../core/shortcodes/wordpress/media.php:105
+#: ../core/shortcodes/wordpress/media.php:205 ../core/widget.php:71
+msgid "Title"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:38 ../core/shortcodes/core/query.php:31
+#: ../core/shortcodes/core/query.php:94
+msgid "Author"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:39
+msgid "Status"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:40
+#: ../core/shortcodes/wordpress/media.php:190
+msgid "Type"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:41
+msgid "Excerpt"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:43
+msgid "Published Date"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:44
+msgid "Word Count"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:45 ../core/shortcodes/core/user.php:58
+#: ../core/shortcodes/wordpress/media.php:59
+#: ../core/shortcodes/wordpress/media.php:108
+#: ../core/shortcodes/wordpress/media.php:208
+msgid "ID"
+msgstr ""
+
+#: ../core/shortcodes/core/post.php:50
+msgid "Only applies to some meta types."
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:22 ../core/shortcodes/core/query.php:140
+msgid "Query"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:23
+msgid "Outputs a list of posts."
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:28
+msgid "Refine Search"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:34
+msgid "Any author"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:39
+msgid "Post type"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:41
+msgid "Available post types."
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:43
+msgid "Any post type"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:52
+msgid "Available categories."
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:54
+msgid "No categories available."
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:55
+msgid "Any category"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:62
+msgid "Tag"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:64
+msgid "Available tags."
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:66
+msgid "No tags available."
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:67
+msgid "-- None --"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:75 ../core/shortcodes/core/query.php:78
+#: ../core/shortcodes/wordpress/media.php:113
+#: ../core/shortcodes/wordpress/media.php:213
+msgid "Order"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:82
+#: ../core/shortcodes/wordpress/media.php:119
+#: ../core/shortcodes/wordpress/media.php:218
+msgid "Descending"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:83
+#: ../core/shortcodes/wordpress/media.php:118
+#: ../core/shortcodes/wordpress/media.php:217
+msgid "Ascending"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:88
+msgid "Order by"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:92
+#: ../core/shortcodes/wordpress/media.php:67
+#: ../core/shortcodes/wordpress/media.php:325
+#: ../core/shortcodes/wordpress/media.php:391
+msgid "None"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:93
+msgid "Post ID"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:96
+msgid "Name (slug)"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:97
+msgid "Post Type"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:98
+msgid "Date"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:99
+msgid "Last Modified"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:100
+msgid "Parent"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:101
+#: ../core/shortcodes/wordpress/media.php:107
+#: ../core/shortcodes/wordpress/media.php:207
+msgid "Random"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:102
+msgid "Comment Count"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:103
+#: ../core/shortcodes/wordpress/media.php:104
+#: ../core/shortcodes/wordpress/media.php:204
+msgid "Menu Order"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:108
+msgid "Post Status"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:111
+msgid "Any status"
+msgstr ""
+
+#: ../core/shortcodes/core/query.php:119
+msgid "Search"
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:22
+msgid "Site Information"
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:23
+msgid "Gets specified info about the current site."
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:27
+msgid "Info"
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:29
+#, php-format
+msgid ""
+"Which information to get about the site. Either choose an option or input "
+"your own from this list: %s."
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:38
+msgid "Tag Line"
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:39
+msgid "Admin Email"
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:40
+msgid "Site URL"
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:41
+msgid "WordPress Version"
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:42
+msgid "Language"
+msgstr ""
+
+#: ../core/shortcodes/core/site.php:63
+msgid "Site"
+msgstr ""
+
+#: ../core/shortcodes/core/time.php:22
+msgid "Custom Date"
+msgstr ""
+
+#: ../core/shortcodes/core/time.php:23
+msgid "Outputs the current date in a custom format."
+msgstr ""
+
+#: ../core/shortcodes/core/user.php:23
+msgid "User Information"
+msgstr ""
+
+#: ../core/shortcodes/core/user.php:24
+msgid "Get a property of the specified user."
+msgstr ""
+
+#: ../core/shortcodes/core/user.php:28 ../core/shortcodes/core/user.php:78
+#: ../core/shortcodes/core/user.php:237
 msgid "User"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:23
-#: ../src/core/shortcodes/core/user.php:40
-#: ../src/core/shortcodes/core/user.php:57
-#: ../src/core/shortcodes/core/user.php:74
-#: ../src/core/shortcodes/core/user.php:91
-#: ../src/core/shortcodes/core/user.php:108
-#: ../src/core/shortcodes/core/user.php:125
-#: ../src/core/shortcodes/core/user.php:142
-#: ../src/core/shortcodes/core/user.php:158
-#: ../src/core/shortcodes/core/user.php:178
-#: ../src/core/shortcodes/core/user.php:195
-#: ../src/core/shortcodes/core/user.php:212
-#: ../src/core/shortcodes/core/user.php:229
-#: ../src/core/shortcodes/core/user.php:246
-#: ../src/core/shortcodes/core/user.php:263
+#: ../core/shortcodes/core/user.php:31 ../core/shortcodes/core/user.php:81
 msgid "Defaults to the current user"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:34
-msgid "User First Name"
+#: ../core/shortcodes/core/user.php:38
+msgid "Property"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:35
-msgid "Get the first name of the specified user."
+#: ../core/shortcodes/core/user.php:39
+msgid "Select what information to get or input custom information to get."
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:51
-msgid "User Last Name"
+#: ../core/shortcodes/core/user.php:47
+msgid "Display Name"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:52
-msgid "Get the last name of the specified user."
+#: ../core/shortcodes/core/user.php:48
+msgid "Full Name"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:68
-msgid "User Username"
+#: ../core/shortcodes/core/user.php:49
+msgid "First Name"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:69
-msgid "Get the username of the specified user."
+#: ../core/shortcodes/core/user.php:50
+msgid "Last Name"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:85
-msgid "User Email"
+#: ../core/shortcodes/core/user.php:51
+msgid "User Name"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:86
-msgid "Get the email of the specified user."
+#: ../core/shortcodes/core/user.php:57
+msgid "Email Address"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:102
-msgid "User Display Name"
+#: ../core/shortcodes/core/user.php:59
+msgid "Author Link"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:103
-msgid "Get the display name of the specified user."
+#: ../core/shortcodes/core/user.php:61
+msgid "Role"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:119
-msgid "User ID"
-msgstr ""
-
-#: ../src/core/shortcodes/core/user.php:120
-msgid "Get the ID of the specified user."
-msgstr ""
-
-#: ../src/core/shortcodes/core/user.php:136
-msgid "User URL"
-msgstr ""
-
-#: ../src/core/shortcodes/core/user.php:137
-msgid "Get the author URL of the specified user."
-msgstr ""
-
-#: ../src/core/shortcodes/core/user.php:153
+#: ../core/shortcodes/core/user.php:74
 msgid "User Registered Date"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:154
+#: ../core/shortcodes/core/user.php:75
 msgid "Get the date the specified user registered."
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:172
-msgid "User Description"
+#: ../core/shortcodes/core/user.php:97
+msgid "Login form"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:173
-msgid "Get the description of the specified user."
+#: ../core/shortcodes/core/user.php:98
+msgid "Displays a login form to logged out users."
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:189
-msgid "User Role"
+#: ../core/shortcodes/core/user.php:101
+msgid "Logged in Message"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:190
-msgid "Get the role of the specified user."
+#: ../core/shortcodes/core/user.php:102
+msgid "Message to display to already logged in users."
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:206
-msgid "User Capabilities"
+#: ../core/shortcodes/core/user.php:104 ../core/shortcodes/core/user.php:534
+msgid "You are already logged in."
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:207
-msgid "Get the capabilities of the specified user."
+#: ../core/shortcodes/core/user.php:108
+msgid "Redirect"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:223
-msgid "User Admin Theme"
+#: ../core/shortcodes/core/user.php:109
+msgid "Redirect to this page after login."
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:224
-msgid "Get the admin theme of the specified user."
+#: ../core/shortcodes/core/user.php:117
+msgid "Same page"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:240
-msgid "User Primary Blog"
+#: ../core/shortcodes/core/user.php:121 ../core/shortcodes/core/user.php:155
+#: ../core/shortcodes/core/user.php:188 ../core/shortcodes/core/user.php:191
+#: ../core/shortcodes/core/user.php:211
+msgid "Remember Me"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:241
-msgid "Get the primary blog of the specified user."
+#: ../core/shortcodes/core/user.php:125
+msgid "Show \"Remember Me\" checkbox."
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:257
-msgid "User Source Domain"
+#: ../core/shortcodes/core/user.php:130
+msgid "HTML ID's"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:258
-msgid "Get the source domain of the specified user."
+#: ../core/shortcodes/core/user.php:134
+msgid "Form"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:274
-msgid "Custom User Information"
+#: ../core/shortcodes/core/user.php:141 ../core/shortcodes/core/user.php:174
+#: ../core/shortcodes/core/user.php:177 ../core/shortcodes/core/user.php:207
+msgid "Username"
 msgstr ""
 
-#: ../src/core/shortcodes/core/user.php:275
-msgid "Get a custom property of the specified user."
+#: ../core/shortcodes/core/user.php:148 ../core/shortcodes/core/user.php:181
+#: ../core/shortcodes/core/user.php:184
+msgid "Password"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:16
+#: ../core/shortcodes/core/user.php:162
+msgid "Submit"
+msgstr ""
+
+#: ../core/shortcodes/core/user.php:170
+msgid "Form Labels"
+msgstr ""
+
+#: ../core/shortcodes/core/user.php:195 ../core/shortcodes/core/user.php:198
+msgid "Log In"
+msgstr ""
+
+#: ../core/shortcodes/core/user.php:203
+msgid "Default field values."
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:23
+msgid "Logic"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:24
+msgid "Allows for the use of conditional statements for showing content."
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:27
+msgid "Argument One"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:33
+msgid "If user is logged in"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:34
+msgid "If current page is home page"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:35
+msgid "If comments allowed"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:36
+msgid "If is single post"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:37
+msgid "If is page"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:38
+msgid "If is category page"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:39
+msgid "If is tag page"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:40
+msgid "If is taxonomy page"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:41
+msgid "If is archive of specific author"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:42
+msgid "If current page is an archive page"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:43
+msgid "If current page is a search results page"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:44
+msgid "If current page is a 404"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:45
+msgid "If this site's WordPress install version"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:50
+msgid "Operator"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:56
+msgid "equals"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:57
+msgid "is identical to"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:58
+msgid "does not equal"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:59
+msgid "is not identical to"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:60
+msgid "is less than"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:61
+msgid "is greater than"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:62
+msgid "is less than or equal to"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:63
+msgid "is greater than or equal to"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:68
+msgid "Argument Two"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:69
+msgid "Feel free to enter something custom here."
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:75
+msgid "true"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:76
+msgid "false"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:81
+msgid "Parameter (optional)"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:82
+msgid "Used in some conditions to further specify the condition."
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:92
+msgid "Hide for Times"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:93
+msgid "Allows content to be visible only during set times"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:96
+#: ../core/shortcodes/core/visibility.php:149
+#: ../core/shortcodes/core/visibility.php:190
+msgid "Visibility"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:101
+msgid "Hide for these times"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:102
+msgid "Show for these times"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:107
+msgid "Times"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:113
+msgid "Hide / show between..."
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:125
+msgid "Timezone"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:129
+msgid "Defaults to timezone set in Settings -> General"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:145
+msgid "Hide for Users"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:146
+msgid "Allows content to be visible only for specific users"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:154
+msgid "Hide for these users"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:155
+msgid "Show for these users"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:160
+msgid "Users"
+msgstr ""
+
+#: ../core/shortcodes/core/visibility.php:163
+msgid "Select one or more users"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:24
 msgid "Embed"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:17
+#: ../core/shortcodes/wordpress/media.php:25
 msgid ""
 "It's super easy to embed videos, images, tweets, audio, and other content "
 "into your WordPress site"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:20
-#: ../src/core/shortcodes/wordpress/media.php:58
-#: ../src/core/shortcodes/wordpress/media.php:304
+#: ../core/shortcodes/wordpress/media.php:28
+#: ../core/shortcodes/wordpress/media.php:75
+#: ../core/shortcodes/wordpress/media.php:348
 msgid "Width"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:26
-#: ../src/core/shortcodes/wordpress/media.php:301
+#: ../core/shortcodes/wordpress/media.php:36
+#: ../core/shortcodes/wordpress/media.php:357
 msgid "Height"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:37
+#: ../core/shortcodes/wordpress/media.php:51
+#: ../core/shortcodes/wordpress/media.php:55
 msgid "Caption"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:38
+#: ../core/shortcodes/wordpress/media.php:52
 msgid ""
 "The Caption feature allows you to wrap captions around content. This is "
 "primarily used with individual images."
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:41
-#: ../src/core/shortcodes/wordpress/media.php:81
-#: ../src/core/shortcodes/wordpress/media.php:149
-msgid "ID"
+#: ../core/shortcodes/wordpress/media.php:56
+msgid "If no ID is supplied, this will be used instead."
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:44
-msgid "Class"
+#: ../core/shortcodes/wordpress/media.php:60
+msgid "The ID of the image inside the caption from."
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:47
+#: ../core/shortcodes/wordpress/media.php:63
 msgid "Align"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:50
-#: ../src/core/shortcodes/wordpress/media.php:252
-#: ../src/core/shortcodes/wordpress/media.php:295
-msgid "None"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:51
+#: ../core/shortcodes/wordpress/media.php:68
 msgid "Center"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:52
+#: ../core/shortcodes/wordpress/media.php:69
 msgid "Right"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:53
+#: ../core/shortcodes/wordpress/media.php:70
 msgid "Left"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:66
+#: ../core/shortcodes/wordpress/media.php:79
+msgid "Class"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:80
+msgid "CSS class to add."
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:89
 msgid "Gallery"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:67
+#: ../core/shortcodes/wordpress/media.php:90
 msgid ""
 "The Gallery feature allows you to add one or more image galleries to your "
 "posts and pages"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:70
-#: ../src/core/shortcodes/wordpress/media.php:163
+#: ../core/shortcodes/wordpress/media.php:94
+#: ../core/shortcodes/wordpress/media.php:176
 msgid "IDs"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:74
-#: ../src/core/shortcodes/wordpress/media.php:142
+#: ../core/shortcodes/wordpress/media.php:95
+#: ../core/shortcodes/wordpress/media.php:177
+msgid "Comma delimited list of attachment IDs to use"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:99
+#: ../core/shortcodes/wordpress/media.php:200
 msgid "Order By"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:77
-#: ../src/core/shortcodes/wordpress/media.php:145
-msgid "Menu Order"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:78
-#: ../src/core/shortcodes/wordpress/media.php:146 ../src/core/widget.php:42
-msgid "Title"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:79
-#: ../src/core/shortcodes/wordpress/media.php:147
+#: ../core/shortcodes/wordpress/media.php:106
+#: ../core/shortcodes/wordpress/media.php:206
 msgid "Post Date"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:80
-#: ../src/core/shortcodes/wordpress/media.php:148
-msgid "Random"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:86
-#: ../src/core/shortcodes/wordpress/media.php:154
-msgid "Order"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:89
-#: ../src/core/shortcodes/wordpress/media.php:157
-msgid "Ascending"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:90
-#: ../src/core/shortcodes/wordpress/media.php:158
-msgid "Descending"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:95
+#: ../core/shortcodes/wordpress/media.php:124
 msgid "Columns"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:101
-#: ../src/core/shortcodes/wordpress/media.php:167
+#: ../core/shortcodes/wordpress/media.php:134
+msgid "Image size to use."
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:144
+#: ../core/shortcodes/wordpress/media.php:233
 msgid "Include"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:105
-#: ../src/core/shortcodes/wordpress/media.php:170
+#: ../core/shortcodes/wordpress/media.php:148
+#: ../core/shortcodes/wordpress/media.php:237
 msgid "Exclude"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:109
+#: ../core/shortcodes/wordpress/media.php:152
 msgid "Item Tag"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:113
+#: ../core/shortcodes/wordpress/media.php:156
 msgid "Icon Tag"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:117
+#: ../core/shortcodes/wordpress/media.php:160
 msgid "Caption Tag"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:129
+#: ../core/shortcodes/wordpress/media.php:164
+msgid "Link"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:172
 msgid "Playlist"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:130
+#: ../core/shortcodes/wordpress/media.php:173
 msgid ""
 "The playlist shortcode implements the functionality of displaying a "
 "collection of WordPress audio or video files in a post"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:133
-msgid "Type"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:136
-#: ../src/core/shortcodes/wordpress/media.php:222
+#: ../core/shortcodes/wordpress/media.php:194
+#: ../core/shortcodes/wordpress/media.php:289
 msgid "Audio"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:137
-#: ../src/core/shortcodes/wordpress/media.php:262
+#: ../core/shortcodes/wordpress/media.php:195
+#: ../core/shortcodes/wordpress/media.php:336
 msgid "Video"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:173
+#: ../core/shortcodes/wordpress/media.php:223
 msgid "Style"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:176
+#: ../core/shortcodes/wordpress/media.php:227
 msgid "Light"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:177
+#: ../core/shortcodes/wordpress/media.php:228
 msgid "Dark"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:182
+#: ../core/shortcodes/wordpress/media.php:241
 msgid "Track List"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:191
+#: ../core/shortcodes/wordpress/media.php:245
+#: ../core/shortcodes/wordpress/media.php:256
+#: ../core/shortcodes/wordpress/media.php:267
+#: ../core/shortcodes/wordpress/media.php:278
+msgid "True"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:246
+#: ../core/shortcodes/wordpress/media.php:257
+#: ../core/shortcodes/wordpress/media.php:268
+#: ../core/shortcodes/wordpress/media.php:279
+msgid "False"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:252
 msgid "Track Numbers"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:200
+#: ../core/shortcodes/wordpress/media.php:263
 msgid "Images"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:209
+#: ../core/shortcodes/wordpress/media.php:274
 msgid "Artists"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:223
+#: ../core/shortcodes/wordpress/media.php:290
 msgid "The Audio feature allows you to embed audio files and play them back"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:226
-#: ../src/core/shortcodes/wordpress/media.php:266
-msgid "Source"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:230
-#: ../src/core/shortcodes/wordpress/media.php:273
+#: ../core/shortcodes/wordpress/media.php:301
+#: ../core/shortcodes/wordpress/media.php:366
 msgid "Loop"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:233
-#: ../src/core/shortcodes/wordpress/media.php:242
-#: ../src/core/shortcodes/wordpress/media.php:276
-#: ../src/core/shortcodes/wordpress/media.php:285
+#: ../core/shortcodes/wordpress/media.php:304
+#: ../core/shortcodes/wordpress/media.php:314
+#: ../core/shortcodes/wordpress/media.php:369
+#: ../core/shortcodes/wordpress/media.php:380
 msgid "Off"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:234
-#: ../src/core/shortcodes/wordpress/media.php:243
-msgid "Onf"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:239
-msgid "Autoplay"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:248
-#: ../src/core/shortcodes/wordpress/media.php:291
-msgid "Pre Load"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:251
-#: ../src/core/shortcodes/wordpress/media.php:294
-msgid "Metadata"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:253
-#: ../src/core/shortcodes/wordpress/media.php:296
-msgid "Auto"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:263
-msgid "The Video feature allows you to embed video files and play them back"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:270
-msgid "Poster"
-msgstr ""
-
-#: ../src/core/shortcodes/wordpress/media.php:277
-#: ../src/core/shortcodes/wordpress/media.php:286
+#: ../core/shortcodes/wordpress/media.php:305
+#: ../core/shortcodes/wordpress/media.php:315
+#: ../core/shortcodes/wordpress/media.php:370
+#: ../core/shortcodes/wordpress/media.php:381
 msgid "On"
 msgstr ""
 
-#: ../src/core/shortcodes/wordpress/media.php:282
+#: ../core/shortcodes/wordpress/media.php:311
+msgid "Autoplay"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:321
+#: ../core/shortcodes/wordpress/media.php:387
+msgid "Pre Load"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:324
+#: ../core/shortcodes/wordpress/media.php:390
+msgid "Metadata"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:326
+#: ../core/shortcodes/wordpress/media.php:392
+msgid "Auto"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:337
+msgid "The Video feature allows you to embed video files and play them back"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:376
 msgid "Auto Play"
 msgstr ""
 
-#: ../src/core/tinymce.php:59
+#: ../core/shortcodes/wordpress/media.php:398
+msgid "Poster"
+msgstr ""
+
+#: ../core/shortcodes/wordpress/media.php:418
+msgid "Media"
+msgstr ""
+
+#: ../core/tinymce.php:141
 msgid "Awesome-ifying your content..."
 msgstr ""
 
-#: ../src/core/tinymce.php:60
+#: ../core/tinymce.php:142
 msgid "Cleaning up the bathroom..."
 msgstr ""
 
-#: ../src/core/tinymce.php:61
+#: ../core/tinymce.php:143
 msgid "Making a cup of coffee for your content..."
 msgstr ""
 
-#: ../src/core/tinymce.php:62
+#: ../core/tinymce.php:144
 msgid "Playing catch with the WYSIWYG..."
 msgstr ""
 
-#: ../src/core/tinymce.php:63
+#: ../core/tinymce.php:145
 msgid "Taking your content to the next level..."
 msgstr ""
 
-#: ../src/core/tinymce.php:64
+#: ../core/tinymce.php:146
 msgid "Making your dreams come true..."
 msgstr ""
 
-#: ../src/core/tinymce.php:65
+#: ../core/tinymce.php:147
 msgid "Reducing synchronized load caching errors..."
 msgstr ""
 
-#: ../src/core/tinymce.php:66
+#: ../core/tinymce.php:148
 msgid "Taking out the trash (you're welcome!)..."
 msgstr ""
 
-#: ../src/core/tinymce.php:67
+#: ../core/tinymce.php:149
 msgid "Sending your content to the moon, and back..."
 msgstr ""
 
-#: ../src/core/tinymce.php:68
+#: ../core/tinymce.php:150
 msgid "Giving your content a bubble bath..."
 msgstr ""
 
-#: ../src/core/tinymce.php:69
+#: ../core/tinymce.php:151
 msgid "Taking your content to a classy restaurant..."
 msgstr ""
 
-#: ../src/core/tinymce.php:70
+#: ../core/tinymce.php:152
 msgid "Showing your content a good time..."
 msgstr ""
 
-#: ../src/core/tinymce.php:71
+#: ../core/tinymce.php:153
 msgid "Playing cards with the Automattic team..."
 msgstr ""
 
-#: ../src/core/tinymce.php:72
+#: ../core/tinymce.php:154
 msgid "Strapping a jetpack onto your content..."
 msgstr ""
 
-#: ../src/core/widget.php:8
-msgid "Shortcode"
+#: ../core/tinymce.php:307
+msgid "Press again to delete"
 msgstr ""
 
-#: ../src/core/widget.php:10
+#: ../core/widget.php:22
+msgid "Render"
+msgstr ""
+
+#: ../core/widget.php:24
 msgid "Adds a shortcode to your sidebar."
 msgstr ""
 
-#: ../src/core/widget.php:51
-msgid "No shortcode yet"
+#: ../core/widget.php:81
+msgid "Nothing added yet."
 msgstr ""
 
-#: ../src/core/widget.php:56
-msgid "Modify / Remove Shortcode"
+#: ../core/widget.php:91
+msgid "Add something great"
 msgstr ""
 
-#: ../src/core/widget.php:63
+#: ../core/widget.php:94
+msgid "Modify / Remove"
+msgstr ""
+
+#: ../core/widget.php:102
 #, php-format
 msgid " In order to see a live preview, please use the %s."
+msgstr ""
+
+#: ../render.php:389
+msgid "Unknown"
 msgstr ""

@@ -120,6 +120,8 @@ module.exports = function (grunt) {
                                 ' * Author: ' + author + '\n' +
                                 ' * Author URI: ' + author_uri + '\n' +
                                 ' * Plugin URI: ' + plugin_uri + '\n' +
+                                ' * Text Domain: Render\n' +
+                                ' * Domain Path: /languages/\n' +
                                 ' */';
                             content = '<?php\n' + header + content.slice(5);
                         }
