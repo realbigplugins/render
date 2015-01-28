@@ -104,14 +104,15 @@ class Render_Modal {
 	/**
 	 * Loops through all the current shortcode attributes and outputs them in the Modal.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param array $shortcode_atts All of the current shortcode's attributes.
-	 * @param bool $advanced Whether or not the shortcode should be categorized under "Advanced Atts".
-	 * @param bool $wrapping Whether or not the shortcode wraps around content.
+	 * @param array  $shortcode_atts All of the current shortcode's attributes.
+	 * @param bool   $advanced       Whether or not the shortcode should be categorized under "Advanced Atts".
+	 * @param bool   $wrapping       Whether or not the shortcode wraps around content.
+	 * @param string $code           The current shortcode.
 	 */
-	private static function _atts_loop( $shortcode_atts, $advanced = false, $wrapping = false ) {
+	private static function _atts_loop( $shortcode_atts, $advanced = false, $wrapping = false, $code = '' ) {
 
 		foreach ( $shortcode_atts as $att_id => $att ) {
 
@@ -150,7 +151,7 @@ class Render_Modal {
 					$att['sanitize'] = implode( ',', (array) $att['sanitize'] );
 				}
 
-				self::att_content( $att_id, $att, $type );
+				self::att_content( $att_id, $att, $type, $code );
 			}
 		}
 	}
@@ -158,14 +159,15 @@ class Render_Modal {
 	/**
 	 * Outputs the HTML of each attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
 	 * @param string $att_id The ID of the attribute.
-	 * @param array $att Attribute properties.
-	 * @param string $type The field type of the attribute.
+	 * @param array  $att    Attribute properties.
+	 * @param string $type   The field type of the attribute.
+	 * @param string $code   The current shortcode.
 	 */
-	private static function att_content( $att_id, $att, $type ) {
+	private static function att_content( $att_id, $att, $type, $code ) {
 		?>
 		<div class="render-modal-att-row <?php echo isset( $att['classes'] ) ? implode( ' ', $att['classes'] ) : ''; ?>"
 		     data-att-name="<?php echo $att_id; ?>"
@@ -192,7 +194,8 @@ class Render_Modal {
 						$callback,
 						$att_id,
 						$att,
-						isset( $att['properties'] ) ? $att['properties'] : array()
+						isset( $att['properties'] ) ? $att['properties'] : array(),
+						$code
 					);
 				} else {
 					echo 'ERROR: Not a valid attribute type!';
@@ -214,12 +217,12 @@ class Render_Modal {
 	/**
 	 * Outputs the field HTML of the textbox attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id The attribute ID.
-	 * @param array $att Properties of the attribute.
-	 * @param array $properties Properties of the attribute field type.
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
 	 */
 	private static function att_type_textbox( $att_id, $att, $properties = array() ) {
 		?>
@@ -233,40 +236,90 @@ class Render_Modal {
 	/**
 	 * Outputs the field HTML of the checkbox attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id The attribute ID.
-	 * @param array $att Properties of the attribute.
-	 * @param array $properties Properties of the attribute field type.
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
+	 * @param string $code       The current shortcode.
 	 */
-	private static function att_type_checkbox( $att_id, $att, $properties = array() ) {
+	private static function att_type_checkbox( $att_id, $att, $properties = array(), $code ) {
+
+		$unique_ID = md5( $code . $att_id );
 		?>
-		<?php if ( isset( $properties['label'] ) ) : ?>
-			<label class="render-modal-att-checkbox-label">
-		<?php endif; ?>
+		<div class="render-switch">
 
-		<input type="checkbox" class="render-modal-att-input render-modal-att-checkbox"
-		       name="<?php echo $att_id; ?>"
-		       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : '1'; ?>"
-		       <?php echo isset( $properties['checked'] ) ? 'checked' : ''; ?>
-			>
+			<input type="checkbox" class="render-modal-att-input render-modal-att-checkbox"
+			       name="<?php echo $att_id; ?>"
+			       id="<?php echo $unique_ID; ?>"
+			       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : '1'; ?>"/>
 
-		<?php if ( isset( $properties['label'] ) ) : ?>
-			<span><?php echo $properties['label']; ?></span>
+			<label for="<?php echo $unique_ID; ?>"></label>
+
+		</div>
+	<?php
+	}
+
+	/**
+	 * Outputs the field HTML of the toggle attribute.
+	 *
+	 * This is technically still a checkbox, but instead of one value or nothing, it's one value or the other. It also
+	 * has the visual of a toggle switch.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
+	 * @param string $code       The current shortcode.
+	 */
+	private static function att_type_toggle( $att_id, $att, $properties = array(), $code ) {
+
+		$unique_ID = md5( $code . $att_id );
+
+		// Get values
+		$values = array();
+		foreach ( $properties['values'] as $value => $label ) {
+			$values[] = array( $value, $label );
+		}
+		?>
+		<div class="render-switch toggle">
+
+			<input type="checkbox" class="render-modal-att-input render-modal-att-toggle"
+			       name="<?php echo $att_id; ?>"
+			       id="<?php echo $unique_ID; ?>"
+			       value="<?php echo $values[1][0]; ?>"/>
+
+			<label for="<?php echo $unique_ID; ?>">
+
+				<span class="render-modal-att-toggle-first">
+					<?php echo $values[0][1]; ?>
+				</span>
+
+				<span class="render-modal-att-toggle-second">
+					<?php echo $values[1][1]; ?>
+				</span>
+
 			</label>
-		<?php endif; ?>
+
+			<?php // This is the default (un-unchecked) value ?>
+			<input type="hidden" name="<?php echo $att_id; ?>"
+			       value="<?php echo $values[0][0]; ?>"/>
+
+		</div>
 	<?php
 	}
 
 	/**
 	 * Outputs the field HTML of the textarea attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
 	 * @param string $att_id The attribute ID.
-	 * @param array $att Properties of the attribute.
+	 * @param array  $att    Properties of the attribute.
 	 */
 	private static function att_type_textarea( $att_id, $att ) {
 		?>
@@ -279,12 +332,12 @@ class Render_Modal {
 	/**
 	 * Outputs the field HTML of the selectbox attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id The attribute ID.
-	 * @param array $att Properties of the attribute.
-	 * @param array $properties Properties of the attribute field type.
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
 	 */
 	private static function att_type_selectbox( $att_id, $att, $properties ) {
 
@@ -381,12 +434,12 @@ class Render_Modal {
 	/**
 	 * Outputs the field HTML of the slider attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id The attribute ID.
-	 * @param array $att Properties of the attribute.
-	 * @param array $properties Properties of the attribute field type.
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
 	 */
 	private static function att_type_slider( $att_id, $att, $properties ) {
 
@@ -437,12 +490,12 @@ class Render_Modal {
 	/**
 	 * Outputs the field HTML of the color-picker attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id The attribute ID.
-	 * @param array $att Properties of the attribute.
-	 * @param array $properties Properties of the attribute field type.
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
 	 */
 	private static function att_type_colorpicker( $att_id, $att, $properties ) {
 
@@ -457,12 +510,12 @@ class Render_Modal {
 	/**
 	 * Outputs the field HTML of the counter attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id The attribute ID.
-	 * @param array $att Properties of the attribute.
-	 * @param array $properties Properties of the attribute field type.
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
 	 */
 	private static function att_type_counter( $att_id, $att, $properties ) {
 
@@ -525,12 +578,12 @@ class Render_Modal {
 	/**
 	 * Outputs the field HTML of the repeater attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id The attribute ID.
-	 * @param array $att Properties of the attribute.
-	 * @param array $properties Properties of the attribute field type.
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
 	 */
 	private static function att_type_repeater( $att_id, $att, $properties ) {
 
@@ -587,12 +640,12 @@ class Render_Modal {
 	/**
 	 * Outputs the field HTML of the media attribute.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id The attribute ID.
-	 * @param array $att Properties of the attribute.
-	 * @param array $properties Properties of the attribute field type.
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
 	 */
 	private static function att_type_media( $att_id, $att, $properties ) {
 
@@ -634,7 +687,7 @@ class Render_Modal {
 	/**
 	 * Outputs the Render Modal HTML.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
 	 * @global Render $Render The main Render object.
@@ -648,9 +701,9 @@ class Render_Modal {
 		}
 
 		// Sort alphabetically by title.
-		uasort( $Render->shortcodes, function( $a, $b ) {
-			return strcmp($a['title'], $b['title']);
-		});
+		uasort( $Render->shortcodes, function ( $a, $b ) {
+			return strcmp( $a['title'], $b['title'] );
+		} );
 
 		// Gets all categories in use
 		$used_categories = render_get_shortcode_used_categories();
@@ -765,7 +818,7 @@ class Render_Modal {
 
 											<div class="render-modal-shortcode-atts">
 
-												<?php self::_atts_loop( $shortcode['atts'], $advanced = false, $wrapping ); ?>
+												<?php self::_atts_loop( $shortcode['atts'], $advanced = false, $wrapping, $code ); ?>
 
 												<?php
 												// Figure out if any of the attributes belong to the advanced section
@@ -790,7 +843,7 @@ class Render_Modal {
 														</span>
 													</a>
 													<div class="render-modal-advanced-atts" style="display: none;">
-														<?php self::_atts_loop( $shortcode['atts'], $advanced = true, $wrapping ); ?>
+														<?php self::_atts_loop( $shortcode['atts'], $advanced = true, $wrapping, $code ); ?>
 													</div>
 												<?php endif; ?>
 											</div>

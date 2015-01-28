@@ -814,8 +814,13 @@ var Render_Modal;
                     case 'checkbox':
 
                         attObj = new Checkbox($(this));
-
                         break;
+
+                    case 'toggle':
+
+                        attObj = new Toggle($(this));
+                        break;
+
                     default:
 
                         attObj = new Textbox($(this));
@@ -2078,7 +2083,7 @@ var Render_Modal;
         /**
          * Sets the attribute field to a specified value.
          *
-         * Checks or unchecks the checkbox.
+         * Checks or un-checks the checkbox.
          *
          * @since 1.0.0
          *
@@ -2103,6 +2108,69 @@ var Render_Modal;
         this.revert = function () {
             this._setValue(false);
         };
+
+        this.init($e);
+    };
+
+    /**
+     * Modulation of AttAPI for the Toggle attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
+    var Toggle = function ($e) {
+
+        // Extends the AttAPI object
+        AttAPI.apply(this, arguments);
+
+        /**
+         * Gets the attribute field current value.
+         *
+         * If checked, use the checkbox input, if not, use the hidden input.
+         *
+         * @since 1.0.0
+         *
+         * @returns {*} The attribute field value.
+         */
+        this.getValue = function () {
+
+            if (this.$input.prop('checked')) {
+                return this.$input.val();
+            } else {
+                return this.$container.find('input[type="hidden"]').val();
+            }
+        };
+
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Checks or un-checks the checkbox.
+         *
+         * @since 1.0.0
+         *
+         * @param {*} value The value to set to.
+         */
+        this.setValue = function (value) {
+
+            if (value === this.$input.val()) {
+                this.$input.prop('checked', true);
+            } else {
+                this.$input.prop('checked', false);
+            }
+        };
+
+        /**
+         * Reverts the attribute to its original values.
+         *
+         * Reverts by setting the value to the checkbox value .
+         *
+         * @since 1.0.0
+         */
+        //this.revert = function () {
+            //this._setValue(this.original_value);
+        //};
 
         this.init($e);
     };

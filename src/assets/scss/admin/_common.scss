@@ -30,3 +30,135 @@
     background: darken($error-color, 10%) !important;
   }
 }
+
+// Switch
+@mixin switch-dimensions($width) {
+
+  $height: round( $width / 2 );
+  $inset: round($height * 0.8);
+  $inset-offset: round(($height - ($inset)) / 2);
+
+  width: $width;
+  height: $height;
+
+  input[type="checkbox"]:checked + label:after {
+    right: $width - $inset - $inset-offset;
+  }
+
+  label {
+    border-radius: $height;
+
+    &:after {
+      width: $inset;
+      height: $inset;
+      top: $inset-offset;
+      right: $inset-offset;
+      border-radius: $height;
+    }
+  }
+}
+
+@mixin toggle-switch-dimensions($width) {
+
+  $height: round( $width / 2 );
+  $inset: round($height * 0.8);
+  $inset-offset: round(($height - ($inset)) / 2);
+
+  height: $height;
+
+  input[type="checkbox"]:checked + label:after {
+    right: 100%;
+    margin-right: ($inset * -1) - $inset-offset;
+  }
+
+  label {
+    border-radius: $height;
+    height: $height;
+    line-height: $height;
+
+    &:after {
+      width: $inset;
+      height: $inset;
+      top: $inset-offset;
+      right: $inset-offset;
+      border-radius: $height;
+    }
+  }
+}
+
+.render-switch {
+  position: relative;
+  user-select: none;
+  display: inline-block;
+
+  &:not(.toggle) {
+    @include switch-dimensions($width: 60px);
+
+    label {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  input[type="checkbox"] {
+    display: none;
+
+    &:checked + label {
+      @include primary-gradient-gloss();
+      box-shadow: none;
+    }
+  }
+
+  label {
+    @include background-gradient-gloss($color: #ddd);
+    box-shadow: 0 0 0 1px #ccc inset;
+
+    &:after {
+      content: '';
+      background: #fff;
+      display: block;
+      position: absolute;
+      transition: right 300ms, margin-right 300ms;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+    }
+  }
+
+  // Toggle
+  &.toggle {
+    @include toggle-switch-dimensions($width: 60px);
+
+    label {
+      display: inline-block;
+      padding: 0 10px;
+      @include primary-gradient-gloss();
+      box-shadow: none;
+
+      span {
+        color: #fff;
+        transition: opacity 300ms;
+      }
+
+      .render-modal-att-toggle-second {
+        opacity: 0;
+      }
+    }
+
+    input[type="checkbox"]:checked + label {
+
+      .render-modal-att-toggle-first {
+        opacity: 0;
+      }
+
+      .render-modal-att-toggle-second {
+        opacity: 1;
+      }
+    }
+  }
+
+  &.large {
+    @include switch-dimensions($width: 100px);
+  }
+}

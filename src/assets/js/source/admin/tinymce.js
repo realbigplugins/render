@@ -584,9 +584,6 @@ var Render_tinymce;
 
                     editor.setContent(response);
 
-                    // Disable any form fields in TinyMCE
-                    $(editor.getBody()).find('select, input, button, textarea').prop('disabled', true);
-
                     Render_tinymce.loading(false);
 
                     $(document).trigger('render-tinymce-post-render');

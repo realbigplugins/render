@@ -503,12 +503,12 @@ $toolbar-height: 50px;
     cursor: pointer;
     user-select: none;
 
-    @include background-gradient-alt(#fff, #f6f6f6);
+    @include background-gradient($color: #fff);
     &:active {
       border-color: #bbb;
 
       &:not(.disabled) {
-        @include background-gradient-alt(#f6f6f6, #fff);
+        @include background-gradient($color: #fff, $flip: true);
       }
     }
 
@@ -534,17 +534,6 @@ $toolbar-height: 50px;
     min-height: 100px;
     box-sizing: border-box;
     margin: 0;
-  }
-
-  // Checkbox
-  .render-modal-att-checkbox {
-    & + span {
-      color: #999;
-    }
-
-    &:checked + span {
-      color: inherit;
-    }
   }
 
   // Slider

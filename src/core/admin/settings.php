@@ -151,7 +151,7 @@ class Render_AdminPage_Settings extends Render {
 							<?php _e( 'Use the magical visual renderer?', 'Render' ); ?>
 						</th>
 						<td>
-							<div class="render-switch">
+							<div class="render-switch large">
 								<input type="checkbox" id="render_render_visual"
 								       name="render_render_visual" value="1" <?php checked( '1', $render_visual ); ?> />
 								<label for="render_render_visual"></label>

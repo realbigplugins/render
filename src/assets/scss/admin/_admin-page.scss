@@ -24,52 +24,6 @@
   }
 }
 
-// Switch
-$switch-width: 150px;
-$switch-height: $switch-width / 3;
-.render-switch {
-  width: $switch-width;
-  height: $switch-height;
-  position: relative;
-  user-select: none;
-  display: inline-block;
-
-  input[type="checkbox"] {
-    opacity: 0;
-
-    &:checked + label {
-      background: $primary-color;
-      box-shadow: none;
-
-      &:after {
-        right: $switch-width - ($switch-height * 0.8) - (($switch-height - ($switch-height * 0.8)) / 2);
-      }
-    }
-  }
-
-  label {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: #ddd;
-    box-shadow: 0 0 0 1px #ccc inset;
-
-    &:after {
-      content: '';
-      width: $switch-height * 0.8;
-      height: $switch-height * 0.8;
-      background: #fff;
-      display: block;
-      position: absolute;
-      top: ($switch-height - ($switch-height * 0.8)) / 2;
-      right: ($switch-height - ($switch-height * 0.8)) / 2;
-      transition: right 300ms;
-    }
-  }
-}
-
 // Tables
 .render-table {
   margin: 10px 0;

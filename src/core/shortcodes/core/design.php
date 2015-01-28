@@ -354,7 +354,7 @@ foreach ( array(
 		'description' => __( 'Creates a nice column that is half the width of the container.', 'Render' ),
 		'atts'        => array(
 			'padding_left'  => array(
-				'label'      => __( 'Padding left', 'Render' ),
+				'label'      => __( 'Padding Left', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -372,7 +372,7 @@ foreach ( array(
 				'advanced' => true,
 			),
 			'padding_right' => array(
-				'label'      => __( 'Padding right', 'Render' ),
+				'label'      => __( 'Padding Right', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -403,7 +403,7 @@ foreach ( array(
 		'description' => __( 'Creates a nice column that is a third the width of the container.', 'Render' ),
 		'atts'        => array(
 			'padding_left'  => array(
-				'label'      => __( 'Padding left', 'Render' ),
+				'label'      => __( 'Padding Left', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -421,7 +421,7 @@ foreach ( array(
 				'advanced' => true,
 			),
 			'padding_right' => array(
-				'label'      => __( 'Padding right', 'Render' ),
+				'label'      => __( 'Padding Right', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -452,7 +452,7 @@ foreach ( array(
 		'description' => __( 'Creates a nice column that is a quarter the width of the container.', 'Render' ),
 		'atts'        => array(
 			'padding_left'  => array(
-				'label'      => __( 'Padding left', 'Render' ),
+				'label'      => __( 'Padding Left', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -470,7 +470,7 @@ foreach ( array(
 				'advanced' => true,
 			),
 			'padding_right' => array(
-				'label'      => __( 'Padding right', 'Render' ),
+				'label'      => __( 'Padding Right', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -501,7 +501,7 @@ foreach ( array(
 		'description' => __( 'Creates a nice column that is a fifth the width of the container.', 'Render' ),
 		'atts'        => array(
 			'padding_left'  => array(
-				'label'      => __( 'Padding left', 'Render' ),
+				'label'      => __( 'Padding Left', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
@@ -519,7 +519,7 @@ foreach ( array(
 				'advanced' => true,
 			),
 			'padding_right' => array(
-				'label'      => __( 'Padding right', 'Render' ),
+				'label'      => __( 'Padding Right', 'Render' ),
 				'type'       => 'counter',
 				'default'    => 10,
 				'properties' => array(
