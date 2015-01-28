@@ -111,12 +111,11 @@ foreach ( array(
 			),
 			'order'      => array(
 				'label'      => __( 'Order', 'Render' ),
-				'type'       => 'selectbox',
+				'type'       => 'toggle',
 				'properties' => array(
-					'default' => 'DSC',
-					'options' => array(
-						'ASC' => __( 'Ascending', 'Render' ),
+					'values' => array(
 						'DSC' => __( 'Descending', 'Render' ),
+						'ASC' => __( 'Ascending', 'Render' ),
 					),
 				),
 			),
@@ -188,9 +187,9 @@ foreach ( array(
 //			),
 			'type'         => array(
 				'label'     => __( 'Type', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
-					'default' => 'audio',
-					'options' => array(
+				'type'    => 'toggle',
+				'properties' => array(
+					'values' => array(
 						'audio' => __( 'Audio', 'Render' ),
 						'video' => __( 'Video', 'Render' ),
 					),
@@ -198,7 +197,8 @@ foreach ( array(
 			),
 			'orderby'      => array(
 				'label'     => __( 'Order By', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
+				'type'    => 'selectbox',
+				'properties' => array(
 					'default' => 'post_date',
 					'options' => array(
 						'menu_order' => __( 'Menu Order', 'Render' ),
@@ -209,21 +209,21 @@ foreach ( array(
 					),
 				),
 			),
-			'order'        => array(
-				'label'     => __( 'Order', 'Render' ),
-				'type'    => 'selectbox', 'properties'=> array(
-					'default' => 'DSC',
-					'options' => array(
-						'ASC' => __( 'Ascending', 'Render' ),
+			'order'      => array(
+				'label'      => __( 'Order', 'Render' ),
+				'type'       => 'toggle',
+				'properties' => array(
+					'values' => array(
 						'DSC' => __( 'Descending', 'Render' ),
+						'ASC' => __( 'Ascending', 'Render' ),
 					),
 				),
 			),
 			'style'        => array(
 				'label'     => __( 'Style', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
-					'default' => 'light',
-					'options' => array(
+				'type'    => 'toggle',
+				'properties' => array(
+					'values' => array(
 						'light' => __( 'Light', 'Render' ),
 						'dark'  => __( 'Dark', 'Render' ),
 					),
@@ -239,44 +239,44 @@ foreach ( array(
 			),
 			'tracklist'    => array(
 				'label'     => __( 'Track List', 'Render' ),
-				'type'    => 'selectbox',
+				'type'    => 'toggle',
 				'properties' => array(
-					'options' => array(
-						'true'  => __( 'True', 'Render' ),
+					'values' => array(
 						'false' => __( 'False', 'Render' ),
+						'true'  => __( 'True', 'Render' ),
 					),
 				),
 				'advanced' => true,
 			),
 			'tracknumbers' => array(
 				'label'     => __( 'Track Numbers', 'Render' ),
-				'type'    => 'selectbox',
+				'type'    => 'toggle',
 				'properties' => array(
-					'options' => array(
-						'true'  => __( 'True', 'Render' ),
+					'values' => array(
 						'false' => __( 'False', 'Render' ),
+						'true'  => __( 'True', 'Render' ),
 					),
 				),
 				'advanced' => true,
 			),
 			'images'       => array(
 				'label'     => __( 'Images', 'Render' ),
-				'type'    => 'selectbox',
+				'type'    => 'toggle',
 				'properties' => array(
-					'options' => array(
-						'true'  => __( 'True', 'Render' ),
+					'values' => array(
 						'false' => __( 'False', 'Render' ),
+						'true'  => __( 'True', 'Render' ),
 					),
 				),
 				'advanced' => true,
 			),
 			'artists'      => array(
 				'label'     => __( 'Artists', 'Render' ),
-				'type'    => 'selectbox',
+				'type'    => 'toggle',
 				'properties' => array(
-					'options' => array(
-						'true'  => __( 'True', 'Render' ),
+					'values' => array(
 						'false' => __( 'False', 'Render' ),
+						'true'  => __( 'True', 'Render' ),
 					),
 				),
 				'advanced' => true,
@@ -299,8 +299,9 @@ foreach ( array(
 			),
 			'loop'     => array(
 				'label'     => __( 'Loop', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
-					'options' => array(
+				'type'    => 'toggle',
+				'properties' => array(
+					'values' => array(
 						'off' => __( 'Off', 'Render' ),
 						'on'  => __( 'On', 'Render' ),
 					),
@@ -309,8 +310,9 @@ foreach ( array(
 			),
 			'autoplay' => array(
 				'label'     => __( 'Autoplay', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
-					'options' => array(
+				'type'    => 'toggle',
+				'properties' => array(
+					'values' => array(
 						'off' => __( 'Off', 'Render' ),
 						'on'  => __( 'On', 'Render' ),
 					),
@@ -319,7 +321,8 @@ foreach ( array(
 			),
 			'preload'  => array(
 				'label'     => __( 'Pre Load', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
+				'type'    => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'metadata' => __( 'Metadata', 'Render' ),
 						'none'     => __( 'None', 'Render' ),
@@ -364,8 +367,9 @@ foreach ( array(
 			),
 			'loop'     => array(
 				'label'     => __( 'Loop', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
-					'options' => array(
+				'type'    => 'toggle',
+				'properties' => array(
+					'values' => array(
 						'off' => __( 'Off', 'Render' ),
 						'on'  => __( 'On', 'Render' ),
 					),
@@ -374,9 +378,9 @@ foreach ( array(
 			),
 			'autoplay' => array(
 				'label'     => __( 'Auto Play', 'Render' ),
-				'type'    => 'selectbox',
+				'type'    => 'toggle',
 				'properties' => array(
-					'options' => array(
+					'values' => array(
 						'off' => __( 'Off', 'Render' ),
 						'on'  => __( 'On', 'Render' ),
 					),
@@ -385,7 +389,8 @@ foreach ( array(
 			),
 			'preload'  => array(
 				'label'     => __( 'Pre Load', 'Render' ),
-				'type'    => 'selectbox', 'properties' => array(
+				'type'    => 'selectbox',
+				'properties' => array(
 					'options' => array(
 						'metadata' => __( 'Metadata', 'Render' ),
 						'none'     => __( 'None', 'Render' ),

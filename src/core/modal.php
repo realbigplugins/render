@@ -258,6 +258,12 @@ class Render_Modal {
 			<label for="<?php echo $unique_ID; ?>"></label>
 
 		</div>
+
+		<?php if ( isset( $properties['label'] ) ) : ?>
+			<span class="render-modal-att-checkbox-label">
+				<?php echo $properties['label']; ?>
+			</span>
+		<?php endif; ?>
 	<?php
 	}
 

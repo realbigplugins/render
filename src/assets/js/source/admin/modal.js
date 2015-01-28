@@ -325,6 +325,7 @@ var Render_Modal;
                 }
 
                 var att_type = $(this).attr('data-att-type'),
+                    $container = $(this).find('.render-modal-att-field'),
                     attObj;
 
                 // Initialize each type of att (this is as big one!)
@@ -335,7 +336,6 @@ var Render_Modal;
 
                         // Apply Chosen
                         var $chosen = $(this).find('.chosen'),
-                            $container = $chosen.closest('.render-modal-att-field'),
                             options = {
                                 width: '100%',
                                 search_contains: true,
@@ -814,6 +814,21 @@ var Render_Modal;
                     case 'checkbox':
 
                         attObj = new Checkbox($(this));
+
+                        $(this).find('.render-modal-att-checkbox').change(function () {
+
+                            if ($(this).prop('checked')) {
+                                $container.find('.render-modal-att-checkbox-label').addClass('checked');
+                            } else {
+                                $container.find('.render-modal-att-checkbox-label').removeClass('checked');
+                            }
+                        });
+
+                        $(this).find('.render-modal-att-checkbox-label').click(function () {
+                            var $checkbox_input = $container.find('.render-modal-att-checkbox');
+                            $checkbox_input.prop('checked', !$checkbox_input.prop('checked')).trigger('change');
+                        });
+
                         break;
 
                     case 'toggle':
@@ -2168,9 +2183,9 @@ var Render_Modal;
          *
          * @since 1.0.0
          */
-        //this.revert = function () {
+            //this.revert = function () {
             //this._setValue(this.original_value);
-        //};
+            //};
 
         this.init($e);
     };

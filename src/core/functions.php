@@ -147,7 +147,7 @@ function render_associative_atts( $atts, $keyname ) {
 
 			$array = array();
 			foreach ( $fields as $field_name => $field_values ) {
-				$array[ $field_name ] = _render_decode_att( $field_values[ $i ] );
+				$array[ $field_name ] = $field_values[ $i ];
 			}
 
 			$output[] = $array;

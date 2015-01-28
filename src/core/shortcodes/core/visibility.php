@@ -93,13 +93,13 @@ foreach (
 			'description' => __( 'Allows content to be visible only during set times', 'Render' ),
 			'atts'        => array(
 				'visibility' => array(
-					'label'      => __( 'Visibility', 'Render' ),
-					'type'       => 'selectbox',
-					'properties' => array(
-						'default' => 'hide',
-						'options' => array(
-							'hide' => __( 'Hide for these times', 'Render' ),
-							'show' => __( 'Show for these times', 'Render' ),
+					'label'       => __( 'Visibility', 'Render' ),
+					'description' => __( 'Hide or show for below times.', 'Render' ),
+					'type'        => 'toggle',
+					'properties'  => array(
+						'values' => array(
+							'hide' => __( 'Hide', 'Render' ),
+							'show' => __( 'Show', 'Render' ),
 						),
 					),
 				),
@@ -128,9 +128,7 @@ foreach (
 					'properties' => array(
 						'placeholder' => __( 'Defaults to timezone set in Settings -> General', 'Render' ),
 						'callback'    => array(
-							'function' => array(
-								'function' => 'render_sc_timezone_dropdown',
-							),
+							'function' => 'render_sc_timezone_dropdown',
 						),
 					),
 				),
@@ -146,13 +144,13 @@ foreach (
 			'description' => __( 'Allows content to be visible only for specific users', 'Render' ),
 			'atts'        => array(
 				'visibility' => array(
-					'label'      => __( 'Visibility', 'Render' ),
-					'type'       => 'selectbox',
-					'properties' => array(
-						'default' => 'hide',
-						'options' => array(
-							'hide' => __( 'Hide for these users', 'Render' ),
-							'show' => __( 'Show for these users', 'Render' ),
+					'label'       => __( 'Visibility', 'Render' ),
+					'description' => __( 'Hide or show for below times.', 'Render' ),
+					'type'        => 'toggle',
+					'properties'  => array(
+						'values' => array(
+							'hide' => __( 'Hide', 'Render' ),
+							'show' => __( 'Show', 'Render' ),
 						),
 					),
 				),
@@ -179,9 +177,9 @@ foreach (
 
 	render_add_shortcode( $shortcode );
 	render_add_shortcode_category( array(
-		'id' => 'visibility',
-		'label' => __( 'Visibility', 'Render'),
-		'icon' => 'dashicons-visibility',
+		'id'    => 'visibility',
+		'label' => __( 'Visibility', 'Render' ),
+		'icon'  => 'dashicons-visibility',
 	) );
 }
 
@@ -645,9 +643,9 @@ function render_sc_timezone_dropdown() {
  *
  * @since 1.0.0
  *
- * @param string $att_id The attribute ID.
- * @param array $att Properties of the attribute.
- * @param array $properties Properties of the attribute field type.
+ * @param string $att_id     The attribute ID.
+ * @param array  $att        Properties of the attribute.
+ * @param array  $properties Properties of the attribute field type.
  */
 function render_sc_time_slider( $att_id, $att, $properties ) {
 

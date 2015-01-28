@@ -76,9 +76,9 @@ foreach ( array(
 			),
 			'order'       => array(
 				'label'      => __( 'Order', 'Render' ),
-				'type'       => 'selectbox',
+				'type'       => 'toggle',
 				'properties' => array(
-					'options' => array(
+					'values' => array(
 						'DSC' => __( 'Descending', 'Render' ),
 						'ASC'  => __( 'Ascending', 'Render' ),
 					),

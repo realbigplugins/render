@@ -536,6 +536,21 @@ $toolbar-height: 50px;
     margin: 0;
   }
 
+  // Checkbox
+  .render-switch {
+    vertical-align: middle;
+  }
+
+  .render-modal-att-checkbox-label {
+    color: #aaa;
+    vertical-align: middle;
+    cursor: pointer;
+
+    &.checked {
+      color: inherit;
+    }
+  }
+
   // Slider
   .render-modal-att-slider {
     position: absolute;
