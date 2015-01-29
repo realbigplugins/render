@@ -125,10 +125,13 @@ var Render_tinymce;
                         selection = editor.selection.getContent({format: 'html'});
                         $selection = '<div>' + selection + '</div>';
 
-                        // TODO Trim whitespace
-                        // Load text with dummy divs, then slice off the divs to use for selection
-                        Render_Modal.selection = Render_tinymce.loadText($selection)
-                            .slice(5, Render_Modal.selection.length - 6);
+                        // Don't bother if we just have whitespace selected.
+                        if ($($selection).text().trim().length) {
+
+                            // Load text with dummy divs, then slice off the divs to use for selection
+                            Render_Modal.selection = Render_tinymce.loadText($selection)
+                                .slice(5, Render_Modal.selection.length - 6);
+                        }
                     } else {
                         Render_Modal.selection = editor.selection.getContent();
                     }
@@ -583,6 +586,9 @@ var Render_tinymce;
                 function (response) {
 
                     editor.setContent(response);
+
+                    // no-js support
+                    $(editor.getBody()).find('.no-js').css('display', 'none');
 
                     Render_tinymce.loading(false);
 

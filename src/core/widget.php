@@ -3,7 +3,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
-
 /**
  * Class Render_Widget
  *
@@ -123,7 +122,7 @@ add_action( 'current_screen', '_render_widget_add_actions' );
 // Make sure this stuff also loads for the customizer
 add_action( 'customize_controls_enqueue_scripts', array( 'Render_Modal', 'admin_scripts' ) );
 add_action( 'customize_controls_enqueue_scripts', array( 'Render', '_admin_enqueue_files' ) );
-add_action( 'customize_controls_print_footer_scripts', array( 'Render_Modal', 'output' ) );
+add_action( 'customize_controls_print_footer_scripts', array( 'Render_Modal', '_modal_output' ) );
 
 function _render_register_widget() {
 	register_widget( 'Render_Widget' );

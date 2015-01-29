@@ -296,9 +296,12 @@ class Render_Modal {
 			<input type="checkbox" class="render-modal-att-input render-modal-att-toggle"
 			       name="<?php echo $att_id; ?>"
 			       id="<?php echo $unique_ID; ?>"
-			       value="<?php echo $values[1][0]; ?>"/>
+			       value="<?php echo $values[1][0]; ?>"
+				<?php echo isset( $properties['flip'] ) && $properties['flip'] === true ? 'checked' : ''; ?>
+				/>
 
-			<label for="<?php echo $unique_ID; ?>">
+			<label for="<?php echo $unique_ID; ?>"
+			       class="<?php echo isset( $properties['deselectStyle'] ) ? 'styled' : ''; ?>">
 
 				<span class="render-modal-att-toggle-first">
 					<?php echo $values[0][1]; ?>
@@ -393,8 +396,8 @@ class Render_Modal {
 		?>
 
 		<select name="<?php echo $att_id; ?>"
-		        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select an option'; ?>"
-		        class="render-modal-att-input <?php echo $chosen; ?>"
+				data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select an option'; ?>"
+			    class="render-modal-att-input <?php echo $chosen; ?>"
 			<?php echo isset( $properties['multi'] ) ? 'multiple' : ''; ?>>
 
 			<?php // Necessary for starting with nothing selected ?>
@@ -796,7 +799,7 @@ class Render_Modal {
 
 										<div class="render-modal-shortcode-description">
 											<?php echo $shortcode['description'] ?
-												$shortcode['description'] : 'No description'; ?>
+												$shortcode['description'] : __( 'No description available.', 'Render' ); ?>
 										</div>
 										<div style="clear: both; display: table;"></div>
 									</div>

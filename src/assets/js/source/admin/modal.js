@@ -395,7 +395,6 @@ var Render_Modal;
                         }
 
                         // Extend functionality to allow custom text input (if enabled on input)
-                        // TODO Find a way to allow searching of option values as well as text
                         if ($chosen.hasClass('allow-custom-input')) {
 
                             var $input_text = $container.find('.chosen-search input[type="text"]');
@@ -1363,11 +1362,7 @@ var Render_Modal;
         setActiveShortcode: function (shortcode) {
 
             // Find our current shortcode
-            elements.list.find('li').each(function () {
-                if ($(this).attr('data-code') === shortcode) {
-                    elements.active_shortcode = $(this);
-                }
-            });
+            elements.active_shortcode = elements.list.find('li[data-code="' + shortcode + '"]');
         },
 
         /**
@@ -2114,14 +2109,17 @@ var Render_Modal;
         };
 
         /**
-         * Reverts the attribute to its original values.
-         *
-         * Reverts by setting the value to false.
+         * Stores the attribute's initial load value (for reverting later).
          *
          * @since 1.0.0
          */
-        this.revert = function () {
-            this._setValue(false);
+        this.storeOriginalValue = function () {
+
+            if (this.$input.prop('checked')) {
+                this.original_value = this.$input.val();
+            } else {
+                this.original_value = false;
+            }
         };
 
         this.init($e);
@@ -2177,15 +2175,18 @@ var Render_Modal;
         };
 
         /**
-         * Reverts the attribute to its original values.
-         *
-         * Reverts by setting the value to the checkbox value .
+         * Stores the attribute's initial load value (for reverting later).
          *
          * @since 1.0.0
          */
-            //this.revert = function () {
-            //this._setValue(this.original_value);
-            //};
+        this.storeOriginalValue = function () {
+
+            if (this.$input.prop('checked')) {
+                this.original_value = this.$input.val();
+            } else {
+                this.original_value = false;
+            }
+        };
 
         this.init($e);
     };
@@ -2237,9 +2238,14 @@ var Render_Modal;
 
             // Reset select (feed empty value)
             if (!value) {
-                this.$input.val('');
+
+                if (this.$input.attr('multiple')) {
+                    this.$input.val([]);
+                } else {
+                    this.$input.val('');
+                }
+
                 this.$input.trigger('chosen:updated');
-                this.$input.trigger('render:att_setValue');
                 return;
             }
 
@@ -2247,7 +2253,6 @@ var Render_Modal;
             if (!this.$input.find('option[value="' + value + '"]').length) {
                 this.$container.find('.chosen-search input[type="text"]').val(value);
                 this.$input.trigger('chosen:hiding_dropdown');
-                this.$input.trigger('render:att_setValue');
                 return;
             }
 

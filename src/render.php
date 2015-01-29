@@ -123,7 +123,7 @@ if ( ! class_exists( 'Render' ) ) {
 		 * @since 1.0.0
 		 */
 		private function __construct() {
-			add_action( 'init', array( __CLASS__, 'pre_init' ), 5 );
+			add_action( 'init', array( __CLASS__, 'pre_init' ), 0.1 );
 			add_action( 'init', array( $this, 'post_init' ), 100 );
 		}
 
