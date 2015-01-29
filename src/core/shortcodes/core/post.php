@@ -328,7 +328,6 @@ function _render_sc_post_word_count( $atts = array() ) {
 function render_sc_post_list() {
 
 	global $post;
-	$current_post = $post;
 
 	$posts = get_posts( array(
 			'post_type'   => 'any',
@@ -338,9 +337,9 @@ function render_sc_post_list() {
 
 	$output = array();
 	if ( ! empty( $posts ) ) {
-		foreach ( $posts as $post ) {
+		foreach ( $posts as $_post ) {
 
-			$object = get_post_type_object( $post->post_type );
+			$object = get_post_type_object( $_post->post_type );
 
 			if ( ! isset( $output[ $object->labels->name ] ) ) {
 				$output[ $object->labels->name ] = array(
@@ -349,10 +348,10 @@ function render_sc_post_list() {
 				);
 			}
 
-			$title = $post->post_title;
-			$title .= $current_post && (int) $current_post->ID === (int) $post->ID ? ' (current post)' : '';
+			$title = $_post->post_title;
+			$title .= $post && (int) $post->ID === (int) $_post->ID ? ' (current post)' : '';
 
-			$output[ $object->labels->name ]['options'][ $post->ID ] = $title;;
+			$output[ $object->labels->name ]['options'][ $_post->ID ] = $title;;
 		}
 	}
 

@@ -84,18 +84,7 @@ foreach ( array(
 				'type'  => 'section_break',
 				'label' => __( 'Meta', 'Render' ),
 			),
-			'link'                       => array(
-				'label' => __( 'HREF (link)', 'Render' ),
-				'description' => __( 'Links to a post / page. Also accepts custom input.', 'Render' ),
-				'type' => 'selectbox',
-				'properties' => array(
-					'allowCustomInput' => true,
-					'groups' => array(),
-					'callback' => array(
-						'function' => 'render_sc_post_list',
-					),
-				),
-			),
+			'link'                       => render_sc_attr_template( 'link' ),
 			'link_new_window' => array(
 				'label' => __( 'Link Window', 'Render' ),
 				'type' => 'checkbox',

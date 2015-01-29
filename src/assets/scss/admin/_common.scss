@@ -128,7 +128,7 @@
 
   label {
     @include background-gradient-gloss($color: #ccc);
-    box-shadow: 0 0 0 1px #ccc inset;
+    box-shadow: 0 0 0 1px #999 inset;
 
     &:after {
       content: '';

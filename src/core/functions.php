@@ -387,6 +387,21 @@ function render_sc_attr_template( $template, $extra = array() ) {
 				),
 			);
 			break;
+
+		case 'link':
+			$output = array(
+				'label' => __( 'Link', 'Render' ),
+				'description' => __( 'Links to a post / page. Also accepts custom input.', 'Render' ),
+				'type' => 'selectbox',
+				'properties' => array(
+					'allowCustomInput' => true,
+					'groups' => array(),
+					'callback' => array(
+						'function' => 'render_sc_post_list',
+					),
+				),
+			);
+			break;
 	}
 
 	// Reset timezone
@@ -420,4 +435,17 @@ function render_enqueue_modal() {
  */
 function render_block_regex() {
 	return '/<(address|figcaption|ol|article|figure|output|aside|footer|p|audio|form|pre|blockquote|h[1-6]|section|canvas|header|table|dd|hgroup|tfoot|div|hr|ul|dl|video|fieldset|noscript)/';
+}
+
+/**
+ * Logs out the user for display in the TinyMCE rendering.
+ *
+ * @since 1.0.0
+ */
+function render_tinyme_log_out() {
+
+	global $current_user;
+
+	$current_user = null;
+	add_filter( 'determine_current_user', '__return_false', 9999 );
 }

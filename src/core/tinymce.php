@@ -165,7 +165,7 @@ class Render_tinymce extends Render {
 
 	public static function render_shortcodes() {
 
-		global $render_shortcode_data, $Render, $current_user;
+		global $render_shortcode_data, $Render;
 
 		define( 'RENDER_TINYMCE', true );
 
@@ -190,9 +190,8 @@ class Render_tinymce extends Render {
 		 *
 		 * @since 1.0.0
 		 */
-		if ( apply_filters( 'render_tinyme_logged_out', true ) ) {
-			$current_user = null;
-			add_filter( 'determine_current_user', '__return_false', 9999 );
+		if ( apply_filters( 'render_tinyme_logged_out', false ) ) {
+			render_tinyme_log_out();
 		}
 
 		$render_shortcode_data = $_POST['shortcode_data'];
