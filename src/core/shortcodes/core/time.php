@@ -23,6 +23,7 @@ foreach ( array(
 		'description' => __( 'Outputs the current date in a custom format.', 'Render' ),
 		'atts'        => array(
 			'format' => render_sc_attr_template( 'full_date_format' ),
+			'timezone'   => render_sc_attr_template( 'timezone' ),
 		),
 		'render'      => true,
 	),
@@ -53,20 +54,28 @@ function _render_sc_custom_date( $atts ) {
 
 	$atts = shortcode_atts( array(
 		'format' => 'default_date',
+		'timezone'   => get_option( 'timezone_string', 'UTC' ),
 	), $atts );
 
 	// Escape atts
 	render_esc_atts( $atts );
 
+	$orig_timezone = date_default_timezone_get();
+	date_default_timezone_set( $atts['timezone'] );
+
 	// Output in the specified format
 	switch ( $atts['format'] ) {
 		case 'default_date':
-			return date( get_option( 'date_format', 'F j, Y' ) );
+			$output = date( get_option( 'date_format', 'F j, Y' ) );
 			break;
 		case 'default_time':
-			return date( get_option( 'time_format', 'g:i a' ) );
+			$output = date( get_option( 'time_format', 'g:i a' ) );
 			break;
 		default:
-			return date( $atts['format'] );
+			$output = date( $atts['format'] );
 	}
+
+	date_default_timezone_set( $orig_timezone );
+
+	return $output;
 }

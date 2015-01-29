@@ -225,7 +225,7 @@ function render_get_shortcode_used_categories() {
 
 	return array_merge(
 		array(
-			'all'   => array(
+			'all' => array(
 				'label' => __( 'All', 'Render' ),
 				'icon'  => 'dashicons-tagcloud',
 			),
@@ -240,12 +240,16 @@ function render_get_shortcode_used_categories() {
  * @since 1.0.0
  *
  * @param string $template Which template to use.
- * @param array $extra Extra attribute parameters to use (or override).
+ * @param array  $extra    Extra attribute parameters to use (or override).
  * @return array Attribute.
  */
 function render_sc_attr_template( $template, $extra = array() ) {
 
 	$output = array();
+
+	// Set the timezone accordingly for displaying the output
+	$orig_timezone = date_default_timezone_get();
+	date_default_timezone_set( get_option( 'timezone_string', 'UTC' ) );
 
 	switch ( $template ) {
 		case 'date_format':
@@ -368,7 +372,25 @@ function render_sc_attr_template( $template, $extra = array() ) {
 				),
 			);
 			break;
+
+		case 'timezone':
+
+			$output = array(
+				'label'      => __( 'Timezone', 'Render' ),
+				'type'       => 'selectbox',
+				'advanced'   => true,
+				'properties' => array(
+					'placeholder' => __( 'Defaults to timezone set in Settings -> General', 'Render' ),
+					'callback'    => array(
+						'function' => 'render_sc_timezone_dropdown',
+					),
+				),
+			);
+			break;
 	}
+
+	// Reset timezone
+	date_default_timezone_set( $orig_timezone );
 
 	if ( ! empty( $extra ) ) {
 		$output = array_merge( $output, $extra );

@@ -121,17 +121,7 @@ foreach (
 						),
 					),
 				),
-				'timezone'   => array(
-					'label'      => __( 'Timezone', 'Render' ),
-					'type'       => 'selectbox',
-					'advanced'   => true,
-					'properties' => array(
-						'placeholder' => __( 'Defaults to timezone set in Settings -> General', 'Render' ),
-						'callback'    => array(
-							'function' => 'render_sc_timezone_dropdown',
-						),
-					),
-				),
+				'timezone'   => render_sc_attr_template( 'timezone' ),
 			),
 			'wrapping'    => true,
 			'render'      => true,
