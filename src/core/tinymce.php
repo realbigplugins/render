@@ -172,6 +172,9 @@ class Render_tinymce extends Render {
 
 		define( 'RENDER_TINYMCE', true );
 
+		$render_shortcode_data = $_POST['shortcode_data'];
+		$content = stripslashes( $_POST['content'] );
+
 		// Remove any disabled shortcodes
 		foreach ( render_get_disabled_shortcodes() as $code ) {
 			$Render->remove_shortcode( $code );
@@ -196,10 +199,6 @@ class Render_tinymce extends Render {
 		if ( apply_filters( 'render_tinyme_logged_out', false ) ) {
 			render_tinyme_log_out();
 		}
-
-		$render_shortcode_data = $_POST['shortcode_data'];
-
-		$content = stripslashes( $_POST['content'] );
 
 		$pattern = get_shortcode_regex();
 
@@ -260,7 +259,8 @@ class Render_tinymce extends Render {
 
 			// Wrap the content in a special element, but first decide if it needs to be div or span
 			$tag     = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
-			$content = "<$tag class='render-tinymce-shortcode-content render-tinymce-editable'>$content</$tag>";
+			$editable = isset( $render_shortcode_data[ $code ]['contentNonEditable'] ) ? '' : 'render-tinymce-editable';
+			$content = "<$tag class='render-tinymce-shortcode-content $editable'>$content</$tag>";
 		}
 
 		// Replace the content with the new content
