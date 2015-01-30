@@ -265,12 +265,14 @@ var Render_tinymce;
                     }
                 });
 
-                _editor.on('init show', Render_tinymce.loadVisual);
-
                 _editor.on('init', function () {
                     Render_tinymce.editorBinds($(editor.getBody()));
                 });
 
+                // Init and switch to Visual
+                _editor.on('init show', Render_tinymce.loadVisual);
+
+                // Switch to Text
                 _editor.on('hide', function () {
                     var content = editor.getContent({format: 'numeric'});
                     $texteditor.val(window.switchEditors.pre_wpautop(Render_tinymce.loadText(content)));

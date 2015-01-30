@@ -357,3 +357,32 @@ function render_sc_post_list() {
 
 	return $output;
 }
+
+/**
+ * Helper function to get all terms in taxonomies.
+ *
+ * @since  1.0.0
+ *
+ * @param array $args Arguments to send to get_terms().
+ *
+ * @return array List of all terms in the taxonomies.
+ */
+function render_sc_term_list( $args = array() ) {
+
+	if ( ! ( $taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : false ) ) {
+		return array();
+	}
+
+	unset( $args['taxonomies'] );
+
+	$terms = get_terms( $taxonomies, wp_parse_args( $args, array(
+		'fields' => 'id=>name',
+	)));
+
+	// Deal with errors
+	if ( is_wp_error( $terms ) ) {
+		$terms = array();
+	}
+
+	return $terms;
+}

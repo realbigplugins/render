@@ -241,9 +241,10 @@ function render_get_shortcode_used_categories() {
  *
  * @param string $template Which template to use.
  * @param array  $extra    Extra attribute parameters to use (or override).
+ * @param array  $args     Optional args that some cases use.
  * @return array Attribute.
  */
-function render_sc_attr_template( $template, $extra = array() ) {
+function render_sc_attr_template( $template, $extra = array(), $args = array() ) {
 
 	$output = array();
 
@@ -373,6 +374,21 @@ function render_sc_attr_template( $template, $extra = array() ) {
 			);
 			break;
 
+		case 'terms_list':
+
+			$output = array(
+				'label'      => __( 'Terms', 'Render' ),
+				'type'       => 'selectbox',
+				'properties' => array(
+					'callback'    => array(
+						'function' => 'render_sc_term_list',
+						'args'     => $args,
+					),
+					'placeholder' => __( 'Select a taxonomy to get terms from.', 'Render' ),
+				),
+			);
+			break;
+
 		case 'timezone':
 
 			$output = array(
@@ -390,13 +406,13 @@ function render_sc_attr_template( $template, $extra = array() ) {
 
 		case 'link':
 			$output = array(
-				'label' => __( 'Link', 'Render' ),
+				'label'       => __( 'Link', 'Render' ),
 				'description' => __( 'Links to a post / page. Also accepts custom input.', 'Render' ),
-				'type' => 'selectbox',
-				'properties' => array(
+				'type'        => 'selectbox',
+				'properties'  => array(
 					'allowCustomInput' => true,
-					'groups' => array(),
-					'callback' => array(
+					'groups'           => array(),
+					'callback'         => array(
 						'function' => 'render_sc_post_list',
 					),
 				),
