@@ -579,7 +579,6 @@ var Render_tinymce;
             data.action = 'render_render_shortcodes';
             data.content = content;
             data.shortcode_data = Render_Data.rendered_shortcodes;
-
             $.post(
                 ajaxurl,
                 data,

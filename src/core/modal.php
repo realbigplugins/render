@@ -814,10 +814,10 @@ class Render_Modal {
 															<?php _e( 'Restore Shortcode', 'Render' ); ?>
 														</div>
 
-														<div
-															class="render-modal-shortcode-toolbar-button-templates disabled">
-															<?php _e( 'Templates (coming soon!)', 'Render' ); ?>
-														</div>
+<!--														<div-->
+<!--															class="render-modal-shortcode-toolbar-button-templates disabled">-->
+<!--															--><?php //_e( 'Templates (coming soon!)', 'Render' ); ?>
+<!--														</div>-->
 													</div>
 												</div>
 

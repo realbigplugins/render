@@ -19,7 +19,8 @@ module.exports = function (grunt) {
                 tasks: ['sass:src', 'autoprefixer', 'notify:sass']
             },
             sass_admin: {
-                files: ['src/assets/scss/admin/**/*.scss', 'src/assets/scss/_global.scss'],
+                files: ['src/assets/scss/admin/**/*.scss', 'src/assets/scss/_ick13467' +
+                'global.scss'],
                 tasks: ['sass:admin', 'autoprefixer', 'notify:sass_admin']
             },
             js: {

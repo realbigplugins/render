@@ -156,16 +156,19 @@ class Render_tinymce extends Render {
 
 	public static function render_ajax() {
 
-		global $post;
+		global $post, $content;
 
 		if ( isset( $_REQUEST['post'] ) ) {
-			$post = get_post( $_REQUEST['post'] );
+
+			if ( $post = get_post( $_REQUEST['post'] ) ) {
+				$post->post_content = $content;
+			}
 		}
 	}
 
 	public static function render_shortcodes() {
 
-		global $render_shortcode_data, $Render;
+		global $render_shortcode_data, $Render, $content;
 
 		define( 'RENDER_TINYMCE', true );
 
@@ -179,7 +182,7 @@ class Render_tinymce extends Render {
 		 *
 		 * Plugins may find this useful to globalize data for their tinymce shortcode callback.
 		 *
-		 * @hooked $this->render_ajax() 10
+		 * @hooked $this->render_ajax() 1
 		 *
 		 * @since 1.0.0
 		 */
@@ -332,7 +335,7 @@ class Render_tinymce extends Render {
 }
 
 // Always add the AJAX
-add_action( 'render_tinymce_ajax', array( 'Render_tinymce', 'render_ajax' ) );
+add_action( 'render_tinymce_ajax', array( 'Render_tinymce', 'render_ajax' ), 1 );
 add_action( 'wp_ajax_render_render_shortcode', array( 'Render_tinymce', 'render_shortcode' ) );
 add_action( 'wp_ajax_render_render_shortcodes', array( 'Render_tinymce', 'render_shortcodes' ) );
 
