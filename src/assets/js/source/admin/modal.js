@@ -835,6 +835,48 @@ var Render_Modal;
                         attObj = new Toggle($(this));
                         break;
 
+                    case 'textarea':
+
+                        attObj = new Textbox($(this));
+
+                        // Disable Render Modal actions
+                        $(this).find('textarea').keyup(function (e) {
+
+                            // Enter, up arrow, down arrow
+                            if (e.which == 13 || e.which == 38 || e.which == 40) {
+                                e.preventDefault();
+                                return false;
+                            }
+                        });
+
+                        /*
+                        Allow tab to indent instead of going to the next input
+
+                        Taken from http://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea#answer-6637396
+                        Much thanks to user "kasdega"!
+                         */
+                        $(this).delegate('textarea', 'keydown', function (e) {
+
+                            var keyCode = e.keyCode || e.which;
+
+                            if (keyCode == 9) {
+                                e.preventDefault();
+                                var start = $(this).get(0).selectionStart;
+                                var end = $(this).get(0).selectionEnd;
+
+                                // set textarea value to: text before caret + tab + text after caret
+                                $(this).val($(this).val().substring(0, start)
+                                + "    "
+                                + $(this).val().substring(end));
+
+                                // put caret at right position again
+                                $(this).get(0).selectionStart =
+                                    $(this).get(0).selectionEnd = start + 4;
+                            }
+                        });
+
+                        break;
+
                     default:
 
                         attObj = new Textbox($(this));
@@ -1328,9 +1370,9 @@ var Render_Modal;
                 atts[match[3]] = match[4];
             }
 
-            // Add on the content
+            // Add on the content if there's a content attribute
             if (content) {
-                atts.content = content;
+                atts.content = HTMLtoTextarea(content);
             }
 
             this.modifying = true;
@@ -1568,7 +1610,9 @@ var Render_Modal;
 
                     // Set up the selection to be content if it exists
                     if (name === 'content') {
-                        selection = value;
+
+                        // Run through filters first
+                        selection = textareaToHTML(value);
                         return true; // Continue $.each
                     }
 
@@ -2710,5 +2754,47 @@ var Render_Modal;
                 $(this).removeAttr('style');
             }
         });
+    }
+
+    /**
+     * Converts textarea elements to HTML elements.
+     *
+     * @since 1.0.0
+     *
+     * @param {string} value The value to convert.
+     * @returns {string} The converted value.
+     */
+    function HTMLtoTextarea(value) {
+
+        // Convert line breaks
+        value = value.replace(/<br\s*\/?>/mg, "\n");
+
+        // Convert spaces
+        //var regExpSpaces = new RegExp(String.fromCharCode(160), "g");
+        value = value.replace(/&nbsp;/g, " ");
+
+        value = window.switchEditors.pre_wpautop(value);
+
+        return value;
+    }
+
+    /**
+     * Converts HTML elements to textarea elements.
+     *
+     * @since 1.0.0
+     *
+     * @param {string} value The value to convert.
+     * @returns {string} The converted value.
+     */
+    function textareaToHTML(value) {
+
+        // Convert line breaks
+        value = value.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+
+        // Convert spaces
+        // TODO more efficient way to do this
+        value = value.replace(/\s/g, '&nbsp;');
+
+        return value;
     }
 })(jQuery);

@@ -63,7 +63,7 @@ class Render_AdminPage_Settings extends Render {
 		register_setting( 'render_options', 'render_render_visual' );
 
 		// EDD Licensing
-		register_setting( 'render_options', 'render_license_key', 'edd_sanitize_license' );
+		register_setting( 'render_options', 'render_license_key', 'edd_render_sanitize_license' );
 	}
 
 	/**
@@ -127,20 +127,21 @@ class Render_AdminPage_Settings extends Render {
 							</th>
 							<td>
 								<?php if ( $status !== false && $status == 'valid' ) { ?>
-									<?php wp_nonce_field( 'edd_sample_nonce', 'edd_sample_nonce' ); ?>
+									<?php wp_nonce_field( 'edd_render_nonce', 'edd_render_nonce' ); ?>
 									<span class="render-license-status valid">
 										<span class="dashicons dashicons-yes"></span>
 										<?php _e( 'active', 'Render' ); ?>
 									</span>
-									<input type="submit" class="button-secondary button-red" name="edd_license_deactivate"
+									<input type="submit" class="button-secondary button-red"
+									       name="edd_render_license_deactivate"
 									       value="<?php _e( 'Deactivate License', 'Render' ); ?>"/>
 								<?php } else {
-									wp_nonce_field( 'edd_sample_nonce', 'edd_sample_nonce' ); ?>
+									wp_nonce_field( 'edd_render_nonce', 'edd_render_nonce' ); ?>
 									<span class="render-license-status invalid">
 										<span class="dashicons dashicons-no"></span>
 										<?php _e( 'inactive', 'Render' ); ?>
 									</span>
-									<input type="submit" class="button-secondary" name="edd_license_activate"
+									<input type="submit" class="button-secondary" name="edd_render_license_activate"
 									       value="<?php _e( 'Activate License', 'Render' ); ?>"/>
 								<?php } ?>
 							</td>
@@ -171,7 +172,7 @@ class Render_AdminPage_Settings extends Render {
 
 new Render_AdminPage_Settings();
 
-function edd_sanitize_license( $new ) {
+function edd_render_sanitize_license( $new ) {
 	$old = get_option( 'render_license_key' );
 	if ( $old && $old != $new ) {
 		delete_option( 'render_license_status' ); // new license has been entered, so must reactivate

@@ -24,7 +24,7 @@ if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 	include( dirname( __FILE__ ) . '/EDD_SL_Plugin_Updater.php' );
 }
 
-function edd_sl_sample_plugin_updater() {
+function edd_render_updater() {
 
 	// retrieve our license key from the DB
 	$license_key = trim( get_option( 'render_license_key' ) );
@@ -38,16 +38,16 @@ function edd_sl_sample_plugin_updater() {
 		)
 	);
 }
-add_action( 'admin_init', 'edd_sl_sample_plugin_updater', 0 );
+add_action( 'admin_init', 'edd_render_updater', 0 );
 
 
-function edd_sample_activate_license() {
+function edd_render_activate_license() {
 
 	// listen for our activate button to be clicked
-	if( isset( $_POST['edd_license_activate'] ) ) {
+	if( isset( $_POST['edd_render_license_activate'] ) ) {
 
 		// run a quick security check
-		if( ! check_admin_referer( 'edd_sample_nonce', 'edd_sample_nonce' ) )
+		if( ! check_admin_referer( 'edd_render_nonce', 'edd_render_nonce' ) )
 			return; // get out if we didn't click the Activate button
 
 		// retrieve the license from the database
@@ -78,7 +78,7 @@ function edd_sample_activate_license() {
 
 	}
 }
-add_action('admin_init', 'edd_sample_activate_license');
+add_action('admin_init', 'edd_render_activate_license');
 
 
 /***********************************************
@@ -86,13 +86,13 @@ add_action('admin_init', 'edd_sample_activate_license');
  * This will descrease the site count
  ***********************************************/
 
-function edd_sample_deactivate_license() {
+function edd_render_deactivate_license() {
 
 	// listen for our activate button to be clicked
-	if( isset( $_POST['edd_license_deactivate'] ) ) {
+	if( isset( $_POST['edd_render_license_deactivate'] ) ) {
 
 		// run a quick security check
-		if( ! check_admin_referer( 'edd_sample_nonce', 'edd_sample_nonce' ) )
+		if( ! check_admin_referer( 'edd_render_nonce', 'edd_render_nonce' ) )
 			return; // get out if we didn't click the Activate button
 
 		// retrieve the license from the database
@@ -123,4 +123,4 @@ function edd_sample_deactivate_license() {
 
 	}
 }
-add_action('admin_init', 'edd_sample_deactivate_license');
+add_action('admin_init', 'edd_render_deactivate_license');
