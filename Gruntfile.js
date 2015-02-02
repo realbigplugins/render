@@ -136,6 +136,8 @@ module.exports = function (grunt) {
                         cwd: 'src/',
                         src: [
                             '**',
+                            '!src/assets/images/**', // Don't transfer images, they don't copy right
+                            '!src/assets/icons/**', // Don't transfer icons, they don't copy right
                             '!**/.{svn,git}/**', // Ignore VCS settings
                             '!**/.{idea}/**', // Ignore .idea project settings
                             '!**/*.map' // No maps
@@ -176,11 +178,17 @@ module.exports = function (grunt) {
                     title: '<%= pkg.name %>',
                     message: 'JS tinymce Completed'
                 }
+            },
+            build: {
+                options: {
+                    title: '<%= pkg.name %>',
+                    message: 'NOTE: Manually copy icons and images.'
+                }
             }
         }
     });
 
     // Register tasks
     grunt.registerTask('Watch', ['watch']);
-    grunt.registerTask('Build', ['copy']);
+    grunt.registerTask('Build', ['copy', 'notify:build']);
 };

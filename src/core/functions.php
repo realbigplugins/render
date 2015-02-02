@@ -250,7 +250,8 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 
 	// Set the timezone accordingly for displaying the output
 	$orig_timezone = date_default_timezone_get();
-	date_default_timezone_set( get_option( 'timezone_string', 'UTC' ) );
+	$timezone = get_option( 'timezone_string', 'UTC' );
+	date_default_timezone_set( ! empty( $timezone ) ? $timezone : 'UTC' );
 
 	switch ( $template ) {
 		case 'date_format':
