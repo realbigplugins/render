@@ -139,8 +139,7 @@ module.exports = function (grunt) {
                             '!assets/images/**', // Don't transfer images, they don't copy right
                             '!assets/icons/**', // Don't transfer icons, they don't copy right
                             '!**/.{svn,git}/**', // Ignore VCS settings
-                            '!**/.{idea}/**', // Ignore .idea project settings
-                            '!**/*.map' // No maps
+                            '!**/.{idea}/**' // Ignore .idea project settings
                         ],
                         dest: 'build/'
                     }

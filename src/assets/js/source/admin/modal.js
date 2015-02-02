@@ -2773,7 +2773,9 @@ var Render_Modal;
         //var regExpSpaces = new RegExp(String.fromCharCode(160), "g");
         value = value.replace(/&nbsp;/g, " ");
 
-        value = window.switchEditors.pre_wpautop(value);
+        if (typeof window.switchEditors !== 'undefined' ) {
+            value = window.switchEditors.pre_wpautop(value);
+        }
 
         return value;
     }
