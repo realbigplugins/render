@@ -31,7 +31,7 @@ function edd_render_updater() {
 
 	// setup the updater
 	$edd_updater = new EDD_SL_Plugin_Updater( EDD_REALBIGPLUGINS_STORE_URL, RENDER_PATH . 'render.php', array(
-			'version' 	=> '1.0.0', 				// current version number
+			'version' 	=> RENDER_VERSION, 				// current version number
 			'license' 	=> $license_key, 		// license key (used get_option above to retrieve from DB)
 			'item_name' => EDD_RENDER_NAME, 	// name of this plugin
 			'author' 	=> 'Joel Worsham & Kyle Maurer'  // author of this plugin
