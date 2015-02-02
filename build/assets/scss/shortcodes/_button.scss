@@ -1,0 +1,115 @@
+@import "../global";
+
+@mixin button-size($button-padding-base) {
+
+  $button-padding-vertical: $button-padding-base;
+  $button-padding-horizontal: $button-padding-base * 1.5;
+
+  padding: $button-padding-vertical $button-padding-horizontal;
+
+  &[class*='rounded'] {
+    border-radius: $button-padding-base;
+
+    .hover {
+      border-radius: $button-padding-base;
+    }
+  }
+
+  &[class*='icon'] {
+    .icon {
+      left: $button-padding-base;
+    }
+
+    .content {
+      margin-left: $button-padding-base + 15;
+    }
+  }
+
+  .hover {
+    padding: $button-padding-vertical $button-padding-horizontal;
+  }
+}
+
+[class^='render-button'] {
+  display: inline-block;
+  text-decoration: none !important;
+  position: relative;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+
+  &:hover {
+    .hover, .content-hover {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .content-under {
+      visibility: hidden;
+      opacity: 0;
+    }
+  }
+
+  &[class*='small'] {
+    font-size: 12px;
+    @include button-size(5px);
+  }
+
+  &[class*='medium'] {
+    font-size: 15px;
+    @include button-size(10px);
+  }
+
+  &[class*='large'] {
+    font-size: 20px;
+    @include button-size(15px);
+  }
+
+  &[class*='ellipse'] {
+    border-radius: 50%;
+
+    .hover {
+      border-radius: 50%;
+    }
+  }
+
+  .icon, .content {
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+  }
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 120%;
+    height: auto;
+  }
+
+  .hover {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all $primary-transition;
+    z-index: 1;
+  }
+
+  .content-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all $primary-transition;
+  }
+
+  .content-under {
+    transition: all $primary-transition;
+  }
+}

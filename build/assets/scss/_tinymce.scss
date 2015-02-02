@@ -1,0 +1,191 @@
+@import "global";
+
+$tooltip-arrow-size: 6px;
+$tooltip-height: 30px;
+$tooltip-color: #f5f5f5;
+$tooltip-border-color: #aaa;
+
+body#tinymce {
+  background: #fff;
+}
+
+.render-tinymce-shortcode-wrapper {
+  position: relative;
+  transition: $primary-transition all;
+  display: inline-block;
+
+  &.block {
+    display: block;
+  }
+
+  &.styled {
+    background: #f5f5f5;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    padding: 2px 5px;
+    transition: border-color 300ms;
+
+    &:hover {
+      border-color: #888;
+    }
+
+    > *:last-child, p:last-of-type, ul, table {
+      margin-bottom: 0;
+    }
+
+    li {
+      margin-left: 20px;
+    }
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+    * {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      user-select: none;
+    }
+  }
+
+  &.active {
+    border: 2px dashed #ccc;
+    padding: 5px;
+  }
+
+  &.delete {
+
+    &.styled {
+      background: #FFD4D4;
+      border-color: darken(#FFD4D4, 10%);
+    }
+
+    &:not(.styled) {
+      border: 2px dashed #FDAB9D !important;
+      padding: 5px;
+    }
+
+    > .render-tinymce-shortcode-wrapper-delete {
+      visibility: visible;
+      opacity: 1;
+      margin-bottom: 0;
+    }
+  }
+
+  .render-tinymce-shortcode-wrapper-actions.active {
+    visibility: visible;
+    opacity: 1;
+    margin-bottom: 0;
+  }
+
+  // Tooltips
+  .render-tinymce-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: -($tooltip-height + ($tooltip-arrow-size * 2));
+    margin-bottom: 10px;
+    height: $tooltip-height;
+    text-align: center;
+    line-height: $tooltip-height;
+    font-family: 'Open Sans', sans-serif;
+    background: $tooltip-color;
+    box-shadow: 0 1px 3px rgba(#000, 0.25);
+    border: 1px solid $tooltip-border-color;
+    border-radius: 2px;
+    padding: 0 10px;
+    font-size: 12px;
+    z-index: 10;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 300ms;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: -($tooltip-arrow-size + 1);
+      left: 50%;
+      margin-left: -($tooltip-arrow-size);
+      border-bottom: $tooltip-arrow-size solid $tooltip-border-color;
+      border-left: $tooltip-arrow-size solid transparent;
+      border-right: $tooltip-arrow-size solid transparent;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: -($tooltip-arrow-size - 1);
+      left: 50%;
+      margin-left: -($tooltip-arrow-size - 1);
+      border-bottom: ($tooltip-arrow-size - 1) solid $tooltip-color;
+      border-left: ($tooltip-arrow-size - 1) solid transparent;
+      border-right: ($tooltip-arrow-size - 1) solid transparent;
+    }
+  }
+
+  // Action buttons
+  .render-tinymce-shortcode-wrapper-actions {
+    min-width: 60px;
+    box-sizing: content-box;
+
+    // Edit and remove buttons
+    .render-tinymce-shortcode-wrapper-edit, .render-tinymce-shortcode-wrapper-remove {
+      line-height: $tooltip-height;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 300ms;
+      width: 30px;
+      text-indent: -99999px;
+
+      &:before {
+        text-indent: 0;
+        float: left;
+        width: 30px;
+        line-height: $tooltip-height;
+        color: #333;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  // Delete message
+  .render-tinymce-shortcode-wrapper-delete {
+    min-width: 120px;
+    z-index: 15;
+  }
+}
+
+.render-shortcode-no-output {
+  color: #aaa;
+}
+
+// Global hidden and visible content
+.render-content-hidden {
+  color: #aaa;
+}
+
+.render-content-visible {
+  // Nothing different.
+}
+
+.render-tinymce-shortcode-wrapper {
+  &:hover .render-visibility-icon {
+    opacity: 0.6;
+  }
+}
+
+.render-visibility-icon {
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  opacity: 0.2;
+  color: #333;
+}
