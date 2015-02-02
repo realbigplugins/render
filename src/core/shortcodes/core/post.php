@@ -24,8 +24,8 @@ foreach (
 			'description' => __( 'Displays the supplied meta information about the post.', 'Render' ),
 			'tags'        => 'id author title word count published date status type excerpt',
 			'atts'        => array(
-				'post' => render_sc_attr_template( 'post_list' ),
-				'meta' => array(
+				'post'        => render_sc_attr_template( 'post_list' ),
+				'meta'        => array(
 					'label'       => __( 'Meta', 'Render' ),
 					'type'        => 'selectbox',
 					'description' => __( 'The meta information of the post to show (custom input allowed).', 'Render' ),
@@ -48,7 +48,7 @@ foreach (
 				),
 				'date_format' => render_sc_attr_template( 'date_format', array(
 					'description' => __( 'Only applies to some meta types.', 'Render' ),
-					'advanced' => true,
+					'advanced'    => true,
 				) ),
 			),
 			'render'      => true,
@@ -61,9 +61,9 @@ foreach (
 
 	render_add_shortcode( $shortcode );
 	render_add_shortcode_category( array(
-		'id' => 'post',
-		'label' => __( 'Post', 'Render'),
-		'icon' => 'dashicons-admin-post',
+		'id'    => 'post',
+		'label' => __( 'Post', 'Render' ),
+		'icon'  => 'dashicons-admin-post',
 	) );
 }
 
@@ -323,17 +323,21 @@ function _render_sc_post_word_count( $atts = array() ) {
  *
  * @since  1.0.0
  *
+ * @param array $args Arguments to send to get_terms().
  * @return array List of all posts
  */
-function render_sc_post_list() {
+function render_sc_post_list( $args = array() ) {
 
 	global $post;
 
-	$posts = get_posts( array(
-			'post_type'   => 'any',
-			'numberposts' => '-1',
-		)
-	);
+	$posts = get_posts( wp_parse_args( $args, array(
+		'post_type'   => 'any',
+		'numberposts' => '-1',
+	) ) );
+
+	if ( isset( $args['post_type'])) {
+		$test = '1';
+	}
 
 	$output = array();
 	if ( ! empty( $posts ) ) {
@@ -355,6 +359,14 @@ function render_sc_post_list() {
 		}
 	}
 
+	// Collapse if only one post type
+	if ( count( (array) $output ) === 1 ) {
+		foreach ( $output as $group ) {
+			$output = $group['options'];
+			break;
+		}
+	}
+
 	return $output;
 }
 
@@ -364,7 +376,6 @@ function render_sc_post_list() {
  * @since  1.0.0
  *
  * @param array $args Arguments to send to get_terms().
- *
  * @return array List of all terms in the taxonomies.
  */
 function render_sc_term_list( $args = array() ) {
@@ -377,7 +388,7 @@ function render_sc_term_list( $args = array() ) {
 
 	$terms = get_terms( $taxonomies, wp_parse_args( $args, array(
 		'fields' => 'id=>name',
-	)));
+	) ) );
 
 	// Deal with errors
 	if ( is_wp_error( $terms ) ) {
