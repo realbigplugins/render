@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed
-define( 'RENDER_STORE_URL', 'http://realbigplugins.com' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+define( 'EDD_REALBIGPLUGINS_STORE_URL', 'http://realbigplugins.com' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 
 // the name of your product. This should match the download name in EDD exactly
-define( 'RENDER_ITEM_NAME', 'Render' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+define( 'EDD_RENDER_NAME', 'Render' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 
 if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 	// load our custom updater
