@@ -558,6 +558,24 @@ function _render_sc_login_form( $atts = array() ) {
 	}
 }
 
+
+/**
+ * TinyMCE version.
+ *
+ * Logs out the user before displaying form.
+ *
+ * @since 1.0.0
+ *
+ * @param array $atts The attributes sent to the shortcode.
+ *
+ * @return string The HTML login form
+ */
+function _render_sc_login_form_tinymce( $atts = array() ) {
+
+	render_tinyme_log_out();
+	return _render_sc_login_form( $atts );
+}
+
 /**
  * Helper function for getting the user data.
  *
@@ -609,7 +627,8 @@ function render_user_dropdown( $capability = 'read' ) {
 
 	$output = array();
 	foreach ( $users as $user ) {
-		if ( isset( $user->allcaps[ $capability ] ) ) {
+		$capabilities = isset( $user->allcaps ) ? $user->allcaps : false;
+		if ( $capabilities && isset( $capabilities[ (string) $capability ] ) ) {
 			$output[ $user->ID ] = $user->display_name;
 		}
 	}
