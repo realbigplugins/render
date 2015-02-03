@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Render
- * Description: This plugin is the only shortcode plugin you will ever need.
+ * Description: Render makes adding complex elements to your content simple and pain free. See what you can Render.
  * Version: 1.0.0
  * Author: Kyle Maurer & Joel Worsham
  * Author URI: http://realbigmarketing.com
