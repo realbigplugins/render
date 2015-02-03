@@ -100,7 +100,8 @@ class Render_AdminPage_Settings extends Render {
 		?>
 		<div class="wrap render-wrap">
 			<h2 class="render-page-title">
-				<img src="<?php echo RENDER_URL; ?>/assets/images/render-logo.svg" class="render-page-title-logo"/>
+				<img src="<?php echo RENDER_URL; ?>/assets/images/render-logo.svg" class="render-page-title-logo"
+				 onerror="this.src='<?php echo RENDER_URL; ?>/assets/images/render-header-logo.png';" />
 				<?php _e( 'Settings', 'Render' ); ?>
 			</h2>
 

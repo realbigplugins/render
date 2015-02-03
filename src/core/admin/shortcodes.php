@@ -114,7 +114,8 @@ class Render_AdminPage_Shortcodes extends Render {
 		?>
 		<div class="wrap">
 			<h2 class="render-page-title">
-				<img src="<?php echo RENDER_URL; ?>/assets/images/render-logo.svg" class="render-page-title-logo"/>
+				<img src="<?php echo RENDER_URL; ?>/assets/images/render-logo.svg" class="render-page-title-logo"
+				     onerror="this.src='<?php echo RENDER_URL; ?>/assets/images/render-header-logo.png';" />
 				<?php _e( 'Shortcodes', 'Render' ); ?>
 			</h2>
 

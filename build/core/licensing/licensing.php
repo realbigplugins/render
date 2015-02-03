@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed
-define( 'RENDER_STORE_URL', 'http://realbigplugins.com' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+define( 'EDD_REALBIGPLUGINS_STORE_URL', 'http://realbigplugins.com' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 
 // the name of your product. This should match the download name in EDD exactly
-define( 'RENDER_ITEM_NAME', 'Render' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+define( 'EDD_RENDER_NAME', 'Render' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 
 if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 	// load our custom updater
@@ -30,10 +30,10 @@ function edd_render_updater() {
 	$license_key = trim( get_option( 'render_license_key' ) );
 
 	// setup the updater
-	$edd_updater = new EDD_SL_Plugin_Updater( RENDER_STORE_URL, RENDER_PATH . 'render.php', array(
-			'version' 	=> '1.0.0', 				// current version number
+	$edd_updater = new EDD_SL_Plugin_Updater( EDD_REALBIGPLUGINS_STORE_URL, RENDER_PATH . 'render.php', array(
+			'version' 	=> RENDER_VERSION, 				// current version number
 			'license' 	=> $license_key, 		// license key (used get_option above to retrieve from DB)
-			'item_name' => RENDER_ITEM_NAME, 	// name of this plugin
+			'item_name' => EDD_RENDER_NAME, 	// name of this plugin
 			'author' 	=> 'Joel Worsham & Kyle Maurer'  // author of this plugin
 		)
 	);
@@ -58,12 +58,12 @@ function edd_render_activate_license() {
 		$api_params = array(
 			'edd_action'=> 'activate_license',
 			'license' 	=> $license,
-			'item_name' => urlencode( RENDER_ITEM_NAME ), // the name of our product in EDD
+			'item_name' => urlencode( EDD_RENDER_NAME ), // the name of our product in EDD
 			'url'       => home_url()
 		);
 
 		// Call the custom API.
-		$response = wp_remote_get( add_query_arg( $api_params, RENDER_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+		$response = wp_remote_get( add_query_arg( $api_params, EDD_REALBIGPLUGINS_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
 
 		// make sure the response came back okay
 		if ( is_wp_error( $response ) )
@@ -103,12 +103,12 @@ function edd_render_deactivate_license() {
 		$api_params = array(
 			'edd_action'=> 'deactivate_license',
 			'license' 	=> $license,
-			'item_name' => urlencode( RENDER_ITEM_NAME ), // the name of our product in EDD
+			'item_name' => urlencode( EDD_RENDER_NAME ), // the name of our product in EDD
 			'url'       => home_url()
 		);
 
 		// Call the custom API.
-		$response = wp_remote_get( add_query_arg( $api_params, RENDER_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+		$response = wp_remote_get( add_query_arg( $api_params, EDD_REALBIGPLUGINS_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
 
 		// make sure the response came back okay
 		if ( is_wp_error( $response ) )
