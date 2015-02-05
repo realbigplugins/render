@@ -1,6 +1,21 @@
-## Installation
+# Render
 
-Simply download the master zip (the button on the right that says "Download ZIP"), and use WP to install that zip.
+Render is a powerful plugin which enables you to insert useful and powerful functionality into your content. All without writing or even seeing any code.
+
+Render is powered by WordPress shortcodes but, unlike all other shortcode plugins, shortcodes created by Render offer a live preview within your content so you can see how each feature looks before you hit publish and without having to use or learn the standard shortcode syntax.
+
+Some of the shortcodes included are:
+
+Button
+Columns
+Login form
+Custom query
+Conditional content display
+User meta
+Site details
+Post meta
+Current date/time
+And more!
 
 ## Key features
 
@@ -13,14 +28,15 @@ Here's a basic rundown of what this plugin does so that you'll know what to look
 * Creates a widget through which any registered shortcode can be easily inserted into a sidebar
 * Provides a very easy to use developer API for extending the plugin and integrating other shortcodes with this plugin
 
-## How can you help us?
+## Installation
 
-Please test this plugin thoroughly and whenever you come across a bug, something weird, or just something you think could be done better, go to the issues page of this repository (click the "Issues" button on the right) and log your concern as a new issue. We'll be sure to label it accordingly and respond quickly (and probably implement it!).
+Simply download the master zip (the button on the right that says "Download ZIP"), and use WP to install that zip.
 
-If you're an experienced developer and are comfortable with git, feel free to make a pull request and perhaps we'll implement your change-set.
+## Changelog
 
-## IMPORTANT!!
+### [1.0.1](https://github.com/brashrebel/render/releases/tag/v1.0.1)
+* Fix major ACF conflict.
+* Fix PHP notice.
 
-This plugin is in *BETA*! Do not install this plugin on a live, production server. We believe we've done enough testing on our own to ensure there is nothing in this plugin that will cause a website to crash and burn, but it's a good idea to pretend that it could, and install it on a testing server instead.
-
-We highly recommend you do not install this plugin on a production server and use it regularly yet, but once this plugin hits version 1.0, it will be safe and ready to go!
+### [1.0.0](https://github.com/brashrebel/render/releases/tag/v1.0.0)
+* The initial release!

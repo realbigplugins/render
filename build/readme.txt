@@ -40,5 +40,11 @@ Using this plugin is very simple. All you have to do is:
 
 == Changelog ==
 
+== Changelog ==
+
+= 1.0.1 =
+* Fix major ACF conflict.
+* Fix PHP notice.
+
 = 1.0.0 =
 * A change since the previous version.
