@@ -354,7 +354,7 @@ class Render_Modal {
 		if ( isset( $properties['callback'] ) && is_callable( $properties['callback']['function'] ) ) {
 			$options = call_user_func(
 				$properties['callback']['function'],
-				isset( $properties['callback']['args'] ) ? $properties['callback']['args'] : array()
+				isset( $properties['callback']['args'] ) ? $properties['callback']['args'] : null
 			);
 		}
 

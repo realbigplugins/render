@@ -102,6 +102,14 @@ var Render_tinymce;
 
             tinymce.PluginManager.add('render', function (_editor) {
 
+                /*
+                 * Only target content WYSIWYG. Fixes #105.
+                 * @since 1.0.1
+                 */
+                if (_editor.id !== 'content' ) {
+                    return;
+                }
+
                 var $body;
 
                 // Set the active editor
@@ -279,28 +287,26 @@ var Render_tinymce;
                 });
 
                 // Prevent adding undo levels on rendering shortcodes
-                //editor.on('BeforeAddUndo', function (event) {
-                //
-                //    // Get any unmodified shortcodes
-                //    var wp_regex = Render_Data.shortcode_regex.match(/\((\w+\|?)+\)/),
-                //        shortodeRegEx, codes;
-                //
-                //    if (wp_regex) {
-                //        shortodeRegEx = new RegExp('\\[' + wp_regex[0], 'g');
-                //
-                //        if (event.level.content.length) {
-                //            codes = event.level.content.match(shortodeRegEx);
-                //        }
-                //    }
-                //
-                //    // If we found any unmodified shortcodes, then this is the undo level that renders shortcodes, so
-                //    // we DON'T want to add it to the undo levels
-                //    if (codes) {
-                //        event.preventDefault();
-                //    }
-                //
-                //    console.log(editor.getContent());
-                //});
+                editor.on('BeforeAddUndo', function (event) {
+
+                    // Get any unmodified shortcodes
+                    var wp_regex = Render_Data.shortcode_regex.match(/\((\w+\|?)+\)/),
+                        shortodeRegEx, codes;
+
+                    if (wp_regex) {
+                        shortodeRegEx = new RegExp('\\[' + wp_regex[0], 'g');
+
+                        if (event.level.content.length) {
+                            codes = event.level.content.match(shortodeRegEx);
+                        }
+                    }
+
+                    // If we found any unmodified shortcodes, then this is the undo level that renders shortcodes, so
+                    // we DON'T want to add it to the undo levels
+                    if (codes) {
+                        event.preventDefault();
+                    }
+                });
             });
         },
 

@@ -1,7 +1,3 @@
-# We're in BETA!
-
-Render is currently in its first beta release. Please download and test the crap out of this plugin!
-
 ## Installation
 
 Simply download the master zip (the button on the right that says "Download ZIP"), and use WP to install that zip.
