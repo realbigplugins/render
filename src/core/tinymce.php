@@ -320,6 +320,7 @@ class Render_tinymce extends Render {
 
 		// Action button
 		$output .= "<$tag class='render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip'>";
+		$output .= "<$tag class='render-tinymce-tooltip-spacer'></$tag>";
 		$output .= "<$tag class='render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit'>edit</$tag>";
 		$output .= "<$tag class='render-tinymce-shortcode-wrapper-remove dashicons dashicons-no'>remove</$tag>";
 		$output .= "</$tag>";
