@@ -404,10 +404,20 @@ var Render_Modal;
                                 $container.find('.no-results').remove();
                             });
 
+                            // Clear input field and data on change (this should be when the deselect)
+                            $chosen.change(function () {
+
+                                if ($chosen.data('chosen-custom-input')) {
+                                    $input_text.val('');
+                                    $chosen.removeData('chosen-custom-input');
+                                }
+                            });
+
                             // Use the custom value when hiding the dropdown
                             $chosen.on('chosen:hiding_dropdown', function (e, a) {
 
-                                var search_text = $input_text.val();
+                                var search_text = $input_text.val(),
+                                    Chosen = $chosen.data('chosen');
 
                                 // If no searching, get outta here
                                 if (!search_text) {
@@ -424,6 +434,9 @@ var Render_Modal;
 
                                 // Remove focus from input and clear any leftover input
                                 $input_text.val('').blur();
+
+                                // Manually add choice deselect and event
+                                Chosen.single_deselect_control_build();
                             });
 
                             // Populate search text if using custom input
