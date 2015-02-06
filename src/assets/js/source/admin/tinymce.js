@@ -454,12 +454,21 @@ var Render_tinymce;
                 $shortcode.replaceWith(Render_Modal.output.all);
             } else {
 
-                // If content is selected, replace it, otherwise, insert it
-                if (editor.selection.getContent().length) {
+                var selection = editor.selection.getNode(),
+                    selection_content = editor.selection.getContent(),
+                    range = editor.selection.getRng();
+
+                //console.log(editor.selection.getBookmark());
+
+                //$(selection).replaceWith(Render_Modal.output.all);
+                console.log(editor.selection.getContent());
+                editor.selection.setContent(Render_Modal.output.all);
+                return;
+
+                if (selection.getContent().length) {
                     editor.selection.setContent(Render_Modal.output.all);
-                } else {
-                    editor.insertContent(Render_Modal.output.all);
                 }
+                editor.insertContent(Render_Modal.output.all);
             }
 
             // Render the shortcodes
