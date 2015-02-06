@@ -105,6 +105,15 @@ body#tinymce {
     transform: translateX(-50%);
     transition: all 300ms;
 
+    // Helps mousing down to the tooltip without losing focus
+    .render-tinymce-tooltip-spacer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -12px;
+      height: 12px;
+    }
+
     &:before {
       content: '';
       position: absolute;

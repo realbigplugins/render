@@ -173,7 +173,7 @@ class Render_tinymce extends Render {
 		define( 'RENDER_TINYMCE', true );
 
 		$render_shortcode_data = $_POST['shortcode_data'];
-		$content = stripslashes( $_POST['content'] );
+		$content               = stripslashes( $_POST['content'] );
 
 		// Remove any disabled shortcodes
 		foreach ( render_get_disabled_shortcodes() as $code ) {
@@ -215,13 +215,13 @@ class Render_tinymce extends Render {
 	 *
 	 * Calls and wraps all shortcodes in the content.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access private
 	 *
 	 * @global array $render_shortcode_data Extra data supplied from JS.
-	 * @global array $shortcode_tags WP registered shortcodes.
+	 * @global array $shortcode_tags        WP registered shortcodes.
 	 *
-	 * @param array $matches Matches supplied from preg_replace_callback(),
+	 * @param array  $matches               Matches supplied from preg_replace_callback(),
 	 * @return string The substituted output.
 	 */
 	public static function _replace_shortcodes( $matches ) {
@@ -258,9 +258,9 @@ class Render_tinymce extends Render {
 		if ( ! empty( $content ) ) {
 
 			// Wrap the content in a special element, but first decide if it needs to be div or span
-			$tag     = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
+			$tag      = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
 			$editable = isset( $render_shortcode_data[ $code ]['contentNonEditable'] ) ? '' : 'render-tinymce-editable';
-			$content = "<$tag class='render-tinymce-shortcode-content $editable'>$content</$tag>";
+			$content  = "<$tag class='render-tinymce-shortcode-content $editable'>$content</$tag>";
 		}
 
 		// Replace the content with the new content
@@ -304,31 +304,28 @@ class Render_tinymce extends Render {
 		$output = '';
 
 		// Start the wrapper
-		if ( ! isset( $render_shortcode_data[ $code ]['noWrap'] ) ) {
 
-			if ( ! empty( $atts ) ) {
-				$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
-			}
-
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable $code $nostyle $block' data-code='$code' data-atts='$atts'>";
+		if ( ! empty( $atts ) ) {
+			$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
 		}
+
+		$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable $code $nostyle $block' data-code='$code' data-atts='$atts'>";
 
 		$output .= ! empty( $shortcode_output ) ? $shortcode_output : '<span class="render-shortcode-no-output">(no output)</span>';
 
 		// Close the wrapper
-		if ( ! isset( $render_shortcode_data[ $code ]['noWrap'] ) ) {
 
-			// Delete notification
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip'>" . __( 'Press again to delete', 'Render' ) . "</$tag>";
+		// Delete notification
+		$output .= "<$tag class='render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip'>" . __( 'Press again to delete', 'Render' ) . "</$tag>";
 
-			// Action button
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip'>";
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit'>edit</$tag>";
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper-remove dashicons dashicons-no'>remove</$tag>";
-			$output .= "</$tag>";
+		// Action button
+		$output .= "<$tag class='render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip'>";
+		$output .= "<$tag class='render-tinymce-tooltip-spacer'></$tag>";
+		$output .= "<$tag class='render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit'>edit</$tag>";
+		$output .= "<$tag class='render-tinymce-shortcode-wrapper-remove dashicons dashicons-no'>remove</$tag>";
+		$output .= "</$tag>";
 
-			$output .= "</$tag>";
-		}
+		$output .= "</$tag>";
 
 		return $output;
 	}

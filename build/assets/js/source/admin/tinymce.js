@@ -330,6 +330,7 @@ var Render_tinymce;
 
             var content = editor.getContent();
             content = Render_tinymce.loadText(content);
+
             Render_tinymce.convertLiteralToRendered(content, editor);
         },
 
@@ -452,6 +453,21 @@ var Render_tinymce;
             if ($shortcode.length) {
                 $shortcode.replaceWith(Render_Modal.output.all);
             } else {
+
+                var selection = editor.selection.getNode(),
+                    selection_content = editor.selection.getContent(),
+                    range = editor.selection.getRng();
+
+                //console.log(editor.selection.getBookmark());
+
+                //$(selection).replaceWith(Render_Modal.output.all);
+                console.log(editor.selection.getContent());
+                editor.selection.setContent(Render_Modal.output.all);
+                return;
+
+                if (selection.getContent().length) {
+                    editor.selection.setContent(Render_Modal.output.all);
+                }
                 editor.insertContent(Render_Modal.output.all);
             }
 
