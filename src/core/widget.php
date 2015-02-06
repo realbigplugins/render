@@ -54,10 +54,14 @@ class Render_Widget extends WP_Widget {
 	 * Outputs the widget form.
 	 *
 	 * @since 1.0.0
+	 * @global WP_Screen $current_screen
 	 *
 	 * @param array $instance The current widget instance.
+	 * @return void
 	 */
 	public function form( $instance ) {
+
+		global $current_screen;
 
 		$title           = isset( $instance['title'] ) ? strip_tags( esc_attr( $instance['title'] ) ) : '';
 		$code            = isset( $instance['code'] ) ? $instance['code'] : '';
@@ -95,6 +99,7 @@ class Render_Widget extends WP_Widget {
 			</span>
 			</p>
 
+			<?php if ( $current_screen->base != 'customize' ) : ?>
 			<p class="render-widget-customizer-message">
 				<?php
 				printf(
@@ -103,6 +108,7 @@ class Render_Widget extends WP_Widget {
 				);
 				?>
 			</p>
+			<?php endif; ?>
 
 			<input type="hidden" class="render-widget-shortcode"
 			       name="<?php echo $this->get_field_name( 'code' ); ?>"
