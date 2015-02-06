@@ -15,7 +15,7 @@ require_once __DIR__ . '/core/licensing/licensing.php';
  *
  * @since 1.0.0
  */
-define( 'RENDER_VERSION', '1.0.1' );
+define( 'RENDER_VERSION', '1.0.2' );
 
 /**
  * The absolute server path to Render's root directory.

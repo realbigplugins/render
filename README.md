@@ -1,4 +1,5 @@
 # Render
+### v1.0.2
 
 Render is a powerful plugin which enables you to insert useful and powerful functionality into your content. All without writing or even seeing any code.
 
@@ -33,6 +34,13 @@ Here's a basic rundown of what this plugin does so that you'll know what to look
 Simply download the master zip (the button on the right that says "Download ZIP"), and use WP to install that zip.
 
 ## Changelog
+
+### [1.0.2](https://github.com/brashrebel/render/releases/tag/v1.0.2)
+* Fix content in shortcodes disappearing when adding one shortcode into the entire content of another.
+* Improved TinyMCE shortcode tooltip usability.
+* Hide customizer prompt on widgets page for Render widget.
+* Chosen custom input now shows deselect "X" when using custom input.
+* Potential PHP notice of defining a licensing constant.
 
 ### [1.0.1](https://github.com/brashrebel/render/releases/tag/v1.0.1)
 * Fix major ACF conflict.

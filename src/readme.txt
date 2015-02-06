@@ -5,7 +5,7 @@ Donate link: http://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=admin%
 Tags: shortcodes, render, visual, editor, package, bundle
 Requires at least: 3.8.0
 Tested up to: 4.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,7 +40,12 @@ Using this plugin is very simple. All you have to do is:
 
 == Changelog ==
 
-== Changelog ==
+= 1.0.2 =
+* Fix content in shortcodes disappearing when adding one shortcode into the entire content of another.
+* Improved TinyMCE shortcode tooltip usability.
+* Hide customizer prompt on widgets page for Render widget.
+* Chosen custom input now shows deselect "X" when using custom input.
+* Potential PHP notice of defining a licensing constant.
 
 = 1.0.1 =
 * Fix major ACF conflict.
