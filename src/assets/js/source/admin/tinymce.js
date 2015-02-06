@@ -330,6 +330,7 @@ var Render_tinymce;
 
             var content = editor.getContent();
             content = Render_tinymce.loadText(content);
+
             Render_tinymce.convertLiteralToRendered(content, editor);
         },
 
@@ -452,7 +453,13 @@ var Render_tinymce;
             if ($shortcode.length) {
                 $shortcode.replaceWith(Render_Modal.output.all);
             } else {
-                editor.insertContent(Render_Modal.output.all);
+
+                // If content is selected, replace it, otherwise, insert it
+                if (editor.selection.getContent().length) {
+                    editor.selection.setContent(Render_Modal.output.all);
+                } else {
+                    editor.insertContent(Render_Modal.output.all);
+                }
             }
 
             // Render the shortcodes
