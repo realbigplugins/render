@@ -2,6 +2,7 @@
 
 [class^="render-box"] {
   padding: 10px;
+  @include clearfix;
 
  &[class*="rounded"] {
     border-radius: 20px;

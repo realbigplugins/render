@@ -3,14 +3,15 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
+
 /**
  * Class Render_Widget
  *
  * Provides all Render functionality pertaining to the widget page.
  *
- * @since 1.0.0
+ * @since      1.0.0
  *
- * @package Render
+ * @package    Render
  * @subpackage Widgets
  */
 class Render_Widget extends WP_Widget {
@@ -30,7 +31,7 @@ class Render_Widget extends WP_Widget {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $args The basic widget args.
+	 * @param array $args     The basic widget args.
 	 * @param array $instance The current widget instance.
 	 */
 	public function widget( $args, $instance ) {
@@ -56,7 +57,7 @@ class Render_Widget extends WP_Widget {
 	 * @since 1.0.0
 	 * @global WP_Screen $current_screen
 	 *
-	 * @param array $instance The current widget instance.
+	 * @param array      $instance The current widget instance.
 	 * @return void
 	 */
 	public function form( $instance ) {
@@ -100,14 +101,14 @@ class Render_Widget extends WP_Widget {
 			</p>
 
 			<?php if ( $current_screen->base != 'customize' ) : ?>
-			<p class="render-widget-customizer-message">
-				<?php
-				printf(
-					__( ' In order to see a live preview, please use the %s.', 'Render' ),
-					'<a href="/wp-admin/customize.php?return=%2Fwp-admin%2Fwidgets.php">customizer</a>'
-				);
-				?>
-			</p>
+				<p class="render-widget-customizer-message">
+					<?php
+					printf(
+						__( ' In order to see a live preview, please use the %s.', 'Render' ),
+						'<a href="/wp-admin/customize.php?return=%2Fwp-admin%2Fwidgets.php">customizer</a>'
+					);
+					?>
+				</p>
 			<?php endif; ?>
 
 			<input type="hidden" class="render-widget-shortcode"
