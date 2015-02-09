@@ -246,6 +246,8 @@ function render_get_shortcode_used_categories() {
  */
 function render_sc_attr_template( $template, $extra = array(), $args = array() ) {
 
+	global $post;
+
 	$output = array();
 
 	// Set the timezone accordingly for displaying the output
@@ -254,6 +256,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 	date_default_timezone_set( ! empty( $timezone ) ? $timezone : 'UTC' );
 
 	switch ( $template ) {
+
 		case 'date_format':
 
 			$output = array(
@@ -362,16 +365,23 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 
 		case 'post_list':
 
+			// Get our default properties set up
+			$properties = array(
+				'placeholder' => __( 'The current post', 'Render' ),
+				'no_options' => __( 'No posts available.', 'Render' ),
+			);
+
+			// Get our options or groups and then set the appropriate one by determining the array depth
+			foreach ( $options = render_sc_post_list( $args ) as $group => $_options ) {
+				$properties[ is_array( $_options ) ? 'groups' : 'options' ] = $options;
+				break;
+			}
+
 			$output = array(
 				'label'      => __( 'Post', 'Render' ),
 				'type'       => 'selectbox',
-				'properties' => array(
-					'groups'      => array(),
-					'callback'    => array(
-						'function' => 'render_sc_post_list',
-					),
-					'placeholder' => __( 'The current post', 'Render' ),
-				),
+				'default' => is_object( $post ) ? $post->ID : null,
+				'properties' =>  $properties,
 			);
 			break;
 
@@ -421,11 +431,22 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			break;
 	}
 
+	/**
+	 * Allows more templates to be used.
+	 *
+	 * Simply call this filter, do your own switch case with various templates and output methods, and return the output.
+	 * Just be sure to return the output, unmodified, if your switch case does not match anything.
+	 *
+	 *  @since {{VERSION}}
+	 */
+	$output = apply_filters( 'render_sc_attr_templates', $output, $template, $extra, $args );
+
 	// Reset timezone
 	date_default_timezone_set( $orig_timezone );
 
+	// Merge in the extra overrides
 	if ( ! empty( $extra ) ) {
-		$output = array_merge( $output, $extra );
+		$output = array_replace_recursive( $output, $extra );
 	}
 
 	return $output;

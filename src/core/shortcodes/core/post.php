@@ -335,10 +335,6 @@ function render_sc_post_list( $args = array() ) {
 		'numberposts' => '-1',
 	) ) );
 
-	if ( isset( $args['post_type'])) {
-		$test = '1';
-	}
-
 	$output = array();
 	if ( ! empty( $posts ) ) {
 		foreach ( $posts as $_post ) {

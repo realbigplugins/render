@@ -126,6 +126,9 @@ module.exports = function (grunt) {
                                 ' */';
                             content = '<?php\n' + header + content.slice(5);
                         }
+
+                        content.replace(/\{\{VERSION}}/g, version);
+
                         return content;
                     }
                 },
@@ -181,7 +184,7 @@ module.exports = function (grunt) {
             build: {
                 options: {
                     title: '<%= pkg.name %>',
-                    message: 'NOTE: Manually copy icons and images.'
+                    message: "NOTE: Manually copy icons and images.\nAlso replace {{VERSION}} in source with current version."
                 }
             }
         }
