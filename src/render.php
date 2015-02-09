@@ -1,12 +1,16 @@
 <?php
+/*
+Plugin Name: Render SRC
+Description: The development build for Render.
+Version: 1.0.3-alpha
+Author: Joel Worsham & Kyle Maurer
+Author URI: http://realbigmarketing.com
+*/
 
 // Exit if loaded directly
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
-
-// Licensing
-require_once __DIR__ . '/core/licensing/licensing.php';
 
 // Define all plugin constants.
 
@@ -171,6 +175,9 @@ if ( ! class_exists( 'Render' ) ) {
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_files' ) );
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_admin_enqueue_files' ) );
 
+			// Licensing
+			render_setup_license( 'render', 'Render', RENDER_VERSION, plugin_dir_path( __FILE__ ) );
+
 			// Translations
 			load_plugin_textdomain( 'Render', false, RENDER_PATH . 'languages' );
 
@@ -198,6 +205,9 @@ if ( ! class_exists( 'Render' ) ) {
 
 			// Add editor styles
 			self::add_editor_styles();
+
+			// Licensing
+			require_once __DIR__ . '/core/licensing/licensing.php';
 		}
 
 		/**

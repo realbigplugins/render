@@ -2,7 +2,7 @@
 /*
 Plugin Name: Render Development
 Description: The development build for Render.
-Version: 1.0.2
+Version: 1.0.3-alpha
 Author: Joel Worsham & Kyle Maurer
 Author URI: http://realbigmarketing.com
 */

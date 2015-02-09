@@ -62,8 +62,26 @@ class Render_AdminPage_Settings extends Render {
 
 		register_setting( 'render_options', 'render_render_visual' );
 
-		// EDD Licensing
-		register_setting( 'render_options', 'render_license_key', 'edd_render_sanitize_license' );
+		// Licensing
+
+		/**
+		 * This filter is documented in src/core/licensing/settings.php
+		 */
+		$extension_licenses = apply_filters( 'render_licensing_extensions', array() );
+
+		// Register all license settings
+		foreach ( $extension_licenses as $extension => $label ) {
+
+			register_setting( 'render_options', "{$extension}_license_key", function ( $new ) use ( $extension ) {
+
+				$old = get_option( "{$extension}_license_key" );
+				if ( $old && $old != $new ) {
+					delete_option( "{$extension}_license_status" ); // new license has been entered, so must reactivate
+				}
+
+				return $new;
+			} );
+		}
 	}
 
 	/**
@@ -92,9 +110,26 @@ class Render_AdminPage_Settings extends Render {
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}
 
+		/**
+		 * Allow extensions to inject their licensing field here.
+		 *
+		 * @since {{VERSION}}
+		 */
+		$extension_licenses = apply_filters( 'render_licensing_extensions', array() );
+
+		// Create our licenses array
+		$licenses = array();
+		foreach ( $extension_licenses as $extension => $extension_label ) {
+			$licenses[ $extension ] = array(
+				'key'    => get_option( "{$extension}_license_key" ),
+				'status' => 'valid',
+//				'status' => get_option( "{$extension}_license_status" ),
+				'label'  => $extension_label,
+			);
+		}
+
+		// Other options
 		$render_visual = get_option( 'render_render_visual', '1' );
-		$license       = get_option( 'render_license_key' );
-		$status        = get_option( 'render_license_status' );
 
 		require( ABSPATH . 'wp-admin/options-head.php' );
 		?>
@@ -112,43 +147,66 @@ class Render_AdminPage_Settings extends Render {
 				<table class="render-table">
 					<tr valign="top">
 						<th scope="row" valign="top">
-							<?php _e( 'License Key', 'Render' ); ?>
+							<?php _e( 'Licenses', 'Render' ); ?>
 						</th>
 						<td>
-							<label>
-								<input id="render_license_key" name="render_license_key" type="text"
-								       class="regular-text" value="<?php esc_attr_e( $license ); ?>"/>
-							</label>
+							<?php
+							$i = 0;
+							foreach ( $licenses as $extension => $license_info ) :
+								$i ++;
+								?>
+								<p>
+									<label>
+										<strong>
+											<?php echo $license_info['label']; ?>
+										</strong>
+
+										<br/>
+
+										<input id="<?php echo $extension; ?>_license_key"
+										       name="<?php echo $extension; ?>_license_key" type="text"
+										       class="regular-text"
+										       value="<?php esc_attr_e( $license_info['key'] ); ?>"/>
+									</label>
+
+									<?php if ( ! empty( $license_info['key'] ) ) { ?>
+
+										<?php if ( $license_info['status'] == 'valid' ) { ?>
+
+											<span class="render-license-status valid">
+											<span class="dashicons dashicons-yes"></span>
+												<?php _e( 'active', 'Render' ); ?>
+										</span>
+
+											<input type="submit" class="button-secondary button-red"
+											       name="<?php echo $extension; ?>_license_deactivate"
+											       value="<?php _e( 'Deactivate License', 'Render' ); ?>"/>
+
+										<?php } else { ?>
+
+											<span class="render-license-status invalid">
+											<span class="dashicons dashicons-no"></span>
+												<?php _e( 'inactive', 'Render' ); ?>
+										</span>
+
+											<input type="submit" class="button-secondary"
+											       name="<?php echo $extension; ?>_license_activate"
+											       value="<?php _e( 'Activate License', 'Render' ); ?>"/>
+
+										<?php } ?>
+									<?php } ?>
+								</p>
+
+								<?php if ( $i < count( $licenses ) ) : ?>
+								<hr/>
+							<?php endif; ?>
+
+							<?php endforeach; ?>
+
+							<?php wp_nonce_field( 'render_licensing_nonce', 'render_licensing_nonce' ); ?>
 						</td>
 					</tr>
-					<?php if ( ! empty( $license ) ) { ?>
-						<tr valign="top">
-							<th scope="row" valign="top">
-								<?php _e( 'Activate License', 'Render' ); ?>
-							</th>
-							<td>
-								<?php if ( $status !== false && $status == 'valid' ) { ?>
-									<?php wp_nonce_field( 'edd_render_nonce', 'edd_render_nonce' ); ?>
-									<span class="render-license-status valid">
-										<span class="dashicons dashicons-yes"></span>
-										<?php _e( 'active', 'Render' ); ?>
-									</span>
-									<input type="submit" class="button-secondary button-red"
-									       name="edd_render_license_deactivate"
-									       value="<?php _e( 'Deactivate License', 'Render' ); ?>"/>
-								<?php } else {
-									wp_nonce_field( 'edd_render_nonce', 'edd_render_nonce' ); ?>
-									<span class="render-license-status invalid">
-										<span class="dashicons dashicons-no"></span>
-										<?php _e( 'inactive', 'Render' ); ?>
-									</span>
-									<input type="submit" class="button-secondary" name="edd_render_license_activate"
-									       value="<?php _e( 'Activate License', 'Render' ); ?>"/>
-								<?php } ?>
-							</td>
-						</tr>
-					<?php } ?>
-					<tr>
+					<tr valign="top">
 						<th scope="row">
 							<?php _e( 'Use the magical visual renderer?', 'Render' ); ?>
 						</th>
@@ -172,12 +230,3 @@ class Render_AdminPage_Settings extends Render {
 }
 
 new Render_AdminPage_Settings();
-
-function edd_render_sanitize_license( $new ) {
-	$old = get_option( 'render_license_key' );
-	if ( $old && $old != $new ) {
-		delete_option( 'render_license_status' ); // new license has been entered, so must reactivate
-	}
-
-	return $new;
-}

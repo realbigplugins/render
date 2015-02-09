@@ -252,7 +252,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 
 	// Set the timezone accordingly for displaying the output
 	$orig_timezone = date_default_timezone_get();
-	$timezone = get_option( 'timezone_string', 'UTC' );
+	$timezone      = get_option( 'timezone_string', 'UTC' );
 	date_default_timezone_set( ! empty( $timezone ) ? $timezone : 'UTC' );
 
 	switch ( $template ) {
@@ -368,7 +368,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			// Get our default properties set up
 			$properties = array(
 				'placeholder' => __( 'The current post', 'Render' ),
-				'no_options' => __( 'No posts available.', 'Render' ),
+				'no_options'  => __( 'No posts available.', 'Render' ),
 			);
 
 			// Get our options or groups and then set the appropriate one by determining the array depth
@@ -380,8 +380,8 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			$output = array(
 				'label'      => __( 'Post', 'Render' ),
 				'type'       => 'selectbox',
-				'default' => is_object( $post ) ? $post->ID : null,
-				'properties' =>  $properties,
+				'default'    => is_object( $post ) ? $post->ID : null,
+				'properties' => $properties,
 			);
 			break;
 
@@ -437,7 +437,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 	 * Simply call this filter, do your own switch case with various templates and output methods, and return the output.
 	 * Just be sure to return the output, unmodified, if your switch case does not match anything.
 	 *
-	 *  @since {{VERSION}}
+	 * @since {{VERSION}}
 	 */
 	$output = apply_filters( 'render_sc_attr_templates', $output, $template, $extra, $args );
 
@@ -486,4 +486,58 @@ function render_tinyme_log_out() {
 
 	$current_user = null;
 	add_filter( 'determine_current_user', '__return_false', 9999 );
+}
+
+/**
+ * Integrates licensing with Render.
+ *
+ * @since {{VERSION}}
+ *
+ * @param string $extension The unique extension ID.
+ * @param string $name      The readable name of the extension.
+ * @param string $version   The extension version number.
+ * @param string $file_path Absolute server path to the extension base file.
+ * @param string $author    The author of the extension (optional).
+ */
+function render_setup_license( $extension, $name, $version, $file_path, $author = 'Joel Worsham & Kyle Maurer' ) {
+
+	/**
+	 * Initializes the EDD plugin updater.
+	 *
+	 * @since {{VERSION}}
+	 */
+	add_action( 'admin_init', function () use ( $extension, $name, $version, $file_path, $author ) {
+
+		// retrieve our license key from the DB
+		$license_key = trim( get_option( "{$extension}_license_key" ) );
+
+		// setup the updater
+		new EDD_SL_Plugin_Updater( REALBIGPLUGINS_STORE_URL, $file_path, array(
+				//
+				// current version number
+				'version'   => $version,
+				//
+				// license key (used get_option above to retrieve from DB)
+				'license'   => $license_key,
+				//
+				// the name of our product in EDD
+				'item_name' => urlencode( $extension !== 'render' ? "Render {$name}" : 'Render' ),
+				//
+				// author of this plugin
+				'author'    => $author
+			)
+		);
+	}, 0 );
+
+	/**
+	 * Integrates into Render for settings setup.
+	 *
+	 * @since {{VERSION}}
+	 */
+	add_filter( 'render_licensing_extensions', function ( $extensions ) use ( $extension, $name ) {
+
+		$extensions[ $extension ] = $name;
+
+		return $extensions;
+	} );
 }

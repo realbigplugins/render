@@ -37,18 +37,22 @@
     width: 100%;
   }
 
+  th, td {
+    padding: 10px;
+    width: 1px;
+    white-space: nowrap;
+  }
+
   // Labels
   th {
-    width: 30%;
-    padding: 10px;
-    text-align: left;
     background: #ddd;
+    vertical-align: middle;
+    font-size: 130%;
+    text-align: right;
   }
 
   // Content and inputs
   td {
-    width: 80%;
-    padding: 10px;
     background: #fff;
     border-left: 1px solid #ccc;
   }
