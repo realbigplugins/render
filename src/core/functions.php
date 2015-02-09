@@ -437,7 +437,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 	 * Simply call this filter, do your own switch case with various templates and output methods, and return the output.
 	 * Just be sure to return the output, unmodified, if your switch case does not match anything.
 	 *
-	 * @since {{VERSION}}
+	 * @since 1.0.3
 	 */
 	$output = apply_filters( 'render_sc_attr_templates', $output, $template, $extra, $args );
 
@@ -491,7 +491,7 @@ function render_tinyme_log_out() {
 /**
  * Integrates licensing with Render.
  *
- * @since {{VERSION}}
+ * @since 1.0.3
  *
  * @param string $extension The unique extension ID.
  * @param string $name      The readable name of the extension.
@@ -504,7 +504,7 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
 	/**
 	 * Initializes the EDD plugin updater.
 	 *
-	 * @since {{VERSION}}
+	 * @since 1.0.3
 	 */
 	add_action( 'admin_init', function () use ( $extension, $name, $version, $file_path, $author ) {
 
@@ -532,7 +532,7 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
 	/**
 	 * Integrates into Render for settings setup.
 	 *
-	 * @since {{VERSION}}
+	 * @since 1.0.3
 	 */
 	add_filter( 'render_licensing_extensions', function ( $extensions ) use ( $extension, $name ) {
 

@@ -113,7 +113,7 @@ class Render_AdminPage_Settings extends Render {
 		/**
 		 * Allow extensions to inject their licensing field here.
 		 *
-		 * @since {{VERSION}}
+		 * @since 1.0.3
 		 */
 		$extension_licenses = apply_filters( 'render_licensing_extensions', array() );
 
@@ -122,8 +122,7 @@ class Render_AdminPage_Settings extends Render {
 		foreach ( $extension_licenses as $extension => $extension_label ) {
 			$licenses[ $extension ] = array(
 				'key'    => get_option( "{$extension}_license_key" ),
-				'status' => 'valid',
-//				'status' => get_option( "{$extension}_license_status" ),
+				'status' => get_option( "{$extension}_license_status" ),
 				'label'  => $extension_label,
 			);
 		}
@@ -144,7 +143,7 @@ class Render_AdminPage_Settings extends Render {
 
 				<?php settings_fields( 'render_options' ); ?>
 
-				<table class="render-table">
+				<table class="render-table form-table">
 					<tr valign="top">
 						<th scope="row" valign="top">
 							<?php _e( 'Licenses', 'Render' ); ?>
