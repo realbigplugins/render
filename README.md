@@ -1,5 +1,5 @@
 # Render
-### v1.0.2
+### v1.0.3
 
 Render is a powerful plugin which enables you to insert useful and powerful functionality into your content. All without writing or even seeing any code.
 
@@ -35,16 +35,21 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 
 ## Changelog
 
+### [1.0.3](https://github.com/brashrebel/render/releases/tag/v1.0.3)
+* UPDATE: Allow seamless integration of licensing from extensions into Render.
+* UPDATE: Force require at least PHP 5.3.
+* DEVELOPERS: Improve shortcode attribute template functionality, especially the post list template.
+
 ### [1.0.2](https://github.com/brashrebel/render/releases/tag/v1.0.2)
-* Fix content in shortcodes disappearing when adding one shortcode into the entire content of another.
-* Improved TinyMCE shortcode tooltip usability.
-* Hide customizer prompt on widgets page for Render widget.
-* Chosen custom input now shows deselect "X" when using custom input.
-* Potential PHP notice of defining a licensing constant.
+* FIX: Content in shortcodes disappearing when adding one shortcode into the entire content of another.
+* FIX: Potential PHP notice of defining a licensing constant.
+* UPDATE: Improved TinyMCE shortcode tooltip usability.
+* UPDATE: Hide customizer prompt on widgets page for Render widget.
+* UPDATE: Chosen custom input now shows deselect "X" when using custom input.
 
 ### [1.0.1](https://github.com/brashrebel/render/releases/tag/v1.0.1)
-* Fix major ACF conflict.
-* Fix PHP notice.
+* FIX: Major ACF conflict.
+* FIX: PHP notice.
 
 ### [1.0.0](https://github.com/brashrebel/render/releases/tag/v1.0.0)
-* The initial release!
+* RELEASE: The initial release!

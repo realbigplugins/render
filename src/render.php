@@ -1,11 +1,4 @@
 <?php
-/*
-Plugin Name: Render SRC
-Description: The development build for Render.
-Version: 1.0.3-alpha
-Author: Joel Worsham & Kyle Maurer
-Author URI: http://realbigmarketing.com
-*/
 
 // Exit if loaded directly
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-define( 'RENDER_VERSION', '1.0.2' );
+define( 'RENDER_VERSION', '1.0.3' );
 
 /**
  * The absolute server path to Render's root directory.
@@ -127,6 +120,15 @@ if ( ! class_exists( 'Render' ) ) {
 		 * @since 1.0.0
 		 */
 		private function __construct() {
+
+			// Make sure we should be here
+			if ( version_compare( '5.3', phpversion(), '>' ) ) {
+				$this->notice();
+				return;
+			}
+
+			define( 'RENDER_ACTIVE', true );
+
 			add_action( 'init', array( __CLASS__, 'pre_init' ), 0.1 );
 			add_action( 'init', array( $this, 'post_init' ), 100 );
 		}
@@ -528,6 +530,26 @@ if ( ! class_exists( 'Render' ) ) {
 			foreach ( render_get_disabled_shortcodes() as $code ) {
 				$this->remove_shortcode( $code );
 			}
+		}
+
+		/**
+		 * Warns user about PHP version.
+		 *
+		 * @since 1.0.3
+		 */
+		private function notice() {
+			?>
+			<div class="error">
+				<p>
+					<?php
+					printf(
+					__( 'Render is not active because your server is not running at least PHP version 5.3. Please update or contact your server administrator. (PS: PHP 5.3 is %s year\'s old!)', 'Render' ),
+						intval( date( 'y' ) ) - 9
+					);
+					?>
+				</p>
+			</div>
+		<?php
 		}
 	}
 

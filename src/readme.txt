@@ -5,7 +5,7 @@ Donate link: http://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=admin%
 Tags: shortcodes, render, visual, editor, package, bundle
 Requires at least: 3.8.0
 Tested up to: 4.1
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,11 @@ Using this plugin is very simple. All you have to do is:
 3. View available shortcodes by going to Shortcodes in the admin menu
 
 == Changelog ==
+
+= 1.0.3 =
+* UPDATE: Allow seamless integration of licensing from extensions into Render.
+* UPDATE: Force require at least PHP 5.3.
+* DEVELOPERS: Improve shortcode attribute template functionality, especially the post list template.
 
 = 1.0.2 =
 * Fix content in shortcodes disappearing when adding one shortcode into the entire content of another.
