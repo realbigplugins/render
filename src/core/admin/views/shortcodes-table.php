@@ -265,21 +265,25 @@ class Render_ShortcodesTable extends WP_List_Table {
 		if ( in_array( $item['code'], (array) $render_sc_table_disabled ) ) {
 
 			$actions['enable'] = sprintf(
-				"<a href='?page=%s&action=%s&shortcodes=%s%s'>%s</a>",
-				$_REQUEST['page'],
-				'enable',
-				$item['code'],
-				$extra_params,
+				"<a href='%s'>%s</a>",
+				add_query_arg(
+					array(
+						'action' => 'enable',
+						'shortcodes' => $item['code'],
+					)
+				),
 				__( 'Enable', 'Render' )
 			);
 		} else {
 
 			$actions['delete'] = sprintf(
-				"<a href='?page=%s&action=%s&shortcodes=%s%s'>%s</a>",
-				$_REQUEST['page'],
-				'disable',
-				$item['code'],
-				$extra_params,
+				"<a href='%s'>%s</a>",
+				add_query_arg(
+					array(
+						'action' => 'disable',
+						'shortcodes' => $item['code'],
+					)
+				),
 				__( 'Disable', 'Render' )
 			);
 		}
