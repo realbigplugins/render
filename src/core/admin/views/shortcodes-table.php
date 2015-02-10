@@ -184,6 +184,11 @@ class Render_ShortcodesTable extends WP_List_Table {
 
 		foreach ( $all_shortcodes as $code => $shortcode ) {
 
+			// Skip those set to hidden
+			if ( isset( $shortcode['noDisplay'] ) && $shortcode['noDisplay'] ) {
+				continue;
+			}
+
 			// Filter if there was a search
 			if ( ! empty( $_GET['s'] ) ) {
 
