@@ -1,0 +1,181 @@
+@import "../global";
+
+// Logo in admin bar
+#toplevel_page_render-settings {
+  .wp-menu-image {
+    @include icon('render-logo-condensed');
+
+    &:before {
+      font-family: 'Render' !important;
+
+      // This icon doesn't seem to sit as nicely as the others, so it needs some minor tweaks
+      font-size: 16px;
+      margin-right: -5px;
+      margin-top: 2px;
+    }
+  }
+}
+
+// Customizer icon
+#available-widgets [class*="render_widget"] .widget-top .widget-title {
+  @include icon('render-logo-condensed');
+
+  &:before {
+    font-family: 'Render' !important;
+
+    // This icon doesn't seem to sit as nicely as the others, so it needs some minor tweaks
+//    font-size: 16px;
+//    margin-right: -5px;
+//    margin-top: 2px;
+  }
+}
+
+.button-red {
+  background: $error-color !important;
+  color: #fff !important;
+  border-color: darken($error-color, 25%) !important;
+  box-shadow: inset 0 1px 0 lighten($error-color, 10%), 0 1px 0 rgba(0, 0, 0, .08) !important;
+
+  &:hover {
+    background: darken($error-color, 5%) !important;
+  }
+
+  &:active {
+    background: darken($error-color, 10%) !important;
+  }
+}
+
+// Switch
+@mixin switch-dimensions($width) {
+
+  $height: round($width / 2);
+  $inset: round($height * 0.8);
+  $inset-offset: round(($height - ($inset)) / 2);
+
+  width: $width;
+  height: $height;
+
+  input[type="checkbox"]:checked + label:after {
+    right: $width - $inset - $inset-offset;
+  }
+
+  label {
+    border-radius: $height;
+
+    &:after {
+      width: $inset;
+      height: $inset;
+      top: $inset-offset;
+      right: $inset-offset;
+      border-radius: $height;
+    }
+  }
+}
+
+@mixin toggle-switch-dimensions($width) {
+
+  $height: round($width / 2);
+  $inset: round($height * 0.8);
+  $inset-offset: round(($height - ($inset)) / 2);
+
+  height: $height;
+
+  input[type="checkbox"]:checked + label:after {
+    right: 100%;
+    margin-right: ($inset * -1) - $inset-offset;
+  }
+
+  label {
+    border-radius: $height;
+    height: $height;
+    line-height: $height;
+
+    &:after {
+      width: $inset;
+      height: $inset;
+      top: $inset-offset;
+      right: $inset-offset;
+      border-radius: $height;
+    }
+  }
+}
+
+.render-switch {
+  position: relative;
+  user-select: none;
+  display: inline-block;
+
+  &:not(.toggle) {
+    @include switch-dimensions($width: 60px);
+
+    label {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  input[type="checkbox"] {
+    display: none;
+
+    &:checked + label {
+      @include primary-gradient-gloss();
+      box-shadow: none;
+    }
+  }
+
+  label {
+    @include background-gradient-gloss($color: #ccc);
+    box-shadow: 0 0 0 1px #999 inset;
+
+    &:after {
+      content: '';
+      background: #fff;
+      display: block;
+      position: absolute;
+      transition: right 300ms, margin-right 300ms;
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  // Toggle
+  &.toggle {
+    @include toggle-switch-dimensions($width: 60px);
+
+    label {
+      display: inline-block;
+      padding: 0 10px;
+      box-shadow: none;
+
+      &:not(.styled) {
+        @include primary-gradient-gloss();
+      }
+
+      span {
+        color: #fff;
+        transition: opacity 300ms;
+      }
+
+      .render-modal-att-toggle-second {
+        opacity: 0;
+      }
+    }
+
+    input[type="checkbox"]:checked + label {
+
+      .render-modal-att-toggle-first {
+        opacity: 0;
+      }
+
+      .render-modal-att-toggle-second {
+        opacity: 1;
+      }
+    }
+  }
+
+  &.large {
+    @include switch-dimensions($width: 100px);
+  }
+}

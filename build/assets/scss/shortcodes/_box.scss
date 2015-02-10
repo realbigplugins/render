@@ -1,0 +1,14 @@
+@import "../global";
+
+[class^="render-box"] {
+  padding: 10px;
+  @include clearfix;
+
+ &[class*="rounded"] {
+    border-radius: 20px;
+  }
+
+ &[class*="ellipse"] {
+    border-radius: 50%;
+  }
+}

@@ -1,0 +1,15 @@
+@import "../global";
+
+// Tinymce
+.render-tinymce-shortcode-wrapper {
+
+  &.render_hide_for_users {
+    .hidden {
+      color: #C60000;
+    }
+
+    .visible {
+      color: #0A7300;
+    }
+  }
+}

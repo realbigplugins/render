@@ -1,0 +1,27 @@
+@import "../global";
+
+.render-widget {
+  p {
+    margin: 10px 0;
+  }
+}
+
+.render-widget-add-shortcode-container {
+  text-align: center;
+
+  .render-widget-add-shortcode {
+    border: 1px solid #ddd;
+  }
+}
+
+.render-widget-shortcode-preview {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.render-widget-customizer-message {
+  text-align: center;
+  font-style: italic;
+  color: #777;
+}
