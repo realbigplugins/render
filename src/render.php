@@ -179,7 +179,7 @@ if ( ! class_exists( 'Render' ) ) {
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_admin_enqueue_files' ) );
 
 			// Licensing
-			render_setup_license( 'render', 'Render', RENDER_VERSION, plugin_dir_path( __FILE__ ) );
+			render_setup_license( 'render', 'Render', RENDER_VERSION, __FILE__ );
 
 			// Translations
 			load_plugin_textdomain( 'Render', false, RENDER_PATH . 'languages' );

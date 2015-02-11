@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // uncomment this line for testing
-set_site_transient( 'update_plugins', null );
+//set_site_transient( 'update_plugins', null );
 
 /**
  * Allows plugins to use their own update API.
