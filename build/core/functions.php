@@ -541,3 +541,40 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
 		return $extensions;
 	} );
 }
+
+/**
+ * Allows extensions to add settings to the Render Settings page to disable TinyMCE buttons.
+ *
+ * @since 1.0.3
+ *
+ * @param string   $button_ID    The ID of the TinyMCE button, or the hook for the media button
+ * @param string   $button_label The readable label that describes the button.
+ */
+function render_disable_tinymce_button( $button_ID, $button_label ) {
+
+	add_filter( 'render_disabled_tinymce_buttons', function ( $buttons ) use ( $button_ID, $button_label ) {
+		$buttons[ $button_ID ] = $button_label;
+
+		return $buttons;
+	} );
+}
+
+/**
+ * Similar to render_disable_tinymce_button(), but for media buttons instead (sits above the TinyMCE toolbar).
+ *
+ * @since 1.0.3
+ *
+ * @param string $hook_name The name of the hook that adds the media button.
+ * @param string $label The readable label that describes the button.
+ * @param int $priority The priority of the hook.
+ */
+function render_disable_tinymce_media_button( $hook_name, $label , $priority = 10 ) {
+
+	add_filter( 'render_disabled_tinymce_media_buttons', function ( $buttons ) use ( $hook_name, $priority ) {
+		$buttons[ $hook_name ] = $priority;
+
+		return $buttons;
+	} );
+
+	render_disable_tinymce_button( $hook_name, $label );
+}

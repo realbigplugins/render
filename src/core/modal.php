@@ -301,7 +301,7 @@ class Render_Modal {
 				/>
 
 			<label for="<?php echo $unique_ID; ?>"
-			       class="<?php echo isset( $properties['deselectStyle'] ) ? 'styled' : ''; ?>">
+			       class="<?php echo isset( $properties['deselectStyle'] ) ? 'disabled-style' : ''; ?>">
 
 				<span class="render-modal-att-toggle-first">
 					<?php echo $values[0][1]; ?>

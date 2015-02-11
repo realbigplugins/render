@@ -147,10 +147,12 @@
     label {
       display: inline-block;
       padding: 0 10px;
-      box-shadow: none;
 
-      &:not(.styled) {
+      // Normal toggles are always colored, disabled style are only colored when checked, and inverted disable styles
+      // are only colored when un-checked
+      &:not(.disabled-style), &.disabled-style.invert {
         @include primary-gradient-gloss();
+        box-shadow: none;
       }
 
       span {
@@ -164,6 +166,10 @@
     }
 
     input[type="checkbox"]:checked + label {
+
+      &.disabled-style.invert {
+        @include background-gradient-gloss($color: #ccc);
+      }
 
       .render-modal-att-toggle-first {
         opacity: 0;

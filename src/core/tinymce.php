@@ -30,6 +30,7 @@ class Render_tinymce extends Render {
 		// Setup TinyMCE
 		add_filter( 'mce_external_plugins', array( __CLASS__, 'add_tinymce_plugins' ) );
 		add_filter( 'mce_buttons', array( __CLASS__, 'register_tinymce_buttons' ) );
+		add_filter( 'mce_buttons', array( __CLASS__, 'remove_tinymce_buttons' ), 10000 );
 		add_filter( 'tiny_mce_before_init', array( __CLASS__, 'modify_tinymce_init' ) );
 
 		// Localize data for rendering in the TinyMCE
@@ -66,6 +67,45 @@ class Render_tinymce extends Render {
 
 		array_push( $buttons, 'render_open' );
 		array_push( $buttons, 'render_refresh' );
+
+		return $buttons;
+	}
+
+	/**
+	 * Removes TinyMCE buttons that have been added via Render extensions.
+	 *
+	 * @since 1.0.3
+	 *
+	 * @param mixed|array $buttons All tinyMCE buttons.
+	 *
+	 * @return mixed|array
+	 */
+	public static function remove_tinymce_buttons( $buttons ) {
+
+		/**
+		 * Allow extensions to remove TinyMCE Media Buttons.
+		 *
+		 * @since 1.0.3
+		 */
+		$media_buttons = apply_filters( 'render_disabled_tinymce_media_buttons', array() );
+
+		/** This filter is documented in src/core/licensing/settings.php */
+		foreach ( (array) apply_filters( 'render_disabled_tinymce_buttons', array() ) as $button_ID => $button_label ) {
+
+			// Remove unless that button has been enabled
+			if ( get_option( "render_enable_tinymce_button_$button_ID" ) != 'enabled' ) {
+
+				// Different method for media buttons
+				if ( isset( $media_buttons[ $button_ID ] ) ) {
+					remove_action( 'media_buttons', $button_ID, $media_buttons[ $button_ID ] );
+					continue;
+				}
+
+				if ( ( $key = array_search( $button_ID, $buttons ) ) !== false ) {
+					unset( $buttons[ $key ] );
+				}
+			}
+		}
 
 		return $buttons;
 	}
@@ -154,6 +194,13 @@ class Render_tinymce extends Render {
 		return $data;
 	}
 
+	/**
+	 * Fires when rendering the TinyMCE.
+	 *
+	 * Adds in some functionality needed for some shortcode TinyMCE callbacks to work in the backend.
+	 *
+	 * @since 1.0.0
+	 */
 	public static function render_ajax() {
 
 		global $post, $content;
@@ -166,6 +213,13 @@ class Render_tinymce extends Render {
 		}
 	}
 
+	/**
+	 * Renders shortcodes in the TinyMCE.
+	 *
+	 * This is the AJAX callback for rendering shortcodes to be previewed in the TinyMCE editor.
+	 *
+	 * @since 1.0.0
+	 */
 	public static function render_shortcodes() {
 
 		global $render_shortcode_data, $Render, $content;
