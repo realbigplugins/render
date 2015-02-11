@@ -41,6 +41,7 @@ Using this plugin is very simple. All you have to do is:
 == Changelog ==
 
 = 1.0.3 =
+* UPDATE: Integration extensions now disable their applicable plugin's TinyMCE buttons, but can be re-enabled from Render Settings.
 * UPDATE: Allow seamless integration of licensing from extensions into Render.
 * UPDATE: Force require at least PHP 5.3.
 * DEVELOPERS: Improve shortcode attribute template functionality, especially the post list template.

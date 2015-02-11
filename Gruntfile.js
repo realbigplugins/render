@@ -1,15 +1,19 @@
 'use strict';
 module.exports = function (grunt) {
 
+    // Define the package
+    var pkg = grunt.file.readJSON('package.json');
+
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
     grunt.initConfig({
 
-        // Define the package
-        pkg: grunt.file.readJSON('package.json'),
-
-        // Watch for changes
+        /**
+         * Watch for changes and automatically fire tasks.
+         *
+         * @since 1.0.0
+         */
         watch: {
             options: {
                 livereload: true
@@ -45,7 +49,11 @@ module.exports = function (grunt) {
             }
         },
 
-        // Minify and concatenate scripts
+        /**
+         * Minify and concatenate javascript files.
+         *
+         * @since 1.0.0
+         */
         uglify: {
             options: {
                 sourceMap: true
@@ -67,7 +75,11 @@ module.exports = function (grunt) {
             }
         },
 
-        // Transpile SASS to CSS
+        /**
+         * Transpile SASS to minified and concatenated CSS.
+         *
+         * @since 1.0.0
+         */
         sass: {
             options: {
                 style: 'compressed'
@@ -84,7 +96,11 @@ module.exports = function (grunt) {
             }
         },
 
-        // Prefix the minified CSS
+        /**
+         * Add browser prefixes for old browser support.
+         *
+         * @since 1.0.0
+         */
         autoprefixer: {
             options: {
                 browsers: ['Android >= 2.1', 'Chrome >= 21', 'Explorer >= 7', 'Firefox >= 17', 'Opera >= 12.1', 'Safari >= 6.0']
@@ -99,39 +115,92 @@ module.exports = function (grunt) {
             }
         },
 
-        // Copy files from the src working directory to the build directory, with some file processing
-        copy: {
-            src: {
-                options: {
-                    process: function( content, src ) {
-
-                        var version = grunt.config.get('pkg.version'),
-                            name = grunt.config.get('pkg.name'),
-                            description = grunt.config.get('pkg.description'),
-                            author = grunt.config.get('pkg.author'),
-                            author_uri = grunt.config.get('pkg.author_uri'),
-                            plugin_uri = grunt.config.get('pkg.plugin_uri');
-
-                        // Add plugin header
-                        if (src == 'src/render.php') {
-                            var header = '/*\n' +
-                                ' * Plugin Name: ' + name + '\n' +
-                                ' * Description: ' + description + '\n' +
-                                ' * Version: ' + version + '\n' +
-                                ' * Author: ' + author + '\n' +
-                                ' * Author URI: ' + author_uri + '\n' +
-                                ' * Plugin URI: ' + plugin_uri + '\n' +
-                                ' * Text Domain: Render\n' +
-                                ' * Domain Path: /languages/\n' +
-                                ' */';
-                            content = '<?php\n' + header + content.slice(5);
-                        }
-
-                        content.replace(/\{\{VERSION}}/g, version);
-
-                        return content;
-                    }
+        /**
+         * Automatically update version numbers throughout and add plugin header on build.
+         *
+         * @since 1.0.3
+         */
+        'string-replace': {
+            version: {
+                files: {
+                    'src/': ['src/**', '!**/*.{png,gif,jpg,ico,psd}'],
+                    'init.php': ['init.php', '!**/*.{png,gif,jpg,ico,psd}'],
+                    'README.md': ['README.md', '!**/*.{png,gif,jpg,ico,psd}']
                 },
+                options: {
+                    replacements: [{
+                        // PHP doc versions
+                        pattern: /\{\{VERSION}}/g,
+                        replacement: pkg.version
+                    }, {
+                        // Version in init.php
+                        pattern: /(Version: ).*/,
+                        replacement: "$1" + pkg.version
+                    }, {
+                        // README.md version
+                        pattern: /(###.*?)\d\.\d\.\d/,
+                        replacement: "$1" + pkg.version
+                    }, {
+                        // readme.txt stable tag version
+                        pattern: /(Stable tag:.*?)\d\.\d\.\d/,
+                        replacement: "$1" + pkg.version
+                    }, {
+                        // Render constant version
+                        pattern: /(define.*?RENDER_VERSION.*?)\d\.\d\.\d/,
+                        replacement: "$1" + pkg.version
+                    }]
+                }
+            },
+            header: {
+                files: {
+                    'build/render.php': ['build/render.php', '!**/*.{png,gif,jpg,ico,psd}']
+                },
+                options: {
+                    replacements: [{
+                        pattern: /\/\/\{\{HEADER}}/,
+                        replacement: '/*\n' +
+                        ' * Plugin Name: ' + pkg.name + '\n' +
+                        ' * Description: ' + pkg.description + '\n' +
+                        ' * Version: ' + pkg.version + '\n' +
+                        ' * Author: ' + pkg.author + '\n' +
+                        ' * Author URI: ' + pkg.author_uri + '\n' +
+                        ' * Plugin URI: ' + pkg.plugin_uri + '\n' +
+                        ' * Text Domain: Render\n' +
+                        ' * Domain Path: /languages/\n' +
+                        ' */'
+                    }]
+                }
+            }
+        },
+
+        /**
+         * Compresses images.
+         *
+         * @since 1.0.3
+         */
+        imagemin: {
+            build: {
+                expand: true,
+                cwd: 'src/',
+                src: ['**/*.{png,jpg,gif,jpeg}'],
+                dest: 'src/'
+            }
+        },
+
+        /**
+         * Copies src files to build and syncs build directory with src directory.
+         *
+         * @since 1.0.3
+         */
+        sync: {
+            options: {
+                // Don't eff up images!!!
+                processContentExclude: [
+                    '**/*.{png,gif,jpg,ico,psd}'
+                ]
+            },
+            build: {
+                updateAndDelete: true,
                 files: [
                     {
                         dot: true,
@@ -139,10 +208,9 @@ module.exports = function (grunt) {
                         cwd: 'src/',
                         src: [
                             '**',
-                            '!assets/images/**', // Don't transfer images, they don't copy right
-                            '!assets/icons/**', // Don't transfer icons, they don't copy right
                             '!**/.{svn,git}/**', // Ignore VCS settings
-                            '!**/.{idea}/**' // Ignore .idea project settings
+                            '!**/.{idea}/**', // Ignore .idea project settings
+                            '!**/.DS_Store' // Ignore Mac OS dir settings
                         ],
                         dest: 'build/'
                     }
@@ -150,41 +218,46 @@ module.exports = function (grunt) {
             }
         },
 
+        /**
+         * Notifies me when tasks complete.
+         *
+         * @since 1.0.0
+         */
         notify: {
             sass: {
                 options: {
-                    title: '<%= pkg.name %>',
+                    title: pkg.name,
                     message: 'SASS Completed'
                 }
             },
             sass_admin: {
                 options: {
-                    title: '<%= pkg.name %>',
+                    title: pkg.name,
                     message: 'SASS Admin Completed'
                 }
             },
             js: {
                 options: {
-                    title: '<%= pkg.name %>',
+                    title: pkg.name,
                     message: 'JS Completed'
                 }
             },
             js_admin: {
                 options: {
-                    title: '<%= pkg.name %>',
+                    title: pkg.name,
                     message: 'JS Admin Completed'
                 }
             },
             js_tinymce: {
                 options: {
-                    title: '<%= pkg.name %>',
+                    title: pkg.name,
                     message: 'JS tinymce Completed'
                 }
             },
             build: {
                 options: {
-                    title: '<%= pkg.name %>',
-                    message: "NOTE: Manually copy icons and images.\nAlso replace {{VERSION}} in source with current version."
+                    title: pkg.name,
+                    message: 'Build for ' + pkg.version + ' complete! Be sure to add to git.'
                 }
             }
         }
@@ -192,5 +265,5 @@ module.exports = function (grunt) {
 
     // Register tasks
     grunt.registerTask('Watch', ['watch']);
-    grunt.registerTask('Build', ['copy', 'notify:build']);
+    grunt.registerTask('Build', ['imagemin:build', 'string-replace:version', 'sync', 'string-replace:header', 'notify:build']);
 };

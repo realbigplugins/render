@@ -11,11 +11,13 @@
   "plugin_uri": "http://renderwp.com",
   "devDependencies": {
     "grunt": "~0.4",
+    "grunt-string-replace": "~1.0",
     "grunt-autoprefixer": "~1.0",
     "grunt-contrib-uglify": "~0.5",
+    "grunt-contrib-imagemin": "~0.9",
     "grunt-contrib-watch": "~0.6",
     "grunt-contrib-sass": "~0.8",
-    "grunt-contrib-copy": "~0.6",
+    "grunt-sync": "~0.2",
     "grunt-notify": "~0.4",
     "matchdep": "~0.3"
   }

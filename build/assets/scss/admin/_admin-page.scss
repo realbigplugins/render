@@ -46,7 +46,7 @@
   th {
     background: #ddd;
     vertical-align: middle;
-    font-size: 130%;
+    font-size: 120%;
   }
 
   // Content and inputs
@@ -79,4 +79,9 @@
   .dashicons {
     line-height: 26px;
   }
+}
+
+// TinyMCE toggles
+.render-settings-tinymce {
+  margin-bottom: 10px;
 }

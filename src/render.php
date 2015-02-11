@@ -1,4 +1,5 @@
 <?php
+//{{HEADER}}
 
 // Exit if loaded directly
 if ( ! defined( 'ABSPATH' ) ) {

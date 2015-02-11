@@ -62,15 +62,22 @@ class Render_AdminPage_Settings extends Render {
 
 		register_setting( 'render_options', 'render_render_visual' );
 
+		// TinyMCE
+		/** This filter is documented in src/core/licensing/settings.php */
+		$disabled_tinymce_buttons = apply_filters( 'render_disabled_tinymce_buttons', array() );
+
+		// Register all TinyMCE disabled buttons
+		foreach ( (array) $disabled_tinymce_buttons as $button_ID => $button_label ) {
+			register_setting( 'render_options', "render_enable_tinymce_button_$button_ID" );
+		}
+
 		// Licensing
 
-		/**
-		 * This filter is documented in src/core/licensing/settings.php
-		 */
+		/** This filter is documented in src/core/licensing/settings.php */
 		$extension_licenses = apply_filters( 'render_licensing_extensions', array() );
 
 		// Register all license settings
-		foreach ( $extension_licenses as $extension => $label ) {
+		foreach ( (array) $extension_licenses as $extension => $label ) {
 
 			register_setting( 'render_options', "{$extension}_license_key", function ( $new ) use ( $extension ) {
 
@@ -127,6 +134,13 @@ class Render_AdminPage_Settings extends Render {
 			);
 		}
 
+		/**
+		 * Allow extensions to disable TinyMCE buttons.
+		 *
+		 * @since 1.0.3
+		 */
+		$disabled_tinymce_buttons = apply_filters( 'render_disabled_tinymce_buttons', array() );
+
 		// Other options
 		$render_visual = get_option( 'render_render_visual', '1' );
 
@@ -135,7 +149,7 @@ class Render_AdminPage_Settings extends Render {
 		<div class="wrap render-wrap">
 			<h2 class="render-page-title">
 				<img src="<?php echo RENDER_URL; ?>/assets/images/render-logo.svg" class="render-page-title-logo"
-				 onerror="this.src='<?php echo RENDER_URL; ?>/assets/images/render-header-logo.png';" />
+				     onerror="this.src='<?php echo RENDER_URL; ?>/assets/images/render-header-logo.png';"/>
 				<?php _e( 'Settings', 'Render' ); ?>
 			</h2>
 
@@ -217,6 +231,47 @@ class Render_AdminPage_Settings extends Render {
 							</div>
 						</td>
 					</tr>
+					<?php if ( ! empty( $disabled_tinymce_buttons ) ) : ?>
+						<tr valign="top">
+							<th scope="row">
+								<?php _e( 'TinyMCE buttons', 'Render' ); ?>
+							</th>
+							<td>
+								<?php foreach ( (array) $disabled_tinymce_buttons as $button_ID => $button_label ) : ?>
+									<?php $id = "render_enable_tinymce_button_$button_ID"; ?>
+
+									<div class="render-settings-tinymce">
+
+										<div class="render-switch toggle">
+
+											<input type="checkbox"
+											       name="<?php echo $id; ?>"
+											       id="<?php echo $id; ?>"
+											       value="enabled"
+												<?php checked( 'enabled', get_option( $id ) ); ?> />
+
+											<label for="<?php echo $id; ?>" class="disabled-style">
+
+												<span class="render-modal-att-toggle-first">
+													<?php _e( 'Disabled', 'Render' ); ?>
+												</span>
+
+												<span class="render-modal-att-toggle-second">
+													<?php _e( 'Enabled', 'Render' ); ?>
+												</span>
+
+											</label>
+
+										</div>
+
+										<?php echo $button_label; ?>
+
+									</div>
+
+								<?php endforeach; ?>
+							</td>
+						</tr>
+					<?php endif; ?>
 				</table>
 
 				<?php submit_button(); ?>

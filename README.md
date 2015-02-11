@@ -36,6 +36,7 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 ## Changelog
 
 ### [1.0.3](https://github.com/brashrebel/render/releases/tag/v1.0.3)
+* UPDATE: Integration extensions now disable their applicable plugin's TinyMCE buttons, but can be re-enabled from Render Settings.
 * UPDATE: Allow seamless integration of licensing from extensions into Render.
 * UPDATE: Force require at least PHP 5.3.
 * DEVELOPERS: Improve shortcode attribute template functionality, especially the post list template.
