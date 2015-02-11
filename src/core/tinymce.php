@@ -97,7 +97,6 @@ class Render_tinymce extends Render {
 
 				// Different method for media buttons
 				if ( isset( $media_buttons[ $button_ID ] ) ) {
-					remove_action( 'media_buttons', $button_ID, $media_buttons[ $button_ID ] );
 					continue;
 				}
 

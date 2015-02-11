@@ -576,5 +576,9 @@ function render_disable_tinymce_media_button( $hook_name, $label , $priority = 1
 		return $buttons;
 	} );
 
+	if ( get_option( "render_enable_tinymce_button_$hook_name" ) != 'enabled' ) {
+		remove_action( 'media_buttons', $hook_name, $priority );
+	}
+
 	render_disable_tinymce_button( $hook_name, $label );
 }
