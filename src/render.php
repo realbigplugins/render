@@ -502,7 +502,7 @@ if ( ! class_exists( 'Render' ) ) {
 			 */
 			$styles = apply_filters( 'render_editor_styles', $styles );
 
-			foreach ( $styles as $style ) {
+			foreach ( (array) $styles as $style ) {
 				add_editor_style( $style );
 			}
 		}
