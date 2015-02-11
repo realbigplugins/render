@@ -2,7 +2,8 @@
 module.exports = function (grunt) {
 
     // Define the package
-    var pkg = grunt.file.readJSON('package.json');
+    var pkg = grunt.file.readJSON('package.json'),
+        image_ignore = '**/*.{png,gif,jpg,ico,psd,svt,ttf,eot,woff}';
 
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
@@ -123,9 +124,9 @@ module.exports = function (grunt) {
         'string-replace': {
             version: {
                 files: {
-                    'src/': ['src/**', '!**/*.{png,gif,jpg,ico,psd}'],
-                    'init.php': ['init.php', '!**/*.{png,gif,jpg,ico,psd}'],
-                    'README.md': ['README.md', '!**/*.{png,gif,jpg,ico,psd}']
+                    'src/': ['src/**', '!' + image_ignore],
+                    'init.php': ['init.php', '!' + image_ignore],
+                    'README.md': ['README.md', '!' + image_ignore]
                 },
                 options: {
                     replacements: [{
@@ -153,7 +154,7 @@ module.exports = function (grunt) {
             },
             header: {
                 files: {
-                    'build/render.php': ['build/render.php', '!**/*.{png,gif,jpg,ico,psd}']
+                    'build/render.php': ['build/render.php', '!' + image_ignore]
                 },
                 options: {
                     replacements: [{
@@ -196,7 +197,7 @@ module.exports = function (grunt) {
             options: {
                 // Don't eff up images!!!
                 processContentExclude: [
-                    '**/*.{png,gif,jpg,ico,psd}'
+                    image_ignore
                 ]
             },
             build: {
