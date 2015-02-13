@@ -15,7 +15,53 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Loops through each shortcode and adds it to Render
 foreach ( array(
-	// Button
+	/*
+	 * Accordion
+	 *
+	 * The parent wrapper for an accordion.
+	 *
+	 * @since {{VERSION}}
+	 * @nested
+	 */
+	array(
+		'code' => 'render_accordion_wrapper',
+		'function' => '_render_sc_accordion_wrapper',
+		'title' => __( 'Accordion', 'Render' ),
+		'description' => __( 'An accordion section for providing collapsible content.', 'Render' ),
+		'nested' => array(
+			'nested_code' => 'render_accordion_section'
+		),
+	),
+	/*
+	 * Accordion Section
+	 *
+	 * The child for adding sections to an accordion wrapper.
+	 *
+	 * @since {{VERSION}}
+	 * @nested
+	 */
+	array(
+		'code' => 'render_accordion_section',
+		'function' => '_render_sc_accordion_section',
+	),
+	/*
+	 * Button
+	 *
+	 * @since 1.0.0
+	 *
+	 * @att {colorpicker} color                      The background color of the button.
+	 * @att {colorpicker} color_hover                The background color when hovered.
+	 * @att {colorpicker} font_color                 The font color of the button.
+	 * @att {selectbox}   size                       The size of the button.
+	 * @att {selectbox}   shape                      The shape of the button.
+	 * @att {selectbox}   icon                       The icon to show before the button.
+	 * @att {text}        link                       Where the button links to.
+	 * @att {checkbox}    link_new_window            Whether or not the link opens a new tab / window.
+	 * @att {counter}     border_top_left_radius     The button top left border radius.
+	 * @att {counter}     border_top_right_radius    The button top right border radius.
+	 * @att {counter}     border_bottom_left_radius  The button bottom left border radius.
+	 * @att {counter}     border_bottom_right_radius The button bottom right border radius.
+	 */
 	array(
 		'code'        => 'render_button',
 		'function'    => '_render_sc_button',
