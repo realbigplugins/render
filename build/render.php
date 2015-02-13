@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Render
  * Description: Render makes adding complex elements to your content simple and pain free. See what you can Render.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: Kyle Maurer & Joel Worsham
  * Author URI: http://realbigmarketing.com
  * Plugin URI: http://renderwp.com
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-define( 'RENDER_VERSION', '1.0.3' );
+define( 'RENDER_VERSION', '1.0.4' );
 
 /**
  * The absolute server path to Render's root directory.

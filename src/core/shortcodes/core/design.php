@@ -20,7 +20,7 @@ foreach ( array(
 	 *
 	 * The parent wrapper for an accordion.
 	 *
-	 * @since {{VERSION}}
+	 * @since 1.0.4
 	 * @nested
 	 */
 	array(
@@ -37,7 +37,7 @@ foreach ( array(
 	 *
 	 * The child for adding sections to an accordion wrapper.
 	 *
-	 * @since {{VERSION}}
+	 * @since 1.0.4
 	 * @nested
 	 */
 	array(

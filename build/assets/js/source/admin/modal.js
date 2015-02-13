@@ -117,6 +117,10 @@ var Render_Modal;
                 event.preventDefault();
                 Render_Modal.close();
             });
+            elements.backdrop.click(function (event) {
+                event.stopPropagation();
+                Render_Modal.close();
+            });
 
             // Filter shortcodes by category
             elements.categories.find('li').click(function () {

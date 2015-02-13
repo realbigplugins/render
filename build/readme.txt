@@ -5,7 +5,7 @@ Donate link: http://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=admin%
 Tags: shortcodes, render, visual, editor, package, bundle
 Requires at least: 3.8.0
 Tested up to: 4.1
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,6 +40,10 @@ Using this plugin is very simple. All you have to do is:
 
 == Changelog ==
 
+= 1.0.4 =
+* FIX: Styling messed up in Customizer.
+* UPDATE: Can close Render Modal by clicking off of it.
+
 = 1.0.3 =
 * UPDATE: Integration extensions now disable their applicable plugin's TinyMCE buttons, but can be re-enabled from Render Settings.
 * UPDATE: Allow seamless integration of licensing from extensions into Render.
@@ -47,15 +51,15 @@ Using this plugin is very simple. All you have to do is:
 * DEVELOPERS: Improve shortcode attribute template functionality, especially the post list template.
 
 = 1.0.2 =
-* Fix content in shortcodes disappearing when adding one shortcode into the entire content of another.
-* Improved TinyMCE shortcode tooltip usability.
-* Hide customizer prompt on widgets page for Render widget.
-* Chosen custom input now shows deselect "X" when using custom input.
-* Potential PHP notice of defining a licensing constant.
+* FIX: Content in shortcodes disappearing when adding one shortcode into the entire content of another.
+* FIX: Potential PHP notice of defining a licensing constant.
+* UPDATE: Improved TinyMCE shortcode tooltip usability.
+* UPDATE: Hide customizer prompt on widgets page for Render widget.
+* UPDATE: Chosen custom input now shows deselect "X" when using custom input.
 
 = 1.0.1 =
-* Fix major ACF conflict.
-* Fix PHP notice.
+* FIX: Major ACF conflict.
+* FIX: PHP notice.
 
 = 1.0.0 =
-* A change since the previous version.
+* RELEASE: The initial release!
