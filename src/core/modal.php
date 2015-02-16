@@ -647,7 +647,8 @@ class Render_Modal {
 			}
 			?>
 			<div class="render-modal-repeater-field <?php echo $i == 0 ? 'dummy-field' : ''; ?>"
-				<?php echo $i == 0 ? 'style="display:none"' : ''; ?>>
+				<?php echo $i == 0 ? 'style="display:none"' : ''; ?>
+				<?php echo isset( $properties['max'] ) ? "data-max='$properties[max]'" : ''; ?>>
 
 				<?php // Dummy input to trigger field
 				?>

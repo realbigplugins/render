@@ -2711,6 +2711,17 @@ var Render_Modal;
         // Add a new field after on pressing the "+"
         $container.find('.render-modal-repeater-add').off().click(function () {
 
+            // Make sure we're not hitting a max first
+            var max = $(this).closest('.render-modal-repeater-field').data('max'),
+                current = $container.length;
+
+            if (max && current >= parseInt(max) + 1) { // + 1 for invisible dummy field
+                $(this).closest('.render-modal-att-field').effect('shake', {
+                    distance: 10
+                }, 200);
+                return;
+            }
+
             // Clone the dummy field in after the current field
             var $clone = $(this).closest('.render-modal-att-field').find('.render-modal-repeater-field.dummy-field').clone();
 

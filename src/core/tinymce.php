@@ -360,7 +360,7 @@ class Render_tinymce extends Render {
 
 			// Set default dummy content
 			if ( ! isset( $render_shortcode_data[ $code ]['dummyContent'] ) ) {
-				$render_shortcode_data[ $code ]['dummyContent'] = 'Enter section content';
+				$render_shortcode_data[ $code ]['dummyContent'] = '(Enter section content)';
 			}
 
 			if ( empty( $_content ) ) {
@@ -444,6 +444,13 @@ class Render_tinymce extends Render {
 
 		// Hidden tooltip
 		$classes[] = isset( $render_shortcode_data[ $code ]['hideActions'] ) ? 'hide-actions' : '';
+
+		/**
+		 * Allows external filtering of the wrapper classes.
+		 *
+		 * @since {{VERSION}}
+		 */
+		$classes = apply_filters( "render_tinymce_shortcode_wrapper_classes_$code", $classes );
 
 		$output = '';
 

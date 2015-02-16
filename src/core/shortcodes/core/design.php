@@ -25,44 +25,39 @@ foreach (
 		 * @nestedChild render_accordion_section
 		 */
 		array(
-			'code'               => 'render_accordion_wrapper',
-			'function'           => '_render_sc_accordion_wrapper',
-			'title'              => __( 'Accordion', 'Render' ),
-			'description'        => __( 'An accordion style drop-down for hiding and revealing content.', 'Render' ),
-			'atts'               => array(
+			'code'        => 'render_accordion_wrapper',
+			'function'    => '_render_sc_accordion_wrapper',
+			'title'       => __( 'Accordion', 'Render' ),
+			'description' => __( 'An accordion style drop-down for hiding and revealing content.', 'Render' ),
+			'atts'        => array(
 				array(
 					'label' => __( 'Colors', 'Render' ),
-					'type' => 'section_break',
+					'type'  => 'section_break',
 				),
-				'heading_background' => array(
-					'label' => __( 'Heading', 'Render' ),
-					'type' => 'colorpicker',
+				'heading_background'       => array(
+					'label'   => __( 'Heading', 'Render' ),
+					'type'    => 'colorpicker',
 					'default' => RENDER_PRIMARY_COLOR,
 				),
 				'heading_background_hover' => array(
-					'label' => __( 'Heading Hover', 'Render' ),
-					'type' => 'colorpicker',
+					'label'   => __( 'Heading Hover', 'Render' ),
+					'type'    => 'colorpicker',
 					'default' => RENDER_PRIMARY_COLOR_DARK,
 				),
-				'heading_font_color' => array(
-					'label' => __( 'Heading Font', 'Render' ),
-					'type' => 'colorpicker',
+				'heading_font_color'       => array(
+					'label'   => __( 'Heading Font', 'Render' ),
+					'type'    => 'colorpicker',
 					'default' => RENDER_PRIMARY_FONT_COLOR,
 				),
 				array(
 					'label' => __( 'Accordion Sections', 'Render' ),
-					'type' => 'section_break',
+					'type'  => 'section_break',
 				),
-				'nested_children' => array(
+				'nested_children'          => array(
 					'label'      => __( 'Sections', 'Render' ),
 					'type'       => 'repeater',
 					'properties' => array(
 						'fields' => array(
-//							'dummy_field' => array(
-//								'label' => __( 'Accordion Section', 'Render' ),
-//								'type' => 'hidden',
-//								'default' => 1,
-//							),
 							'heading' => array(
 								'label' => __( 'Heading', 'Render' ),
 							),
@@ -70,10 +65,10 @@ foreach (
 					),
 				),
 			),
-			'wrapping'           => true,
-			'render'             => array(
+			'wrapping'    => true,
+			'render'      => array(
 				'nested' => array(
-					'child' => 'render_accordion_section',
+					'child'      => 'render_accordion_section',
 					'globalAtts' => array(
 						'heading_background',
 						'heading_background_hover',
@@ -91,16 +86,16 @@ foreach (
 		 * @nestedParent render_accordion_wrapper
 		 */
 		array(
-			'code'        => 'render_accordion_section',
-			'function'    => '_render_sc_accordion_section',
+			'code'      => 'render_accordion_section',
+			'function'  => '_render_sc_accordion_section',
 			'noDisplay' => true,
-			'wrapping'    => true,
-			'render'      => array(
-				'dummyContent' => 'Enter accordion section content here',
-				'nested' => array(
+			'wrapping'  => true,
+			'render'    => array(
+				'nested'       => array(
 					'parent' => 'render_accordion_wrapper',
 				),
-				'noStyle' => true,
+				'dummyContent' => '(Enter accordion section content here)',
+				'noStyle'      => true,
 				'displayBlock' => true,
 			),
 		),
@@ -441,200 +436,67 @@ foreach (
 				'noStyle' => true,
 			),
 		),
-		// Column 2
+		/*
+		 * Columns Wrapper
+		 *
+		 * Create a grid of sections divided into columns.
+		 *
+		 * @since {{VERSION}}
+		 * @nestedChild render_column_section
+		 */
 		array(
-			'code'        => 'render_column_two',
-			'function'    => '_render_sc_column_two',
-			'title'       => __( 'Column 2', 'Render' ),
-			'description' => __( 'Creates a nice column that is half the width of the container.', 'Render' ),
+			'code'        => 'render_columns_wrapper',
+			'function'    => '_render_sc_columns_wrapper',
+			'title'       => __( 'Columns', 'Render' ),
+			'description' => __( 'Creates symmetrical columns for grouping content.', 'Render' ),
 			'atts'        => array(
-				'padding_left'  => array(
-					'label'      => __( 'Padding Left', 'Render' ),
-					'type'       => 'counter',
-					'default'    => 10,
-					'properties' => array(
-						'unit' => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
-					'advanced'   => true,
+				array(
+					'description' => __( 'Maximum six columns', 'Render' ),
+					'type' => 'section_break',
 				),
-				'padding_right' => array(
-					'label'      => __( 'Padding Right', 'Render' ),
-					'type'       => 'counter',
-					'default'    => 10,
-					'properties' => array(
-						'unit' => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
+				'nested_children' => array(
+					'label'            => __( 'Columns', 'Render' ),
+					'type'             => 'repeater',
+					'properties'       => array(
+						'max'    => 6,
+						'fields' => array(
+							'dummy_field' => array(
+								'label'   => __( 'Column', 'Render' ),
+								'type'    => 'hidden',
+								'default' => 1,
 							),
 						),
 					),
-					'advanced'   => true,
 				),
 			),
 			'wrapping'    => true,
 			'render'      => array(
-				'noStyle' => true,
+				'nested' => array(
+					'child'      => 'render_column_section',
+					'globalAtts' => array(
+						'nested_children',
+					),
+				),
 			),
 		),
-		// Column 3
+		/*
+		 * Column Section
+		 *
+		 * An individual column section.
+		 *
+		 * @since {{VERSION}}
+		 * @nestedParent render_columns_wrapper
+		 */
 		array(
-			'code'        => 'render_column_three',
-			'function'    => '_render_sc_column_three',
-			'title'       => __( 'Column 3', 'Render' ),
-			'description' => __( 'Creates a nice column that is a third the width of the container.', 'Render' ),
-			'atts'        => array(
-				'padding_left'  => array(
-					'label'      => __( 'Padding Left', 'Render' ),
-					'type'       => 'counter',
-					'default'    => 10,
-					'properties' => array(
-						'unit' => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
-					'advanced'   => true,
+			'code'      => 'render_column_section',
+			'function'  => '_render_sc_column_section',
+			'noDisplay' => true,
+			'wrapping'  => true,
+			'render'    => array(
+				'nested'       => array(
+					'parent' => 'render_columns_wrapper',
 				),
-				'padding_right' => array(
-					'label'      => __( 'Padding Right', 'Render' ),
-					'type'       => 'counter',
-					'default'    => 10,
-					'properties' => array(
-						'unit' => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
-					'advanced'   => true,
-				),
-			),
-			'wrapping'    => true,
-			'render'      => array(
-				'noStyle' => true,
-			),
-		),
-		// Column 4
-		array(
-			'code'        => 'render_column_four',
-			'function'    => '_render_sc_column_four',
-			'title'       => __( 'Column 4', 'Render' ),
-			'description' => __( 'Creates a nice column that is a quarter the width of the container.', 'Render' ),
-			'atts'        => array(
-				'padding_left'  => array(
-					'label'      => __( 'Padding Left', 'Render' ),
-					'type'       => 'counter',
-					'default'    => 10,
-					'properties' => array(
-						'unit' => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
-					'advanced'   => true,
-				),
-				'padding_right' => array(
-					'label'      => __( 'Padding Right', 'Render' ),
-					'type'       => 'counter',
-					'default'    => 10,
-					'properties' => array(
-						'unit' => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
-					'advanced'   => true,
-				),
-			),
-			'wrapping'    => true,
-			'render'      => array(
-				'noStyle' => true,
-			),
-		),
-		// Column 5
-		array(
-			'code'        => 'render_column_five',
-			'function'    => '_render_sc_column_five',
-			'title'       => __( 'Column 5', 'Render' ),
-			'description' => __( 'Creates a nice column that is a fifth the width of the container.', 'Render' ),
-			'atts'        => array(
-				'padding_left'  => array(
-					'label'      => __( 'Padding Left', 'Render' ),
-					'type'       => 'counter',
-					'default'    => 10,
-					'properties' => array(
-						'unit' => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
-					'advanced'   => true,
-				),
-				'padding_right' => array(
-					'label'      => __( 'Padding Right', 'Render' ),
-					'type'       => 'counter',
-					'default'    => 10,
-					'properties' => array(
-						'unit' => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
-					'advanced'   => true,
-				),
-			),
-			'wrapping'    => true,
-			'render'      => array(
-				'noStyle' => true,
+				'dummyContent' => '(Enter column content here)',
 			),
 		)
 	) as $shortcode
@@ -687,10 +549,10 @@ function _render_sc_accordion_wrapper( $atts = array(), $content = '' ) {
 function _render_sc_accordion_section( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
-		'heading' => 'Heading',
-		'heading_background' => RENDER_PRIMARY_COLOR,
+		'heading'                  => 'Heading',
+		'heading_background'       => RENDER_PRIMARY_COLOR,
 		'heading_background_hover' => RENDER_PRIMARY_COLOR_DARK,
-		'heading_font_color' => RENDER_PRIMARY_FONT_COLOR,
+		'heading_font_color'       => RENDER_PRIMARY_FONT_COLOR,
 	), $atts );
 
 	// Escape atts
@@ -812,6 +674,83 @@ function _render_sc_box( $atts = array(), $content = '' ) {
 	return $output;
 }
 
+/**
+ * Wrapper for a column section.
+ *
+ * @since  1.0.0
+ * @access Private
+ *
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
+ *
+ * @return string The content in a column wrapper HTML.
+ */
+function _render_sc_columns_wrapper( $atts = array(), $content = '' ) {
+
+	$output = '<div class="render-columns-wrapper">';
+
+	$output .= do_shortcode( $content );
+
+	$output .= '</div>'; // .render-columns-wrapper
+
+	return $output;
+}
+
+/**
+ * Sections for inside the columns wrapper.
+ *
+ * @since  1.0.0
+ * @access Private
+ *
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
+ *
+ * @return string The column section HTML.
+ */
+function _render_sc_column_section( $atts = array(), $content = '' ) {
+
+	$atts = shortcode_atts( array(
+		'nested_children' => false,
+	), $atts );
+
+	// Escape atts
+	render_esc_atts( $atts );
+
+	$columns = render_associative_atts( $atts, 'nested_children' );
+	$columns = count( $columns );
+
+	$output = "<div class='render-column-section columns-$columns'>";
+
+	$output .= $content;
+
+	$output .= '</div>'; // .render-column-section
+
+	return do_shortcode( $output );
+}
+
+function _render_sc_column_section_tinymce( $atts = array(), $content = '' ) {
+
+	$atts = shortcode_atts( array(
+		'nested_children' => false,
+	), $atts );
+
+	// Escape atts
+	render_esc_atts( $atts );
+
+	$columns = render_associative_atts( $atts, 'nested_children' );
+	$columns = count( $columns );
+
+	add_filter( 'render_tinymce_shortcode_wrapper_classes_render_column_section', function ( $classes ) use ( $columns ) {
+
+		if ( ! in_array( "columns-$columns", $classes ) ) {
+			$classes[] = "columns-$columns";
+		}
+
+		return $classes;
+	} );
+
+	return _render_sc_column_section( $atts, $content );
+}
 
 /**
  * Wraps the content within a half-width column.
