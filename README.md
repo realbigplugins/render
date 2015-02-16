@@ -35,6 +35,9 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 
 ## Changelog
 
+### [{{VERSION}}](https://github.com/brashrebel/render/releases/tag/v{{VERSION}})
+* FIX: Repeater attribute fields adding extra, unused attributes to shortcode output.
+
 ### [1.0.4](https://github.com/brashrebel/render/releases/tag/v1.0.4)
 * FIX: Styling messed up in Customizer.
 * UPDATE: Can close Render Modal by clicking off of it.

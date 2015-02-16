@@ -1609,8 +1609,8 @@ var Render_Modal;
 
                 var attObj = $(this).data('attObj');
 
-                // Skip if no attObj
-                if (!attObj) {
+                // Skip if no attObj or if in a repeater
+                if (!attObj || $(this).closest('.render-modal-repeater-field').length) {
                     return true; // Continue $.each
                 }
 
