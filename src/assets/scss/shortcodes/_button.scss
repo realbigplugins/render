@@ -10,7 +10,7 @@
   &[class*='rounded'] {
     border-radius: $button-padding-base;
 
-    .hover {
+    .render-button-hover {
       border-radius: $button-padding-base;
     }
   }
@@ -25,7 +25,7 @@
     }
   }
 
-  .hover {
+  .render-button-hover {
     padding: $button-padding-vertical $button-padding-horizontal;
   }
 }
@@ -40,14 +40,9 @@
   transform-style: preserve-3d;
 
   &:hover {
-    .hover, .content-hover {
+    .render-button-hover {
       visibility: visible;
       opacity: 1;
-    }
-
-    .content-under {
-      visibility: hidden;
-      opacity: 0;
     }
   }
 
@@ -69,7 +64,7 @@
   &[class*='ellipse'] {
     border-radius: 50%;
 
-    .hover {
+    .render-button-hover {
       border-radius: 50%;
     }
   }
@@ -88,7 +83,7 @@
     height: auto;
   }
 
-  .hover {
+  .render-button-hover {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -98,18 +93,5 @@
     visibility: hidden;
     transition: all $primary-transition;
     z-index: 1;
-  }
-
-  .content-hover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    visibility: hidden;
-    transition: all $primary-transition;
-  }
-
-  .content-under {
-    transition: all $primary-transition;
   }
 }

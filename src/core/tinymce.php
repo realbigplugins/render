@@ -133,7 +133,7 @@ class Render_tinymce extends Render {
 	/**
 	 * Adds localized data for rendering.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0.0`
 	 *
 	 * @global Render $Render The main Render object.
 	 *
@@ -287,6 +287,86 @@ class Render_tinymce extends Render {
 		$atts        = $matches[3];
 		$_content    = $matches[5];
 
+		// Get our atts
+		$atts = shortcode_parse_atts( $atts );
+
+		// Nested shortcode parents
+		if ( isset( $render_shortcode_data[ $code ]['nested']['child'] ) ) {
+
+			$new_content = '';
+
+			$child_code = $render_shortcode_data[ $code ]['nested']['child'];
+
+			// Force DIV tag
+			$render_shortcode_data[ $code ]['displayBlock'] = true;
+
+			// Don't allow manual content editing
+			$render_shortcode_data[ $code ]['contentNonEditable'] = true;
+
+			$nested_children = render_associative_atts( $atts, 'nested_children' );
+
+			$existing_children_content = array();
+
+			// Get the regex for finding JUST our child shortcodes
+			$_shortcode_tags = $shortcode_tags;
+			$shortcode_tags = array(
+				$child_code => null,
+			);
+			$child_regex = get_shortcode_regex();
+			$shortcode_tags = $_shortcode_tags;
+
+			preg_replace_callback( "/$child_regex/s", function ( $matches ) use ( &$existing_children_content ) {
+				$existing_children_content[] = $matches[5]; // content
+			}, $_content );
+
+			// Create each of our nested children by looping through the repeater attribute
+			$i = -1;
+			foreach ( $nested_children as $child_attributes ) {
+				$i ++;
+
+				// Setup atts
+				$child_attributes_output = '';
+				foreach ( (array) $child_attributes as $att_name => $att_value ) {
+					$child_attributes_output .= "$att_name='$att_value' ";
+				}
+
+				// Add in any global atts
+				$global_atts = isset( $render_shortcode_data[ $code ]['nested']['globalAtts'] ) ? $render_shortcode_data[ $code ]['nested']['globalAtts'] : false;
+				if ( $global_atts ) {
+
+					foreach ( $global_atts as $global_att ) {
+
+						if ( isset( $atts[ $global_att ] ) ) {
+							$child_attributes_output .= "$global_att='{$atts[ $global_att ]}' ";
+						}
+					}
+				}
+
+				$child_content = isset( $existing_children_content[ $i ] ) ? $existing_children_content[ $i ] : '';
+
+				// Set content
+				$new_content .= "[$child_code $child_attributes_output]{$child_content}[/$child_code]";
+			}
+
+			$entire_code = str_replace( "]{$_content}[", "]{$new_content}[", $entire_code );
+			$_content = $new_content;
+		}
+
+		// Nested shortcode children
+		if ( isset( $render_shortcode_data[ $code ]['nested']['parent'] ) ) {
+
+			// Don't allow this shortcode to be edited
+			$render_shortcode_data[ $code ]['hideActions'] = true;
+
+			// Set default dummy content
+			if ( ! isset( $render_shortcode_data[ $code ]['dummyContent'] ) ) {
+				$render_shortcode_data[ $code ]['dummyContent'] = 'Enter section content';
+			}
+
+			if ( empty( $_content ) ) {
+			}
+		}
+
 		// Search again for any nested shortcodes (loops infinitely)
 		if ( ! empty( $_content ) ) {
 			$pattern = get_shortcode_regex();
@@ -303,8 +383,6 @@ class Render_tinymce extends Render {
 			} else {
 				$content = 'No content selected.';
 			}
-
-			$entire_code = str_replace( '][', "]{$content}[", $entire_code );
 		}
 
 		// Properly wrap the content
@@ -312,21 +390,22 @@ class Render_tinymce extends Render {
 
 			// Wrap the content in a special element, but first decide if it needs to be div or span
 			$tag      = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
+
+			// Override tag
+			$tag = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'div' : $tag;
+
 			$editable = isset( $render_shortcode_data[ $code ]['contentNonEditable'] ) ? '' : 'render-tinymce-editable';
 			$content  = "<$tag class='render-tinymce-shortcode-content $editable'>$content</$tag>";
 		}
 
 		// Replace the content with the new content
-		if ( ! empty( $_content ) ) {
+		if ( ! empty( $content ) ) {
 			$entire_code = str_replace( "]{$_content}[", "]{$content}[", $entire_code );
 		}
 
 		// Get the atts prepared for JSON
 		if ( ! empty( $atts ) ) {
-			$atts = shortcode_parse_atts( $atts );
-			if ( ! empty( $atts ) ) {
-				$atts = json_encode( $atts );
-			}
+			$atts = json_encode( $atts );
 		}
 
 		// Check for tinymce callback
@@ -349,10 +428,22 @@ class Render_tinymce extends Render {
 		// Override tag
 		$tag = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'div' : $tag;
 
-		// Whether or not to style the code
-		$nostyle = isset( $render_shortcode_data[ $code ]['noStyle'] ) ? '' : ' styled';
+		$classes = array();
 
-		$block = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'block' : '';
+		// The code
+		$classes[] = $code;
+
+		// Whether or not to style the code
+		$classes[] = ! isset( $render_shortcode_data[ $code ]['noStyle'] ) ? 'styled' : '';
+
+		// If the code should be forced as displayBlock
+		$classes[] = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'block' : '';
+
+		// If the shortcode is a nested child
+		$classes[] = isset( $render_shortcode_data[ $code ]['nested']['parent'] ) ? 'nested-child' : '';
+
+		// Hidden tooltip
+		$classes[] = isset( $render_shortcode_data[ $code ]['hideActions'] ) ? 'hide-actions' : '';
 
 		$output = '';
 
@@ -362,7 +453,7 @@ class Render_tinymce extends Render {
 			$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
 		}
 
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable $code $nostyle $block' data-code='$code' data-atts='$atts'>";
+		$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable " . implode( ' ', $classes ) . "' data-code='$code' data-atts='$atts'>";
 
 		$output .= ! empty( $shortcode_output ) ? $shortcode_output : '<span class="render-shortcode-no-output">(no output)</span>';
 
@@ -372,11 +463,13 @@ class Render_tinymce extends Render {
 		$output .= "<$tag class='render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip'>" . __( 'Press again to delete', 'Render' ) . "</$tag>";
 
 		// Action button
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip'>";
-		$output .= "<$tag class='render-tinymce-tooltip-spacer'></$tag>";
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit'>edit</$tag>";
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper-remove dashicons dashicons-no'>remove</$tag>";
-		$output .= "</$tag>";
+		if ( ! isset( $render_shortcode_data[ $code ]['hideActions'] ) ) {
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip'>";
+			$output .= "<$tag class='render-tinymce-tooltip-spacer'></$tag>";
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit'>edit</$tag>";
+			$output .= "<$tag class='render-tinymce-shortcode-wrapper-remove dashicons dashicons-no'>remove</$tag>";
+			$output .= "</$tag>";
+		}
 
 		$output .= "</$tag>";
 

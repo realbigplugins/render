@@ -16,7 +16,8 @@ var Render_tinymce;
     var editor, $texteditor, $editor, $loader,
         min_load_time = false,
         last_message = 0,
-        submitted = false;
+        submitted = false,
+        $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
 
     Render_tinymce = {
 
@@ -73,7 +74,7 @@ var Render_tinymce;
          */
         editorBinds: function ($body) {
 
-            $body.on('mouseover', '.render-tinymce-shortcode-wrapper', function (e) {
+            $body.on('mouseover', '.render-tinymce-shortcode-wrapper:not(.hide-actions)', function (e) {
 
                 e.stopPropagation();
 
@@ -89,7 +90,7 @@ var Render_tinymce;
                 e.stopPropagation();
 
                 // Remove all other active tooltips
-                $body.find('.render-tinymce-shortcode-wrapper-actions.active').removeClass('active');
+                $body.find('.render-tinymce-shortcode-wrapper-actions.active:not(.hide-actions)').removeClass('active');
             })
         },
 
@@ -413,20 +414,29 @@ var Render_tinymce;
          */
         open: function (shortcode) {
 
-            var $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
+            // Reset the disabled shortcodes
+            $modal_shortcodes.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
 
             if (typeof shortcode !== 'undefined') {
-                $modal_shortcodes.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
                 Render_Modal.modify(shortcode);
             } else {
 
                 if (!Render_Modal.selection) {
-                    $modal_shortcodes.find('.render-modal-shortcode.wrapping').addClass('disabled');
-                } else {
-                    $modal_shortcodes.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
+                    $modal_shortcodes.find('.render-modal-shortcode.wrapping:not(.nested-parent)').addClass('disabled')
+                        .data('shortcodeErrorMessage', 'Please select content from the editor to enable this shortcode.');
                 }
 
                 Render_Modal.open();
+            }
+
+            // Hide any identical shortcodes if in a nesting shortcode
+            var $cursor_node = $(editor.selection.getNode()),
+                $nesting_shortcode = $cursor_node.length ? $cursor_node.closest('.nested-child') : false;
+
+            if ($nesting_shortcode.length) {
+                var nesting_shortcode = $nesting_shortcode.parent().closest('.render-tinymce-shortcode-wrapper').data('code');
+                $modal_shortcodes.find('.render-modal-shortcode[data-code="' + nesting_shortcode + '"]').addClass('disabled')
+                    .data('shortcodeErrorMessage', 'You cannot place this shortcode here.');
             }
         },
 

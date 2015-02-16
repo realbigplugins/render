@@ -1,0 +1,50 @@
+@import "../global";
+
+.render-accordion-wrapper {
+
+}
+
+.render-accordion-section {
+
+
+  .render-accordion-section-heading {
+    position: relative;
+    padding: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+    cursor: pointer;
+
+    &:hover {
+      .render-accordion-hover {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+
+    .render-accordion-hover {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: all $primary-transition;
+      z-index: 1;
+    }
+
+    .render-accordion-heading-content {
+      position: relative;
+      z-index: 2;
+    }
+  }
+
+  .render-accordion-section-content {
+    padding: 10px;
+  }
+}
+
+// Tinymce
+.render-tinymce-shortcode-wrapper[class*="render_accordion_wrapper"] {
+  padding: 5px;
+}

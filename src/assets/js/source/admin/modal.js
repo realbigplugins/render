@@ -117,6 +117,10 @@ var Render_Modal;
                 event.preventDefault();
                 Render_Modal.close();
             });
+            elements.backdrop.click(function (event) {
+                event.stopPropagation();
+                Render_Modal.close();
+            });
 
             // Filter shortcodes by category
             elements.categories.find('li').click(function () {
@@ -330,6 +334,11 @@ var Render_Modal;
 
                 // Initialize each type of att (this is as big one!)
                 switch (att_type) {
+                    case 'hidden':
+
+                        attObj = new Hidden($(this));
+                        break;
+
                     case 'selectbox':
 
                         attObj = new Selectbox($(this));
@@ -1029,7 +1038,9 @@ var Render_Modal;
                 // Error message
                 var $description = $container.find('.render-modal-shortcode-description');
                 $description.data('shortcodeDescriptionText', $description.html());
-                $description.html('Please select content from the editor to enable this shortcode.');
+
+                // TODO Make translatable
+                $description.html($container.data('shortcodeErrorMessage'));
 
                 $container.addClass('render-modal-shortcode-error-message');
 
@@ -1605,8 +1616,8 @@ var Render_Modal;
 
                 var attObj = $(this).data('attObj');
 
-                // Skip if no attObj
-                if (!attObj) {
+                // Skip if no attObj or if in a repeater
+                if (!attObj || $(this).closest('.render-modal-repeater-field').length) {
                     return true; // Continue $.each
                 }
 
@@ -2081,6 +2092,22 @@ var Render_Modal;
             this.$errormsg.html(msg);
         };
     }
+
+    /**
+     * Modulation of AttAPI for the Hidden attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
+    var Hidden = function ($e) {
+
+        // Extends the AttAPI object
+        AttAPI.apply(this, arguments);
+
+        this.init($e);
+    };
 
     /**
      * Modulation of AttAPI for the Textbox attribute type.

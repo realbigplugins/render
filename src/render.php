@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-define( 'RENDER_VERSION', '1.0.3' );
+define( 'RENDER_VERSION', '1.0.4' );
 
 /**
  * The absolute server path to Render's root directory.
@@ -417,6 +417,7 @@ if ( ! class_exists( 'Render' ) ) {
 						'category'    => 'other',
 						'atts'        => array(),
 						'example'     => '',
+						'disallowShortcodes'    => array(),
 						'wrapping'    => false,
 						'render'      => false,
 						'noDisplay'   => false,

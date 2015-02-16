@@ -1,5 +1,5 @@
 # Render
-### v1.0.3
+### v1.0.4
 
 Render is a powerful plugin which enables you to insert useful and powerful functionality into your content. All without writing or even seeing any code.
 
@@ -34,6 +34,15 @@ Here's a basic rundown of what this plugin does so that you'll know what to look
 Simply download the master zip (the button on the right that says "Download ZIP"), and use WP to install that zip.
 
 ## Changelog
+
+### [{{VERSION}}](https://github.com/brashrebel/render/releases/tag/v{{VERSION}})
+* UPDATE: Accordion shortcode.
+* FIX: Repeater attribute fields adding extra, unused attributes to shortcode output.
+* DEVELOPERS: Nesting shortcode "type" now available! 
+
+### [1.0.4](https://github.com/brashrebel/render/releases/tag/v1.0.4)
+* FIX: Styling messed up in Customizer.
+* UPDATE: Can close Render Modal by clicking off of it.
 
 ### [1.0.3](https://github.com/brashrebel/render/releases/tag/v1.0.3)
 * UPDATE: Integration extensions now disable their applicable plugin's TinyMCE buttons, but can be re-enabled from Render Settings.

@@ -40,833 +40,834 @@ $render-modal-height: 800px;
     top: 10px;
     bottom: 10px;
   }
-}
 
-.render-modal-form {
-  height: 100%;
-}
-
-.render-modal-title {
-  background: #fcfcfc;
-  border-bottom: 1px solid #dfdfdf;
-  text-align: center;
-  padding: 10px 0;
-  top: 0;
-  right: 0;
-  left: 0;
-
-  .render-modal-logo {
-    width: 194px;
-    height: 38px;
-    background: url('../images/render-logo.png') no-repeat;
-    display: inline-block;
-
-    @media only screen and (-webkit-min-device-pixel-ratio: 2),
-    only screen and (min--moz-device-pixel-ratio: 2),
-    only screen and (-o-min-device-pixel-ratio: 2/1),
-    only screen and (min-device-pixel-ratio: 2),
-    only screen and (min-resolution: 192dpi),
-    only screen and (min-resolution: 2dppx) {
-      background: url('../images/render-logo@2x.png');
-      background-size: 194px 38px;
-    }
+  .render-modal-form {
+    height: 100%;
   }
 
-  .render-modal-close {
-    color: #666;
-    padding: 0;
-    position: absolute;
+  .render-modal-title {
+    background: #fcfcfc;
+    border-bottom: 1px solid #dfdfdf;
+    text-align: center;
+    padding: 10px 0;
     top: 0;
     right: 0;
-    width: 36px;
-    height: 36px;
-    text-align: center;
-    background: none;
-    border: none;
-    cursor: pointer;
+    left: 0;
 
-    &:hover {
-      color: #2ea2cc;
+    .render-modal-logo {
+      width: 194px;
+      height: 38px;
+      background: url('../images/render-logo.png') no-repeat;
+      display: inline-block;
+
+      @media only screen and (-webkit-min-device-pixel-ratio: 2),
+      only screen and (min--moz-device-pixel-ratio: 2),
+      only screen and (-o-min-device-pixel-ratio: 2/1),
+      only screen and (min-device-pixel-ratio: 2),
+      only screen and (min-resolution: 192dpi),
+      only screen and (min-resolution: 2dppx) {
+        background: url('../images/render-logo@2x.png');
+        background-size: 194px 38px;
+      }
     }
 
-    &:before {
-      content: '\f158';
-      font: normal 20px/36px 'dashicons';
-      vertical-align: top;
-      width: 36px;
-      height: 36px;
+    .render-modal-close {
+      color: #666;
+      padding: 0;
       position: absolute;
       top: 0;
       right: 0;
-    }
-  }
-}
-
-.render-modal-body {
-  padding: 0 16px 50px;
-}
-
-.render-modal-search {
-  position: relative;
-  width: 100%;
-  margin: 10px 0;
-  box-sizing: border-box;
-
-  input {
-    width: 100%;
-    line-height: 25px;
-    padding: 0 5px;
-    box-sizing: border-box;
-  }
-
-  .dashicons-search {
-    position: absolute;
-    right: 5px;
-    top: 0;
-    line-height: 29px;
-    height: 29px;
-  }
-
-  .render-modal-invalidsearch {
-    background: $error-color;
-    color: #fff;
-    padding: 5px;
-    box-sizing: border-box;
-  }
-}
-
-.render-modal-categories {
-  overflow: hidden;
-  position: relative;
-
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  // Right and left arrows
-  [class*="render-modal-categories-"] {
-    position: absolute;
-    height: 100%;
-    top: 0;
-    cursor: pointer;
-    z-index: 1;
-
-    &:before {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      transform: translateY(-50%);
-    }
-
-    &:hover {
-      &:before {
-        opacity: 0.5;
-      }
-    }
-
-    &[class*="-left"] {
-      left: 0;
-    }
-
-    &[class*="-right"] {
-      right: 0;
-    }
-  }
-
-  ul {
-    white-space: nowrap;
-    position: relative;
-    margin: 0;
-
-    &:after {
-      content: '';
-      display: table;
-      clear: both;
-    }
-  }
-
-  li {
-    display: inline-block;
-    margin-right: -4px;
-    width: 20%;
-    text-align: center;
-    border: 1px solid transparent;
-    box-sizing: border-box;
-    cursor: pointer;
-
-    &.active, &:hover {
-      color: $primary-color;
-    }
-
-    .dashicons {
-      width: 100%;
-      font-size: 40px;
-      line-height: 40px;
-      height: auto;
-    }
-  }
-}
-
-.render-modal-shortcodes-container {
-  position: relative;
-}
-
-.render-modal-shortcodes-spinner {
-  position: absolute;
-  top: 50%;
-  margin-top: -10px;
-  left: 50%;
-  margin-left: -10px;
-  display: block;
-  opacity: 1;
-  z-index: 1;
-}
-
-.render-modal-shortcodes {
-  border-collapse: collapse;
-  overflow-y: scroll;
-  display: block;
-  margin: 0;
-  background-color: #fff;
-  position: relative;
-  z-index: 2;
-  transition: $primary-transition background-color;
-
-  .render-modal-shortcode {
-    display: block;
-    border: 1px solid transparent;
-    margin: 0;
-    position: relative;
-    background-color: #fff;
-
-    &.alt {
-      background-color: darken(#fff, 5%);
-    }
-
-    &.disabled {
-      color: #aaa;
-    }
-
-    &.current-shortcode {
-      border-color: $primary-color !important;
-    }
-
-    &.render-modal-shortcode-error-message {
-      .render-modal-shortcode-title:before {
-        content: '!';
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        line-height: 10px;
-        text-align: center;
-        border-radius: 50%;
-        border: 2px solid;
-        font-size: 11px;
-        font-weight: bold;
-        color: #ccc;
-        vertical-align: 1px;
-        margin-right: 2px;
-      }
-
-      .render-modal-shortcode-description {
-        font-weight: bold;
-      }
-    }
-
-    &:hover {
-
-      &:not(.disabled) {
-        background-color: darken(#fff, 10%);
-      }
-
-      .render-modal-shortcode-source {
-        opacity: 1;
-      }
-    }
-
-    &.active {
-      border-color: darken(#fff, 30%);
-    }
-
-    &:after {
-      content: '';
-      display: table;
-      clear: both;
-    }
-  }
-}
-
-// Shortcode toolbar
-$toolbar-height: 50px;
-.render-modal-shortcode-toolbar {
-  .render-modal-shortcode-toolbar-tools {
-    overflow: hidden;
-    height: 0;
-
-    [class^="render-modal-shortcode-toolbar-button"] {
-//      float: left;
-      width: 100%;
-      height: 50px;
-      line-height: 50px;
+      width: 36px;
+      height: 36px;
       text-align: center;
-      background: #E3E3E3;
-      color: #777777;;
+      background: none;
+      border: none;
       cursor: pointer;
-      box-sizing: border-box;
-      transition: background 300ms, color 300ms;
-      user-select: none;
 
       &:hover {
-        background: darken(#E3E3E3, 5%);
+        color: #2ea2cc;
+      }
+
+      &:before {
+        content: '\f158';
+        font: normal 20px/36px 'dashicons';
+        vertical-align: top;
+        width: 36px;
+        height: 36px;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+    }
+  }
+
+  .render-modal-body {
+    padding: 0 16px 50px;
+  }
+
+  .render-modal-search {
+    position: relative;
+    width: 100%;
+    margin: 10px 0;
+    box-sizing: border-box;
+
+    input {
+      width: 100%;
+      line-height: 25px;
+      padding: 0 5px;
+      box-sizing: border-box;
+    }
+
+    .dashicons-search {
+      position: absolute;
+      right: 5px;
+      top: 0;
+      line-height: 29px;
+      height: 29px;
+    }
+
+    .render-modal-invalidsearch {
+      background: $error-color;
+      color: #fff;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+  }
+
+  .render-modal-categories {
+    overflow: hidden;
+    position: relative;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    // Right and left arrows
+    [class*="render-modal-categories-"] {
+      position: absolute;
+      height: 100%;
+      top: 0;
+      cursor: pointer;
+      z-index: 1;
+
+      &:before {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+      }
+
+      &:hover {
+        &:before {
+          opacity: 0.5;
+        }
+      }
+
+      &[class*="-left"] {
+        left: 0;
+      }
+
+      &[class*="-right"] {
+        right: 0;
+      }
+    }
+
+    ul {
+      white-space: nowrap;
+      position: relative;
+      margin: 0;
+
+      &:after {
+        content: '';
+        display: table;
+        clear: both;
+      }
+    }
+
+    li {
+      display: inline-block;
+      margin-right: -4px;
+      width: 20%;
+      text-align: center;
+      border: 1px solid transparent;
+      box-sizing: border-box;
+      cursor: pointer;
+
+      &.active, &:hover {
         color: $primary-color;
       }
 
-      &:active:not(.disabled) {
-        transition: background 0ms;
-        background: darken(#E3E3E3, 10%);
+      .dashicons {
+        width: 100%;
+        font-size: 40px;
+        line-height: 40px;
+        height: auto;
+      }
+    }
+  }
+
+  .render-modal-shortcodes-container {
+    position: relative;
+  }
+
+  .render-modal-shortcodes-spinner {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    left: 50%;
+    margin-left: -10px;
+    display: block;
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .render-modal-shortcodes {
+    border-collapse: collapse;
+    overflow-y: scroll;
+    display: block;
+    margin: 0;
+    background-color: #fff;
+    position: relative;
+    z-index: 2;
+    transition: $primary-transition background-color;
+
+    .render-modal-shortcode {
+      display: block;
+      border: 1px solid transparent;
+      margin: 0;
+      position: relative;
+      background-color: #fff;
+
+      &.alt {
+        background-color: darken(#fff, 5%);
+      }
+
+      &.disabled {
+        color: #aaa;
+      }
+
+      &.current-shortcode {
+        border-color: $primary-color !important;
+      }
+
+      &.render-modal-shortcode-error-message {
+        .render-modal-shortcode-title:before {
+          content: '!';
+          display: inline-block;
+          width: 10px;
+          height: 10px;
+          line-height: 10px;
+          text-align: center;
+          border-radius: 50%;
+          border: 2px solid;
+          font-size: 11px;
+          font-weight: bold;
+          color: #ccc;
+          vertical-align: 1px;
+          margin-right: 2px;
+        }
+
+        .render-modal-shortcode-description {
+          font-weight: bold;
+          color: #444;
+        }
+      }
+
+      &:hover {
+
+        &:not(.disabled) {
+          background-color: darken(#fff, 10%);
+        }
+
+        .render-modal-shortcode-source {
+          opacity: 1;
+        }
+      }
+
+      &.active {
+        border-color: darken(#fff, 30%);
+      }
+
+      &:after {
+        content: '';
+        display: table;
+        clear: both;
+      }
+    }
+  }
+
+  // Shortcode toolbar
+  $toolbar-height: 50px;
+  .render-modal-shortcode-toolbar {
+    .render-modal-shortcode-toolbar-tools {
+      overflow: hidden;
+      height: 0;
+
+      [class^="render-modal-shortcode-toolbar-button"] {
+        //      float: left;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        background: #E3E3E3;
+        color: #777777;;
+        cursor: pointer;
+        box-sizing: border-box;
+        transition: background 300ms, color 300ms;
+        user-select: none;
+
+        &:hover {
+          background: darken(#E3E3E3, 5%);
+          color: $primary-color;
+        }
+
+        &:active:not(.disabled) {
+          transition: background 0ms;
+          background: darken(#E3E3E3, 10%);
+        }
+
+        &.disabled {
+          color: #bbb;
+        }
+
+        &[class*="restore"] {
+          border-right: 1px solid #fff;
+        }
+
+        &[class*="templates"] {
+          border-left: 1px solid #fff;
+        }
+      }
+    }
+
+    .render-modal-shortcode-toolbar-toggle {
+      width: 100%;
+      font-size: 40px;
+      color: #bbb;
+      line-height: inherit;
+      margin-top: 10px;
+      cursor: pointer;
+      position: relative;
+      transition: color 300ms, margin 300ms;
+
+      &:hover {
+        color: inherit;
+      }
+    }
+  }
+
+  .accordion-section-title, .render-modal-sc-title {
+    border: none;
+    padding: 10px 5px 0;
+    cursor: pointer;
+
+    // Down arrow
+    &:after {
+      top: 9px;
+    }
+  }
+
+  // Hide down arrow when shortcode is disabled
+  .render-modal-shortcode.disabled {
+    .accordion-section-title:after {
+      display: none;
+    }
+  }
+
+  // Active
+  .render-modal-shortcode.active {
+    .accordion-section-title, .render-modal-sc-title {
+      color: #fff;
+      @include primary-gradient;
+
+      .render-modal-shortcode-source {
+        color: #ccc;
+      }
+
+      // Down arrow
+      &:after {
+        color: #fff;
+      }
+    }
+  }
+
+  .accordion-section-content {
+    padding: 0;
+
+    // Fix Chosen selectbox cutting off
+    overflow: visible;
+
+    .render-modal-shortcode-atts {
+      padding: 10px 0;
+    }
+  }
+
+  // Att section break
+  .render-modal-att-section-break {
+    padding: 0 0 10px 10px;
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    font-size: 120%;
+    border-bottom: 1px solid darken(#fff, 30%);
+
+    .render-modal-att-section-break-description {
+      font-weight: normal;
+      font-size: 80%;
+    }
+  }
+
+  // Chosen
+  .chosen-container {
+    &.allow-custom-input {
+      .no-results {
+        display: none;
+      }
+    }
+
+    .dashicons {
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    .chosen-single > span {
+      .dashicons {
+        display: inline;
+        vertical-align: -5px;
+        margin-right: 10px;
+        margin-left: 2px;
+      }
+    }
+
+    .active-result.highlighted {
+      @include primary-gradient;
+    }
+  }
+
+  .render-modal-att-row {
+    padding: 10px;
+
+    @include clearfix;
+
+    &.invalid {
+      background: $error-color;
+      color: #fff;
+
+      .render-modal-att-field .render-modal-att-errormsg {
+        display: block;
+      }
+    }
+  }
+
+  .render-modal-att-name {
+    float: left;
+    width: 25%;
+  }
+
+  .render-modal-att-field {
+    float: left;
+    width: 75%;
+    position: relative;
+
+    input[type="text"] {
+      width: 100%;
+
+      // Don't do it to the colorpicker input
+      &.render-modal-att-colorpicker {
+        width: 65px;
+      }
+    }
+
+    .render-modal-att-description {
+      color: #999;
+      font-style: normal;
+      margin-top: 5px;
+      margin-bottom: 0;
+    }
+
+    .render-modal-att-errormsg {
+      display: none;
+    }
+
+    .render-modal-button {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      padding: 0;
+      margin: 0;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      cursor: pointer;
+      user-select: none;
+
+      @include background-gradient($color: #fff);
+      &:active {
+        border-color: #bbb;
+
+        &:not(.disabled) {
+          @include background-gradient($color: #fff, $flip: true);
+        }
+      }
+
+      &:hover {
+        border-color: #ccc;
       }
 
       &.disabled {
         color: #bbb;
       }
-
-      &[class*="restore"] {
-        border-right: 1px solid #fff;
-      }
-
-      &[class*="templates"] {
-        border-left: 1px solid #fff;
-      }
-    }
-  }
-
-  .render-modal-shortcode-toolbar-toggle {
-    width: 100%;
-    font-size: 40px;
-    color: #bbb;
-    line-height: inherit;
-    margin-top: 10px;
-    cursor: pointer;
-    position: relative;
-    transition: color 300ms, margin 300ms;
-
-    &:hover {
-      color: inherit;
-    }
-  }
-}
-
-.accordion-section-title, .render-modal-sc-title {
-  border: none;
-  padding: 10px 5px 0;
-  cursor: pointer;
-
-  // Down arrow
-  &:after {
-    top: 9px;
-  }
-}
-
-// Hide down arrow when shortcode is disabled
-.render-modal-shortcode.disabled {
-  .accordion-section-title:after {
-    display: none;
-  }
-}
-
-// Active
-.render-modal-shortcode.active {
-  .accordion-section-title, .render-modal-sc-title {
-    color: #fff;
-    @include primary-gradient;
-
-    .render-modal-shortcode-source {
-      color: #ccc;
     }
 
-    // Down arrow
-    &:after {
-      color: #fff;
-    }
-  }
-}
-
-.accordion-section-content {
-  padding: 0;
-
-  // Fix Chosen selectbox cutting off
-  overflow: visible;
-
-  .render-modal-shortcode-atts {
-    padding: 10px 0;
-  }
-}
-
-// Att section break
-.render-modal-att-section-break {
-  padding: 0 0 10px 10px;
-  margin: 0 0 10px 0;
-  font-weight: bold;
-  font-size: 120%;
-  border-bottom: 1px solid darken(#fff, 30%);
-
-  .render-modal-att-section-break-description {
-    font-weight: normal;
-    font-size: 80%;
-  }
-}
-
-// Chosen
-#render-modal-wrap .chosen-container {
-  &.allow-custom-input {
-    .no-results {
-      display: none;
-    }
-  }
-
-  .dashicons {
-    vertical-align: middle;
-    margin-right: 10px;
-  }
-
-  .chosen-single > span {
-    .dashicons {
-      display: inline;
-      vertical-align: -5px;
-      margin-right: 10px;
-      margin-left: 2px;
-    }
-  }
-
-  .active-result.highlighted {
-    @include primary-gradient;
-  }
-}
-
-.render-modal-att-row {
-  padding: 10px;
-
-  @include clearfix;
-
-  &.invalid {
-    background: $error-color;
-    color: #fff;
-
-    .render-modal-att-field .render-modal-att-errormsg {
-      display: block;
-    }
-  }
-}
-
-.render-modal-att-name {
-  float: left;
-  width: 25%;
-}
-
-.render-modal-att-field {
-  float: left;
-  width: 75%;
-  position: relative;
-
-  input[type="text"] {
-    width: 100%;
-
-    // Don't do it to the colorpicker input
-    &.render-modal-att-colorpicker {
-      width: 65px;
-    }
-  }
-
-  .render-modal-att-description {
-    color: #999;
-    font-style: normal;
-    margin-top: 5px;
-    margin-bottom: 0;
-  }
-
-  .render-modal-att-errormsg {
-    display: none;
-  }
-
-  .render-modal-button {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    cursor: pointer;
-    user-select: none;
-
-    @include background-gradient($color: #fff);
-    &:active {
-      border-color: #bbb;
-
-      &:not(.disabled) {
-        @include background-gradient($color: #fff, $flip: true);
-      }
-    }
-
-    &:hover {
-      border-color: #ccc;
-    }
-
-    &.disabled {
-      color: #bbb;
-    }
-  }
-
-  // Text Box
-  .render-modal-att-textbox {
-    width: 100%;
-    box-sizing: border-box;
-    margin: 0;
-  }
-
-  // Text Area
-  .render-modal-att-textarea {
-    width: 100%;
-    min-height: 100px;
-    box-sizing: border-box;
-    margin: 0;
-  }
-
-  // Checkbox
-  .render-switch {
-    vertical-align: middle;
-  }
-
-  .render-modal-att-checkbox-label {
-    color: #aaa;
-    vertical-align: middle;
-    cursor: pointer;
-
-    &.checked {
-      color: inherit;
-    }
-  }
-
-  // Slider
-  .render-modal-att-slider {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 20%;
-    right: 0;
-    margin: 0 10px;
-  }
-
-  .ui-slider-handle {
-    outline: none;
-    cursor: pointer;
-
-    &:not(.ui-state-active) {
-      transition: left 500ms;
-    }
-  }
-
-  .ui-widget-header {
-    border: 1px solid darken($primary-color, 10%);
-    @include primary-gradient-gloss;
-  }
-
-  input[type="text"].render-modal-att-slider-value {
-    width: 20%;
-    text-align: center;
-    margin: 0;
-  }
-
-  // Counter
-  $counter-size: 30px;
-  .render-modal-counter-container {
-    float: left;
-    width: 100%;
-
-    .dashicons {
-      float: left;
-    }
-
-    .render-modal-counter-down {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    .render-modal-counter-up {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-
-    .render-modal-att-counter {
-      float: left;
-      width: $counter-size * 2;
-      height: $counter-size;
-      line-height: $counter-size;
-      padding: 0;
-      text-align: center;
-      transition: height;
-    }
-  }
-
-  .render-modal-counter-unit {
-    margin-left: 10px;
-    float: left;
-    height: $counter-size;
-
-    .chosen-single {
-      height: 100% !important;
-      line-height: $counter-size;
-
-      // X
-      .search-choice-close {
-        top: 10px;
-      }
-
-      // Down arrow
-      b {
-        position: relative;
-        top: 3px;
-      }
-    }
-
-    input[type="text"] {
-      width: 50px;
-      text-align: center;
-      height: 100%;
-    }
-  }
-
-  // Media
-  .render-modal-att-media-preview-image {
-    max-width: 100%;
-  }
-
-  .render-modal-att-media-preview-audio, .render-modal-att-media-preview-video {
-    padding: 0;
-    margin: 0;
-    background: transparent;
-  }
-
-  // Repeater
-  .render-modal-repeater-field {
-    padding-top: 20px;
-    border-top: 1px solid #ccc;
-    margin-top: 20px;
-    position: relative;
-
-    // Top item doesn't need a separator
-    &:nth-of-type(2) {
-      border-top: none;
-      margin-top: 0;
-      padding-top: 0;
-    }
-
-    // Clearfix
-    &:after {
-      content: ' ';
-      display: table;
-      clear: both;
-    }
-
-    .render-modal-repeater-inputs {
-      width: 80%;
-      float: left;
+    // Text Box
+    .render-modal-att-textbox {
+      width: 100%;
       box-sizing: border-box;
       margin: 0;
     }
 
-    .render-modal-repeater-actions {
-      width: 20%;
-      float: right;
-      padding-left: 10px;
+    // Text Area
+    .render-modal-att-textarea {
+      width: 100%;
+      min-height: 100px;
       box-sizing: border-box;
+      margin: 0;
+    }
 
-      .render-modal-repeater-add {
+    // Checkbox
+    .render-switch {
+      vertical-align: middle;
+    }
+
+    .render-modal-att-checkbox-label {
+      color: #aaa;
+      vertical-align: middle;
+      cursor: pointer;
+
+      &.checked {
+        color: inherit;
+      }
+    }
+
+    // Slider
+    .render-modal-att-slider {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 20%;
+      right: 0;
+      margin: 0 10px;
+    }
+
+    .ui-slider-handle {
+      outline: none;
+      cursor: pointer;
+
+      &:not(.ui-state-active) {
+        transition: left 500ms;
+      }
+    }
+
+    .ui-widget-header {
+      border: 1px solid darken($primary-color, 10%);
+      @include primary-gradient-gloss;
+    }
+
+    input[type="text"].render-modal-att-slider-value {
+      width: 20%;
+      text-align: center;
+      margin: 0;
+    }
+
+    // Counter
+    $counter-size: 30px;
+    .render-modal-counter-container {
+      float: left;
+      width: 100%;
+
+      .dashicons {
         float: left;
       }
 
-      .render-modal-repeater-remove {
-        float: right;
+      .render-modal-counter-down {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      .render-modal-counter-up {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      .render-modal-att-counter {
+        float: left;
+        width: $counter-size * 2;
+        height: $counter-size;
+        line-height: $counter-size;
+        padding: 0;
+        text-align: center;
+        transition: height;
       }
     }
 
-    // Nested attributes
-    .render-modal-att-row {
-      margin: 10px 0;
-      padding: 5px;
-      border: 1px solid #ddd;
-      box-shadow: 1px 1px 1px rgba(#000, 0.05);
+    .render-modal-counter-unit {
+      margin-left: 10px;
+      float: left;
+      height: $counter-size;
 
-      &:first-of-type {
-        margin-top: 0;
+      .chosen-single {
+        height: 100% !important;
+        line-height: $counter-size;
+
+        // X
+        .search-choice-close {
+          top: 10px;
+        }
+
+        // Down arrow
+        b {
+          position: relative;
+          top: 3px;
+        }
       }
 
-      &:last-of-type {
-        margin-bottom: 0;
-      }
-
-      .render-modal-att-field {
-        width: 100%;
-        padding-left: 0;
-        padding-right: 0;
-      }
-
-      .render-modal-att-name {
-        float: none;
-        width: auto;
-        display: inline-block;
-        font-style: italic;
-        padding: 5px 5px 5px 0;
+      input[type="text"] {
+        width: 50px;
+        text-align: center;
+        height: 100%;
       }
     }
-  }
 
-  // Repeater Effect
-  .ui-effects-wrapper {
-    height: auto !important;
+    // Media
+    .render-modal-att-media-preview-image {
+      max-width: 100%;
+    }
 
-    // This would become :first-of-type and cause these properties to be lost, so we have to !important them
+    .render-modal-att-media-preview-audio, .render-modal-att-media-preview-video {
+      padding: 0;
+      margin: 0;
+      background: transparent;
+    }
+
+    // Repeater
     .render-modal-repeater-field {
-      border-top: 1px solid #ccc !important;
-      margin-top: 20px !important;
-      padding-top: 20px !important;
+      padding-top: 20px;
+      border-top: 1px solid #ccc;
+      margin-top: 20px;
+      position: relative;
+
+      // Top item doesn't need a separator
+      &:nth-of-type(2) {
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
+      }
+
+      // Clearfix
+      &:after {
+        content: ' ';
+        display: table;
+        clear: both;
+      }
+
+      .render-modal-repeater-inputs {
+        width: 80%;
+        float: left;
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      .render-modal-repeater-actions {
+        width: 20%;
+        float: right;
+        padding-left: 10px;
+        box-sizing: border-box;
+
+        .render-modal-repeater-add {
+          float: left;
+        }
+
+        .render-modal-repeater-remove {
+          float: right;
+        }
+      }
+
+      // Nested attributes
+      .render-modal-att-row {
+        margin: 10px 0;
+        padding: 5px;
+        border: 1px solid #ddd;
+        box-shadow: 1px 1px 1px rgba(#000, 0.05);
+
+        &:first-of-type {
+          margin-top: 0;
+        }
+
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+
+        .render-modal-att-field {
+          width: 100%;
+          padding-left: 0;
+          padding-right: 0;
+        }
+
+        .render-modal-att-name {
+          float: none;
+          width: auto;
+          display: inline-block;
+          font-style: italic;
+          padding: 5px 5px 5px 0;
+        }
+      }
+    }
+
+    // Repeater Effect
+    .ui-effects-wrapper {
+      height: auto !important;
+
+      // This would become :first-of-type and cause these properties to be lost, so we have to !important them
+      .render-modal-repeater-field {
+        border-top: 1px solid #ccc !important;
+        margin-top: 20px !important;
+        padding-top: 20px !important;
+      }
+    }
+
+    // Content
+    textarea[name="content"] {
+      width: 100%;
+      height: 100px;
     }
   }
 
-  // Content
-  textarea[name="content"] {
-    width: 100%;
-    height: 100px;
-  }
-}
-
-.render-modal-show-advanced-atts {
-  display: block;
-  color: inherit;
-  text-decoration: none;
-  line-height: normal;
-
-  // Override blue outline when focused
-  &:focus {
-    outline: none !important;
-    box-shadow: none !important;
-  }
-
-  &.hidden {
-    border-bottom: none;
-  }
-
-  .dashicons {
-    height: auto;
+  .render-modal-show-advanced-atts {
+    display: block;
+    color: inherit;
+    text-decoration: none;
     line-height: normal;
-    width: auto;
+
+    // Override blue outline when focused
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    &.hidden {
+      border-bottom: none;
+    }
+
+    .dashicons {
+      height: auto;
+      line-height: normal;
+      width: auto;
+    }
   }
-}
 
-.render-modal-shortcode-title {
-  width: 25%;
-  float: left;
-
-  .render-modal-shortcode-source {
-    font-size: 80%;
-    color: #aaa;
-    opacity: 0;
-    transition: $primary-transition opacity;
-    white-space: nowrap;
-  }
-}
-
-.render-modal-shortcode-description {
-  width: 75%;
-  float: left;
-  padding-right: 20px;
-  margin-bottom: 10px;
-  box-sizing: border-box;
-}
-
-.render-modal-footer {
-  padding: 8px 16px;
-  background: #fcfcfc;
-  border-top: 1px solid #dfdfdf;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 2;
-
-  .render-modal-cancel {
-    line-height: 28px;
-    height: 28px;
+  .render-modal-shortcode-title {
+    width: 25%;
     float: left;
-    a {
-      color: #a00;
+
+    .render-modal-shortcode-source {
+      font-size: 80%;
+      color: #aaa;
+      opacity: 0;
+      transition: $primary-transition opacity;
+      white-space: nowrap;
     }
   }
-}
 
-$submit-height: 28px;
-$submit-transition: 500ms;
-#render-modal-submit {
-  float: right;
-  overflow: hidden;
-  height: $submit-height;
-  text-align: center;
-  box-sizing: content-box;
-
-  // Copy of WP button styling (with custom colors)
-  background: $primary-color;
-  border: 1px solid darken($primary-color, 10%);
-  color: #fff;
-  text-shadow: 0 -1px 0 rgba(#000, 0.1);
-  box-shadow: inset 0 1px 0 rgba(lighten($primary-color, 10%), 0.5), 0 1px 0 rgba(#000, 0.15);
-  display: inline-block;
-  font-size: 13px;
-  line-height: 26px;
-  margin: 0;
-  padding: 0 10px 1px;
-  cursor: pointer;
-  white-space: nowrap;
-  border-radius: 3px;
-
-  &:hover {
-    background: darken($primary-color, 5%);
-    border-color: darken($primary-color, 15%);
-    box-shadow: inset 0 1px 0 rgba(lighten($primary-color, 10%), 0.6), 0 1px 0 rgba(#000, 0.15);
+  .render-modal-shortcode-description {
+    width: 75%;
+    float: left;
+    padding-right: 20px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
   }
 
-  &:active {
-    background: darken($primary-color, 15%);
-    border-color: darken($primary-color, 20%);
-    box-shadow: inset 0 1px 0 rgba(#000, 0.1);
+  .render-modal-footer {
+    padding: 8px 16px;
+    background: #fcfcfc;
+    border-top: 1px solid #dfdfdf;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+
+    .render-modal-cancel {
+      line-height: 28px;
+      height: 28px;
+      float: left;
+      a {
+        color: #a00;
+      }
+    }
   }
 
-  &.disabled {
-    color: #d5d5d5;
-  }
-
-  [class^="render-modal-submit-text"] {
-    position: relative;
-    display: inline-block;
-    margin: 0;
-    line-height: $submit-height;
+  $submit-height: 28px;
+  $submit-transition: 500ms;
+  #render-modal-submit {
+    float: right;
+    overflow: hidden;
     height: $submit-height;
+    text-align: center;
+    box-sizing: content-box;
 
-    &.blur {
-      -webkit-filter: blur(1px);
-      -moz-filter: blur(1px);
-      -o-filter: blur(1px);
-      -ms-filter: blur(1px);
-      filter: blur(1px);
+    // Copy of WP button styling (with custom colors)
+    background: $primary-color;
+    border: 1px solid darken($primary-color, 10%);
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(#000, 0.1);
+    box-shadow: inset 0 1px 0 rgba(lighten($primary-color, 10%), 0.5), 0 1px 0 rgba(#000, 0.15);
+    display: inline-block;
+    font-size: 13px;
+    line-height: 26px;
+    margin: 0;
+    padding: 0 10px 1px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 3px;
+
+    &:hover {
+      background: darken($primary-color, 5%);
+      border-color: darken($primary-color, 15%);
+      box-shadow: inset 0 1px 0 rgba(lighten($primary-color, 10%), 0.6), 0 1px 0 rgba(#000, 0.15);
+    }
+
+    &:active {
+      background: darken($primary-color, 15%);
+      border-color: darken($primary-color, 20%);
+      box-shadow: inset 0 1px 0 rgba(#000, 0.1);
+    }
+
+    &.disabled {
+      color: #d5d5d5;
+    }
+
+    [class^="render-modal-submit-text"] {
+      position: relative;
+      display: inline-block;
+      margin: 0;
+      line-height: $submit-height;
+      height: $submit-height;
+
+      &.blur {
+        -webkit-filter: blur(1px);
+        -moz-filter: blur(1px);
+        -o-filter: blur(1px);
+        -ms-filter: blur(1px);
+        filter: blur(1px);
+      }
     }
   }
-}
 
-#render-modal-remove {
-  float: right;
-  margin-right: 20px;
-  height: $submit-height;
+  #render-modal-remove {
+    float: right;
+    margin-right: 20px;
+    height: $submit-height;
+  }
 }

@@ -215,6 +215,24 @@ class Render_Modal {
 	}
 
 	/**
+	 * Outputs the field HTML of the hidden attribute.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 *
+	 * @param string $att_id     The attribute ID.
+	 * @param array  $att        Properties of the attribute.
+	 * @param array  $properties Properties of the attribute field type.
+	 */
+	private static function att_type_hidden( $att_id, $att, $properties = array() ) {
+		?>
+		<input type="hidden" class="render-modal-att-input render-modal-att-hidden"
+		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+		       name="<?php echo $att_id; ?>"/>
+	<?php
+	}
+
+	/**
 	 * Outputs the field HTML of the textbox attribute.
 	 *
 	 * @since  1.0.0
@@ -601,16 +619,15 @@ class Render_Modal {
 
 		// Setup defaults
 		$defaults   = array(
-			'fields'    => false,
+			'fields'    => array(
+				'dummy_field' => array(
+					'type' => 'hidden',
+					'default' => 1,
+				),
+			),
 			'startWith' => 1,
 		);
 		$properties = wp_parse_args( $properties, $defaults );
-
-		if ( ! $properties['fields'] ) {
-			echo 'ERROR: No fields set!';
-
-			return;
-		}
 
 		foreach ( $properties['fields'] as $field_ID => $field ) {
 			$properties['fields'][ $field_ID ]['disabled'] = true;
@@ -637,7 +654,13 @@ class Render_Modal {
 				<input type="hidden" name="<?php echo $att_id; ?>" class="render-modal-att-input"/>
 
 				<div class="render-modal-repeater-inputs">
-					<?php self::_atts_loop( $properties['fields'] ); ?>
+					<?php
+					if ( ! $properties['fields'] ) {
+						echo isset( $properties['noFields'] ) ? $properties['noFields'] : __( 'No fields set' );
+					} else {
+						self::_atts_loop( $properties['fields'] );
+					}
+					?>
 				</div>
 
 				<div class="render-modal-repeater-actions">
@@ -785,9 +808,12 @@ class Render_Modal {
 								    data-title="<?php echo $shortcode['title']; ?>"
 								    data-source="<?php echo $shortcode['source']; ?>"
 								    data-tags="<?php echo $shortcode['tags']; ?>"
+								    data-disallow="<?php echo implode( ',', $shortcode['disallowShortcodes'] ); ?>"
 								    class="render-modal-shortcode
 								    <?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : ''; ?>
-								    <?php echo $shortcode['wrapping'] ? 'wrapping' : ''; ?>">
+								    <?php echo $shortcode['wrapping'] ? 'wrapping' : ''; ?>
+								    <?php echo isset( $shortcode['render']['nested']['child'] ) ? 'nested-parent' : ''; ?>
+								    ">
 
 									<div
 										class="<?php echo ! empty( $shortcode['atts'] ) ?
