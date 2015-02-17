@@ -370,10 +370,13 @@ class Render_Modal {
 
 		// If a callback is provided, use that to populate options
 		if ( isset( $properties['callback'] ) && is_callable( $properties['callback']['function'] ) ) {
-			$options = call_user_func(
-				$properties['callback']['function'],
-				isset( $properties['callback']['args'] ) ? $properties['callback']['args'] : null
-			);
+
+			// Call with args, if they're set
+			if ( isset( $properties['callback']['args'] ) ) {
+				$options = call_user_func( $properties['callback']['function'], $properties['callback']['args'] );
+			} else {
+				$options = call_user_func( $properties['callback']['function'] );
+			}
 		}
 
 		if ( ! empty( $options ) ) {

@@ -117,6 +117,10 @@ var Render_Modal;
                 event.preventDefault();
                 Render_Modal.close();
             });
+            elements.backdrop.click(function (event) {
+                event.stopPropagation();
+                Render_Modal.close();
+            });
 
             // Filter shortcodes by category
             elements.categories.find('li').click(function () {
@@ -1605,8 +1609,8 @@ var Render_Modal;
 
                 var attObj = $(this).data('attObj');
 
-                // Skip if no attObj
-                if (!attObj) {
+                // Skip if no attObj or if in a repeater
+                if (!attObj || $(this).closest('.render-modal-repeater-field').length) {
                     return true; // Continue $.each
                 }
 
