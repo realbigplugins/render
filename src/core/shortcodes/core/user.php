@@ -236,7 +236,7 @@ foreach (
  * Gets specified current user property.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  *
@@ -296,7 +296,7 @@ function _render_sc_user_info( $atts = array() ) {
  * Gets the current user full name.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param object $user The user object.
  *
@@ -315,7 +315,7 @@ function _render_sc_user_full_name( $user ) {
  * Gets the current user first name.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param object $user The user object.
  *
@@ -334,7 +334,7 @@ function _render_sc_user_first_name( $user ) {
  * Gets the current user last name.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param object $user The user object.
  *
@@ -353,7 +353,7 @@ function _render_sc_user_last_name( $user ) {
  * Gets the current user username.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param object $user The user object.
  *
@@ -372,7 +372,7 @@ function _render_sc_user_username( $user ) {
  * Gets the current user email.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param object $user The user object.
  *
@@ -391,7 +391,7 @@ function _render_sc_user_email( $user ) {
  * Gets the current user display name.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param object $user The user object.
  *
@@ -410,7 +410,7 @@ function _render_sc_user_display_name( $user ) {
  * Gets the current user author url.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param object $user The user object.
  *
@@ -430,7 +430,7 @@ function _render_sc_user_author_url( $user ) {
  * Gets the current user description.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param object $user The user object.
  *
@@ -449,7 +449,7 @@ function _render_sc_user_description( $user ) {
  * Gets the current user role.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param object $user The user object.
  *
@@ -477,7 +477,7 @@ function _render_sc_user_role( $user ) {
  * Gets the date the current user registered.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  *

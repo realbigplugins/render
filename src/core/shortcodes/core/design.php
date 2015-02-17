@@ -198,81 +198,21 @@ foreach (
 					'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used.', 'Render' ),
 					'advanced'    => true,
 				),
-				'border_top_left_radius'     => array(
-					'label'      => __( 'Border Top Left Radius', 'Render' ),
-					'advanced'   => true,
-					'type'       => 'counter',
-					'properties' => array(
-						'shift_step' => 5,
-						'max'        => 200,
-						'unit'       => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
+				'border_top_left_radius'     => render_sc_attr_template( 'border-radius', array(), array(
+						'orientation' => __( 'Top Left' )
+					)
 				),
-				'border_top_right_radius'    => array(
-					'label'      => __( 'Border Top Right Radius', 'Render' ),
-					'advanced'   => true,
-					'type'       => 'counter',
-					'properties' => array(
-						'shift_step' => 5,
-						'max'        => 200,
-						'unit'       => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
+				'border_top_right_radius'    => render_sc_attr_template( 'border-radius', array(), array(
+						'orientation' => __( 'Top Right' )
+					)
 				),
-				'border_bottom_left_radius'  => array(
-					'label'      => __( 'Border Bottom Left Radius', 'Render' ),
-					'advanced'   => true,
-					'type'       => 'counter',
-					'properties' => array(
-						'shift_step' => 5,
-						'max'        => 200,
-						'unit'       => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
+				'border_bottom_left_radius'  => render_sc_attr_template( 'border-radius', array(), array(
+						'orientation' => __( 'Bottom Left' )
+					)
 				),
-				'border_bottom_right_radius' => array(
-					'label'      => __( 'Border Bottom Right Radius', 'Render' ),
-					'advanced'   => true,
-					'type'       => 'counter',
-					'properties' => array(
-						'shift_step' => 5,
-						'max'        => 200,
-						'unit'       => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
+				'border_bottom_right_radius' => render_sc_attr_template( 'border-radius', array(), array(
+						'orientation' => __( 'Bottom Right' )
+					)
 				),
 			),
 			'wrapping'    => true,
@@ -354,81 +294,21 @@ foreach (
 					'description' => __( 'If all border-radius\' are set to 0, none will be used. If at least one is set, all will be used. Note that this will override the "Shape" defined above.', 'Render' ),
 					'advanced'    => true,
 				),
-				'border_top_left_radius'     => array(
-					'label'      => __( 'Border Top Left Radius', 'Render' ),
-					'advanced'   => true,
-					'type'       => 'counter',
-					'properties' => array(
-						'shift_step' => 5,
-						'max'        => 200,
-						'unit'       => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
+				'border_top_left_radius'     => render_sc_attr_template( 'border-radius', array(), array(
+						'orientation' => __( 'Top Left' )
+					)
 				),
-				'border_top_right_radius'    => array(
-					'label'      => __( 'Border Top Right Radius', 'Render' ),
-					'advanced'   => true,
-					'type'       => 'counter',
-					'properties' => array(
-						'shift_step' => 5,
-						'max'        => 200,
-						'unit'       => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
+				'border_top_right_radius'    => render_sc_attr_template( 'border-radius', array(), array(
+						'orientation' => __( 'Top Right' )
+					)
 				),
-				'border_bottom_left_radius'  => array(
-					'label'      => __( 'Border Bottom Left Radius', 'Render' ),
-					'advanced'   => true,
-					'type'       => 'counter',
-					'properties' => array(
-						'shift_step' => 5,
-						'max'        => 200,
-						'unit'       => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
+				'border_bottom_left_radius'  => render_sc_attr_template( 'border-radius', array(), array(
+						'orientation' => __( 'Bottom Left' )
+					)
 				),
-				'border_bottom_right_radius' => array(
-					'label'      => __( 'Border Bottom Right Radius', 'Render' ),
-					'advanced'   => true,
-					'type'       => 'counter',
-					'properties' => array(
-						'shift_step' => 5,
-						'max'        => 200,
-						'unit'       => array(
-							'default' => 'px',
-							'allowed' => array(
-								'px',
-								'%',
-								'em',
-								'rem',
-								'pt',
-							),
-						),
-					),
+				'border_bottom_right_radius' => render_sc_attr_template( 'border-radius', array(), array(
+						'orientation' => __( 'Bottom Right' )
+					)
 				),
 			),
 			'wrapping'    => true,
@@ -452,12 +332,12 @@ foreach (
 			'atts'        => array(
 				array(
 					'description' => __( 'Maximum six columns', 'Render' ),
-					'type' => 'section_break',
+					'type'        => 'section_break',
 				),
 				'nested_children' => array(
-					'label'            => __( 'Columns', 'Render' ),
-					'type'             => 'repeater',
-					'properties'       => array(
+					'label'      => __( 'Columns', 'Render' ),
+					'type'       => 'repeater',
+					'properties' => array(
 						'max'    => 6,
 						'fields' => array(
 							'dummy_field' => array(
@@ -472,10 +352,7 @@ foreach (
 			'wrapping'    => true,
 			'render'      => array(
 				'nested' => array(
-					'child'      => 'render_column_section',
-					'globalAtts' => array(
-						'nested_children',
-					),
+					'child' => 'render_column_section',
 				),
 			),
 		),
@@ -516,8 +393,8 @@ foreach (
 /**
  * The main wrapper for an accordion.
  *
- * @since  1.0.0
- * @access Private
+ * @since  {{VERSION}}
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -538,8 +415,8 @@ function _render_sc_accordion_wrapper( $atts = array(), $content = '' ) {
 /**
  * Sections for inside the accordion wrapper.
  *
- * @since  1.0.0
- * @access Private
+ * @since  {{VERSION}}
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -576,7 +453,7 @@ function _render_sc_accordion_section( $atts = array(), $content = '' ) {
  * Wraps the content within a styled button.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -633,7 +510,7 @@ function _render_sc_button( $atts = array(), $content = '' ) {
  * Wraps the content within a styled box.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -677,8 +554,8 @@ function _render_sc_box( $atts = array(), $content = '' ) {
 /**
  * Wrapper for a column section.
  *
- * @since  1.0.0
- * @access Private
+ * @since  {{VERSION}}
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -687,7 +564,17 @@ function _render_sc_box( $atts = array(), $content = '' ) {
  */
 function _render_sc_columns_wrapper( $atts = array(), $content = '' ) {
 
-	$output = '<div class="render-columns-wrapper">';
+	$atts = shortcode_atts( array(
+		'nested_children' => false,
+	), $atts );
+
+	// Escape atts
+	render_esc_atts( $atts );
+
+	$columns = render_associative_atts( $atts, 'nested_children' );
+	$columns = count( $columns );
+
+	$output = "<div class='render-columns-wrapper columns-$columns'>";
 
 	$output .= do_shortcode( $content );
 
@@ -699,8 +586,8 @@ function _render_sc_columns_wrapper( $atts = array(), $content = '' ) {
 /**
  * Sections for inside the columns wrapper.
  *
- * @since  1.0.0
- * @access Private
+ * @since  {{VERSION}}
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -709,17 +596,7 @@ function _render_sc_columns_wrapper( $atts = array(), $content = '' ) {
  */
 function _render_sc_column_section( $atts = array(), $content = '' ) {
 
-	$atts = shortcode_atts( array(
-		'nested_children' => false,
-	), $atts );
-
-	// Escape atts
-	render_esc_atts( $atts );
-
-	$columns = render_associative_atts( $atts, 'nested_children' );
-	$columns = count( $columns );
-
-	$output = "<div class='render-column-section columns-$columns'>";
+	$output = "<div class='render-column-section'>";
 
 	$output .= $content;
 
@@ -728,7 +605,19 @@ function _render_sc_column_section( $atts = array(), $content = '' ) {
 	return do_shortcode( $output );
 }
 
-function _render_sc_column_section_tinymce( $atts = array(), $content = '' ) {
+/**
+ * The TinyMCE callback for the columns wrapper shortcode.
+ *
+ * This adds a filter that will add the proper columns class onto the TinyMCE shortcode wrapper.
+ *
+ * @since  {{VERSION}}
+ * @access private
+ *
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
+ * @return string The columns wrapper HTML.
+ */
+function _render_sc_columns_wrapper_tinymce( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
 		'nested_children' => false,
@@ -737,10 +626,16 @@ function _render_sc_column_section_tinymce( $atts = array(), $content = '' ) {
 	// Escape atts
 	render_esc_atts( $atts );
 
+	// Get the number of columns
 	$columns = render_associative_atts( $atts, 'nested_children' );
 	$columns = count( $columns );
 
-	add_filter( 'render_tinymce_shortcode_wrapper_classes_render_column_section', function ( $classes ) use ( $columns ) {
+	/**
+	 * Adds the proper columns class onto the shortcode wrapper.
+	 *
+	 * @since {{VERSION}}
+	 */
+	add_filter( 'render_tinymce_shortcode_wrapper_classes_render_columns_wrapper', function ( $classes ) use ( $columns ) {
 
 		if ( ! in_array( "columns-$columns", $classes ) ) {
 			$classes[] = "columns-$columns";
@@ -749,84 +644,8 @@ function _render_sc_column_section_tinymce( $atts = array(), $content = '' ) {
 		return $classes;
 	} );
 
-	return _render_sc_column_section( $atts, $content );
-}
-
-/**
- * Wraps the content within a half-width column.
- *
- * @since  1.0.0
- * @access Private
- *
- * @param array  $atts    The attributes sent to the shortcode.
- * @param string $content The content inside the shortcode.
- *
- * @return string The content in a column HTML.
- */
-function _render_sc_column_two( $atts = array(), $content = '' ) {
-
-	$atts = shortcode_atts( array(
-		'padding_left'  => '10px',
-		'padding_right' => '10px',
-	), $atts );
-
-	// Escape atts
-	render_esc_atts( $atts );
-
-	$padding = "padding-left: $atts[padding_left]; padding-right: $atts[padding_right];";
-
-	return "<div class='render-column-two' style='$padding'>" . do_shortcode( $content ) . '</div>';
-}
-
-
-/**
- * Wraps the content within a third-width column.
- *
- * @since  1.0.0
- * @access Private
- *
- * @param array  $atts    The attributes sent to the shortcode.
- * @param string $content The content inside the shortcode.
- *
- * @return string The content in a column HTML.
- */
-function _render_sc_column_three( $atts, $content = '' ) {
-
-	return '<div class="render-column-three">' . do_shortcode( $content ) . '</div>';
-}
-
-
-/**
- * Wraps the content within a quarter-width column.
- *
- * @since  1.0.0
- * @access Private
- *
- * @param array  $atts    The attributes sent to the shortcode.
- * @param string $content The content inside the shortcode.
- *
- * @return string The content in a column HTML.
- */
-function _render_sc_column_four( $atts, $content = '' ) {
-
-	return '<div class="render-column-four">' . do_shortcode( $content ) . '</div>';
-}
-
-
-/**
- * Wraps the content within a fifth-width column.
- *
- * @since  1.0.0
- * @access Private
- *
- * @param array  $atts    The attributes sent to the shortcode.
- * @param string $content The content inside the shortcode.
- *
- * @return string The content in a column HTML.
- */
-function _render_sc_column_five( $atts, $content = '' ) {
-
-	return '<div class="render-column-five">' . do_shortcode( $content ) . '</div>';
+	// Return the normal HTML
+	return _render_sc_columns_wrapper( $atts, $content );
 }
 
 /**
@@ -1055,7 +874,7 @@ function render_sc_icon_list() {
 }
 
 /**
- * Provides back the CSS formatted border radius based off of attirbutes.
+ * Provides back the CSS formatted border radius based off of attributes.
  *
  * @since 1.0.0
  *

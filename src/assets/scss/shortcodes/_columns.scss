@@ -1,39 +1,46 @@
 @import "../global";
 
+@mixin columns-width($column) {
+  &.columns-1 #{$column} {
+    width: 100%;
+  }
+
+  &.columns-2 #{$column} {
+    width: 50%;
+  }
+
+  &.columns-3 #{$column} {
+    width: 33.3333%;
+  }
+
+  &.columns-4 #{$column} {
+    width: 25%;
+  }
+
+  &.columns-5 #{$column} {
+    width: 20%;
+  }
+
+  &.columns-6 #{$column} {
+    width: 16.6666%;
+  }
+}
+
+.render-columns-wrapper {
+  @include columns-width('.render-column-section');
+}
+
 .render-column-section {
   float: left;
   box-sizing: border-box;
   margin: 0;
   padding: 10px;
-
-  &.columns-1 {
-    width: 100%;
-  }
-
-  &.columns-2 {
-    width: 50%;
-  }
-
-  &.columns-3 {
-    width: 33.3333%;
-  }
-
-  &.columns-4 {
-    width: 25%;
-  }
-
-  &.columns-5 {
-    width: 20%;
-  }
-
-  &.columns-6 {
-    width: 16.6666%;
-  }
 }
 
 // Tinymce
 .render-tinymce-shortcode-wrapper.render_columns_wrapper {
   @include clearfix;
+  @include columns-width('.render-tinymce-shortcode-wraper.render-column-section');
   padding: 5px 0 5px 5px;
 }
 

@@ -177,7 +177,7 @@ foreach (
  * Returns the content if the condition is met, otherwise, returns nothing.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -351,7 +351,7 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
  * The tinymce mirror for the Logic shortcode.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -369,7 +369,7 @@ function _render_sc_logic_tinymce( $atts = array(), $content = '' ) {
  * Returns the content if the specified time properties are not met.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -413,7 +413,7 @@ function _render_sc_hide_for_times( $atts = array(), $content = '' ) {
  * The tinymce mirror for the Hide for Times shortcode.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -431,7 +431,7 @@ function _render_sc_hide_for_times_tinymce( $atts = array(), $content = '' ) {
  * Returns the content if the specified users are or are not logged in.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
@@ -472,7 +472,7 @@ function _render_sc_hide_for_users( $atts = array(), $content = '' ) {
  * The tinymce mirror for the Hide for Users shortcode.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.

@@ -416,6 +416,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			break;
 
 		case 'link':
+
 			$output = array(
 				'label'       => __( 'Link', 'Render' ),
 				'description' => __( 'Links to a post / page. Also accepts custom input.', 'Render' ),
@@ -425,6 +426,31 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 					'groups'           => array(),
 					'callback'         => array(
 						'function' => 'render_sc_post_list',
+					),
+				),
+			);
+			break;
+
+		case 'border-radius':
+
+			$orientation = isset( $args['orientation'] ) ? $args['orientation'] : '';
+
+			$output = array(
+				'label'      => sprintf( __( 'Border %s Radius', 'Render' ), $orientation),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 5,
+					'max'        => 200,
+					'unit'       => array(
+						'default' => 'px',
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
 					),
 				),
 			);

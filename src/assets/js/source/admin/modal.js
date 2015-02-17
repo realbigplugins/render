@@ -2713,7 +2713,7 @@ var Render_Modal;
 
             // Make sure we're not hitting a max first
             var max = $(this).closest('.render-modal-repeater-field').data('max'),
-                current = $container.length;
+                current = $(this).closest('.render-modal-att-field').find('.render-modal-repeater-field').length;
 
             if (max && current >= parseInt(max) + 1) { // + 1 for invisible dummy field
                 $(this).closest('.render-modal-att-field').effect('shake', {

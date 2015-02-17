@@ -140,7 +140,7 @@ foreach ( array(
  * Runs a WP_Query to provide a drop-down of posts.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  *

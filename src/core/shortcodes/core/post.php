@@ -71,7 +71,7 @@ foreach (
  * Gets the post ID.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  *
@@ -144,7 +144,7 @@ function _render_sc_post_meta( $atts = array() ) {
  * Gets the post author.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -167,7 +167,7 @@ function _render_sc_post_author( $post ) {
  * Gets the post title.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -187,7 +187,7 @@ function _render_sc_post_title( $post ) {
  * Gets the post status.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -206,7 +206,7 @@ function _render_sc_post_status( $post ) {
  * Gets the post type.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -225,7 +225,7 @@ function _render_sc_post_type( $post ) {
  * The post excerpt.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -244,7 +244,7 @@ function _render_sc_post_excerpt( $post ) {
  * The post content.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -261,7 +261,7 @@ function _render_sc_post_content( $post ) {
  * Gets the post publish date.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  * @param array $post The post object to use.
@@ -281,7 +281,7 @@ function _render_sc_post_published_date( $atts = array(), $post ) {
  * Gets the post word count.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  *

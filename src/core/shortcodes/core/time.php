@@ -44,7 +44,7 @@ foreach ( array(
  * Gets the specified date format.
  *
  * @since  1.0.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  *
