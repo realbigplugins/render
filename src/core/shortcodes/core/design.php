@@ -16,35 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach ( array(
 	/*
-	 * Accordion
-	 *
-	 * The parent wrapper for an accordion.
-	 *
-	 * @since 1.0.4
-	 * @nested
-	 */
-	array(
-		'code' => 'render_accordion_wrapper',
-		'function' => '_render_sc_accordion_wrapper',
-		'title' => __( 'Accordion', 'Render' ),
-		'description' => __( 'An accordion section for providing collapsible content.', 'Render' ),
-		'nested' => array(
-			'nested_code' => 'render_accordion_section'
-		),
-	),
-	/*
-	 * Accordion Section
-	 *
-	 * The child for adding sections to an accordion wrapper.
-	 *
-	 * @since 1.0.4
-	 * @nested
-	 */
-	array(
-		'code' => 'render_accordion_section',
-		'function' => '_render_sc_accordion_section',
-	),
-	/*
 	 * Button
 	 *
 	 * @since 1.0.0
