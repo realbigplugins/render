@@ -22,7 +22,7 @@ And more!
 
 Here's a basic rundown of what this plugin does so that you'll know what to look for:
 
-* Includes a sizeable library of very useful, unique shortcodes
+* Includes a sizable library of very useful, unique shortcodes
 * Provides a live preview of all included shortcodes when used in the visual editor of a post/page (so users never see the shortcodes with their ugly [shortcode] syntax but rather the end result of the shortcode)
 * Creates an intuitive modal for browsing, searching and inserting shortcodes via TinyMCE button
 * Includes ALL registered shortcodes in shortcode directory/modal and not just the ones created by this plugin
@@ -36,6 +36,7 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 ## Changelog
 
 ### [{{VERSION}}](https://github.com/brashrebel/render/releases/tag/v{{VERSION}})
+* FIX: Users drop-down was un-populated.
 * FIX: Repeater attribute fields adding extra, unused attributes to shortcode output.
 
 ### [1.0.4](https://github.com/brashrebel/render/releases/tag/v1.0.4)
