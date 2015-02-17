@@ -1,5 +1,5 @@
 # Render
-### v1.0.4
+### v1.0.5
 
 Render is a powerful plugin which enables you to insert useful and powerful functionality into your content. All without writing or even seeing any code.
 
@@ -35,7 +35,7 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 
 ## Changelog
 
-### [{{VERSION}}](https://github.com/brashrebel/render/releases/tag/v{{VERSION}})
+### [1.0.5](https://github.com/brashrebel/render/releases/tag/v1.0.5)
 * FIX: Users drop-down was un-populated.
 * FIX: Repeater attribute fields adding extra, unused attributes to shortcode output.
 

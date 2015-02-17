@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-define( 'RENDER_VERSION', '1.0.4' );
+define( 'RENDER_VERSION', '1.0.5' );
 
 /**
  * The absolute server path to Render's root directory.
