@@ -220,7 +220,24 @@ foreach (
 				'noStyle' => true,
 			),
 		),
-		// Box
+		/*
+		 * Box
+		 *
+		 * Wraps the selected content in a styled box (with optional heading).
+		 *
+		 * @since 1.0.0
+		 *
+		 * @att {textbox}      heading                    The optional heading to go above the content.
+		 * @att {colorpicker}  color                      The background color of the box.
+		 * @att {colorpicker}  font_color                 The color of the content font.
+		 * @att {colorpickeer} heading_font_color         The color of the heading font.
+		 * @att {selectbox}    shape                      The shape of the box.
+		 * @att {selectbox}    heading_tag                The HTML tag to use for the heading.
+		 * @att {counter}      border_top_left_radius     The button top left border radius.
+		 * @att {counter}      border_top_right_radius    The button top right border radius.
+		 * @att {counter}      border_bottom_left_radius  The button bottom left border radius.
+		 * @att {counter}      border_bottom_right_radius The button bottom right border radius.
+		 */
 		array(
 			'code'        => 'render_box',
 			'function'    => '_render_sc_box',
@@ -375,7 +392,106 @@ foreach (
 				),
 				'dummyContent' => '(Enter column content here)',
 			),
-		)
+		),
+		/*
+		 * Tabs Wrapper
+		 *
+		 * Creates a tabbed layout for the content.
+		 *
+		 * @since {{VERSION}}
+		 * @nestedChild render_tab_section
+		 */
+		array(
+			'code'        => 'render_tabs_wrapper',
+			'function'    => '_render_sc_tabs_wrapper',
+			'title'       => __( 'Tabs', 'Render' ),
+			'description' => __( 'Creates a tabbed layout for the content.', 'Render' ),
+			'atts'        => array(
+				'content_border' => array(
+					'label' => __( 'Tab Content Border', 'Render' ),
+					'type' => 'toggle',
+					'properties' => array(
+						'deselectStyle' => true,
+						'flip' => true,
+						'values' => array(
+							'hide' => __( 'Hide', 'Render' ),
+							'show' => __( 'Show', 'Render' ),
+						),
+					),
+				),
+				array(
+					'label' => __( 'Colors', 'Render' ),
+					'type' => 'section_break',
+				),
+				'border_color' => array(
+					'label' => __( 'Borders', 'Render' ),
+					'type' => 'colorpicker',
+					'default' => RENDER_PRIMARY_COLOR_DARK,
+				),
+				'navigation_tab_color' => array(
+					'label' => __( 'Navigation Tab', 'Render' ),
+					'type' => 'colorpicker',
+					'default' => RENDER_PRIMARY_COLOR,
+				),
+				'navigation_tab_hover_color' => array(
+					'label' => __( 'Navigation Tab Hover', 'Render' ),
+					'type' => 'colorpicker',
+					'default' => RENDER_PRIMARY_COLOR_LIGHT,
+				),
+				'navigation_tab_font_color' => array(
+					'label' => __( 'Navigation Tab Font', 'Render' ),
+					'type' => 'colorpicker',
+					'default' => RENDER_PRIMARY_FONT_COLOR,
+				),
+				array(
+					'label' => __( 'Tabs', 'Render' ),
+					'type' => 'section_break',
+				),
+				'nested_children' => array(
+					'label'      => __( 'Tabs', 'Render' ),
+					'type'       => 'repeater',
+					'properties' => array(
+						'fields' => array(
+							'navigation_label' => array(
+								'label'   => __( 'Navigation Label', 'Render' ),
+							),
+						),
+					),
+				),
+			),
+			'wrapping'    => true,
+			'render'      => array(
+				'nested' => array(
+					'child' => 'render_tab_section',
+					'ignoreForChildren' => array(
+						'navigation_label',
+					),
+				),
+				'noStyle' => true,
+			),
+		),
+		/*
+		 * Tab Section
+		 *
+		 * An individual tab section.
+		 *
+		 * @since {{VERSION}}
+		 * @nestedParent render_tabs_wrapper
+		 */
+		array(
+			'code'      => 'render_tab_section',
+			'function'  => '_render_sc_tab_section',
+			'noDisplay' => true,
+			'wrapping'  => true,
+			'render'    => array(
+				'nested'       => array(
+					'parent' => 'render_tabs_wrapper',
+				),
+				'dummyContent' => '(Enter tab content here)',
+				'noStyle' => true,
+				'displayBlock' => true,
+			),
+		),
 	) as $shortcode
 ) {
 
@@ -646,6 +762,92 @@ function _render_sc_columns_wrapper_tinymce( $atts = array(), $content = '' ) {
 
 	// Return the normal HTML
 	return _render_sc_columns_wrapper( $atts, $content );
+}
+
+/**
+ * Wraps content in a tabbed layout.
+ *
+ * @since  {{VERSION}}
+ * @access private
+ *
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
+ * @return string The tabs wrapper HTML.
+ */
+function _render_sc_tabs_wrapper( $atts = array(), $content = '' ) {
+
+	$atts = shortcode_atts( array(
+		'nested_children' => false,
+		'navigation_tab_color' => RENDER_PRIMARY_COLOR,
+		'navigation_tab_hover_color' => RENDER_PRIMARY_COLOR_LIGHT,
+		'navigation_tab_font_color' => RENDER_PRIMARY_FONT_COLOR,
+		'border_color' => RENDER_PRIMARY_COLOR_DARK,
+		'content_border' => 'show',
+	), $atts );
+
+	// Escape atts
+	render_esc_atts( $atts );
+
+	$tabs = render_associative_atts( $atts, 'nested_children' );
+
+	// Open wrapper
+	$output = '<div class="render-tabs-wrapper">';
+
+	// Navigation tabs
+	$output .= '<ul class="render-tabs-navigation">';
+	$i = 0;
+	foreach ( $tabs as $tab ) {
+		$i++;
+
+		// Classes
+		$classes = array();
+		$classes[] = 'render-tabs-navigation-tab';
+		$classes[] = $i === 1 ? 'render-tabs-navigation-tab-active' : '';
+
+		// Styles
+		$styles = array(
+			"background: $atts[navigation_tab_color];",
+			"color: $atts[navigation_tab_font_color];",
+			"border-color: $atts[border_color];",
+		);
+
+		$output .= "<li class='" . implode( ' ', array_filter( $classes ) ) . "'";
+		$output .= " style='" . implode( ' ', $styles ) . "'>";
+		$output .= "<span class='render-tabs-navigation-tab-hover' style='background: $atts[navigation_tab_hover_color];'></span>";
+		$output .= "<span class='render-tabs-navigation-tab-content'>$tab[navigation_label]</span>";
+		$output .= '</li>';
+
+	}
+	$output .= '</ul>';
+
+	// Content
+	$styles = array(
+		'border-width: ' . ( $atts['content_border'] !== 'hide' ? '1px' : '0' ) . ';',
+		"border-color: $atts[border_color];",
+	);
+	$output .= '<div class="render-tabs-section-wrapper" style="' . implode( ' ', $styles ) . '"">';
+	$output .= do_shortcode( $content );
+	$output .= '</div>'; // .render-tabs-section-wrapper
+
+	// Close wrapper
+	$output .= '</div>'; // .render-tabs-wrapper
+
+	return $output;
+}
+
+/**
+ * Wraps content in a tab section.
+ *
+ * @since  {{VERSION}}
+ * @access private
+ *
+ * @param array  $atts    The attributes sent to the shortcode.
+ * @param string $content The content inside the shortcode.
+ * @return string The tab section HTML.
+ */
+function _render_sc_tab_section( $atts = array(), $content = '' ) {
+
+	return "<div class='render-tab-section'>$content</div>";
 }
 
 /**

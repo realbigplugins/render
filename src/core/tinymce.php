@@ -287,21 +287,24 @@ class Render_tinymce extends Render {
 		$atts        = $matches[3];
 		$_content    = $matches[5];
 
+		// Get our shortcode data
+		$data = $render_shortcode_data[ $code ];
+
 		// Get our atts
 		$atts = shortcode_parse_atts( $atts );
 
 		// Nested shortcode parents
-		if ( isset( $render_shortcode_data[ $code ]['nested']['child'] ) ) {
+		if ( isset( $data['nested']['child'] ) ) {
 
 			$new_content = '';
 
-			$child_code = $render_shortcode_data[ $code ]['nested']['child'];
+			$child_code = $data['nested']['child'];
 
 			// Force DIV tag
-			$render_shortcode_data[ $code ]['displayBlock'] = true;
+			$data['displayBlock'] = true;
 
 			// Don't allow manual content editing
-			$render_shortcode_data[ $code ]['contentNonEditable'] = true;
+			$data['contentNonEditable'] = true;
 
 			$nested_children = render_associative_atts( $atts, 'nested_children' );
 
@@ -327,11 +330,19 @@ class Render_tinymce extends Render {
 				// Setup atts
 				$child_attributes_output = '';
 				foreach ( (array) $child_attributes as $att_name => $att_value ) {
+
+					// Don't use if in "ignoreForChildren" atts
+					if ( isset( $data['nested']['ignoreForChildren'] ) &&
+					     in_array( $att_name, (array) $data['nested']['ignoreForChildren'] )
+					) {
+						continue;
+					}
+
 					$child_attributes_output .= "$att_name='$att_value' ";
 				}
 
 				// Add in any global atts
-				$global_atts = isset( $render_shortcode_data[ $code ]['nested']['globalAtts'] ) ? $render_shortcode_data[ $code ]['nested']['globalAtts'] : false;
+				$global_atts = isset( $data['nested']['globalAtts'] ) ? $data['nested']['globalAtts'] : false;
 				if ( $global_atts ) {
 
 					foreach ( $global_atts as $global_att ) {
@@ -353,14 +364,14 @@ class Render_tinymce extends Render {
 		}
 
 		// Nested shortcode children
-		if ( isset( $render_shortcode_data[ $code ]['nested']['parent'] ) ) {
+		if ( isset( $data['nested']['parent'] ) ) {
 
 			// Don't allow this shortcode to be edited
-			$render_shortcode_data[ $code ]['hideActions'] = true;
+			$data['hideActions'] = true;
 
 			// Set default dummy content
-			if ( ! isset( $render_shortcode_data[ $code ]['dummyContent'] ) ) {
-				$render_shortcode_data[ $code ]['dummyContent'] = '(Enter section content)';
+			if ( ! isset( $data['dummyContent'] ) ) {
+				$data['dummyContent'] = '(Enter section content)';
 			}
 
 			if ( empty( $_content ) ) {
@@ -375,11 +386,11 @@ class Render_tinymce extends Render {
 
 		// If this is a wrapping code, but no content is provided, use dummy content
 		if ( empty( $content ) &&
-		     isset( $render_shortcode_data[ $code ]['wrapping'] ) &&
-		     $render_shortcode_data[ $code ]['wrapping'] === 'true'
+		     isset( $data['wrapping'] ) &&
+		     $data['wrapping'] === 'true'
 		) {
-			if ( isset( $render_shortcode_data[ $code ]['dummyContent'] ) ) {
-				$content = $render_shortcode_data[ $code ]['dummyContent'];
+			if ( isset( $data['dummyContent'] ) ) {
+				$content = $data['dummyContent'];
 			} else {
 				$content = 'No content selected.';
 			}
@@ -392,9 +403,9 @@ class Render_tinymce extends Render {
 			$tag      = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
 
 			// Override tag
-			$tag = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'div' : $tag;
+			$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;
 
-			$editable = isset( $render_shortcode_data[ $code ]['contentNonEditable'] ) ? '' : 'render-tinymce-editable';
+			$editable = isset( $data['contentNonEditable'] ) ? '' : 'render-tinymce-editable';
 			$content  = "<$tag class='render-tinymce-shortcode-content $editable'>$content</$tag>";
 		}
 
@@ -414,10 +425,10 @@ class Render_tinymce extends Render {
 		}
 
 		// Get the shortcode output (if rendering set)
-		if ( ! isset( $render_shortcode_data[ $code ] ) ) {
+		if ( ! isset( $data ) ) {
 			$shortcode_output = $entire_code;
-		} elseif ( isset( $render_shortcode_data[ $code ]['useText'] ) ) {
-			$shortcode_output = $render_shortcode_data[ $code ]['useText'];
+		} elseif ( isset( $data['useText'] ) ) {
+			$shortcode_output = $data['useText'];
 		} else {
 			$shortcode_output = do_shortcode( $entire_code );
 		}
@@ -426,7 +437,7 @@ class Render_tinymce extends Render {
 		$tag = preg_match( render_block_regex(), $shortcode_output ) ? 'div' : 'span';
 
 		// Override tag
-		$tag = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'div' : $tag;
+		$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;
 
 		$classes = array();
 
@@ -434,16 +445,16 @@ class Render_tinymce extends Render {
 		$classes[] = $code;
 
 		// Whether or not to style the code
-		$classes[] = ! isset( $render_shortcode_data[ $code ]['noStyle'] ) ? 'styled' : '';
+		$classes[] = ! isset( $data['noStyle'] ) ? 'styled' : '';
 
 		// If the code should be forced as displayBlock
-		$classes[] = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'block' : '';
+		$classes[] = isset( $data['displayBlock'] ) ? 'block' : '';
 
 		// If the shortcode is a nested child
-		$classes[] = isset( $render_shortcode_data[ $code ]['nested']['parent'] ) ? 'nested-child' : '';
+		$classes[] = isset( $data['nested']['parent'] ) ? 'nested-child' : '';
 
 		// Hidden tooltip
-		$classes[] = isset( $render_shortcode_data[ $code ]['hideActions'] ) ? 'hide-actions' : '';
+		$classes[] = isset( $data['hideActions'] ) ? 'hide-actions' : '';
 
 		/**
 		 * Allows external filtering of the wrapper classes.
@@ -470,7 +481,7 @@ class Render_tinymce extends Render {
 		$output .= "<$tag class='render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip'>" . __( 'Press again to delete', 'Render' ) . "</$tag>";
 
 		// Action button
-		if ( ! isset( $render_shortcode_data[ $code ]['hideActions'] ) ) {
+		if ( ! isset( $data['hideActions'] ) ) {
 			$output .= "<$tag class='render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip'>";
 			$output .= "<$tag class='render-tinymce-tooltip-spacer'></$tag>";
 			$output .= "<$tag class='render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit'>edit</$tag>";

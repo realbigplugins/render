@@ -46,6 +46,15 @@ define( 'RENDER_PRIMARY_COLOR', '#50A4B3' );
 define( 'RENDER_PRIMARY_COLOR_DARK', '#39818E' );
 
 /**
+ * The light version of the primary color of Render.
+ *
+ * Primarily used for hovering.
+ *
+ * @since 1.0.0
+ */
+define( 'RENDER_PRIMARY_COLOR_LIGHT', '#74b6c2' );
+
+/**
  * The primary font color used throughout Render.
  *
  * @since 1.0.0

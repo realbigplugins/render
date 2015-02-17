@@ -5,6 +5,7 @@ $success-color: #61b03d;
 
 // Transitions
 $primary-transition: 300ms;
+$fast-transition: 150ms;
 
 // Mixins
 @mixin background-gradient($color, $flip: false) {

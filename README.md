@@ -36,6 +36,8 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 ## Changelog
 
 ### [{{VERSION}}](https://github.com/brashrebel/render/releases/tag/v{{VERSION}})
+* UPDATE: Tab shortcode.
+* UPDATE: Revised and improved columns shortcode.
 * UPDATE: Accordion shortcode.
 * FIX: Repeater attribute fields adding extra, unused attributes to shortcode output.
 * DEVELOPERS: Nesting shortcode "type" now available! 

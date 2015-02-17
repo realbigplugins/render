@@ -32,8 +32,7 @@
             var visible = $(this).closest('.render-accordion-section').find('.render-accordion-section-content').is(':visible');
 
             // Hide all of them
-            $(this).closest('.render-accordion-section').closest('.render-accordion-wrapper')
-                .find('.render-accordion-section-content').hide();
+            $(this).closest('.render-accordion-wrapper').find('.render-accordion-section-content').hide();
 
             // Reveal this one if it wasn't already visible
             if (!visible) {
