@@ -111,7 +111,8 @@ var Render_Widget;
                 active_widget.find('.render-widget-shortcode').val('');
             }
 
-            active_widget.find('.render-widget-shortcode').change();
+            // Force save widget
+            active_widget.closest('div.widget').find('input.widget-control-save').click();
         },
 
         /**
