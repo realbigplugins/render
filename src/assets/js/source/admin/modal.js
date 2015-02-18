@@ -1393,7 +1393,16 @@ var Render_Modal;
                 match;
 
             while (match = attRegEx.exec(_atts)) {
-                atts[match[3]] = match[4];
+
+                var name = match[3],
+                    value = match[4];
+
+                // Un-escape some things
+                if (typeof value != 'undefined' && value.length) {
+                    value = value.replace(/&apos;/g, '\'');
+                }
+
+                atts[name] = value;
             }
 
             // Add on the content if there's a content attribute
@@ -1743,6 +1752,9 @@ var Render_Modal;
 
                     // Make sure the value is always text
                     value = value.toString();
+
+                    // Escape various things
+                    value = value.replace(/'/g, '&apos;');
 
                     // Add the att to the shortcode output
                     if (value && value.length) {
