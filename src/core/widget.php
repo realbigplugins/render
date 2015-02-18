@@ -100,7 +100,7 @@ class Render_Widget extends WP_Widget {
 			</span>
 			</p>
 
-			<?php if ( $current_screen->base != 'customize' ) : ?>
+			<?php if ( ! is_object( $current_screen ) || $current_screen->base != 'customize' ) : ?>
 				<p class="render-widget-customizer-message">
 					<?php
 					printf(

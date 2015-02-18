@@ -187,17 +187,17 @@ class Render_Modal {
 		$att['classes'][] = 'render-modal-att-row';
 		$att['classes'][] = $att['label'] === false ? 'render-modal-att-hide-label' : '';
 		$att['classes'][] = $type == 'hidden' ? 'hidden' : '';
-		$att['classes'] = array_filter( $att['classes'] );
+		$att['classes']   = array_filter( $att['classes'] );
 
 		// Setup data
-		$data = array();
-		$data['att-name'] = $att_id;
-		$data['att-type'] = $type;
-		$data['required'] = isset( $att['required'] ) ? $att['required'] : '';
-		$data['validate'] = isset( $att['validate'] ) ? $att['validate'] : '';
-		$data['sanitize'] = isset( $att['sanitize'] ) ? $att['sanitize'] : '';
+		$data                  = array();
+		$data['att-name']      = $att_id;
+		$data['att-type']      = $type;
+		$data['required']      = isset( $att['required'] ) ? $att['required'] : '';
+		$data['validate']      = isset( $att['validate'] ) ? $att['validate'] : '';
+		$data['sanitize']      = isset( $att['sanitize'] ) ? $att['sanitize'] : '';
 		$data['init-callback'] = isset( $att['initCallback'] ) ? $att['initCallback'] : '';
-		$data['no-init'] = isset( $att['noInit'] ) ? $att['noInit'] : '';
+		$data['no-init']       = isset( $att['noInit'] ) ? $att['noInit'] : '';
 
 		$data_output = '';
 		foreach ( $data as $data_name => $data_value ) {
@@ -452,54 +452,56 @@ class Render_Modal {
 		} else {
 			$chosen = '';
 		}
-
-		if ( isset( $properties['allowCustomInput'] ) && ! isset( $att['description'] ) ) {
-			$att['description'] = 'Custom input is allowed.';
-		}
 		?>
 
-		<select name="<?php echo $att_id; ?>"
-				data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select an option'; ?>"
-			    class="render-modal-att-input <?php echo $chosen; ?>"
-			<?php echo isset( $properties['multi'] ) ? 'multiple' : ''; ?>>
+		<div class="render-chosen-container <?php echo isset( $properties['allowCustomInput'] ) ? 'render-chosen-custom-input' : ''; ?>">
+			<select name="<?php echo $att_id; ?>"
+			        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select an option'; ?>"
+			        class="render-modal-att-input <?php echo $chosen; ?>"
+				<?php echo isset( $properties['multi'] ) ? 'multiple' : ''; ?>>
 
-			<?php // Necessary for starting with nothing selected ?>
-			<option></option>
+				<?php // Necessary for starting with nothing selected ?>
+				<option></option>
 
-			<?php foreach ( $properties['groups'] as $opt_group ) : ?>
+				<?php foreach ( $properties['groups'] as $opt_group ) : ?>
 
-				<?php if ( isset( $opt_group['label'] ) ) : ?>
-					<optgroup label="<?php echo $opt_group['label']; ?>">
-				<?php endif; ?>
+					<?php if ( isset( $opt_group['label'] ) ) : ?>
+						<optgroup label="<?php echo $opt_group['label']; ?>">
+					<?php endif; ?>
 
-				<?php foreach ( $opt_group['options'] as $option_value => $option ) : ?>
-					<?php
-					// Simple format support
-					if ( ! is_array( $option ) ) {
-						$option_label = $option;
-						$option       = array(
-							'label' => $option_label,
-						);
-					}
-					?>
-					<option
-						<?php echo isset( $option['icon'] ) ?
-							"data-icon='$option[icon]'" : ''; ?>
-						value="<?php echo $option_value; ?>"
-						<?php selected( $option_value, isset( $att['default'] ) ? $att['default'] : '' ); ?>
-						>
-						<?php echo ! isset( $option['label'] ) ? 'MOTHER EFF' : ''; ?>
-						<?php echo $option['label']; ?>
-					</option>
+					<?php foreach ( $opt_group['options'] as $option_value => $option ) : ?>
+						<?php
+						// Simple format support
+						if ( ! is_array( $option ) ) {
+							$option_label = $option;
+							$option       = array(
+								'label' => $option_label,
+							);
+						}
+						?>
+						<option
+							<?php echo isset( $option['icon'] ) ?
+								"data-icon='$option[icon]'" : ''; ?>
+							value="<?php echo $option_value; ?>"
+							<?php selected( $option_value, isset( $att['default'] ) ? $att['default'] : '' ); ?>
+							>
+							<?php echo ! isset( $option['label'] ) ? 'MOTHER EFF' : ''; ?>
+							<?php echo $option['label']; ?>
+						</option>
+					<?php endforeach; ?>
+
+					<?php if ( isset( $opt_group['label'] ) ) : ?>
+						</optgroup>
+					<?php endif; ?>
+
 				<?php endforeach; ?>
 
-				<?php if ( isset( $opt_group['label'] ) ) : ?>
-					</optgroup>
-				<?php endif; ?>
+			</select>
 
-			<?php endforeach; ?>
-
-		</select>
+			<?php if ( isset( $properties['allowCustomInput'] ) ) : ?>
+				<div class="render-chosen-custom-input-icon dashicons dashicons-edit"></div>
+			<?php endif; ?>
+		</div>
 	<?php
 	}
 
@@ -663,7 +665,7 @@ class Render_Modal {
 		$defaults   = array(
 			'fields'    => array(
 				'dummy_field' => array(
-					'type' => 'hidden',
+					'type'    => 'hidden',
 					'default' => 1,
 				),
 			),
@@ -893,10 +895,10 @@ class Render_Modal {
 															<?php _e( 'Restore Shortcode', 'Render' ); ?>
 														</div>
 
-<!--														<div-->
-<!--															class="render-modal-shortcode-toolbar-button-templates disabled">-->
-<!--															--><?php //_e( 'Templates (coming soon!)', 'Render' ); ?>
-<!--														</div>-->
+														<!--														<div-->
+														<!--															class="render-modal-shortcode-toolbar-button-templates disabled">-->
+														<!--															--><?php //_e( 'Templates (coming soon!)', 'Render' ); ?>
+														<!--														</div>-->
 													</div>
 												</div>
 

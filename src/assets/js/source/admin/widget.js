@@ -92,7 +92,6 @@ var Render_Widget;
                 // Toggle the inputs
                 active_widget.find('.render-widget-shortcode-title').val(Render_Modal.output.title);
                 active_widget.find('.render-widget-shortcode').val(Render_Modal.output.all);
-                console.log(Render_Modal.output.all);
             } else {
 
                 /* ---------------- *

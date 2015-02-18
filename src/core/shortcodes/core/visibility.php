@@ -66,7 +66,6 @@ foreach (
 				),
 				'arg2'     => array(
 					'label'       => __( 'Argument Two', 'Render' ),
-					'description' => __( 'Feel free to enter something custom here.', 'Render' ),
 					'type'        => 'selectbox',
 					'properties'  => array(
 						'allowCustomInput' => true,

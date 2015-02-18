@@ -610,6 +610,20 @@ $render-modal-height: 800px;
       }
     }
 
+    // Selectbox
+    .render-chosen-custom-input-icon {
+      position: absolute;
+      left: 4px;
+      top: 3px;
+      color: #999;
+    }
+
+    .render-chosen-custom-input {
+      .chosen-single {
+        padding-left: 27px;
+      }
+    }
+
     // Slider
     .render-modal-att-slider {
       position: absolute;

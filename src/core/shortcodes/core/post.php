@@ -28,7 +28,7 @@ foreach (
 				'meta'        => array(
 					'label'       => __( 'Meta', 'Render' ),
 					'type'        => 'selectbox',
-					'description' => __( 'The meta information of the post to show (custom input allowed).', 'Render' ),
+					'description' => __( 'The meta information of the post to show.', 'Render' ),
 					'properties'  => array(
 						'default'          => 'title',
 						'placeholder'      => __( 'Select which meta to get', 'Render' ),
