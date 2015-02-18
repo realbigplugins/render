@@ -141,6 +141,20 @@ class Render_Modal {
 					continue;
 				}
 
+				// Placeholder
+				if ( $type == 'placeholder' ) {
+					?>
+					<p class="render-modal-att-placeholder">
+						<?php echo isset( $att['label'] ) ? $att['label'] : ''; ?>
+
+						<span class="render-modal-att-placeholder-description">
+							<?php echo isset( $att['description'] ) ? $att['description'] : ''; ?>
+						</span>
+					</p>
+					<?php
+					continue;
+				}
+
 				// Validation
 				if ( isset( $att['validate'] ) ) {
 					$att['validate'] = implode( ',', (array) $att['validate'] );
@@ -168,20 +182,45 @@ class Render_Modal {
 	 * @param string $code   The current shortcode.
 	 */
 	private static function att_content( $att_id, $att, $type, $code ) {
+
+		// Setup classes
+		$att['classes'][] = 'render-modal-att-row';
+		$att['classes'][] = $att['label'] === false ? 'render-modal-att-hide-label' : '';
+		$att['classes'][] = $type == 'hidden' ? 'hidden' : '';
+		$att['classes'] = array_filter( $att['classes'] );
+
+		// Setup data
+		$data = array();
+		$data['att-name'] = $att_id;
+		$data['att-type'] = $type;
+		$data['required'] = isset( $att['required'] ) ? $att['required'] : '';
+		$data['validate'] = isset( $att['validate'] ) ? $att['validate'] : '';
+		$data['sanitize'] = isset( $att['sanitize'] ) ? $att['sanitize'] : '';
+		$data['init-callback'] = isset( $att['initCallback'] ) ? $att['initCallback'] : '';
+		$data['no-init'] = isset( $att['noInit'] ) ? $att['noInit'] : '';
+
+		$data_output = '';
+		foreach ( $data as $data_name => $data_value ) {
+			$data_output .= " data-$data_name=\"$data_value\"";
+		}
+
+		// Repeater should have description above always
+		if ( $type == 'repeater' ) {
+			$att['descriptionAbove'] = true;
+		}
 		?>
-		<div class="render-modal-att-row <?php echo isset( $att['classes'] ) ? implode( ' ', $att['classes'] ) : ''; ?>"
-		     data-att-name="<?php echo $att_id; ?>"
-		     data-att-type="<?php echo $type; ?>"
-		     data-required="<?php echo isset( $att['required'] ) ? $att['required'] : ''; ?>"
-		     data-validate="<?php echo isset( $att['validate'] ) ? $att['validate'] : ''; ?>"
-		     data-sanitize="<?php echo isset( $att['sanitize'] ) ? $att['sanitize'] : ''; ?>"
-		     data-init-callback="<?php echo isset( $att['initCallback'] ) ? $att['initCallback'] : ''; ?>"
-		     data-no-init="<?php echo isset( $att['noInit'] ) ? $att['noInit'] : ''; ?>">
+		<div class="<?php echo implode( ' ', $att['classes'] ); ?>" <?php echo $data_output; ?>>
 
 			<?php if ( isset( $att['label'] ) ) : ?>
 				<div class="render-modal-att-name">
 					<?php echo $att['label']; ?>
 				</div>
+			<?php endif; ?>
+
+			<?php if ( isset( $att['descriptionAbove'] ) && isset( $att['description'] ) ) : ?>
+				<p class="render-modal-att-description">
+					<?php echo $att['description']; ?>
+				</p>
 			<?php endif; ?>
 
 			<div class="render-modal-att-field">
@@ -204,7 +243,7 @@ class Render_Modal {
 
 				<div class="render-modal-att-errormsg"></div>
 
-				<?php if ( isset( $att['description'] ) ) : ?>
+				<?php if ( ! isset( $att['descriptionAbove'] ) && isset( $att['description'] ) ) : ?>
 					<p class="render-modal-att-description">
 						<?php echo $att['description']; ?>
 					</p>
@@ -632,6 +671,13 @@ class Render_Modal {
 		);
 		$properties = wp_parse_args( $properties, $defaults );
 
+		// Add content for nested shortcodes
+		if ( $att_id == 'nested_children' && ! isset( $properties['fields']['content'] ) ) {
+			$properties['fields']['content'] = array(
+				'type' => 'hidden',
+			);
+		}
+
 		foreach ( $properties['fields'] as $field_ID => $field ) {
 			$properties['fields'][ $field_ID ]['disabled'] = true;
 		}
@@ -668,8 +714,8 @@ class Render_Modal {
 				</div>
 
 				<div class="render-modal-repeater-actions">
-					<span class="render-modal-repeater-add render-modal-button dashicons dashicons-plus"></span>
 					<span class="render-modal-repeater-remove render-modal-button dashicons dashicons-minus"></span>
+					<span class="render-modal-repeater-add render-modal-button dashicons dashicons-plus"></span>
 				</div>
 			</div>
 		<?php

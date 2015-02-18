@@ -11,12 +11,14 @@
 var Render_Modal;
 (function ($) {
 
+    //noinspection JSUnresolvedVariable
     var elements = {},
         shortcodes = {},
         slide_transition = 150,
         categories_sliding = false,
         render_modal_open = false,
         error_color = '#ec6750',
+        render_data = Render_Data.all_shortcodes,
         _search_timeout, search_loading;
 
     Render_Modal = {
@@ -1399,6 +1401,44 @@ var Render_Modal;
                 atts.content = HTMLtoTextarea(content);
             }
 
+            // Deal with nesting shortcodes
+            var nested;
+            if (typeof render_data[code]['render'] !== 'undefined') {
+                nested = typeof render_data[code]['render']['nested'] !== 'undefined';
+            } else {
+                nested = false;
+            }
+
+            if (nested && content) {
+
+                var shortcodeRegEx = new RegExp(shortcode_regex, 'g'),
+                    child_code = render_data[code].render.nested.child;
+
+                // Make sure it's set
+                if (typeof atts.nested_children == 'undefined') {
+                    atts.nested_children = {};
+                } else {
+                    atts.nested_children = JSON.parse(atts.nested_children);
+                }
+
+                // Cycle through nested children
+                while (match = shortcodeRegEx.exec(content)) {
+
+                    if (match[2] == child_code) {
+
+                        if (typeof atts.nested_children['content'] != 'undefined') {
+                            // Att already set, append new value
+                            atts.nested_children['content'] += '::sep::' + match[5];
+                        } else {
+                            atts.nested_children['content'] = match[5];
+                        }
+                    }
+                }
+
+                // Add the nested children att back in (now with the content!)
+                atts.nested_children = JSON.stringify(atts.nested_children);
+            }
+
             this.modifying = true;
 
             this.setActiveShortcode(code);
@@ -1562,6 +1602,8 @@ var Render_Modal;
 
             render_modal_open = false;
 
+            this.output = false;
+
             elements.list.scrollTop(0);
             elements.wrap.hide();
             elements.backdrop.hide();
@@ -1606,10 +1648,21 @@ var Render_Modal;
 
             this.sanitize();
 
-
             var code = elements.active_shortcode.attr('data-code'),
                 title = elements.active_shortcode.attr('data-title'),
-                props, output, atts = {}, selection = this.selection;
+                props = render_data[code],
+                atts = {},
+                att_output = '',
+                content = '',
+                selection = this.selection,
+                output, nested;
+
+            // Nesting
+            if (typeof render_data[code]['render'] !== 'undefined') {
+                nested = typeof render_data[code]['render']['nested'] !== 'undefined';
+            } else {
+                nested = false;
+            }
 
             // Get the atts
             elements.active_shortcode.find('.render-modal-att-row').each(function () {
@@ -1624,40 +1677,89 @@ var Render_Modal;
                 atts[attObj.name] = attObj._getValue();
             });
 
-            props = Render_Data.all_shortcodes[code];
+            // Get the content
+            if (props.wrapping) {
+                if (nested) {
 
-            output = '[' + code;
+                    var nested_children = JSON.parse(atts.nested_children),
+                        fields = parseRepeaterField(nested_children),
+                        children = '',
+                        count = 0,
+                        child_code = render_data[code].render.nested.child; // From rendering data
+
+                    // Get the count
+                    $.each(nested_children, function (name, value) {
+                        var new_count = value.split('::sep::').length;
+                        count = new_count > count ? new_count : count;
+                    });
+
+                    atts.nested_children_count = count;
+
+                    for (var i = 0; i < count; i++) {
+
+                        // Get the attributes
+                        var attributes = '',
+                            child_content = typeof fields[i].content != 'undefined' && fields[i].content != '' ? fields[i].content : '';
+
+                        $.each(fields[i], function (name, value) {
+
+                            if (name == 'content') {
+                                return true; // continue $.each
+                            }
+
+                            attributes += ' ' + name + '="' + value + '"';
+                        });
+
+                        // Construct the nested children
+                        children += '[' + child_code + attributes + ']' + child_content + '[/' + child_code + ']';
+                    }
+
+                    content = children;
+
+                    // Remove content from the nested children so it doesn't get used as an attribute
+                    delete nested_children.content;
+                    atts.nested_children = JSON.stringify(nested_children);
+
+                    // Delete this attribute if it's empty
+                    if (atts.nested_children == '{}') {
+                        delete atts.nested_children;
+                    }
+
+                } else {
+
+                    if (typeof atts.content !== 'undefined') {
+                        content = atts.content;
+                    } else {
+                        content = selection;
+                    }
+                }
+
+                content += '[/' + code + ']';
+            }
 
             // Add on atts if they exist
             if (atts) {
                 $.each(atts, function (name, value) {
 
-                    // Set up the selection to be content if it exists
-                    if (name === 'content') {
-
-                        // Run through filters first
-                        selection = textareaToHTML(value);
-                        return true; // Continue $.each
-                    }
+                    // Make sure the value is always text
+                    value = value.toString();
 
                     // Add the att to the shortcode output
                     if (value && value.length) {
-                        output += ' ' + name + '=\'' + value + '\'';
+                        att_output += ' ' + name + "='" + value + "'";
                     }
                 });
             }
 
-            output += ']';
-
-            if (props.wrapping) {
-                output += selection + '[/' + code + ']';
-            }
+            // Construct the output
+            output = '[' + code + att_output + ']' + content;
 
             this.output = {
                 all: output,
                 code: code,
                 atts: atts,
-                title: title
+                title: title,
+                nested: nested
             };
 
             $(document).trigger('render-modal-update');
@@ -1691,7 +1793,7 @@ var Render_Modal;
                     att_valid = true;
 
                 // Basic required and field being empty
-                if (required === '1' && !att_value && validated) {
+                if (required === '1' && !att_value) {
                     att_valid = false;
                     validated = false;
                     attObj.setInvalid('This field is required');
@@ -2170,7 +2272,7 @@ var Render_Modal;
             if (this.$input.prop('checked')) {
                 return this.$input.val();
             } else {
-                return false;
+                return '';
             }
         };
 
@@ -2202,7 +2304,7 @@ var Render_Modal;
             if (this.$input.prop('checked')) {
                 this.original_value = this.$input.val();
             } else {
-                this.original_value = false;
+                this.original_value = '';
             }
         };
 
@@ -2268,7 +2370,7 @@ var Render_Modal;
             if (this.$input.prop('checked')) {
                 this.original_value = this.$input.val();
             } else {
-                this.original_value = false;
+                this.original_value = this.$container.find('input[type="hidden"]').val();
             }
         };
 
@@ -2612,7 +2714,7 @@ var Render_Modal;
 
                 var attObj = $(this).data('attObj');
 
-                if (values[attObj.name]) {
+                if (typeof values[attObj.name] != 'undefined') {
                     // Att already set, append new value
                     values[attObj.name] += '::sep::' + attObj._getValue();
                 } else {
@@ -2642,20 +2744,7 @@ var Render_Modal;
                 object = JSON.parse(object);
 
                 // Construct the fields object
-                var fields = [];
-                $.each(object, function (name, values) {
-
-                    var att_values = values.split('::sep::');
-
-                    for (var i = 0; i < att_values.length; i++) {
-
-                        if (!fields[i]) {
-                            fields[i] = {};
-                        }
-
-                        fields[i][name] = att_values[i];
-                    }
-                });
+                var fields = parseRepeaterField(object);
 
                 // Add as many new fields as necessary
                 for (var i = 1; i < fields.length; i++) {
@@ -2849,5 +2938,33 @@ var Render_Modal;
         value = value.replace(/\s/g, '&nbsp;');
 
         return value;
+    }
+
+    /**
+     * Parses the attribute output of a repeater field.
+     *
+     * @since {{VERSION}}
+     *
+     * @param object The repeater field "object"
+     * @returns {Array} Sorted fields
+     */
+    window['parseRepeaterField'] = function (object) {
+
+        var fields = [];
+        $.each(object, function (name, values) {
+
+            var att_values = values.split('::sep::');
+
+            for (var i = 0; i < att_values.length; i++) {
+
+                if (!fields[i]) {
+                    fields[i] = {};
+                }
+
+                fields[i][name] = att_values[i];
+            }
+        });
+
+        return fields;
     }
 })(jQuery);

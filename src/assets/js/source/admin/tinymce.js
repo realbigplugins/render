@@ -183,7 +183,7 @@ var Render_tinymce;
                         $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper');
                         content = $shortcode.find('.render-tinymce-shortcode-content').html();
                         container_html = $('<div />').append($shortcode.clone()).html();
-                        shortcode = Render_tinymce.visualToLiteral(container_html);
+                        shortcode = Render_tinymce.convertRenderedToLiteral(container_html);
 
                         if (content && content.length) {
                             Render_Modal.selection = content;
@@ -235,6 +235,49 @@ var Render_tinymce;
                     }
                 }
 
+                // KeyDown (includes backspace)
+                _editor.onKeyDown.add(function (editor, event) {
+
+                    var node = editor.selection.getNode(),
+                        node_content = $(node).html();
+
+                    if (node && !$(node).hasClass('render-tinymce-shortcode-content')) {
+                        return;
+                    }
+
+                    var curElm = editor.selection.getRng().startContainer,
+                        range = editor.selection.getBookmark(curElm.textContent).rng;
+
+                    if (typeof range === 'undefined') {
+                        return;
+                    }
+
+                    var caretPos = range.startOffset;
+
+                    // Convert char codes to literal for counting purposes
+                    var literal_text = $('<div />').html(node_content).text();
+
+                    // Beginning of shortcode
+                    if (caretPos === 0) {
+
+                        // Don't allow backspace or left arrow to do anything
+                        if (event.which === 8 || event.which === 37) {
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+
+                    // End of shortcode
+                    if (caretPos === literal_text.length) {
+
+                        // Don't right arrow to do anything
+                        if (event.which === 39) {
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+                });
+
                 // Keypress (printable keys) in the editor
                 _editor.onKeyPress.add(function (editor, event) {
 
@@ -267,10 +310,12 @@ var Render_tinymce;
                             newChar = '&nbsp;';
                         }
 
-                        event.preventDefault();
                         $(node).html(literal_text + newChar);
                         editor.selection.select(node, true);
                         editor.selection.collapse(false);
+
+                        event.preventDefault();
+                        return false;
                     }
                 });
 

@@ -293,76 +293,76 @@ class Render_tinymce extends Render {
 		// Get our atts
 		$atts = shortcode_parse_atts( $atts );
 
-		// Nested shortcode parents
-		if ( isset( $data['nested']['child'] ) ) {
-
-			$new_content = '';
-
-			$child_code = $data['nested']['child'];
-
-			// Force DIV tag
-			$data['displayBlock'] = true;
-
-			// Don't allow manual content editing
-			$data['contentNonEditable'] = true;
-
-			$nested_children = render_associative_atts( $atts, 'nested_children' );
-
-			$existing_children_content = array();
-
-			// Get the regex for finding JUST our child shortcodes
-			$_shortcode_tags = $shortcode_tags;
-			$shortcode_tags = array(
-				$child_code => null,
-			);
-			$child_regex = get_shortcode_regex();
-			$shortcode_tags = $_shortcode_tags;
-
-			preg_replace_callback( "/$child_regex/s", function ( $matches ) use ( &$existing_children_content ) {
-				$existing_children_content[] = $matches[5]; // content
-			}, $_content );
-
-			// Create each of our nested children by looping through the repeater attribute
-			$i = -1;
-			foreach ( $nested_children as $child_attributes ) {
-				$i ++;
-
-				// Setup atts
-				$child_attributes_output = '';
-				foreach ( (array) $child_attributes as $att_name => $att_value ) {
-
-					// Don't use if in "ignoreForChildren" atts
-					if ( isset( $data['nested']['ignoreForChildren'] ) &&
-					     in_array( $att_name, (array) $data['nested']['ignoreForChildren'] )
-					) {
-						continue;
-					}
-
-					$child_attributes_output .= "$att_name='$att_value' ";
-				}
-
-				// Add in any global atts
-				$global_atts = isset( $data['nested']['globalAtts'] ) ? $data['nested']['globalAtts'] : false;
-				if ( $global_atts ) {
-
-					foreach ( $global_atts as $global_att ) {
-
-						if ( isset( $atts[ $global_att ] ) ) {
-							$child_attributes_output .= "$global_att='{$atts[ $global_att ]}' ";
-						}
-					}
-				}
-
-				$child_content = isset( $existing_children_content[ $i ] ) ? $existing_children_content[ $i ] : '';
-
-				// Set content
-				$new_content .= "[$child_code $child_attributes_output]{$child_content}[/$child_code]";
-			}
-
-			$entire_code = str_replace( "]{$_content}[", "]{$new_content}[", $entire_code );
-			$_content = $new_content;
-		}
-
+//		// Nested shortcode parents
+//		if ( isset( $data['nested']['child'] ) ) {
+//
+//			$new_content = '';
+//
+//			$child_code = $data['nested']['child'];
+//
+//			// Force DIV tag
+//			$data['displayBlock'] = true;
+//
+//			// Don't allow manual content editing
+//			$data['contentNonEditable'] = true;
+//
+//			$nested_children = render_associative_atts( $atts, 'nested_children' );
+//
+//			$existing_children_content = array();
+//
+//			// Get the regex for finding JUST our child shortcodes
+//			$_shortcode_tags = $shortcode_tags;
+//			$shortcode_tags = array(
+//				$child_code => null,
+//			);
+//			$child_regex = get_shortcode_regex();
+//			$shortcode_tags = $_shortcode_tags;
+//
+//			preg_replace_callback( "/$child_regex/s", function ( $matches ) use ( &$existing_children_content ) {
+//				$existing_children_content[] = $matches[5]; // content
+//			}, $_content );
+//
+//			// Create each of our nested children by looping through the repeater attribute
+//			$i = -1;
+//			foreach ( $nested_children as $child_attributes ) {
+//				$i ++;
+//
+//				// Setup atts
+//				$child_attributes_output = '';
+//				foreach ( (array) $child_attributes as $att_name => $att_value ) {
+//
+//					// Don't use if in "ignoreForChildren" atts
+//					if ( isset( $data['nested']['ignoreForChildren'] ) &&
+//					     in_array( $att_name, (array) $data['nested']['ignoreForChildren'] )
+//					) {
+//						continue;
+//					}
+//
+//					$child_attributes_output .= "$att_name='$att_value' ";
+//				}
+//
+//				// Add in any global atts
+//				$global_atts = isset( $data['nested']['globalAtts'] ) ? $data['nested']['globalAtts'] : false;
+//				if ( $global_atts ) {
+//
+//					foreach ( $global_atts as $global_att ) {
+//
+//						if ( isset( $atts[ $global_att ] ) ) {
+//							$child_attributes_output .= "$global_att='{$atts[ $global_att ]}' ";
+//						}
+//					}
+//				}
+//
+//				$child_content = isset( $existing_children_content[ $i ] ) ? $existing_children_content[ $i ] : '';
+//
+//				// Set content
+//				$new_content .= "[$child_code $child_attributes_output]{$child_content}[/$child_code]";
+//			}
+//
+//			$entire_code = str_replace( "]{$_content}[", "]{$new_content}[", $entire_code );
+//			$_content = $new_content;
+//		}
+//
 		// Nested shortcode children
 		if ( isset( $data['nested']['parent'] ) ) {
 
@@ -372,9 +372,6 @@ class Render_tinymce extends Render {
 			// Set default dummy content
 			if ( ! isset( $data['dummyContent'] ) ) {
 				$data['dummyContent'] = '(Enter section content)';
-			}
-
-			if ( empty( $_content ) ) {
 			}
 		}
 

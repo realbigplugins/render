@@ -30,6 +30,14 @@ foreach (
 			'title'       => __( 'Accordion', 'Render' ),
 			'description' => __( 'An accordion style drop-down for hiding and revealing content.', 'Render' ),
 			'atts'        => array(
+				'start_closed' => array(
+					'label' => __( 'Load Closed', 'Render' ),
+					'type' => 'checkbox',
+					'properties' => array(
+						'value' => 'true',
+						'label' => __( 'Load the accordion with all sections collapsed', 'Render' ),
+					),
+				),
 				array(
 					'label' => __( 'Colors', 'Render' ),
 					'type'  => 'section_break',
@@ -54,12 +62,17 @@ foreach (
 					'type'  => 'section_break',
 				),
 				'nested_children'          => array(
-					'label'      => __( 'Sections', 'Render' ),
+					'label'      => false,
 					'type'       => 'repeater',
 					'properties' => array(
 						'fields' => array(
+							array(
+								'label' => __( 'Accordion Section', 'Render' ),
+								'type'  => 'placeholder',
+							),
 							'heading' => array(
-								'label' => __( 'Heading', 'Render' ),
+								'label'    => __( 'Heading', 'Render' ),
+								'required' => true,
 							),
 						),
 					),
@@ -67,7 +80,7 @@ foreach (
 			),
 			'wrapping'    => true,
 			'render'      => array(
-				'nested' => array(
+				'nested'       => array(
 					'child'      => 'render_accordion_section',
 					'globalAtts' => array(
 						'heading_background',
@@ -75,6 +88,7 @@ foreach (
 						'heading_font_color',
 					),
 				),
+				'displayBlock' => true,
 			),
 		),
 		/*
@@ -347,20 +361,16 @@ foreach (
 			'title'       => __( 'Columns', 'Render' ),
 			'description' => __( 'Creates symmetrical columns for grouping content.', 'Render' ),
 			'atts'        => array(
-				array(
-					'description' => __( 'Maximum six columns', 'Render' ),
-					'type'        => 'section_break',
-				),
 				'nested_children' => array(
-					'label'      => __( 'Columns', 'Render' ),
-					'type'       => 'repeater',
-					'properties' => array(
+					'label'       => __( 'Columns', 'Render' ),
+					'description' => __( 'Maximum six columns', 'Render' ),
+					'type'        => 'repeater',
+					'properties'  => array(
 						'max'    => 6,
 						'fields' => array(
-							'dummy_field' => array(
-								'label'   => __( 'Column', 'Render' ),
-								'type'    => 'hidden',
-								'default' => 1,
+							array(
+								'label' => __( 'Column', 'Render' ),
+								'type'  => 'placeholder',
 							),
 						),
 					),
@@ -368,9 +378,10 @@ foreach (
 			),
 			'wrapping'    => true,
 			'render'      => array(
-				'nested' => array(
+				'nested'       => array(
 					'child' => 'render_column_section',
 				),
+				'displayBlock' => true,
 			),
 		),
 		/*
@@ -407,13 +418,13 @@ foreach (
 			'title'       => __( 'Tabs', 'Render' ),
 			'description' => __( 'Creates a tabbed layout for the content.', 'Render' ),
 			'atts'        => array(
-				'content_border' => array(
-					'label' => __( 'Tab Content Border', 'Render' ),
-					'type' => 'toggle',
+				'content_border'             => array(
+					'label'      => __( 'Tab Content Border', 'Render' ),
+					'type'       => 'toggle',
 					'properties' => array(
 						'deselectStyle' => true,
-						'flip' => true,
-						'values' => array(
+						'flip'          => true,
+						'values'        => array(
 							'hide' => __( 'Hide', 'Render' ),
 							'show' => __( 'Show', 'Render' ),
 						),
@@ -421,39 +432,44 @@ foreach (
 				),
 				array(
 					'label' => __( 'Colors', 'Render' ),
-					'type' => 'section_break',
+					'type'  => 'section_break',
 				),
-				'border_color' => array(
-					'label' => __( 'Borders', 'Render' ),
-					'type' => 'colorpicker',
+				'border_color'               => array(
+					'label'   => __( 'Borders', 'Render' ),
+					'type'    => 'colorpicker',
 					'default' => RENDER_PRIMARY_COLOR_DARK,
 				),
-				'navigation_tab_color' => array(
-					'label' => __( 'Navigation Tab', 'Render' ),
-					'type' => 'colorpicker',
+				'navigation_tab_color'       => array(
+					'label'   => __( 'Navigation Tab', 'Render' ),
+					'type'    => 'colorpicker',
 					'default' => RENDER_PRIMARY_COLOR,
 				),
 				'navigation_tab_hover_color' => array(
-					'label' => __( 'Navigation Tab Hover', 'Render' ),
-					'type' => 'colorpicker',
+					'label'   => __( 'Navigation Tab Hover', 'Render' ),
+					'type'    => 'colorpicker',
 					'default' => RENDER_PRIMARY_COLOR_LIGHT,
 				),
-				'navigation_tab_font_color' => array(
-					'label' => __( 'Navigation Tab Font', 'Render' ),
-					'type' => 'colorpicker',
+				'navigation_tab_font_color'  => array(
+					'label'   => __( 'Navigation Tab Font', 'Render' ),
+					'type'    => 'colorpicker',
 					'default' => RENDER_PRIMARY_FONT_COLOR,
 				),
 				array(
-					'label' => __( 'Tabs', 'Render' ),
-					'type' => 'section_break',
+					'label' => __( 'Tab Sections', 'Render' ),
+					'type'  => 'section_break',
 				),
-				'nested_children' => array(
-					'label'      => __( 'Tabs', 'Render' ),
+				'nested_children'            => array(
+					'label'      => false,
 					'type'       => 'repeater',
 					'properties' => array(
 						'fields' => array(
+							array(
+								'label' => __( 'Tab Section', 'Render' ),
+								'type'  => 'placeholder',
+							),
 							'navigation_label' => array(
-								'label'   => __( 'Navigation Label', 'Render' ),
+								'label'    => __( 'Navigation Label', 'Render' ),
+								'required' => true,
 							),
 						),
 					),
@@ -461,13 +477,14 @@ foreach (
 			),
 			'wrapping'    => true,
 			'render'      => array(
-				'nested' => array(
-					'child' => 'render_tab_section',
+				'nested'       => array(
+					'child'             => 'render_tab_section',
 					'ignoreForChildren' => array(
 						'navigation_label',
 					),
 				),
-				'noStyle' => true,
+				'displayBlock' => true,
+				'noStyle'      => true,
 			),
 		),
 		/*
@@ -488,7 +505,7 @@ foreach (
 					'parent' => 'render_tabs_wrapper',
 				),
 				'dummyContent' => '(Enter tab content here)',
-				'noStyle' => true,
+				'noStyle'      => true,
 				'displayBlock' => true,
 			),
 		),
@@ -519,7 +536,18 @@ foreach (
  */
 function _render_sc_accordion_wrapper( $atts = array(), $content = '' ) {
 
-	$output = '<div class="render-accordion-wrapper">';
+	$atts = shortcode_atts( array(
+		'start_closed' => 'false',
+	), $atts );
+
+	// Establish classes
+	$classes = array(
+		'render-accordion-wrapper',
+		$atts['start_closed'] == 'true' ? 'render-accordion-start-closed' : '',
+	);
+	$classes = array_filter( $classes );
+
+	$output = '<div class="' . implode( ' ', $classes ) . '">';
 
 	$output .= do_shortcode( $content );
 
@@ -558,7 +586,7 @@ function _render_sc_accordion_section( $atts = array(), $content = '' ) {
 	$output .= "<span class='render-accordion-heading-content'>$atts[heading]</span>";
 	$output .= '</h3>';
 
-	$output .= '<div class="render-accordion-section-content">' . ( ! empty( $content ) ? $content : '' ) . '</div>';
+	$output .= '<div class="render-accordion-section-content">' . wpautop( do_shortcode( $content ) ). '</div>';
 
 	$output .= '</div>'; // .render-accordion-section
 
@@ -661,7 +689,7 @@ function _render_sc_box( $atts = array(), $content = '' ) {
 	$output .= '>';
 	$output .= ! empty( $atts['heading'] ) ?
 		"<$atts[heading_tag] style='color: $atts[heading_font_color]'>$atts[heading]</$atts[heading_tag]>" : '';
-	$output .= do_shortcode( $content );
+	$output .= wpautop( do_shortcode( $content ) );
 	$output .= '</div>';
 
 	return $output;
@@ -681,16 +709,13 @@ function _render_sc_box( $atts = array(), $content = '' ) {
 function _render_sc_columns_wrapper( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
-		'nested_children' => false,
+		'nested_children_count' => '1',
 	), $atts );
 
 	// Escape atts
 	render_esc_atts( $atts );
 
-	$columns = render_associative_atts( $atts, 'nested_children' );
-	$columns = count( $columns );
-
-	$output = "<div class='render-columns-wrapper columns-$columns'>";
+	$output = "<div class='render-columns-wrapper columns-$atts[nested_children_count]'>";
 
 	$output .= do_shortcode( $content );
 
@@ -714,7 +739,7 @@ function _render_sc_column_section( $atts = array(), $content = '' ) {
 
 	$output = "<div class='render-column-section'>";
 
-	$output .= $content;
+	$output .= wpautop( do_shortcode( $content ) );
 
 	$output .= '</div>'; // .render-column-section
 
@@ -736,25 +761,21 @@ function _render_sc_column_section( $atts = array(), $content = '' ) {
 function _render_sc_columns_wrapper_tinymce( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
-		'nested_children' => false,
+		'nested_children_count' => '1',
 	), $atts );
 
 	// Escape atts
 	render_esc_atts( $atts );
-
-	// Get the number of columns
-	$columns = render_associative_atts( $atts, 'nested_children' );
-	$columns = count( $columns );
 
 	/**
 	 * Adds the proper columns class onto the shortcode wrapper.
 	 *
 	 * @since {{VERSION}}
 	 */
-	add_filter( 'render_tinymce_shortcode_wrapper_classes_render_columns_wrapper', function ( $classes ) use ( $columns ) {
+	add_filter( 'render_tinymce_shortcode_wrapper_classes_render_columns_wrapper', function ( $classes ) use ( $atts ) {
 
-		if ( ! in_array( "columns-$columns", $classes ) ) {
-			$classes[] = "columns-$columns";
+		if ( ! in_array( "columns-$atts[nested_children_count]", $classes ) ) {
+			$classes[] = "columns-$atts[nested_children_count]";
 		}
 
 		return $classes;
@@ -777,16 +798,21 @@ function _render_sc_columns_wrapper_tinymce( $atts = array(), $content = '' ) {
 function _render_sc_tabs_wrapper( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
-		'nested_children' => false,
-		'navigation_tab_color' => RENDER_PRIMARY_COLOR,
+		'nested_children'            => false,
+		'navigation_tab_color'       => RENDER_PRIMARY_COLOR,
 		'navigation_tab_hover_color' => RENDER_PRIMARY_COLOR_LIGHT,
-		'navigation_tab_font_color' => RENDER_PRIMARY_FONT_COLOR,
-		'border_color' => RENDER_PRIMARY_COLOR_DARK,
-		'content_border' => 'show',
+		'navigation_tab_font_color'  => RENDER_PRIMARY_FONT_COLOR,
+		'border_color'               => RENDER_PRIMARY_COLOR_DARK,
+		'content_border'             => 'show',
 	), $atts );
 
 	// Escape atts
 	render_esc_atts( $atts );
+
+	// This shouldn't be possible, but just in case it somehow happens
+	if ( $atts['nested_children'] === false ) {
+		return 'Error in shortcode';
+	}
 
 	$tabs = render_associative_atts( $atts, 'nested_children' );
 
@@ -797,10 +823,10 @@ function _render_sc_tabs_wrapper( $atts = array(), $content = '' ) {
 	$output .= '<ul class="render-tabs-navigation">';
 	$i = 0;
 	foreach ( $tabs as $tab ) {
-		$i++;
+		$i ++;
 
 		// Classes
-		$classes = array();
+		$classes   = array();
 		$classes[] = 'render-tabs-navigation-tab';
 		$classes[] = $i === 1 ? 'render-tabs-navigation-tab-active' : '';
 
@@ -847,7 +873,7 @@ function _render_sc_tabs_wrapper( $atts = array(), $content = '' ) {
  */
 function _render_sc_tab_section( $atts = array(), $content = '' ) {
 
-	return "<div class='render-tab-section'>$content</div>";
+	return '<div class="render-tab-section">' . wpautop( do_shortcode( $content ) ) . '</div>';
 }
 
 /**

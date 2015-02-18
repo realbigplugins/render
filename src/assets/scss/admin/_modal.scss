@@ -416,6 +416,31 @@ $render-modal-height: 800px;
     .render-modal-att-section-break-description {
       font-weight: normal;
       font-size: 80%;
+      display: block;
+    }
+  }
+
+  // Att placeholder
+  .render-modal-att-placeholder {
+    margin: 10px;
+    background: #f5f5f5;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    transition: border-color 300ms;
+    padding: 0;
+    line-height: 30px;
+    height: 30px;
+    text-align: center;
+  }
+
+  .render-modal-repeater-field {
+    .render-modal-att-placeholder {
+      margin: 10px 0;
+
+      &:first-of-type {
+        margin-top: 0;
+      }
     }
   }
 
@@ -451,6 +476,7 @@ $render-modal-height: 800px;
 
     @include clearfix;
 
+    // Invalid
     &.invalid {
       background: $error-color;
       color: #fff;
@@ -458,12 +484,46 @@ $render-modal-height: 800px;
       .render-modal-att-field .render-modal-att-errormsg {
         display: block;
       }
+
+      .render-modal-att-description {
+        color: #fff;
+      }
+    }
+
+    // No label
+    &.render-modal-att-hide-label {
+      .render-modal-att-name {
+        display: none;
+      }
+
+      .render-modal-att-field {
+        width: 100%;
+      }
+    }
+
+    // Repeater
+    &[data-att-type="repeater"] {
+      .render-modal-att-name {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .render-modal-att-field {
+        width: 100%;
+      }
     }
   }
 
   .render-modal-att-name {
     float: left;
     width: 25%;
+  }
+
+  .render-modal-att-description {
+    color: #999;
+    font-style: normal;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 
   .render-modal-att-field {
@@ -478,13 +538,6 @@ $render-modal-height: 800px;
       &.render-modal-att-colorpicker {
         width: 65px;
       }
-    }
-
-    .render-modal-att-description {
-      color: #999;
-      font-style: normal;
-      margin-top: 5px;
-      margin-bottom: 5px;
     }
 
     .render-modal-att-errormsg {
@@ -531,9 +584,15 @@ $render-modal-height: 800px;
     // Text Area
     .render-modal-att-textarea {
       width: 100%;
+      max-width: 100%;
       min-height: 100px;
       box-sizing: border-box;
       margin: 0;
+    }
+
+    // Hidden
+    .render-modal-att-hidden {
+      display: none;
     }
 
     // Checkbox
@@ -652,43 +711,28 @@ $render-modal-height: 800px;
 
     // Repeater
     .render-modal-repeater-field {
-      padding-top: 20px;
-      border-top: 1px solid #ccc;
-      margin-top: 20px;
+      @include clearfix;
       position: relative;
-
-      // Top item doesn't need a separator
-      &:nth-of-type(2) {
-        border-top: none;
-        margin-top: 0;
-        padding-top: 0;
-      }
-
-      // Clearfix
-      &:after {
-        content: ' ';
-        display: table;
-        clear: both;
-      }
+      border-top: 1px solid #ccc;
+      padding: 20px 0;
 
       .render-modal-repeater-inputs {
-        width: 80%;
+        width: 83%;
         float: left;
         box-sizing: border-box;
         margin: 0;
       }
 
       .render-modal-repeater-actions {
-        width: 20%;
         float: right;
         padding-left: 10px;
         box-sizing: border-box;
 
-        .render-modal-repeater-add {
-          float: left;
+        .render-modal-repeater-remove {
+          margin-left: 10px;
         }
 
-        .render-modal-repeater-remove {
+        .render-modal-repeater-add, .render-modal-repeater-remove {
           float: right;
         }
       }
@@ -721,18 +765,6 @@ $render-modal-height: 800px;
           font-style: italic;
           padding: 5px 5px 5px 0;
         }
-      }
-    }
-
-    // Repeater Effect
-    .ui-effects-wrapper {
-      height: auto !important;
-
-      // This would become :first-of-type and cause these properties to be lost, so we have to !important them
-      .render-modal-repeater-field {
-        border-top: 1px solid #ccc !important;
-        margin-top: 20px !important;
-        padding-top: 20px !important;
       }
     }
 

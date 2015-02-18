@@ -150,16 +150,31 @@ function _render_widget_add_actions( $screen ) {
 function _render_add_content_to_atts( $atts, $code, $shortcode ) {
 
 	if ( $shortcode['wrapping'] ) {
-		$atts = array_merge(
-			array(
-				'content' => array(
-					'type'     => 'textarea',
-					'label'    => __( 'Content', 'Render' ),
-					'required' => true,
-				)
-			),
-			$atts
-		);
+
+		// Add to repeater here instead for nested shortcodes
+		if ( isset( $shortcode['render']['nested']['child'] ) ) {
+
+			$atts['nested_children']['properties']['fields']['content'] = array(
+				'type'     => 'textarea',
+				'label'    => __( 'Content', 'Render' ),
+				'required' => true,
+			);
+
+			// Remove the dummy field, if it's set. Having the content makes it no longer necessary
+			unset( $atts['nested_children']['properties']['fields']['dummy_field'] );
+		} else {
+
+			$atts = array_merge(
+				array(
+					'content' => array(
+						'type'     => 'textarea',
+						'label'    => __( 'Content', 'Render' ),
+						'required' => true,
+					)
+				),
+				$atts
+			);
+		}
 	}
 
 	return $atts;

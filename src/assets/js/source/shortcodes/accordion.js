@@ -13,6 +13,12 @@
         // Hide accordion content (except for first)
         $('.render-accordion-wrapper').each(function () {
 
+            // If set to start all closed, close all of them!
+            if ($(this).hasClass('render-accordion-start-closed')) {
+                $(this).find('.render-accordion-section-content').hide();
+                return true; // continues $.each
+            }
+
             var i = 0;
 
             $(this).find('> .render-accordion-section').each(function () {
