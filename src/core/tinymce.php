@@ -35,6 +35,24 @@ class Render_tinymce extends Render {
 
 		// Localize data for rendering in the TinyMCE
 		add_action( 'render_localized_data', array( $this, 'rendering_data' ) );
+
+		// Add a pointer
+		add_filter( 'render_pointers', function ( $pointers ) {
+
+			$pointers['tinymce_button'] = array(
+				'title' => __( 'Add A Shortcode', 'Render' ),
+				'content' => __( 'This is your new, easy way to add shortcodes to the editor. Click here to get started!', 'Render' ),
+				'target' => 'i.mce-i-render-mce-icon',
+				'position' => array(
+					'edge' => 'bottom',
+					'align' => 'center',
+				),
+				'trigger' => 'render-tinymce-post-render',
+				'classes' => 'tinymce-pointer'
+			);
+
+			return $pointers;
+		});
 	}
 
 	/**

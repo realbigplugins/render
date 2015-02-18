@@ -220,6 +220,9 @@ if ( ! class_exists( 'Render' ) ) {
 
 			// Licensing
 			require_once __DIR__ . '/core/licensing/licensing.php';
+
+			// Pointers
+			add_filter( 'current_screen', array( $this, '_pointers' ), 1 );
 		}
 
 		/**
@@ -514,6 +517,42 @@ if ( ! class_exists( 'Render' ) ) {
 
 			foreach ( (array) $styles as $style ) {
 				add_editor_style( $style );
+			}
+		}
+
+		/**
+		 * Includes pointer necessities as needed and includes the primary Render pointer.
+		 *
+		 * @since {{VERSION}}
+		 * @access private
+		 */
+		function _pointers( $screen ) {
+
+			// Add the primary pointer, just not to the customize page
+			if ( $screen->id != 'customize' ) {
+				add_filter( 'render_pointers', function ( $pointers ) {
+
+					$pointers['admin_menu'] = array(
+						'title'    => __( 'Welcome!', 'Render' ),
+						'content'  => __( 'Thanks for installing Render! You can access Render settings as well as view all available shortcodes here.', 'Render' ),
+						'target'   => '#toplevel_page_render-settings',
+						'position' => array(
+							'edge'  => 'bottom',
+							'align' => 'bottom',
+						),
+						'classes'  => 'admin-menu-pointer',
+					);
+
+					return $pointers;
+				} );
+			}
+
+			// Include pointers if necessary
+			if ( apply_filters( 'render_pointers', false ) ) {
+
+				// Include pointers
+				include_once __DIR__ . '/core/pointers.php';
+				new Render_Pointers();
 			}
 		}
 

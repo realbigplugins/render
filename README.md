@@ -36,6 +36,8 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 ## Changelog
 
 ### [{{VERSION}}](https://github.com/brashrebel/render/releases/tag/v{{VERSION}})
+* UPDATE: Added WP Pointers throughout.
+* UPDATE: Custom input selectbox visually labeled.
 * UPDATE: Tab shortcode.
 * UPDATE: Revised and improved columns shortcode.
 * UPDATE: Accordion shortcode.

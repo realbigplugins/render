@@ -4,6 +4,7 @@
  * @since 1.0.0
  *
  * @global tinymce
+ * @global ajaxurl
  * @global Render_Modal
  * @global Render_Data
  * @global Render_MCECallbacks

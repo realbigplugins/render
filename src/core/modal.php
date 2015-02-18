@@ -185,7 +185,7 @@ class Render_Modal {
 
 		// Setup classes
 		$att['classes'][] = 'render-modal-att-row';
-		$att['classes'][] = $att['label'] === false ? 'render-modal-att-hide-label' : '';
+		$att['classes'][] = isset( $att['label'] ) && $att['label'] === false ? 'render-modal-att-hide-label' : '';
 		$att['classes'][] = $type == 'hidden' ? 'hidden' : '';
 		$att['classes']   = array_filter( $att['classes'] );
 
