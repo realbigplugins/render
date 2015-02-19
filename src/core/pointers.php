@@ -47,6 +47,10 @@ class Render_Pointers {
 	 *
 	 * @since  {{VERSION}}
 	 * @access private
+	 *
+	 * @param array|null $data The pointers data.
+	 *
+	 * @return array The new pointers data.
 	 */
 	function _pointers_data( $data ) {
 

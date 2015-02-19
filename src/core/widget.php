@@ -159,7 +159,7 @@ function _render_widget_add_actions( $screen ) {
 		$pointers['widget_init'] = array(
 			'title' => __( 'The Render Widget', 'Render' ),
 			'content' => sprintf(
-						__( 'Here is your new Render widget! Put this in your sidebar to easily add <strong>shortcodes</strong>. Please use the %s for a live preview!.', 'Render' ),
+						__( 'Here is your new Render widget! Put this in your sidebar to easily add <strong>shortcodes</strong>. Please use the %s for a live preview!', 'Render' ),
 						'<a href="/wp-admin/customize.php?return=%2Fwp-admin%2Fwidgets.php">customizer</a>'
 					),
 			'target' => '#widget-list [id*="render_widget"]',

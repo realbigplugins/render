@@ -11,16 +11,15 @@
  */
 (function ($) {
 
-    var render_data = Render_Data;
+    var pointers = Render_Data.pointers,
+        dismissed_pointers = [];
 
     $(function () {
 
         // If no pointers, get out of here!
-        if (typeof render_data.pointers == 'undefined') {
+        if (typeof pointers == 'undefined') {
             return;
         }
-
-        var pointers = render_data.pointers;
 
         $.each(pointers, function (pointer_ID, pointer) {
 
@@ -50,6 +49,11 @@
             // Launch pointer on trigger (allows pointers to be triggered by other events
             $(document).on(trigger, function (event, custom_target) {
 
+                // Don't launch more than once
+                if (dismissed_pointers.indexOf(pointer_ID) !== -1) {
+                    return;
+                }
+
                 target = typeof custom_target != 'undefined' ? custom_target : target;
 
                 $(target).pointer({
@@ -57,6 +61,11 @@
                     position: position,
                     pointerClass: classes,
                     close: function () {
+
+                        // Don't allow re-opening! (for pointers hooked to triggers that fire more than once on a page)
+                        dismissed_pointers.push(pointer_ID);
+
+                        // Let WP know the user has closed this pointer
                         $.post(ajaxurl, {
                             action: 'dismiss-wp-pointer',
                             pointer: 'render_' + pointer_ID
@@ -66,6 +75,7 @@
             });
         });
 
+        // Launch default pointers
         $(document).trigger('render-init-pointers');
     });
 })(jQuery);
