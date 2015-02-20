@@ -1,5 +1,5 @@
 # Render
-### v1.0.5
+### v1.1-alpha
 
 Render is a powerful plugin which enables you to insert useful and powerful functionality into your content. All without writing or even seeing any code.
 
