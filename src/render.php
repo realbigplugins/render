@@ -335,6 +335,13 @@ if ( ! class_exists( 'Render' ) ) {
 				array( 'jquery' ),
 				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
+
+			wp_register_script(
+				'render-masked-input',
+				RENDER_URL . '/includes/input-mask/jquery.masked-input.js',
+				array( 'jquery' ),
+				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
+			);
 		}
 
 		/**

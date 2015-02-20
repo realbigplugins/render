@@ -88,6 +88,7 @@ class Render_Modal {
 		wp_enqueue_script( 'jquery-effects-drop' );
 		wp_enqueue_script( 'wp-color-picker' );
 		wp_enqueue_script( 'render-chosen' );
+		wp_enqueue_script( 'render-masked-input' );
 		wp_enqueue_media();
 
 		// Necessary styles
@@ -298,12 +299,17 @@ class Render_Modal {
 			'prefixWidth'  => 20,
 			'postfix'      => false,
 			'postfixWidth' => 20,
+			'mask'         => false,
 		) );
 
 		// Determine width
 		$width = 100;
 		$width = $width - ( $properties['prefix'] ? $properties['prefixWidth'] : 0 );
 		$width = $width - ( $properties['postfix'] ? $properties['postfixWidth'] : 0 );
+
+		// Input mask
+		$mask = '';
+		$mask = $properties['mask'] ? 'data-mask="1"' : '';
 
 		if ( $properties['prefix'] || $properties['postfix'] ) : ?>
 			<div class="render-modal-att-textbox-fix">
@@ -319,7 +325,8 @@ class Render_Modal {
 		       style="width: <?php echo "$width%"; ?>"
 		       placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : ''; ?>"
 		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
-		       name="<?php echo $att_id; ?>"/>
+		       name="<?php echo $att_id; ?>"
+			<?php echo $mask; ?> />
 
 		<?php if ( $properties['postfix'] ) : ?>
 			<div class="render-modal-att-textbox-postfix" style="width: <?php echo "$properties[postfixWidth]%"; ?>">

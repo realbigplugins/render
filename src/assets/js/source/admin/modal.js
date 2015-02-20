@@ -36,6 +36,7 @@ var Render_Modal;
          */
         init: function () {
 
+            this.inputmaskExtend();
             this.establishElements();
             this.binds();
             this.keyboardShortcuts();
@@ -50,6 +51,32 @@ var Render_Modal;
          */
         resize: function () {
             this.listHeight();
+        },
+
+        inputmaskExtend: function () {
+
+            // Extend inputmask definitions
+            //$.extend($.inputmask.defaults.definitions, {
+            //
+            //    // Day for date
+            //    'd': {
+            //        validator: '[0-9]',
+            //        cardinality: 1,
+            //        masksymbol: 'd'
+            //    },
+            //
+            //    // Month for date
+            //    m : {
+            //        validator: '[0-9]',
+            //        cardinality: 1
+            //    },
+            //
+            //    // Year for date
+            //    y : {
+            //        validator: '[0-9]',
+            //        cardinality: 1
+            //    }
+            //});
         },
 
         /**
@@ -2405,6 +2432,8 @@ var Render_Modal;
 
             this.storeOriginalValue();
             this.setupChange();
+
+            this.postInit();
         };
 
         /**
@@ -2561,6 +2590,14 @@ var Render_Modal;
 
             this.$errormsg.html(msg);
         };
+
+        /**
+         * Customizable post-init function.
+         *
+         * @since {{VERSION}}
+         */
+        this.postInit = function () {
+        };
     }
 
     /**
@@ -2589,6 +2626,15 @@ var Render_Modal;
      */
     var Textbox = function ($e) {
 
+        /**
+         * The input mask properties.
+         *
+         * @since {{VERSION}}
+         *
+         * @type {boolean|object}
+         */
+        this.mask = false;
+
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
 
@@ -2608,6 +2654,68 @@ var Render_Modal;
             } else {
                 return this.$input.val();
             }
+        };
+
+        /**
+         * Fires after init.
+         *
+         * Sets up input mask if it exists.
+         *
+         * @since {{VERSION}}
+         */
+        this.postInit = function () {
+
+            // No mask
+            if (typeof this.$input.data('mask') != 'undefined') {
+                this.applyMask();
+            }
+        };
+
+        /**
+         * Applies a mask to the input field.
+         *
+         * @since {{VERSION}}
+         */
+        this.applyMask = function () {
+
+            this.mask = render_data[this.shortcode]['atts'][this.name]['properties']['mask'];
+
+            var mask, monospace, placeholder, options;
+
+            mask = this.mask.mask || '';
+            monospace = 'monospace' in this.mask;
+            placeholder = this.mask.placeholder || false;
+
+            // Optional templates
+            if ('template' in this.mask) {
+
+                switch (this.mask.template) {
+
+                    case 'phone':
+
+                        mask = '(999) 999-9999';
+                        monospace = true;
+                        break;
+
+                    case 'date':
+
+                        mask = '99/99/9999';
+                        placeholder = 'mm/dd/yyyy';
+                        monospace = true;
+                        break;
+                }
+
+            }
+
+            if (monospace) {
+                this.$input.addClass('code');
+            }
+
+            options = placeholder === false ? {} : {
+                placeholder: placeholder
+            };
+
+            this.$input.mask(mask, options);
         };
 
         this.init($e);

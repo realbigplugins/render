@@ -28,7 +28,7 @@ module.exports = function (grunt) {
                 tasks: ['sass:admin', 'autoprefixer', 'notify:sass_admin']
             },
             js: {
-                files: ['src/assets/js/source/**/*.js', '!src/assets/js/source/admin/**/*/js'],
+                files: ['src/assets/js/source/**/*.js', '!src/assets/js/source/admin/**/*.js'],
                 tasks: ['uglify:src', 'notify:js']
             },
             js_admin: {
