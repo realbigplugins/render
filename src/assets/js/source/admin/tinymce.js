@@ -502,18 +502,17 @@ var Render_tinymce;
          */
         update: function () {
 
+            // If we're editing a shortcode, select the node with TinyMCE
             var $shortcode = $(editor.dom.select('.render-tinymce-editing'));
+            if ($shortcode.length) {
+                editor.selection.select($shortcode.get(0));
+            }
 
             // Replace or insert the content
-            if ($shortcode.length) {
-                $shortcode.replaceWith(Render_Modal.output.all);
+            if (editor.selection.getContent().length) {
+                editor.selection.setContent(Render_Modal.output.all);
             } else {
-
-                if (editor.selection.getContent().length) {
-                    editor.selection.setContent(Render_Modal.output.all);
-                } else {
-                    editor.insertContent(Render_Modal.output.all);
-                }
+                editor.insertContent(Render_Modal.output.all);
             }
 
             // Render the shortcodes

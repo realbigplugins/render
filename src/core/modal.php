@@ -200,7 +200,7 @@ class Render_Modal {
 		$data['att-name']      = $att_id;
 		$data['att-type']      = $type;
 		$data['required']      = isset( $att['required'] ) ? $att['required'] : '';
-		$data['validate']      = isset( $att['validate'] ) ? $att['validate'] : '';
+		$data['validate']      = isset( $att['validate'] ) ? '1' : '';
 		$data['sanitize']      = isset( $att['sanitize'] ) ? $att['sanitize'] : '';
 		$data['init-callback'] = isset( $att['initCallback'] ) ? $att['initCallback'] : '';
 		$data['no-init']       = isset( $att['noInit'] ) ? $att['noInit'] : '';
@@ -216,9 +216,10 @@ class Render_Modal {
 		}
 
 		// Conditional attributes begin hidden
-		$hide = isset( $att['conditional']['visibility'] ) && $att['conditional']['visibility'] !== false  ? 'style="display: none;"' : '';
+		$hide = isset( $att['conditional']['visibility'] ) && $att['conditional']['visibility'] !== false ? 'style="display: none;"' : '';
 		?>
-		<div class="<?php echo implode( ' ', $att['classes'] ); ?>" <?php echo $data_output; echo $hide; ?>>
+		<div class="<?php echo implode( ' ', $att['classes'] ); ?>" <?php echo $data_output;
+		echo $hide; ?>>
 
 			<?php if ( isset( $att['label'] ) ) : ?>
 				<div class="render-modal-att-name">
@@ -250,13 +251,13 @@ class Render_Modal {
 				}
 				?>
 
-				<div class="render-modal-att-errormsg"></div>
-
 				<?php if ( ! isset( $att['descriptionAbove'] ) && isset( $att['description'] ) ) : ?>
 					<p class="render-modal-att-description">
 						<?php echo $att['description']; ?>
 					</p>
 				<?php endif; ?>
+
+				<div class="render-modal-att-errormsg"></div>
 			</div>
 		</div>
 	<?php
@@ -291,12 +292,44 @@ class Render_Modal {
 	 * @param array  $properties Properties of the attribute field type.
 	 */
 	private static function att_type_textbox( $att_id, $att, $properties = array() ) {
-		?>
+
+		$properties = wp_parse_args( $properties, array(
+			'prefix'       => false,
+			'prefixWidth'  => 20,
+			'postfix'      => false,
+			'postfixWidth' => 20,
+		) );
+
+		// Determine width
+		$width = 100;
+		$width = $width - ( $properties['prefix'] ? $properties['prefixWidth'] : 0 );
+		$width = $width - ( $properties['postfix'] ? $properties['postfixWidth'] : 0 );
+
+		if ( $properties['prefix'] || $properties['postfix'] ) : ?>
+			<div class="render-modal-att-textbox-fix">
+		<?php endif;
+
+		if ( $properties['prefix'] ) : ?>
+			<div class="render-modal-att-textbox-prefix" style="width: <?php echo "$properties[prefixWidth]%"; ?>">
+				<?php echo $properties['prefix']; ?>
+			</div>
+		<?php endif; ?>
+
 		<input type="text" class="render-modal-att-input render-modal-att-textbox"
+		       style="width: <?php echo "$width%"; ?>"
 		       placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : ''; ?>"
 		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
 		       name="<?php echo $att_id; ?>"/>
-	<?php
+
+		<?php if ( $properties['postfix'] ) : ?>
+			<div class="render-modal-att-textbox-postfix" style="width: <?php echo "$properties[postfixWidth]%"; ?>">
+				<?php echo $properties['postfix']; ?>
+			</div>
+		<?php endif;
+
+		if ( $properties['prefix'] || $properties['postfix'] ) : ?>
+			</div>
+		<?php endif;
 	}
 
 	/**
@@ -463,7 +496,8 @@ class Render_Modal {
 		}
 		?>
 
-		<div class="render-chosen-container <?php echo isset( $properties['allowCustomInput'] ) ? 'render-chosen-custom-input' : ''; ?>">
+		<div
+			class="render-chosen-container <?php echo isset( $properties['allowCustomInput'] ) ? 'render-chosen-custom-input' : ''; ?>">
 			<select name="<?php echo $att_id; ?>"
 			        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select an option'; ?>"
 			        class="render-modal-att-input <?php echo $chosen; ?>"
@@ -994,7 +1028,7 @@ class Render_Modal {
 add_action( 'wp_ajax_render_conditional_att_populate', function () {
 
 	$callback = isset( $_POST['callback'] ) ? $_POST['callback'] : '';
-	$atts = isset( $_POST['atts'] ) ? $_POST['atts'] : array();
+	$atts     = isset( $_POST['atts'] ) ? $_POST['atts'] : array();
 
 	// Send back our options
 	if ( is_callable( $callback ) ) {
@@ -1003,4 +1037,4 @@ add_action( 'wp_ajax_render_conditional_att_populate', function () {
 	}
 
 	die();
-});
+} );

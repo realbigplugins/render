@@ -77,6 +77,8 @@ var Render_Widget;
 
             if (Render_Modal.output) {
 
+                console.log(Render_Modal.output.all);
+
                 /* ------------- *
                  * Add Shortcode *
                  * ------------- */

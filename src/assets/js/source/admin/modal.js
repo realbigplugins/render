@@ -966,6 +966,11 @@ var Render_Modal;
                     return true; // continue $.each
                 }
 
+                // Dynamically added attributes (like content) won't be in this array
+                if (typeof render_data[attObj.shortcode]['atts'][attObj.name] === 'undefined') {
+                    return true; // continue $.each
+                }
+
                 // Repeater field support
                 if ($(this).closest('.render-modal-repeater-field').length) {
 
@@ -1690,9 +1695,9 @@ var Render_Modal;
                 var name = match[3],
                     value = match[4];
 
-                // Un-escape some things
+                // Un-escape from being an attr value
                 if (typeof value != 'undefined' && value.length) {
-                    value = value.replace(/&apos;/g, '\'');
+                    value = unescape_sc_attr(value);
                 }
 
                 atts[name] = value;
@@ -2049,8 +2054,8 @@ var Render_Modal;
                     // Make sure the value is always text
                     value = value.toString();
 
-                    // Escape various things
-                    value = value.replace(/'/g, '&apos;');
+                    // Escape for use as attr value
+                    value = escape_sc_attr(value);
 
                     // Add the att to the shortcode output
                     if (value && value.length) {
@@ -2090,13 +2095,13 @@ var Render_Modal;
 
                 var attObj = $(this).data('attObj');
 
-                // Skip if no attObj
-                if (!attObj) {
+                // Skip if no attObj or if field is not visible
+                if (!attObj || ! attObj.$container.is(':visible')) {
                     return true; // Continue $.each
                 }
 
                 var required = attObj.$container.attr('data-required'),
-                    validate = attObj.$container.attr('data-validate'),
+                    do_validate = attObj.$container.attr('data-validate'),
                     att_value = attObj._getValue(),
                     att_valid = true;
 
@@ -2111,26 +2116,27 @@ var Render_Modal;
                 }
 
                 // If there's validation, let's do it
-                if (validate.length) {
+                if (do_validate.length) {
 
-                    validate = Render_Modal._stringToObject(validate);
+                    var validations = render_data[attObj.shortcode]['atts'][attObj.name]['validate'];
 
-                    $.each(validate, function (type, value) {
+                    $.each(validations, function (type, value) {
 
-                        var regEx,
+                        var regExp,
                             url_pattern = '[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b' +
                                 '([-a-zA-Z0-9@:%_\\+.~#?&//=]*)',
-                            email_pattern = '\\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\\b';
+                            email_pattern = '\\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\\b',
+                            match, i;
 
 
                         // Validate for many different types
                         switch (type) {
 
                             // Url validation
-                            case 'url':
-                                regEx = new RegExp(url_pattern, 'ig');
+                            case 'URL':
+                                regExp = new RegExp(url_pattern, 'ig');
 
-                                if (!att_value.match(regEx)) {
+                                if (!att_value.match(regExp)) {
                                     att_valid = false;
                                     validated = false;
                                     attObj.setInvalid('Please enter a valid URL');
@@ -2138,19 +2144,41 @@ var Render_Modal;
                                 break;
 
                             // Email validation
-                            case 'email':
+                            case 'EMAIL':
 
-                                regEx = new RegExp(email_pattern, 'ig');
+                                regExp = new RegExp(email_pattern, 'ig');
 
-                                if (!att_value.match(regEx)) {
+                                if (!att_value.match(regExp)) {
                                     att_valid = false;
                                     validated = false;
                                     attObj.setInvalid('Please enter a valid Email');
                                 }
                                 break;
 
+                            // Specific characters only
+                            case 'CONTAINS ONLY':
+
+                                // Prepare regex string
+                                value = value.split('');
+                                for (i = 0; i < value.length; i++) {
+                                    value[i] = esc_regex_string(value[i]) + (i !== value.length - 1 ? '|' : '');
+                                }
+                                value = value.join('');
+
+                                regExp = new RegExp(value, 'g');
+                                match = att_value.match(regExp);
+
+                                if (match === null || att_value.length !== match.length) {
+
+                                    att_valid = false;
+                                    validated = false;
+                                    attObj.setInvalid('Invalid characters');
+                                }
+
+                                break;
+
                             // Maximum character count
-                            case 'maxchar':
+                            case 'MAX CHAR':
 
                                 if (att_value.length > parseInt(value)) {
 
@@ -2161,7 +2189,7 @@ var Render_Modal;
                                 break;
 
                             // Minimum character count
-                            case 'minchar':
+                            case 'MIN CHAR':
 
                                 if (att_value.length < parseInt(value)) {
 
@@ -2172,7 +2200,7 @@ var Render_Modal;
                                 break;
 
                             // No numbers allowed
-                            case 'charonly':
+                            case 'CHAR ONLY':
 
                                 if (att_value.match(/[0-9]/)) {
                                     att_valid = false;
@@ -2182,7 +2210,7 @@ var Render_Modal;
                                 break;
 
                             // Only numbers allowed
-                            case 'intonly':
+                            case 'INT ONLY':
 
                                 var numbers = att_value.match(/[0-9]+/);
 
@@ -2224,11 +2252,14 @@ var Render_Modal;
                     return true; // Continue $.each
                 }
 
-                var sanitize = Render_Modal._stringToObject($(this).attr('data-sanitize')),
+                var do_sanitize = attObj.$container.attr('data-sanitize'),
                     att_value = attObj._getValue();
 
-                if (sanitize && att_value !== null && att_value.length) {
-                    $.each(sanitize, function (type, value) {
+                if (do_sanitize && att_value !== null && att_value.length) {
+
+                    var sanitations = render_data[attObj.shortcode]['atts'][attObj.name]['sanitize'];
+
+                    $.each(sanitations, function (type, value) {
 
                         switch (type) {
                             case 'url':
@@ -3241,6 +3272,74 @@ var Render_Modal;
     // Helper functions //
     // ---------------- //
 
+    var sc_attr_escapes = [
+        '\'',
+        '[',
+        ']'
+    ];
+
+    /**
+     * Run the value through various sanitation methods to prepare for being a shortcode attribute.
+     *
+     * @since {{VERSION}}
+     * @global sc_attr_escapes
+     *
+     * @param {string} value The value to escape.
+     * @returns {string} The escaped string.
+     */
+    function escape_sc_attr (value) {
+
+        var charCode, regExp;
+
+        // Run through all of the escapes
+        for (var i = 0; i < sc_attr_escapes.length; i++) {
+
+            charCode = sc_attr_escapes[i].charCodeAt(0).toString();
+
+            regExp = new RegExp(esc_regex_string(sc_attr_escapes[i]), 'g');
+            value = value.replace(regExp, '::' + charCode + '::');
+        }
+
+        return value;
+    }
+
+    /**
+     * Un-escapes the shortcode attribute.
+     *
+     * @since {{VERSION}}
+     * @global sc_attr_escapes
+     *
+     * @param {string} value The value to un-escape.
+     * @returns {string} The un-escaped string.
+     */
+    function unescape_sc_attr (value) {
+
+        var charCode, regExp;
+
+        // Run through all of the escapes
+        for (var i = 0; i < sc_attr_escapes.length; i++) {
+
+            charCode = sc_attr_escapes[i].charCodeAt(0).toString();
+
+            regExp = new RegExp('::' + charCode + '::', 'g');
+            value = value.replace(regExp, sc_attr_escapes[i]);
+        }
+
+        return value;
+    }
+
+    /**
+     * Escapes a string for use as a regular expression.
+     *
+     * @since {{VERSION}}
+     *
+     * @param {string} string The string to be escaped.
+     * @returns {string} The escaped string.
+     */
+    function esc_regex_string (string) {
+        return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
     /**
      * Initializes the repeater field buttons.
      *
@@ -3317,7 +3416,7 @@ var Render_Modal;
      *
      * @since 1.0.0
      *
-     * @param {HTMLElement} $e The input field to highlight.
+     * @param {jQuery} $e The input field to highlight.
      * @param {string} color The color to highlight.
      * @param {string} font_color The color of the font to use when highlighting.
      * @param {int} transition The animation time.
@@ -3330,12 +3429,12 @@ var Render_Modal;
 
         // Get and store the original color
         var orig_colors = {};
-        if ($e.data('highlightOriginalColors')) {
-            orig_colors = $e.data('highlightOriginalColors');
+        if ($e.data('render-highlight-original-colors')) {
+            orig_colors = $e.data('render-highlight-original-colors');
         } else {
             orig_colors.background = $e.css('backgroundColor');
             orig_colors.font = $e.css('color');
-            $e.data('highlightOriginalColors', orig_colors);
+            $e.data('render-highlight-original-colors', orig_colors);
         }
 
         // Animate the color
@@ -3348,7 +3447,7 @@ var Render_Modal;
         }, {
             duration: transition,
             complete: function () {
-                $(this).removeAttr('style');
+                //$(this).removeAttr('style');
             }
         });
     }
