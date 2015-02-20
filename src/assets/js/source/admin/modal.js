@@ -972,7 +972,6 @@ var Render_Modal;
                 }
             });
 
-            // TODO This doesn't fire after the shortcodes have initially been populated (by modify())
             this.initConditionals();
         },
 
@@ -1032,7 +1031,7 @@ var Render_Modal;
 
                 $.each(conditionals.atts, function (att_ID, att) {
 
-                    // Get the attribute this conditional is dependent on
+                    // Get the atribute this conditional is dependent on
                     att.attObj = attObj.$container.closest('.render-modal-shortcode-atts')
                         .find('.render-modal-att-row[data-att-name="' + att_ID + '"]').data('attObj');
 
@@ -1040,6 +1039,19 @@ var Render_Modal;
                     if (typeof att.attObj == 'undefined') {
                         return true; // continue $.each
                     }
+
+                    // Been here, done that
+                    if ('conditionals' in attObj && attObj.conditionals.indexOf(att_ID) !== -1) {
+                        return true; // continue &.each
+                    }
+
+                    // Make sure conditionals exist (it's dynamic)
+                    if (!('conditionals' in attObj)) {
+                        attObj.conditionals = [];
+                    }
+
+                    // Push this att_ID on
+                    attObj.conditionals.push(att_ID);
 
                     // Bind the handler to the attribute changing
                     att.attObj.$input.on('render-att-change', function () {
@@ -1824,6 +1836,8 @@ var Render_Modal;
                     attObj._setValue(value);
                 }
             });
+
+            this.initConditionals();
         },
 
         /**
@@ -2289,10 +2303,17 @@ var Render_Modal;
                     $.each(sanitations, function (type, value) {
 
                         switch (type) {
-                            case 'url':
+
+                            case 'URL':
                                 if (!att_value.match(/https?:\/\//)) {
-                                    attObj._setValue('http://' + att_value);
+                                    att_value= 'http://' + att_value;
                                 }
+                                break;
+
+                            case 'INT ONLY':
+
+                                att_value = att_value.replace(/[^0-9]/g, '');
+                                console.log(att_value);
                                 break;
 
                             // If no matches, throw an error
@@ -2300,6 +2321,8 @@ var Render_Modal;
                                 throw new Error('Render -> Unsupported sanitation method "' + type + '" for the shortcode "' + attObj.shortcode + '" at field "' + attObj.fieldname + '"');
 
                         }
+
+                        attObj._setValue(att_value);
                     });
                 }
             });
@@ -2521,8 +2544,8 @@ var Render_Modal;
          * @param {*} value The value to set to.
          */
         this._setValue = function (value) {
-            this.$input.trigger('render:att_setValue');
             this.setValue(value);
+            this.$input.trigger('render:att_setValue');
         };
 
         /**
@@ -2534,7 +2557,6 @@ var Render_Modal;
          */
         this.setValue = function (value) {
             this.$input.val(value);
-            this.$input.trigger('render:att_setValue');
         };
 
         /**
@@ -2652,7 +2674,58 @@ var Render_Modal;
             if (this.$input.prop('tagName') === 'textarea') {
                 return this.$input.text();
             } else {
+
+                // Return without mask
+                if (this.mask !== false) {
+
+                    var regExp = '', i = 0, mask;
+
+                    // Get our definitions to remove
+                    $.each($.mask.definitions, function (name) {
+                        i++;
+                        regExp += (i !== 1 ? '|' : '') + esc_regex_string(name);
+                    });
+                    regExp = new RegExp(regExp, 'g');
+
+                    // Remove the definitions from the mask to get all junk that needs to be removed from the att value
+                    mask = this.mask.mask.replace(regExp, '').split('').getUnique();
+
+                    regExp = '';
+                    for (i = 0; i < mask.length; i++) {
+                        regExp += (i !== 0 ? '|' : '') + esc_regex_string(mask[i]);
+                    }
+                    regExp = new RegExp(regExp, 'g');
+
+                    // Return the att value minus all of the spacers and such in the placeholder
+                    return this.$input.val().replace(regExp, '');
+                }
+
                 return this.$input.val();
+            }
+        };
+
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Causes mask to take effect, if there is one.
+         *
+         * @since {{VERSION}}
+         *
+         * @param {*} value The value to set to.
+         */
+        this.setValue = function (value) {
+
+            this.$input.val(value);
+
+            // Causes mask to take effect
+            if (this.mask !== false) {
+
+                this.$input.focus();
+
+                var $input = this.$input;
+                setTimeout(function () {
+                    $input.blur();
+                }, 50);
             }
         };
 
@@ -2665,7 +2738,7 @@ var Render_Modal;
          */
         this.postInit = function () {
 
-            // No mask
+            // Apply the mask if there is one
             if (typeof this.$input.data('mask') != 'undefined') {
                 this.applyMask();
             }
@@ -2712,6 +2785,11 @@ var Render_Modal;
             }
 
             options = placeholder === false ? {} : {
+                placeholder: placeholder
+            };
+
+            this.mask = {
+                mask: mask,
                 placeholder: placeholder
             };
 
@@ -2932,6 +3010,7 @@ var Render_Modal;
                     this.$input.val('');
                 }
 
+                this.$input.change();
                 this.$input.trigger('chosen:updated');
                 return;
             }
@@ -2950,6 +3029,7 @@ var Render_Modal;
                 this.$input.val(value);
             }
 
+            this.$input.change();
             this.$input.trigger('chosen:updated');
         };
 

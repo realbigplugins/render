@@ -30,9 +30,9 @@ foreach (
 			'title'       => __( 'Accordion', 'Render' ),
 			'description' => __( 'An accordion style drop-down for hiding and revealing content.', 'Render' ),
 			'atts'        => array(
-				'start_closed' => array(
-					'label' => __( 'Load Closed', 'Render' ),
-					'type' => 'checkbox',
+				'start_closed'             => array(
+					'label'      => __( 'Load Closed', 'Render' ),
+					'type'       => 'checkbox',
 					'properties' => array(
 						'value' => 'true',
 						'label' => __( 'Load the accordion with all sections collapsed', 'Render' ),
@@ -199,11 +199,61 @@ foreach (
 					'type'  => 'section_break',
 					'label' => __( 'Link', 'Render' ),
 				),
-				'link'                       => render_sc_attr_template( 'link' ),
-				'link_new_window'            => array(
-					'label'      => __( 'Link Window', 'Render' ),
-					'type'       => 'checkbox',
+				'link_type'                  => array(
+					'label'      => __( 'Link Type', 'Render' ),
+					'type'       => 'selectbox',
 					'properties' => array(
+						'placeholder' => __( 'None', 'Render' ),
+						'options'     => array(
+							'link'  => __( 'Link', 'Render' ),
+							'email' => __( 'Email', 'Render' ),
+							'phone' => __( 'Phone', 'Render' ),
+						),
+					),
+				),
+				'link'                       => render_sc_attr_template( 'link', array(
+					'required'    => true,
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'link_type' => array(
+									'type'  => '==',
+									'value' => 'link',
+								),
+							),
+						),
+					),
+				) ),
+				'link_email'                 => render_sc_attr_template( 'email', array(
+					'required'    => true,
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'link_type' => array(
+									'type'  => '==',
+									'value' => 'email',
+								),
+							),
+						),
+					),
+				) ),
+				'link_phone'                 => render_sc_attr_template( 'phone', array(
+					'required'    => true,
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'link_type' => array(
+									'type'  => '==',
+									'value' => 'phone',
+								),
+							),
+						),
+					),
+				) ),
+				'link_new_window'            => array(
+					'label'       => __( 'Link Window', 'Render' ),
+					'type'        => 'checkbox',
+					'properties'  => array(
 						'label' => __( 'Open link in new tab', 'Render' ),
 					),
 					'conditional' => array(
@@ -289,9 +339,9 @@ foreach (
 					'default' => RENDER_PRIMARY_FONT_COLOR,
 				),
 				'heading_font_color'         => array(
-					'label'   => __( 'Heading Font', 'Render' ),
-					'type'    => 'colorpicker',
-					'default' => RENDER_PRIMARY_FONT_COLOR,
+					'label'       => __( 'Heading Font', 'Render' ),
+					'type'        => 'colorpicker',
+					'default'     => RENDER_PRIMARY_FONT_COLOR,
 					'conditional' => array(
 						'visibility' => array(
 							'atts' => array(
@@ -604,7 +654,7 @@ function _render_sc_accordion_section( $atts = array(), $content = '' ) {
 	$output .= "<span class='render-accordion-heading-content'>$atts[heading]</span>";
 	$output .= '</h3>';
 
-	$output .= '<div class="render-accordion-section-content">' . wpautop( do_shortcode( $content ) ). '</div>';
+	$output .= '<div class="render-accordion-section-content">' . wpautop( do_shortcode( $content ) ) . '</div>';
 
 	$output .= '</div>'; // .render-accordion-section
 

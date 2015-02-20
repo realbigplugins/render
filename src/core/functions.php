@@ -434,6 +434,32 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			);
 			break;
 
+		case 'phone':
+
+			$output = array(
+				'label'       => __( 'Phone', 'Render' ),
+				'properties'  => array(
+					'prefix' => '<span class="dashicons dashicons-phone"></span>',
+					'mask' => array(
+						'template' => 'phone',
+					),
+				),
+			);
+			break;
+
+		case 'email':
+
+			$output = array(
+				'label'       => __( 'Email', 'Render' ),
+				'properties'  => array(
+					'prefix' => '<span class="dashicons dashicons-email"></span>',
+				),
+				'validate' => array(
+					'EMAIL' => true,
+				),
+			);
+			break;
+
 		case 'border-radius':
 
 			$orientation = isset( $args['orientation'] ) ? $args['orientation'] : '';

@@ -611,6 +611,7 @@ $render-modal-height: 800px;
       .render-modal-att-textbox-prefix, .render-modal-att-textbox-postfix, .render-modal-att-textbox {
         float: left;
         line-height: 19px;
+        height: 29px;
         padding: 5px;
         box-sizing: border-box;
 
@@ -624,6 +625,16 @@ $render-modal-height: 800px;
       .render-modal-att-textbox-prefix, .render-modal-att-textbox-postfix {
         text-align: center;
         background-color: #F3F3F3;
+
+        .dashicons {
+          font-size: 18px;
+          height: auto;
+          width: auto;
+          position: relative;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #777;
+        }
       }
 
       .render-modal-att-textbox-prefix {
