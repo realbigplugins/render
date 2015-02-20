@@ -424,8 +424,14 @@ var Render_Modal;
                                 }
                             });
 
+                            // Manually trigger the chosen "closing" because it doesn't always launch after we manually
+                            // build the single deselect
+                            $container.on('mousedown', '.search-choice-close', function () {
+                                $chosen.trigger('chosen:hiding_dropdown');
+                            });
+
                             // Use the custom value when hiding the dropdown
-                            $chosen.on('chosen:hiding_dropdown', function (e, a) {
+                            $chosen.on('chosen:hiding_dropdown', function () {
 
                                 var search_text = $input_text.val(),
                                     Chosen = $chosen.data('chosen');
@@ -445,6 +451,9 @@ var Render_Modal;
 
                                 // Remove focus from input and clear any leftover input
                                 $input_text.val('').blur();
+
+                                // Make sure to trigger the input change
+                                $chosen.trigger('render-att-change');
 
                                 // Manually add choice deselect and event
                                 Chosen.single_deselect_control_build();
@@ -504,10 +513,18 @@ var Render_Modal;
 
                         attObj = new Colorpicker($(this));
 
-                        $(this).find('.render-modal-att-colorpicker').each(function () {
+                        $(this).find('.render-modal-att-colorpicker').first().each(function () {
+
                             var data = $(this).data();
+
+                            // Trigger input change
+                            data.change = function () {
+                                attObj.$input.trigger('render-att-change');
+                            };
+
                             $(this).wpColorPicker(data);
                         });
+
                         break;
 
                     case 'media':
@@ -783,10 +800,12 @@ var Render_Modal;
                         });
 
                         // Keep the number within its limits
-                        $input.off().change(function () {
+                        $input.change(function () {
 
                             var $button_up = $(this).siblings('.render-modal-counter-up'),
-                                $button_down = $(this).siblings('.render-modal-counter-down');
+                                $button_down = $(this).siblings('.render-modal-counter-down')
+                                min = parseInt($input.attr('data-min')),
+                                max = parseInt($input.attr('data-max'));
 
                             if (parseInt($(this).val()) >= max) {
 
@@ -874,10 +893,10 @@ var Render_Modal;
                         });
 
                         /*
-                        Allow tab to indent instead of going to the next input
+                         Allow tab to indent instead of going to the next input
 
-                        Taken from http://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea#answer-6637396
-                        Much thanks to user "kasdega"!
+                         Taken from http://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea#answer-6637396
+                         Much thanks to user "kasdega"!
                          */
                         $(this).delegate('textarea', 'keydown', function (e) {
 
@@ -899,11 +918,22 @@ var Render_Modal;
                             }
                         });
 
+                        // Trigger immediate change
+                        attObj.$input.keyup(function () {
+                            $(this).change();
+                        });
+
                         break;
 
                     default:
 
                         attObj = new Textbox($(this));
+
+                        // Trigger immediate change
+                        attObj.$input.keyup(function () {
+                            $(this).change();
+                        });
+
                         break;
                 }
 
@@ -914,6 +944,269 @@ var Render_Modal;
                     window[$(this).attr('data-init-callback')]($(this), attObj);
                 }
             });
+
+            // TODO This doesn't fire after the shortcodes have initially been populated (by modify())
+            this.initConditionals();
+        },
+
+        /**
+         * Sets up conditional attribute fields.
+         *
+         * @since {{VERSION}}
+         */
+        initConditionals: function () {
+
+            // Setup conditional att fields
+            elements.active_shortcode.find('.render-modal-att-row').each(function () {
+
+                var attObj = $(this).data('attObj'),
+                    conditional;
+
+                if ($(this).data('no-init') === '1' || typeof attObj == 'undefined') {
+                    return true; // continue $.each
+                }
+
+                // Repeater field support
+                if ($(this).closest('.render-modal-repeater-field').length) {
+
+                    var parent = $(this).parent().closest('.render-modal-att-row').data('att-name');
+                    conditional = render_data[attObj.shortcode]['atts'][parent]['properties']['fields'][attObj.name]['conditional'];
+
+                } else {
+                    conditional = render_data[attObj.shortcode]['atts'][attObj.name]['conditional'];
+                }
+
+                if (typeof conditional != 'undefined' && conditional !== false) {
+                    Render_Modal.setupConditional(attObj, conditional);
+                }
+            });
+        },
+
+        /**
+         * Sets up conditional visibility and population for the attribute field.
+         *
+         * Binds a conditional check to run on each dependent attribute field change, as well as initial load. This check
+         * will run through each conditional attribute field and make sure it meets the standards. If everything passes,
+         * the attribute field is revealed, otherwise it's hidden.
+         *
+         * @since {{VERSION}}
+         *
+         * @param {object} attObj      The current attribute object.
+         * @param {object} conditional The conditional properties.
+         */
+        setupConditional: function (attObj, conditional) {
+
+            $.each(conditional, function (type, conditionals) {
+
+                $.each(conditionals.atts, function (att_ID, att) {
+
+                    // Get the attribute this conditional is dependent on
+                    att.attObj = attObj.$container.closest('.render-modal-shortcode-atts')
+                        .find('.render-modal-att-row[data-att-name="' + att_ID + '"]').data('attObj');
+
+                    // Something went wrong...
+                    if (typeof att.attObj == 'undefined') {
+                        return true; // continue $.each
+                    }
+
+                    // Bind the handler to the attribute changing
+                    att.attObj.$input.on('render-att-change', function () {
+                        perform_actions(attObj, conditionals, type);
+                    });
+                });
+
+                // Initial load
+                perform_actions(attObj, conditionals, type );
+            });
+
+            /**
+             * Performs the various actions based on the conditions.
+             *
+             * @since {{VERSION}}
+             *
+             * @param {object} attObj       The current attribute object.
+             * @param {object} conditionals The conditionals' properties.
+             * @param {string} type         The type of action to perform
+             */
+            function perform_actions(attObj, conditionals, type) {
+
+
+                switch (type) {
+                    case 'visibility':
+
+                        if (compare_all_conditions(conditionals.atts)) {
+                            attObj.$container.show('drop', {}, 300);
+                        } else {
+                            attObj.$container.hide('drop', {}, 300);
+                            attObj._revert();
+                        }
+
+                        break;
+
+                    case 'populate':
+
+                        var data = {
+                                action: 'render_conditional_att_populate',
+                                atts: {},
+                                callback: conditionals.callback
+                            },
+                            cover_html = '<div class="render-att-populate-cover" style="display: none;">' +
+                                '<span class="spinner"></span>' +
+                                '</div>',
+                            $cover;
+
+                        // Place the cover
+                        attObj.$container.find('.render-modal-att-field').append(cover_html);
+                        $cover = attObj.$container.find('.render-att-populate-cover');
+                        $cover.fadeIn(300);
+
+                        $.each(conditionals.atts, function (att_ID, att) {
+                            data.atts[att_ID] = att.attObj.getValue();
+                        });
+
+                        $.post(ajaxurl, data, function (options) {
+
+                            // Set our new options!
+                            if (options !== false) {
+
+                                if ('rebuildOptions' in attObj) {
+                                    attObj.rebuildOptions(options);
+                                }
+                            }
+
+                            $cover.fadeOut(300, function () {
+                                $(this).remove();
+                            });
+                        });
+
+                        break;
+                }
+            }
+
+            /**
+             * Compares all existing conditions and shows or hides the attribute row.
+             *
+             * @since {{VERSION}}
+             *
+             * @param {object} atts The conditional properties.
+             */
+            function compare_all_conditions (atts) {
+
+                var show = false;
+
+                $.each(atts, function (att_ID, att) {
+
+                    var passing = false,
+                        value = att.attObj.getValue(),
+                        operator_table = {
+                            '==': function (a, b) {return a == b;},
+                            '===': function (a, b) {return a === b;},
+                            '!=': function (a, b) {return a != b;},
+                            '!==': function (a, b) {return a !== b;},
+                            '>': function (a, b) {return a > b;},
+                            '>=': function (a, b) {return a >= b;},
+                            '<': function (a, b) {return a < b;},
+                            '<=': function (a, b) {return a <= b;}
+                        };
+
+                    // Decide if this attribute is passing based on which type of conditional we're using
+                    switch (att.type) {
+
+                        case '==':
+                        case '===':
+                        case '!=':
+                        case '!==':
+
+                            if (operator_table[att.type](value, att.value)) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case '>':
+                        case '>=':
+                        case '<':
+                        case '<=':
+
+                            if (operator_table[att.type](parseFloat(value), parseFloat(att.value))) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'BETWEEN':
+
+                            if (parseFloat(value) > parseFloat(att.value.split(',')[0]) &&
+                                parseFloat(value) < parseFloat(att.value.split(',')[1])
+                            ) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'NOT BETWEEN':
+
+                            if (parseFloat(value) <= parseFloat(att.value.split(',')[0]) ||
+                                parseFloat(value) >= parseFloat(att.value.split(',')[1])
+                            ) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'CONTAINS':
+
+                            if (value.indexOf(att.value) !== -1) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'EXCLUDES':
+
+                            if (value.indexOf(att.value) === -1) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'IN':
+
+                            if (att.value.split(',').indexOf(value) !== -1) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'NOT IN':
+
+                            if (att.value.split(',').indexOf(value) === -1) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'NOT EMPTY':
+
+                            if (value.toString().length) {
+                                passing = true;
+                            }
+
+                            break;
+                    }
+
+                    // If we're passing, then we can show the attribute, UNLESS this condition is 'AND' and is not
+                    // passing; then we hide no matter what.
+                    if (passing) {
+                        show = true;
+                    } else if (att.relation == 'AND') {
+                        show = false;
+                        return false; // break $.each
+                    }
+                });
+
+                return show;
+            }
         },
 
         /**
@@ -1465,6 +1758,8 @@ var Render_Modal;
             this.activateShortcode(elements.active_shortcode);
 
             this.populateShortcode(atts);
+
+            //this.initConditionals(elements.active_shortcode);
         },
 
         /**
@@ -1549,6 +1844,7 @@ var Render_Modal;
                 // Init the atts (needs to be after the accordion opening to render Chosen properly)
                 if (!elements.active_shortcode.data('attsInit')) {
                     this.initAtts();
+                    //this.initConditionals(elements.active_shortcode);
                     elements.active_shortcode.data('attsInit', true);
                 }
 
@@ -2077,6 +2373,7 @@ var Render_Modal;
             this.shortcode = this.$container.closest('.render-modal-shortcode').attr('data-code');
 
             this.storeOriginalValue();
+            this.setupChange();
         };
 
         /**
@@ -2086,6 +2383,23 @@ var Render_Modal;
          */
         this.storeOriginalValue = function () {
             this.original_value = this.$input.val();
+        };
+
+        /**
+         * Establishes what triggers the input change.
+         *
+         * Seems redundant, but this gives other attributes the ability to change what triggers the change
+         *
+         * @since {{VERSION}}
+         */
+        this.setupChange = function () {
+
+            var attObj = this;
+
+            this.$input.on('change', function () {
+                var value = attObj.getValue();
+               $(this).trigger('render-att-change', value);
+            });
         };
 
         /**
@@ -2188,6 +2502,17 @@ var Render_Modal;
         this.setValid = function () {
             this.$container.removeClass('invalid');
             this.$input.trigger('render:att_setValid');
+        };
+
+        /**
+         * Rebuilds the available option(s).
+         *
+         * @since {{VERSION}}
+         *
+         * @param {object} value The new value.
+         */
+        this.rebuildOptions = function (value) {
+            this.$input.val(value);
         };
 
         /**
@@ -2386,6 +2711,31 @@ var Render_Modal;
             }
         };
 
+        /**
+         * Rebuilds the available options.
+         *
+         * @since {{VERSION}}
+         *
+         * @param {object} options All available options.
+         */
+        this.rebuildOptions = function (options) {
+
+            var i = 0,
+                attObj = this;
+
+            $.each(options, function (value, label) {
+                i++;
+
+                if (i === 1) {
+                    attObj.$container.find('input[type="checkbox"]').val(value);
+                    attObj.$container.find('.render-modal-att-toggle-first').html(label);
+                } else {
+                    attObj.$container.find('input[type="hidden"]').val(value);
+                    attObj.$container.find('.render-modal-att-toggle-second').html(label);
+                }
+            });
+        };
+
         this.init($e);
     };
 
@@ -2491,6 +2841,25 @@ var Render_Modal;
             this.errorMsg(msg);
         };
 
+        /**
+         * Rebuilds the available options.
+         *
+         * @since {{VERSION}}
+         *
+         * @param {object} options All available options.
+         */
+        this.rebuildOptions = function (options) {
+
+            var options_html = '<option></option>';
+
+            $.each(options, function (value, label) {
+                options_html += '<option value="' + value + '">' + label + '</option>';
+            });
+
+            this.$input.html(options_html);
+            this.$input.trigger('chosen:updated');
+        };
+
         this.init($e);
     };
 
@@ -2518,6 +2887,7 @@ var Render_Modal;
          */
         this.setValue = function (value) {
             this.$input.iris('color', value);
+            this.$input.change();
         };
 
         this.init($e);
@@ -2548,6 +2918,53 @@ var Render_Modal;
         this.setValue = function (value) {
             this.$input.val(value);
             this.$input.change();
+        };
+
+        this.revert = function () {
+
+            // From original
+            this._setValue(this.original_value);
+
+            var $slider = this.$input.siblings('.render-modal-att-slider');
+
+            // Allows range to transition only when reverting (delay must match the CSS3 transition)
+            $slider.addClass('render-modal-att-slider-reverting');
+            setTimeout(function () {
+                $slider.removeClass('render-modal-att-slider-reverting');
+            }, 500);
+        };
+
+        /**
+         * Rebuilds the available options.
+         *
+         * For this one, it changes the available min and max.
+         *
+         * @since {{VERSION}}
+         *
+         * @param {object} options Min and max values.
+         */
+        this.rebuildOptions = function (options) {
+
+            var min = options.min,
+                max = options.max,
+                value = this.getValue(),
+                $slider = this.$input.siblings('.render-modal-att-slider');
+
+            $slider.slider('option', {
+                min: min,
+                max: max
+            });
+
+            $slider.attr('data-min', min);
+            $slider.attr('data-max', max);
+
+            if (value < min) {
+                this.setValue(min);
+            }
+
+            if (value > max) {
+                this.setValue(max);
+            }
         };
 
         this.init($e);
@@ -2666,10 +3083,38 @@ var Render_Modal;
             }
 
             this.$input.val(value);
+            this.$input.change();
 
             // If a unit was found
             if (values.length > 1) {
                 this.$container.find('.render-modal-counter-unit-input').val(values[1]); // The unit
+            }
+        };
+
+        /**
+         * Rebuilds the available options.
+         *
+         * For this one, it changes the available min and max.
+         *
+         * @since {{VERSION}}
+         *
+         * @param {object} options Min and max values.
+         */
+        this.rebuildOptions = function (options) {
+
+            var min = options.min,
+                max = options.max,
+                value = this.getValue();
+
+            this.$input.attr('data-min', min);
+            this.$input.attr('data-max', max);
+
+            if (value < min) {
+                this.setValue(min.toString());
+            }
+
+            if (value > max) {
+                this.setValue(max.toString());
             }
         };
 
@@ -2925,7 +3370,7 @@ var Render_Modal;
         //var regExpSpaces = new RegExp(String.fromCharCode(160), "g");
         value = value.replace(/&nbsp;/g, " ");
 
-        if (typeof window.switchEditors !== 'undefined' ) {
+        if (typeof window.switchEditors !== 'undefined') {
             value = window.switchEditors.pre_wpautop(value);
         }
 

@@ -419,7 +419,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 
 			$output = array(
 				'label'       => __( 'Link', 'Render' ),
-				'description' => __( 'Links to a post / page. Also accepts custom input.', 'Render' ),
+				'description' => __( 'Links to a post / page.', 'Render' ),
 				'type'        => 'selectbox',
 				'properties'  => array(
 					'allowCustomInput' => true,
@@ -484,7 +484,6 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
  * @since 1.0.0
  */
 function render_enqueue_modal() {
-	include_once( RENDER_PATH . 'core/modal.php' );
 	new Render_Modal();
 }
 

@@ -197,7 +197,7 @@ foreach (
 				),
 				array(
 					'type'  => 'section_break',
-					'label' => __( 'Meta', 'Render' ),
+					'label' => __( 'Link', 'Render' ),
 				),
 				'link'                       => render_sc_attr_template( 'link' ),
 				'link_new_window'            => array(
@@ -205,6 +205,15 @@ foreach (
 					'type'       => 'checkbox',
 					'properties' => array(
 						'label' => __( 'Open link in new tab', 'Render' ),
+					),
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'link' => array(
+									'type' => 'NOT EMPTY'
+								),
+							),
+						),
 					),
 				),
 				array(
@@ -283,6 +292,15 @@ foreach (
 					'label'   => __( 'Heading Font', 'Render' ),
 					'type'    => 'colorpicker',
 					'default' => RENDER_PRIMARY_FONT_COLOR,
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'heading' => array(
+									'type' => 'NOT EMPTY'
+								),
+							),
+						),
+					),
 				),
 				array(
 					'type'  => 'section_break',
@@ -1136,4 +1154,25 @@ function render_sc_parse_border_radius( $atts ) {
 	}
 
 	return $border_radius;
+}
+
+function _test_callback( $atts ) {
+
+	$options = false;
+
+	if ( $atts['testing'] == 'test1' ) {
+		$options = array(
+			'min' => 1,
+			'max' => 5,
+		);
+	}
+
+	if ( $atts['testing'] == 'test2' ) {
+		$options = array(
+			'min' => 6,
+			'max' => 10,
+		);
+	}
+
+	return $options;
 }

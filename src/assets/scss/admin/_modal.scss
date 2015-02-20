@@ -540,6 +540,22 @@ $render-modal-height: 800px;
       }
     }
 
+    // Cover for re-populating
+    .render-att-populate-cover {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+      background: rgba(255,255,255,0.6);
+
+      .spinner {
+        float: none;
+        display: inline-block;
+      }
+    }
+
     .render-modal-att-errormsg {
       display: none;
     }
@@ -640,6 +656,12 @@ $render-modal-height: 800px;
 
       &:not(.ui-state-active) {
         transition: left 500ms;
+      }
+    }
+
+    .render-modal-att-slider.render-modal-att-slider-reverting {
+      .ui-slider-range {
+        transition: left 500ms, width 500ms;
       }
     }
 

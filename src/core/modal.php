@@ -101,6 +101,12 @@ class Render_Modal {
 		);
 	}
 
+	public static function render_conditional_att_populate() {
+
+		echo 'SCHWA';
+		die();
+	}
+
 	/**
 	 * Loops through all the current shortcode attributes and outputs them in the Modal.
 	 *
@@ -208,8 +214,11 @@ class Render_Modal {
 		if ( $type == 'repeater' ) {
 			$att['descriptionAbove'] = true;
 		}
+
+		// Conditional attributes begin hidden
+		$hide = isset( $att['conditional']['visibility'] ) && $att['conditional']['visibility'] !== false  ? 'style="display: none;"' : '';
 		?>
-		<div class="<?php echo implode( ' ', $att['classes'] ); ?>" <?php echo $data_output; ?>>
+		<div class="<?php echo implode( ' ', $att['classes'] ); ?>" <?php echo $data_output; echo $hide; ?>>
 
 			<?php if ( isset( $att['label'] ) ) : ?>
 				<div class="render-modal-att-name">
@@ -853,6 +862,8 @@ class Render_Modal {
 								if ( $shortcode['noDisplay'] ) {
 									continue;
 								}
+
+								// TODO Construct data in similar fashion to .att-row
 								?>
 								<li data-category="<?php echo isset( $shortcode['category'] ) ?
 									$shortcode['category'] : 'other'; ?>"
@@ -860,7 +871,6 @@ class Render_Modal {
 								    data-title="<?php echo $shortcode['title']; ?>"
 								    data-source="<?php echo $shortcode['source']; ?>"
 								    data-tags="<?php echo $shortcode['tags']; ?>"
-								    data-disallow="<?php echo implode( ',', $shortcode['disallowShortcodes'] ); ?>"
 								    class="render-modal-shortcode
 								    <?php echo ! empty( $shortcode['atts'] ) ? 'accordion-section' : ''; ?>
 								    <?php echo $shortcode['wrapping'] ? 'wrapping' : ''; ?>
@@ -894,11 +904,6 @@ class Render_Modal {
 														<div class="render-modal-shortcode-toolbar-button-restore">
 															<?php _e( 'Restore Shortcode', 'Render' ); ?>
 														</div>
-
-														<!--														<div-->
-														<!--															class="render-modal-shortcode-toolbar-button-templates disabled">-->
-														<!--															--><?php //_e( 'Templates (coming soon!)', 'Render' ); ?>
-														<!--														</div>-->
 													</div>
 												</div>
 
@@ -980,3 +985,22 @@ class Render_Modal {
 	<?php
 	}
 }
+
+/**
+ * AJAX callback for populating conditional shortcode attributes.
+ *
+ * @since {{VERSION}}
+ */
+add_action( 'wp_ajax_render_conditional_att_populate', function () {
+
+	$callback = isset( $_POST['callback'] ) ? $_POST['callback'] : '';
+	$atts = isset( $_POST['atts'] ) ? $_POST['atts'] : array();
+
+	// Send back our options
+	if ( is_callable( $callback ) ) {
+		$options = call_user_func( $callback, $atts );
+		wp_send_json( $options );
+	}
+
+	die();
+});

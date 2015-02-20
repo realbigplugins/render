@@ -240,6 +240,9 @@ if ( ! class_exists( 'Render' ) ) {
 
 			// Any page requiring widget functionality
 			require_once __DIR__ . '/core/widget.php';
+
+			// Modal
+			require_once __DIR__ . '/core/modal.php';
 		}
 
 		/**
@@ -413,6 +416,7 @@ if ( ! class_exists( 'Render' ) ) {
 					 * @var array      $category    Category for the shortcode (must be a registered category).
 					 * @var array      $atts        Shortcode attributes.
 					 * @var string     $example     Example of shortcode in use.
+					 * @var array $conditional      Conditional field for visibility and field population.
 					 * @var bool       $wrapping    Whether or not this shortcode accepts content.
 					 * @var bool|array $render      Whether or not to render this shortcode, also accepts properties.
 					 * @var bool       $noDisplay   Hides the shortcode from the modal if set to true.
@@ -429,7 +433,6 @@ if ( ! class_exists( 'Render' ) ) {
 						'category'    => 'other',
 						'atts'        => array(),
 						'example'     => '',
-						'disallowShortcodes'    => array(),
 						'wrapping'    => false,
 						'render'      => false,
 						'noDisplay'   => false,
@@ -453,13 +456,27 @@ if ( ! class_exists( 'Render' ) ) {
 						'required' => false,
 						'validate' => array(),
 						'sanitize' => array(),
+						'conditional' => false,
 					), $args );
 
-					// Establish default attribute properties (if any exist)
 					if ( ! empty( $args['atts'] ) ) {
 
 						foreach ( $args['atts'] as $i => $att ) {
+
+							// Establish default attribute properties (if any exist)
 							$args['atts'][ $i ] = wp_parse_args( $args['atts'][ $i ], $att_defaults );
+
+							// Setup conditionals
+							if ( isset( $att['conditional'] ) && $att['conditional'] !== false ) {
+								if ( isset( $att['conditional']['populate'] ) ) {
+
+									// Flip array key / value and set the value to an empty array
+									foreach ( $att['conditional']['populate']['atts'] as $_i => $_att ) {
+										$args['atts'][ $i ]['conditional']['populate']['atts'][ $_att ] = array();
+										unset( $args['atts'][ $i ]['conditional']['populate']['atts'][ $_i ] );
+									}
+								}
+							}
 						}
 					}
 

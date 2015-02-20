@@ -47,8 +47,16 @@ foreach (
 					),
 				),
 				'date_format' => render_sc_attr_template( 'date_format', array(
-					'description' => __( 'Only applies to some meta types.', 'Render' ),
-					'advanced'    => true,
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'meta' => array(
+									'type' => '==',
+									'value' => 'published_date',
+								),
+							),
+						),
+					),
 				) ),
 			),
 			'render'      => true,
