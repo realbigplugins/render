@@ -81,38 +81,38 @@ foreach (
 					'description' => __( 'Used in some conditions to further specify the condition.', 'Render' ),
 					'type'        => 'selectbox',
 					'conditional' => array(
-//						'visibility' => array(
-//							'atts' => array(
-//								'arg1' => array(
-//									'type'  => 'IN',
-//									'value' => 'single,page,category,tag,tax,author',
-//								),
-//							),
-//						),
-//						'populate'   => array(
-//							'atts'     => array(
-//								'arg1',
-//							),
-//							'callback' => '_render_sc_logic_param_populate',
-//						),
+						'visibility' => array(
+							'atts' => array(
+								'arg1' => array(
+									'type'  => 'IN',
+									'value' => 'single,page,category,tag,tax,author',
+								),
+							),
+						),
+						'populate'   => array(
+							'atts'     => array(
+								'arg1',
+							),
+							'callback' => '_render_sc_logic_param_populate',
+						),
 					),
 				),
 				// Currently only in use for wp_version. If used for more, make sure "required" is still applicable
-//				'param_alt' => array(
-//					'label'       => __( 'Parameter (optional)', 'Render' ),
-//					'description' => __( 'Used in some conditions to further specify the condition.', 'Render' ),
-//					'required'    => true,
-//					'conditional' => array(
-//						'visibility' => array(
-//							'atts' => array(
-//								'arg1' => array(
-//									'type'  => '==',
-//									'value' => 'wp_version',
-//								),
-//							),
-//						),
-//					),
-//				),
+				'param_alt' => array(
+					'label'       => __( 'Parameter (optional)', 'Render' ),
+					'description' => __( 'Used in some conditions to further specify the condition.', 'Render' ),
+					'required'    => true,
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'arg1' => array(
+									'type'  => '==',
+									'value' => 'wp_version',
+								),
+							),
+						),
+					),
+				),
 			),
 			'render'      => true,
 			'wrapping'    => true,
@@ -721,50 +721,58 @@ function render_sc_time_slider( $att_id, $att, $properties ) {
  */
 function _render_sc_logic_param_populate( $atts ) {
 
-	// category,tag,tax,author
-
-	$options = array();
+	$response = array(
+		'options' => array(),
+		'no_options_text' => false,
+	);
 
 	switch ( $atts['arg1'] ) {
 
 		case 'single':
 
-			$options = render_sc_post_list( array(
+			$response['options'] = render_sc_post_list( array(
 				'post_type' => 'post',
 			) );
+			$response['no_options_text'] = __( 'No posts available.', 'Render' );
 			break;
 
 		case 'page':
 
-			$options = render_sc_post_list( array(
+			$response['options'] = render_sc_post_list( array(
 				'post_type' => 'page',
 			) );
+			$response['no_options_text'] = __( 'No pages available.', 'Render' );
 			break;
 
 		case 'category':
 
-			$options = render_sc_term_list( array(
+			$response['options'] = render_sc_term_list( array(
 				'taxonomies' => array( 'category' ),
 			) );
+			$response['no_options_text'] = __( 'No categories available.', 'Render' );
 			break;
 
 		case 'tag':
 
-			$options = render_sc_term_list( array(
+			$response['options'] = render_sc_term_list( array(
 				'taxonomies' => array( 'post_tag' ),
 			) );
+			$response['no_options_text'] = __( 'No tags available.', 'Render' );
 			break;
 
 		case 'tax':
 
-			$options = render_sc_term_list();
+			$response['options'] = render_sc_term_list();
+			$response['no_options_text'] = __( 'No taxonomies available.', 'Render' );
 			break;
 
 		case 'author':
 
-			$options = render_sc_user_list( 'edit_posts' );
+			$response['options'] = render_sc_user_list( 'edit_posts' );
+			$response['no_options_text'] = __( 'No authors available.', 'Render' );
 			break;
 	}
 
-	return $options;
+
+	return $response;
 }

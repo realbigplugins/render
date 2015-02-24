@@ -1124,18 +1124,6 @@ var Render_Modal;
                 elements.list.stop().animate({
                     scrollTop: offset
                 });
-
-                // Update any conditional attributes
-                elements.active_shortcode.find('.render-modal-att-row').each(function () {
-
-                    var attObj = $(this).data('attObj');
-
-                    if (typeof attObj == 'undefined' || attObj.conditionals === false) {
-                        return true; // continue $.each
-                    }
-
-                    attObj.performConditionals();
-                });
             }
         },
 
@@ -1579,9 +1567,9 @@ var Render_Modal;
          */
         refresh: function (shortcode) {
 
-            shortcode = typeof shortcode !== 'undefined' ? shortcode : elements.active_shortcode;
+            shortcode = shortcode || elements.active_shortcode;
 
-            if (shortcode) {
+            if (shortcode.length) {
 
                 shortcode.find('.render-modal-att-row').each(function () {
 
@@ -1777,14 +1765,13 @@ var Render_Modal;
          */
         this._setupConditionals = function () {
 
-            var _this = this;
-
             // Create initial boundAtts array for tracking bound atts
-            if (!('boundAtts' in _this.conditionals)) {
-                _this.conditionals.boundAtts = [];
+            if (!('boundAtts' in this.conditionals)) {
+                this.conditionals.boundAtts = [];
             }
 
-            $.each(_this.conditionals, function (type, conditional) {
+            var _this = this;
+            $.each(this.conditionals, function (type, conditional) {
 
                 // Only these 2 types are currently supported
                 if (type !== 'visibility' && type !== 'populate') {
@@ -1811,17 +1798,16 @@ var Render_Modal;
                         // Bind the handler to the attribute changing
                         att.boundAtt.$input.change(function () {
                             _this.performConditionals();
-                            console.log('changing %s for %s', att_ID, _this.name);
                         });
                     }
                 });
             });
 
             // Remove the "boundAtts" property, as it's no longer in use
-            delete _this.conditionals.boundAtts;
+            delete this.conditionals.boundAtts;
 
             // Fire once on initial load to start the attribute hidden/shown/populated correctly
-            this.performConditionals();
+            //this.performConditionals();
         };
 
         /**
@@ -1832,8 +1818,7 @@ var Render_Modal;
         this.performConditionals = function () {
 
             var _this = this;
-
-            $.each(_this.conditionals, function (type, conditional) {
+            $.each(this.conditionals, function (type, conditional) {
 
                 $.each(conditional.atts, function (att_ID, att) {
 
@@ -1855,7 +1840,7 @@ var Render_Modal;
                                 if (_this.hidden !== true) {
                                     _this.hidden = true;
                                     _this.$container.hide('drop', {}, 300);
-                                    _this.performConditionals();
+                                    //_this.performConditionals();
                                 }
                             }
 
@@ -1873,25 +1858,35 @@ var Render_Modal;
                                     '</div>',
                                 $cover;
 
+                            $.each(conditional.atts, function (att_ID, att) {
+                                data.atts[att_ID] = att.boundAtt._getValue();
+                            });
+
+                            // Setup last populate to keep track and not do redundant repeats
+                            if (typeof att.lastPopulate == 'undefined') {
+                                att.lastPopulate = '';
+                            }
+
+                            // Skip if same as last call
+                            if (att.lastPopulate == JSON.stringify(data)) {
+                                break;
+                            }
+                            att.lastPopulate = JSON.stringify(data);
+
                             // Place the cover
                             _this.$container.find('.render-modal-att-field').append(cover_html);
                             $cover = _this.$container.find('.render-att-populate-cover');
                             $cover.fadeIn(300);
 
-                            $.each(conditional.atts, function (att_ID, att) {
-                                data.atts[att_ID] = att.boundAtt._getValue();
-                            });
-
-                            $.post(ajaxurl, data, function (options) {
+                            $.post(ajaxurl, data, function (response) {
 
                                 // Set our new options!
-                                if (options !== false && 'rebuildOptions' in _this) {
-                                    _this.rebuildOptions(options);
+                                if (response !== false && 'rebuildOptions' in _this) {
+                                    _this.rebuildOptions(response);
                                 }
 
                                 // Set the value (if was set from populateShortcode())
                                 var value = _this.$input.data('renderPopulateValue');
-                                //console.log('populate: %s with %s', _this.name, value);
                                 if (typeof value != 'undefined') {
                                     _this._setValue(value);
                                     _this.$input.data('renderPopulateValue', null);
@@ -2108,7 +2103,7 @@ var Render_Modal;
          */
         this._setValue = function (value) {
             this.setValue(value);
-            this.$input.trigger('render:att_setValue', value);
+            this.$input.trigger('render:att_setValue', value).change();
         };
 
         /**
@@ -2154,10 +2149,10 @@ var Render_Modal;
          *
          * @since {{VERSION}}
          *
-         * @param {object} value The new value.
+         * @param {object} response The AJAX response.
          */
-        this.rebuildOptions = function (value) {
-            this.$input.val(value);
+        this.rebuildOptions = function (response) {
+            this.$input.val(response.value);
         };
 
         /**
@@ -2596,14 +2591,14 @@ var Render_Modal;
          *
          * @since {{VERSION}}
          *
-         * @param {object} options All available options.
+         * @param {object} response The AJAX response.
          */
-        this.rebuildOptions = function (options) {
+        this.rebuildOptions = function (response) {
 
             var i = 0,
                 attObj = this;
 
-            $.each(options, function (value, label) {
+            $.each(response.options, function (value, label) {
                 i++;
 
                 if (i === 1) {
@@ -2664,6 +2659,11 @@ var Render_Modal;
             $container.find('.chosen-results').bind('mousewheel', function (e) {
                 $(this).scrollTop($(this).scrollTop() - e.originalEvent.wheelDeltaY);
                 return false;
+            });
+
+            // Make sure change triggers chosen to update
+            this.$input.change(function () {
+                $(this).trigger('chosen:updated');
             });
 
             // Extend functionality to allow icons
@@ -2847,18 +2847,16 @@ var Render_Modal;
             if (!value) {
 
                 if (this.$input.attr('multiple')) {
-                    this.$input.val([]).change();
+                    this.$input.val([]);
                 } else {
-                    this.$input.val('').change();
+                    this.$input.val('');
                 }
-
-                this.$input.trigger('chosen:updated');
                 return;
             }
 
             // Account for multi-select
             if (this.$input.attr('multiple')) {
-                this.$input.val(value.split(',').change());
+                this.$input.val(value.split(','));
             } else {
 
                 // Custom input (value doesn't exist in options)
@@ -2868,10 +2866,8 @@ var Render_Modal;
                     return;
                 }
 
-                this.$input.val(value).change();
+                this.$input.val(value);
             }
-
-            this.$input.trigger('chosen:updated');
         };
 
         /**
@@ -2882,7 +2878,6 @@ var Render_Modal;
          * @since 1.0.0
          */
         this.revert = function () {
-            this.$container.find('.chosen-custom-input').remove();
             this._setValue(this.original_value);
         };
 
@@ -2906,22 +2901,30 @@ var Render_Modal;
          *
          * @since {{VERSION}}
          *
-         * @param {object} options All available options.
+         * @param {object} response The AJAX response.
          */
-        this.rebuildOptions = function (options) {
+        this.rebuildOptions = function (response) {
+
+            var $no_options = this.$container.find('.render-modal-selectbox-no-options'),
+                $chosen_container = this.$container.find('.render-chosen-container');
 
             // Hide or show
-            if (options.length === 0) {
-                this.$container.find('.render-modal-selectbox-no-options').show();
-                this.$container.find('.render-chosen-container').hide();
+            if (response.options.length === 0) {
+                $no_options.show();
+                $chosen_container.hide();
+
+                // Set the no options text, if it's set
+                if (response.no_options_text) {
+                    $no_options.html(response.no_options_text);
+                }
             } else {
-                this.$container.find('.render-modal-selectbox-no-options').hide();
-                this.$container.find('.render-chosen-container').show();
+                $no_options.hide();
+                $chosen_container.show();
             }
 
             var options_html = '<option></option>';
 
-            $.each(options, function (value, label) {
+            $.each(response.options, function (value, label) {
                 options_html += '<option value="' + value + '">' + label + '</option>';
             });
 
@@ -3178,20 +3181,6 @@ var Render_Modal;
             });
         };
 
-        /**
-         * Sets the attribute field to a specified value.
-         *
-         * Triggers the change to update jQuery UI Slider.
-         *
-         * @since 1.0.0
-         *
-         * @param {*} value The value to set to.
-         */
-        this.setValue = function (value) {
-            this.$input.val(value);
-            this.$input.change();
-        };
-
         this.revert = function () {
 
             // From original
@@ -3213,12 +3202,12 @@ var Render_Modal;
          *
          * @since {{VERSION}}
          *
-         * @param {object} options Min and max values.
+         * @param {object} response The AJAX response.
          */
-        this.rebuildOptions = function (options) {
+        this.rebuildOptions = function (response) {
 
-            var min = options.min,
-                max = options.max,
+            var min = response.options.min,
+                max = response.options.max,
                 value = this.getValue(),
                 $slider = this.$input.siblings('.render-modal-att-slider');
 
@@ -3532,12 +3521,12 @@ var Render_Modal;
          *
          * @since {{VERSION}}
          *
-         * @param {object} options Min and max values.
+         * @param {object} response The AJAX response.
          */
-        this.rebuildOptions = function (options) {
+        this.rebuildOptions = function (response) {
 
-            var min = options.min,
-                max = options.max,
+            var min = response.options.min,
+                max = response.options.max,
                 value = this.getValue();
 
             this.$input.attr('data-min', min);
