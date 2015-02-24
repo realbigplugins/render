@@ -804,5 +804,8 @@ function _render_sc_logic_param_populate( $atts ) {
 			break;
 	}
 
+	// Convert the options to HTML
+	$response['options'] = ! empty( $response['options'] ) ? render_build_options_html( $response['options'] ) : '';
+
 	return $response;
 }

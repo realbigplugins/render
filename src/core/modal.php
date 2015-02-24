@@ -557,6 +557,7 @@ class Render_Modal {
 			        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select an option'; ?>"
 			        class="render-modal-att-input <?php echo $chosen; ?>"
 			        data-default="<?php echo $default; ?>"
+			        data-deselect="<?php echo isset( $properties['noDeselect'] ) ? 0 : 1; ?>"
 				<?php echo isset( $properties['multi'] ) ? 'multiple' : ''; ?>>
 
 				<?php // Necessary for starting with nothing selected ?>
@@ -584,7 +585,6 @@ class Render_Modal {
 								value="<?php echo $option_value; ?>"
 								<?php selected( $option_value, $default ); ?>
 								>
-								<?php echo ! isset( $option['label'] ) ? 'MOTHER EFF' : ''; ?>
 								<?php echo $option['label']; ?>
 							</option>
 						<?php endforeach; ?>

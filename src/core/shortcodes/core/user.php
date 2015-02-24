@@ -24,7 +24,7 @@ foreach (
 			'description' => __( 'Get a property of the specified user.', 'Render' ),
 			'tags'        => 'display name full first last user email id author url description role',
 			'atts'        => array(
-				'user'     => array(
+				'user'        => array(
 					'label'      => __( 'User', 'Render' ),
 					'type'       => 'selectbox',
 					'properties' => array(
@@ -34,7 +34,7 @@ foreach (
 						),
 					),
 				),
-				'property' => array(
+				'property'    => array(
 					'label'       => __( 'Property', 'Render' ),
 					'description' => __( 'Select what information to get or input custom information to get.', 'Render' ),
 					'required'    => true,
@@ -54,38 +54,28 @@ foreach (
 							array(
 								'label'   => __( 'Meta', 'Render' ),
 								'options' => array(
-									'email'       => __( 'Email Address', 'Render' ),
-									'id'          => __( 'ID', 'Render' ),
-									'author_url'  => __( 'Author Link', 'Render' ),
-									'description' => __( 'Description', 'Render' ),
-									'role'        => __( 'Role', 'Render' ),
+									'email'           => __( 'Email Address', 'Render' ),
+									'id'              => __( 'ID', 'Render' ),
+									'author_url'      => __( 'Author Link', 'Render' ),
+									'description'     => __( 'Description', 'Render' ),
+									'role'            => __( 'Role', 'Render' ),
+									'user_registered' => __( 'Registered Date', 'Render' ),
 								),
 							),
 						),
 					),
 				),
-			),
-			'render'      => true,
-		),
-		// Registered Date
-		array(
-			'code'        => 'render_user_registered_date',
-			'function'    => '_render_sc_user_registered_date',
-			'title'       => __( 'User Registered Date', 'Render' ),
-			'description' => __( 'Get the date the specified user registered.', 'Render' ),
-			'atts'        => array(
-				'user'        => array(
-					'label'      => __( 'User', 'Render' ),
-					'type'       => 'selectbox',
-					'properties' => array(
-						'placeholder' => __( 'Defaults to the current user', 'Render' ),
-						'callback'    => array(
-							'function' => 'render_sc_user_list',
+				'date_format' => render_sc_attr_template( 'date_format', array(
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'property' => array(
+									'type'  => '==',
+									'value' => 'user_registered'
+								),
+							),
 						),
 					),
-				),
-				'date_format' => render_sc_attr_template( 'date_format', array(
-					'advanced' => true,
 				) ),
 			),
 			'render'      => true,
@@ -97,122 +87,123 @@ foreach (
 			'title'       => __( 'Login form', 'Render' ),
 			'description' => __( 'Displays a login form to logged out users.', 'Render' ),
 			'atts'        => array(
-				'message'  => array(
+				'message'        => array(
 					'label'       => __( 'Logged in Message', 'Render' ),
 					'description' => __( 'Message to display to already logged in users.', 'Render' ),
-					'properties' => array(
+					'properties'  => array(
 						'placeholder' => __( 'You are already logged in.', 'Render' ),
 					),
 				),
-				'redirect' => array(
+				'redirect'       => array(
 					'label'       => __( 'Redirect', 'Render' ),
 					'description' => __( 'Redirect to this page after login.', 'Render' ),
 					'type'        => 'selectbox',
 					'properties'  => array(
-						'groups'           => array(),
-						'callback'         => array(
+						'groups'      => array(),
+						'callback'    => array(
 							'groups'   => true,
 							'function' => 'render_sc_post_list',
 						),
 						'placeholder' => __( 'Same page', 'Render' ),
 					),
 				),
-				'remember' => array(
-					'label' => __( 'Remember Me', 'Render' ),
-					'type' => 'checkbox',
+				'remember'       => array(
+					'label'      => __( 'Remember Me', 'Render' ),
+					'type'       => 'checkbox',
 					'properties' => array(
 						'value' => 'true',
 						'label' => __( 'Show "Remember Me" checkbox.', 'Render' ),
 					),
 				),
 				array(
-					'type' => 'section_break',
-					'label' => __( 'HTML ID\'s', 'Render' ),
-					'advanced' => true,
-				),
-				'form_id' => array(
-					'label' => __( 'Form', 'Render' ),
-					'advanced' => true,
-					'properties' => array(
-						'placeholder' => 'loginform',
-					),
-				),
-				'id_username' => array(
-					'label' => __( 'Username', 'Render' ),
-					'advanced' => true,
-					'properties' => array(
-						'placeholder' => 'user_login',
-					),
-				),
-				'id_password' => array(
-					'label' => __( 'Password', 'Render' ),
-					'advanced' => true,
-					'properties' => array(
-						'placeholder' => 'user_pass',
-					),
-				),
-				'id_remember' => array(
-					'label' => __( 'Remember Me', 'Render' ),
-					'advanced' => true,
-					'properties' => array(
-						'placeholder' => 'rememberme',
-					),
-				),
-				'id_submit' => array(
-					'label' => __( 'Submit', 'Render' ),
-					'advanced' => true,
-					'properties' => array(
-						'placeholder' => 'wp-submit',
-					),
-				),
-				array(
-					'type' => 'section_break',
-					'label' => __( 'Form Labels', 'Render' ),
+					'type'     => 'section_break',
+					'label'    => __( 'Form Labels', 'Render' ),
 					'advanced' => true,
 				),
 				'label_username' => array(
-					'label' => __( 'Username', 'Render' ),
-					'advanced' => true,
+					'label'      => __( 'Username', 'Render' ),
+					'advanced'   => true,
 					'properties' => array(
 						'placeholder' => __( 'Username' ),
 					),
 				),
 				'label_password' => array(
-					'label' => __( 'Password', 'Render' ),
-					'advanced' => true,
+					'label'      => __( 'Password', 'Render' ),
+					'advanced'   => true,
 					'properties' => array(
 						'placeholder' => __( 'Password' ),
 					),
 				),
 				'label_remember' => array(
-					'label' => __( 'Remember Me', 'Render' ),
-					'advanced' => true,
+					'label'      => __( 'Remember Me', 'Render' ),
+					'advanced'   => true,
 					'properties' => array(
 						'placeholder' => __( 'Remember Me' ),
 					),
 				),
-				'Label_log_in' => array(
-					'label' => __( 'Log In', 'Render' ),
-					'advanced' => true,
+				'Label_log_in'   => array(
+					'label'      => __( 'Log In', 'Render' ),
+					'advanced'   => true,
 					'properties' => array(
 						'placeholder' => __( 'Log In' ),
 					),
 				),
 				array(
-					'type' => 'section_break',
-					'label' => __( 'Default field values.', 'Render' ),
+					'type'     => 'section_break',
+					'label'    => __( 'Default field values.', 'Render' ),
 					'advanced' => true,
 				),
 				'value_username' => array(
-					'label' => __( 'Username', 'Render' ),
+					'label'    => __( 'Username', 'Render' ),
 					'advanced' => true,
 				),
 				'value_remember' => array(
-					'label' => __( 'Remember Me', 'Render' ),
-					'advanced' => true,
-					'type' => 'checkbox',
+					'label'      => __( 'Remember Me', 'Render' ),
+					'advanced'   => true,
+					'type'       => 'checkbox',
 					'properties' => array(
+						'label' => __( '(start checked)', 'Render' ),
 						'value' => 'true',
+					),
+				),
+				array(
+					'type'     => 'section_break',
+					'label'    => __( 'HTML ID\'s', 'Render' ),
+					'advanced' => true,
+				),
+				'form_id'        => array(
+					'label'      => __( 'Form', 'Render' ),
+					'advanced'   => true,
+					'properties' => array(
+						'placeholder' => 'loginform',
+					),
+				),
+				'id_username'    => array(
+					'label'      => __( 'Username', 'Render' ),
+					'advanced'   => true,
+					'properties' => array(
+						'placeholder' => 'user_login',
+					),
+				),
+				'id_password'    => array(
+					'label'      => __( 'Password', 'Render' ),
+					'advanced'   => true,
+					'properties' => array(
+						'placeholder' => 'user_pass',
+					),
+				),
+				'id_remember'    => array(
+					'label'      => __( 'Remember Me', 'Render' ),
+					'advanced'   => true,
+					'properties' => array(
+						'placeholder' => 'rememberme',
+					),
+				),
+				'id_submit'      => array(
+					'label'      => __( 'Submit', 'Render' ),
+					'advanced'   => true,
+					'properties' => array(
+						'placeholder' => 'wp-submit',
 					),
 				),
 			),
@@ -226,9 +217,9 @@ foreach (
 
 	render_add_shortcode( $shortcode );
 	render_add_shortcode_category( array(
-		'id' => 'user',
-		'label' => __( 'User', 'Render'),
-		'icon' => 'dashicons-admin-users',
+		'id'    => 'user',
+		'label' => __( 'User', 'Render' ),
+		'icon'  => 'dashicons-admin-users',
 	) );
 }
 
@@ -247,6 +238,7 @@ function _render_sc_user_info( $atts = array() ) {
 	$atts = shortcode_atts( array(
 		'user'     => get_current_user_id(),
 		'property' => false,
+		'date_format' => get_option( 'date_format', 'F j, Y' ),
 	), $atts );
 
 	// Escape atts
@@ -275,9 +267,10 @@ function _render_sc_user_info( $atts = array() ) {
 		case 'author_url':
 		case 'description':
 		case 'role':
+		case 'user_registered':
 
 			if ( is_callable( "_render_sc_user_$atts[property]" ) ) {
-				return call_user_func( "_render_sc_user_$atts[property]", $user );
+				return call_user_func( "_render_sc_user_$atts[property]", $user, $atts );
 			}
 			break;
 
@@ -479,34 +472,22 @@ function _render_sc_user_role( $user ) {
  * @since  1.0.0
  * @access private
  *
+ * @param object $user The user object.
  * @param array $atts The attributes sent to the shortcode.
  *
  * @return string The the date the current user registered.
  */
-function _render_sc_user_registered_date( $atts = array() ) {
-
-	$atts = shortcode_atts( array(
-		'user'        => get_current_user_id(),
-		'date_format' => get_option( 'date_format', 'F j, Y' ),
-	), $atts );
+function _render_sc_user_user_registered( $user, $atts = array() ) {
 
 	if ( $atts['date_format'] == 'default_date' ) {
 		$atts['date_format'] = get_option( 'date_format', 'F jS, Y' );
 	}
 
-	if ( ! $user = render_sc_user_get_userdata( $atts['user'] ) ) {
-		return 'Cannot find specified user.';
+	if ( isset( $user['user_registered'] ) ) {
+		return date( $atts['date_format'], strtotime( $user['user_registered'] ) );
+	} else {
+		return render_sc_error( 'Cannot get user email address.' );
 	}
-
-	$output = $user['user_registered'];
-
-	if ( empty( $output ) ) {
-		return 'Cannot get user data.';
-	}
-
-	$output = date( $atts['date_format'], strtotime( $output ) );
-
-	return $output;
 }
 
 /**
@@ -573,6 +554,7 @@ function _render_sc_login_form( $atts = array() ) {
 function _render_sc_login_form_tinymce( $atts = array() ) {
 
 	render_tinyme_log_out();
+
 	return _render_sc_login_form( $atts );
 }
 

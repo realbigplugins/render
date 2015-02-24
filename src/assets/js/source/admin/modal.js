@@ -2656,7 +2656,7 @@ var Render_Modal;
                 options = {
                     width: '100%',
                     search_contains: true,
-                    allow_single_deselect: true
+                    allow_single_deselect: typeof $chosen.data('deselect') != 'undefined' ? $chosen.data('deselect') : 1
                 };
 
             // Not using Chosen
@@ -2679,6 +2679,23 @@ var Render_Modal;
             // Make sure change triggers chosen to update
             this.$input.change(function () {
                 $(this).trigger('chosen:updated');
+            });
+
+            // Scroll list as needed if chosen drop-down is cut off
+            $chosen.on('chosen:showing_dropdown', function () {
+
+                var $drop = $container.find('.chosen-drop'),
+                    $list = elements.list,
+                    drop_offset = $drop.offset().top + $drop.outerHeight(),
+                    list_offset = $list.offset().top + $list.outerHeight(),
+                    difference = drop_offset - list_offset;
+
+                // Bottom of chosen drop is out of the list
+                if (difference > 0) {
+                    $list.animate({
+                        scrollTop: $list.scrollTop() + difference
+                    }, 150);
+                }
             });
 
             // Extend functionality to allow icons
@@ -2925,7 +2942,7 @@ var Render_Modal;
                 $description = this.$container.find('.render-modal-att-description');
 
             // Hide or show
-            if (response.options.length === 0) {
+            if (!response.options) {
                 $no_options.show();
                 $chosen_container.hide();
 
@@ -2943,13 +2960,7 @@ var Render_Modal;
                 $description.html(response.description);
             }
 
-            var options_html = '<option></option>';
-
-            $.each(response.options, function (value, label) {
-                options_html += '<option value="' + value + '">' + label + '</option>';
-            });
-
-            this.$input.html(options_html);
+            this.$input.html(response.options);
             this.$input.trigger('chosen:updated');
         };
 

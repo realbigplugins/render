@@ -14,125 +14,159 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Loops through each shortcode and adds it to Render
-foreach ( array(
-	// Query
+foreach (
 	array(
-		'code'        => 'render_query',
-		'function'    => '_render_query',
-		'title'       => __( 'Query', 'Render' ),
-		'description' => __( 'Outputs a list of posts.', 'Render' ),
-		'tags'        => 'data loop',
-		'atts'        => array(
-			array(
-				'type' => 'section_break',
-				'label' => __('Refine Search', 'Render' ),
-			),
-			'author'      => array(
-				'label'      => __( 'Author', 'Render' ),
-				'type'       => 'selectbox',
-				'properties' => array(
-					'placeholder' => __( 'Any author', 'Render' ),
-					'options'     => render_sc_user_list( 'edit_posts' ),
+		// Query
+		array(
+			'code'        => 'render_query',
+			'function'    => '_render_query',
+			'title'       => __( 'Query', 'Render' ),
+			'description' => __( 'Outputs a list of posts.', 'Render' ),
+			'tags'        => 'data loop',
+			'atts'        => array(
+				array(
+					'type'  => 'section_break',
+					'label' => __( 'Refine Search', 'Render' ),
 				),
-			),
-			'post_type'   => array(
-				'label'       => __( 'Post type', 'Render' ),
-				'type'        => 'selectbox',
-				'description' => __( 'Available post types.', 'Render' ),
-				'properties'  => array(
-					'placeholder' => __( 'Any post type', 'Render' ),
-					'callback'    => array(
-						'function' => 'render_post_types_dropdown',
+				'author'           => array(
+					'label'      => __( 'Author', 'Render' ),
+					'type'       => 'selectbox',
+					'properties' => array(
+						'placeholder' => __( 'Any author', 'Render' ),
+						'options'     => render_sc_user_list( 'edit_posts' ),
 					),
 				),
-			),
-			'cat'         => array(
-				'label'       => __( 'Category', 'Render' ),
-				'type'        => 'selectbox',
-				'description' => __( 'Available categories.', 'Render' ),
-				'properties'  => array(
-					'no_options' => __( 'No categories available.', 'Render' ),
-					'placeholder' => __( 'Any category', 'Render' ),
-					'callback'    => array(
-						'function' => 'render_categories_dropdown'
+				'category'         => array(
+					'label'      => __( 'Category', 'Render' ),
+					'type'       => 'selectbox',
+					'properties' => array(
+						'no_options'  => __( 'No categories available.', 'Render' ),
+						'placeholder' => __( 'Any category', 'Render' ),
+						'callback'    => array(
+							'function' => 'render_categories_dropdown'
+						),
 					),
 				),
-			),
-			'tag'         => array(
-				'label'       => __( 'Tag', 'Render' ),
-				'type'        => 'selectbox',
-				'description' => __( 'Available tags.', 'Render' ),
-				'properties'  => array(
-					'no_options' => __( 'No tags available.', 'Render' ),
-					'placeholder' => __( '-- None --', 'Render' ),
-					'callback'    => array(
-						'function' => 'render_tags_dropdown'
+				'tag'              => array(
+					'label'      => __( 'Tag', 'Render' ),
+					'type'       => 'selectbox',
+					'properties' => array(
+						'no_options'  => __( 'No tags available.', 'Render' ),
+						'placeholder' => __( '-- None --', 'Render' ),
+						'callback'    => array(
+							'function' => 'render_tags_dropdown'
+						),
 					),
 				),
-			),
-			array(
-				'type' => 'section_break',
-				'label' => __( 'Order', 'Render' ),
-			),
-			'order'       => array(
-				'label'      => __( 'Order', 'Render' ),
-				'type'       => 'toggle',
-				'properties' => array(
-					'values' => array(
-						'DSC' => __( 'Descending', 'Render' ),
-						'ASC'  => __( 'Ascending', 'Render' ),
+				'post_type'        => render_sc_attr_template( 'post_type_list', array() ),
+				'include'          => render_sc_attr_template( 'post_list', array(
+					'label'       => __( 'Include', 'Render' ),
+					'properties'  => array(
+						'multi' => true,
+					),
+					'conditional' => array(
+						'populate' => array(
+							'atts'     => array(
+								'post_type',
+							),
+							'callback' => 'render_sc_populate_post_type',
+						),
+					),
+				) ),
+				'exclude'          => render_sc_attr_template( 'post_list', array(
+					'label'       => __( 'Exclude', 'Render' ),
+					'properties'  => array(
+						'multi' => true,
+					),
+					'conditional' => array(
+						'populate' => array(
+							'atts'     => array(
+								'post_type',
+							),
+							'callback' => 'render_sc_populate_post_type',
+						),
+					),
+				) ),
+				'numberposts'      => array(
+					'label'       => __( 'Count', 'Render' ),
+					'description' => __( 'Max number of posts to show.', 'Render' ),
+					'type'        => 'counter',
+					'default'     => 5,
+					'properties'  => array(
+						'max' => 50,
 					),
 				),
-			),
-			'orderby'     => array(
-				'label'      => __( 'Order by', 'Render' ),
-				'type'       => 'selectbox',
-				'properties' => array(
-					'options' => array(
-						'none'          => __( 'None', 'Render' ),
-						'ID'            => __( 'Post ID', 'Render' ),
-						'author'        => __( 'Author', 'Render' ),
-						'title'         => __( 'Title', 'Render' ),
-						'name'          => __( 'Name (slug)', 'Render' ),
-						'type'          => __( 'Post Type', 'Render' ),
-						'date'          => __( 'Date', 'Render' ),
-						'modified'      => __( 'Last Modified', 'Render' ),
-						'parent'        => __( 'Parent', 'Render' ),
-						'rand'          => __( 'Random', 'Render' ),
-						'comment_count' => __( 'Comment Count', 'Render' ),
-						'menu_order'    => __( 'Menu Order', 'Render' ),
+				array(
+					'type'  => 'section_break',
+					'label' => __( 'Order', 'Render' ),
+				),
+				'order'            => render_sc_attr_template( 'post_order' ),
+				'orderby'          => render_sc_attr_template( 'post_orderby' ),
+				'post_status'      => array(
+					'label'      => __( 'Post Status', 'Render' ),
+					'type'       => 'selectbox',
+					'properties' => array(
+						'placeholder' => __( 'Any status', 'Render' ),
+						'callback'    => array(
+							'function' => 'get_post_stati'
+						),
+					),
+					'advanced'   => true,
+				),
+				'offset'           => array(
+					'label'       => __( 'Offset', 'Render' ),
+					'description' => __( 'Start at this many posts in from found posts.', 'Render' ),
+					'type'        => 'counter',
+					'default'     => 0,
+					'properties'  => array(
+						'max' => 60,
+					),
+					'advanced'    => true,
+				),
+				's'                => array(
+					'label'    => __( 'Search', 'Render' ),
+					'advanced' => true,
+				),
+				'meta_key'         => array(
+					'label'       => __( 'Meta Key', 'Render' ),
+					'description' => __( 'The name of the meta key to use the value to search for.', 'Render' ),
+					'advanced'    => true,
+				),
+				'meta_value'       => array(
+					'label'       => __( 'Meta Key', 'Render' ),
+					'description' => __( 'Only shows posts containing a meta key with this value.', 'Render' ),
+					'advanced'    => true,
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'meta_key' => array(
+									'type' => 'NOT EMPTY',
+								),
+							),
+						),
 					),
 				),
-			),
-			'post_status' => array(
-				'label'      => __( 'Post Status', 'Render' ),
-				'type'       => 'selectbox',
-				'properties' => array(
-					'placeholder' => __( 'Any status', 'Render' ),
-					'callback'    => array(
-						'function' => 'get_post_stati'
-					),
+				'suppress_filters' => array(
+					'label'       => __( 'Suppress Filters', 'Render' ),
+					'description' => __( 'Suppresses any filters applied to get_posts.', 'Render' ),
+					'type'        => 'checkbox',
+					'advanced'    => true,
 				),
-				'advanced' => true,
 			),
-			's'           => array(
-				'label' => __( 'Search', 'Render' ),
-				'advanced' => true,
-			),
-		),
-		'render'      => true,
-		'wrapping'    => false
-	)
-) as $shortcode ) {
+			'render'      => true,
+			'wrapping'    => false
+		)
+	) as $shortcode
+) {
 
 	$shortcode['category'] = 'query';
 	$shortcode['source']   = 'Render';
 
 	render_add_shortcode( $shortcode );
 	render_add_shortcode_category( array(
-		'id' => 'query',
-		'label' => __( 'Query', 'Render'),
-		'icon' => 'dashicons-download',
+		'id'    => 'query',
+		'label' => __( 'Query', 'Render' ),
+		'icon'  => 'dashicons-download',
 	) );
 }
 
@@ -149,18 +183,26 @@ foreach ( array(
 function _render_query( $atts = array() ) {
 
 	$atts = shortcode_atts( array(
-		'post_type'   => 'any',
-		'author'      => '',
-		'cat'         => '',
-		'tag'         => '',
-		's'           => '',
-		'post_status' => '',
-		'order'       => '',
-		'orderby'     => ''
+		'post_type'        => 'any',
+		'author'           => '',
+		'cat'              => '',
+		'tag'              => '',
+		's'                => '',
+		'include'          => '',
+		'exclude'          => '',
+		'meta_key'         => '',
+		'meta_value'       => '',
+		'post_status'      => '',
+		'order'            => '',
+		'orderby'          => '',
+		'suppress_filters' => '1',
 	), $atts );
 
 	// Escape atts
 	render_esc_atts( $atts );
+
+	// Convert to boolean
+	$atts['suppress_filters'] = $atts['suppress_filters'] == '1';
 
 	$output = '';
 	$posts  = get_posts( $atts );
@@ -168,7 +210,7 @@ function _render_query( $atts = array() ) {
 	if ( ! empty( $posts ) ) {
 		$output .= '<ul>';
 		foreach ( $posts as $post ) {
-			$output .= '<li><a href="' . get_permalink( $post->ID ) . '">' . get_the_title( $post-> ID ) . '</a></li>';
+			$output .= '<li><a href="' . get_permalink( $post->ID ) . '">' . get_the_title( $post->ID ) . '</a></li>';
 		}
 		$output .= '</ul>';
 	} else {
@@ -223,19 +265,49 @@ function render_tags_dropdown() {
  *
  * @since 1.0.0
  *
+ * @param array $args Optional arguments to use
  * @return array List of post types.
  */
-function render_post_types_dropdown() {
+function render_sc_post_type_list( $args = array() ) {
 
-	$post_types = get_post_types( array(
+	$exclude_media = isset( $args['exclude_media'] ) ? $args['exclude_media'] : true;
+	unset( $args['exclude_media'] );
+
+	$post_types = get_post_types( wp_parse_args( $args, array(
 		'public' => true,
-	), 'objects' );
-
+	) ), 'objects' );
 
 	$output = array();
 	foreach ( $post_types as $post_type ) {
+
+		// Skip media if set
+		if ( $exclude_media && $post_type->name == 'attachment' ) {
+			continue;
+		}
+
 		$output[ $post_type->name ] = $post_type->label;
 	}
 
 	return $output;
+}
+
+/**
+ * Returns a dynamic list of posts based on the supplied post_type.
+ *
+ * @since {{VERSION}}
+ *
+ * @param array|null $atts The attributes this output depends on.
+ * @return array The new options list
+ */
+function render_sc_populate_post_type( $atts ) {
+
+	$options = render_sc_post_list( array(
+		'post_type' => isset( $atts['post_type'] ) ? $atts['post_type'] : 'any',
+		'public'    => true,
+	) );
+
+	return array(
+		'options'         => render_build_options_html( $options ),
+		'no_options_text' => __( 'No posts available.', 'Render' ),
+	);
 }

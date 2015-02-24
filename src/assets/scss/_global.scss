@@ -68,6 +68,14 @@ $fast-transition: 150ms;
   }
 }
 
+@mixin clearfixbefore {
+  &:before {
+    content: ' ';
+    display: table;
+    clear: both;
+  }
+}
+
 @mixin icon($icon) {
   @extend .render-icon;
 

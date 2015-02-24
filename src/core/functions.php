@@ -408,6 +408,24 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			);
 			break;
 
+		case 'post_type_list':
+
+			$output = array(
+				'label' => __( 'Post Type', 'Render' ),
+				'type' => 'selectbox',
+				'default' => 'any',
+				'properties' => array(
+					'noDeselect' => true,
+					'options' => array(
+						'any' => __( 'Any', 'Render' ),
+					),
+					'callback' => array(
+						'function' => 'render_sc_post_type_list',
+					),
+				),
+			);
+			break;
+
 		case 'terms_list':
 
 			$output = array(
@@ -504,6 +522,45 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 							'rem',
 							'pt',
 						),
+					),
+				),
+			);
+			break;
+
+		case 'post_order':
+
+			$output = array(
+				'label'      => __( 'Order', 'Render' ),
+				'type'       => 'toggle',
+				'properties' => array(
+					'values' => array(
+						'DSC' => __( 'Descending', 'Render' ),
+						'ASC'  => __( 'Ascending', 'Render' ),
+					),
+				),
+			);
+			break;
+
+		case 'post_orderby':
+
+			$output = array(
+				'label'      => __( 'Order by', 'Render' ),
+				'type'       => 'selectbox',
+				'default' => 'date',
+				'properties' => array(
+					'options' => array(
+						'none'          => __( 'None', 'Render' ),
+						'ID'            => __( 'Post ID', 'Render' ),
+						'author'        => __( 'Author', 'Render' ),
+						'title'         => __( 'Title', 'Render' ),
+						'name'          => __( 'Name (slug)', 'Render' ),
+						'type'          => __( 'Post Type', 'Render' ),
+						'date'          => __( 'Date', 'Render' ),
+						'modified'      => __( 'Last Modified', 'Render' ),
+						'parent'        => __( 'Parent', 'Render' ),
+						'rand'          => __( 'Random', 'Render' ),
+						'comment_count' => __( 'Comment Count', 'Render' ),
+						'menu_order'    => __( 'Menu Order', 'Render' ),
 					),
 				),
 			);
@@ -659,4 +716,69 @@ function render_disable_tinymce_media_button( $hook_name, $label , $priority = 1
 	}
 
 	render_disable_tinymce_button( $hook_name, $label );
+}
+
+/**
+ * Builds the HTML output for selectbox options.
+ *
+ * Loosely based on how the Modal outputs the selectbox.
+ *
+ * @since {{VERSION}}
+ * @see   Render_Modal::att_type_selectbox()
+ *
+ * @param array $options The options.
+ * @return string The options HTML.
+ */
+function render_build_options_html( $options ) {
+
+	$no_options = empty( $options );
+
+	$groups = $options;
+	if ( ! $no_options ) {
+
+		// Optgroup support
+		$opt_groups = false;
+		foreach ( $options as $option ) {
+			if ( $opt_groups = is_array( $option ) ) {
+				break;
+			}
+		}
+
+		if ( ! $opt_groups ) {
+			$groups = array(
+				array(
+					'options' => $options,
+				),
+			);
+		}
+	}
+
+	$output = '<option></option>';
+	if ( ! $no_options ) {
+		foreach ( $groups as $opt_group ) {
+
+			if ( isset( $opt_group['label'] ) ) {
+				$output .= "<optgroup label=\"$opt_group[label]\" >";
+			}
+
+			foreach ( (array) $opt_group['options'] as $option_value => $option ) {
+				// Simple format support
+				if ( ! is_array( $option ) ) {
+					$option_label = $option;
+					$option       = array(
+						'label' => $option_label,
+					);
+				}
+
+				$output .= "<option value=\"$option_value\">";
+				$output .= $option['label'];
+				$output .= '</option>';
+			}
+			if ( isset( $opt_group['label'] ) ) {
+				$output .= '</optgroup>';
+			}
+		}
+	}
+
+	return $output;
 }

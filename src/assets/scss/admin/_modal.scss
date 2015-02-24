@@ -532,6 +532,14 @@ $render-modal-height: 800px;
     font-style: normal;
     margin-top: 5px;
     margin-bottom: 5px;
+    clear: both;
+  }
+
+  // Counter description modification
+  .render-modal-att-row[data-att-type="counter"] {
+    .render-modal-att-description {
+      padding-top: 5px; // Because margin doesn't apply with floated element above
+    }
   }
 
   .render-modal-att-field {
