@@ -384,9 +384,7 @@ function render_sc_post_list( $args = array() ) {
  */
 function render_sc_term_list( $args = array() ) {
 
-	if ( ! ( $taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : false ) ) {
-		return array();
-	}
+	$taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : get_taxonomies( array( 'public' => true, ) );
 
 	unset( $args['taxonomies'] );
 

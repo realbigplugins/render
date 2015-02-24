@@ -59,7 +59,7 @@ define( 'RENDER_PRIMARY_COLOR_LIGHT', '#74b6c2' );
  *
  * @since 1.0.0
  */
-define( 'RENDER_PRIMARY_FONT_COLOR', '#fff' );
+define( 'RENDER_PRIMARY_FONT_COLOR', '#ffffff' );
 
 if ( ! class_exists( 'Render' ) ) {
 
@@ -475,9 +475,9 @@ if ( ! class_exists( 'Render' ) ) {
 
 							// Setup conditionals
 							if ( isset( $att['conditional'] ) && $att['conditional'] !== false ) {
-								if ( isset( $att['conditional']['populate'] ) ) {
 
-									// Flip array key / value and set the value to an empty array
+								// Flip array key / value and set the value to an empty array
+								if ( isset( $att['conditional']['populate'] ) ) {
 									foreach ( $att['conditional']['populate']['atts'] as $_i => $_att ) {
 										$args['atts'][ $i ]['conditional']['populate']['atts'][ $_att ] = array();
 										unset( $args['atts'][ $i ]['conditional']['populate']['atts'][ $_i ] );

@@ -135,7 +135,7 @@ foreach (
 			'code'        => 'render_button',
 			'function'    => '_render_sc_button',
 			'title'       => __( 'Button', 'Render' ),
-			'description' => __( 'Creates a sweet button', 'Render' ),
+			'description' => __( 'Creates a sweet button.', 'Render' ),
 			'atts'        => array(
 				array(
 					'type'  => 'section_break',
@@ -211,7 +211,7 @@ foreach (
 						),
 					),
 				),
-				'link'                       => render_sc_attr_template( 'link', array(
+				'link_url'                   => render_sc_attr_template( 'link', array(
 					'required'    => true,
 					'conditional' => array(
 						'visibility' => array(
@@ -259,7 +259,7 @@ foreach (
 					'conditional' => array(
 						'visibility' => array(
 							'atts' => array(
-								'link' => array(
+								'link_url' => array(
 									'type' => 'NOT EMPTY'
 								),
 							),
@@ -369,10 +369,10 @@ foreach (
 					),
 				),
 				'heading_tag'                => array(
-					'label'      => __( 'Heading Tag', 'Render' ),
-					'type'       => 'selectbox',
-					'advanced'   => true,
-					'properties' => array(
+					'label'       => __( 'Heading Tag', 'Render' ),
+					'type'        => 'selectbox',
+					'advanced'    => true,
+					'properties'  => array(
 						'allowCustomInput' => true,
 						'default'          => 'h3',
 						'options'          => array(
@@ -385,6 +385,15 @@ foreach (
 							'p'    => 'Paragraph',
 							'span' => 'Span',
 							'div'  => 'DIV',
+						),
+					),
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'heading' => array(
+									'type' => 'NOT EMPTY',
+								),
+							),
 						),
 					),
 				),
@@ -675,8 +684,10 @@ function _render_sc_accordion_section( $atts = array(), $content = '' ) {
 function _render_sc_button( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
-		'link'                       => '#',
 		'link_new_window'            => false,
+		'link_url'                   => null,
+		'link_email'                 => null,
+		'link_phone'                 => null,
 		'size'                       => 'medium',
 		'color'                      => RENDER_PRIMARY_COLOR,
 		'color_hover'                => RENDER_PRIMARY_COLOR_DARK,
@@ -694,9 +705,22 @@ function _render_sc_button( $atts = array(), $content = '' ) {
 
 	$border_radius = render_sc_parse_border_radius( $atts );
 
-	// Att accepts post ID or custom value
-	$link = is_numeric( $atts['link'] ) ? get_permalink( $atts['link'] ) : $atts['link'];
-	$link = $link !== false ? $link : '#';
+	$link = '';
+
+	// If link is a post link
+	$link = $atts['link_url'] !== null ? get_permalink( (int) $atts['link_url'] ) : $link;
+
+	// If link is an email
+	$link = $atts['link_email'] !== null ? "mailto:$atts[link_email]" : $link;
+
+	// If link is a phone number
+	$link = $atts['link_phone'] !== null ? "tel:$atts[link_phone]" : $link;
+
+	// Sanity check
+	$link = ! empty( $link ) ? $link : '#';
+
+	// Get the button content
+	$content = do_shortcode( $content );
 
 	$class = 'render-button';
 	$class .= ! empty( $atts['size'] ) ? "-$atts[size]" : '';
@@ -716,7 +740,6 @@ function _render_sc_button( $atts = array(), $content = '' ) {
 
 	return $output;
 }
-
 
 /**
  * Wraps the content within a styled box.

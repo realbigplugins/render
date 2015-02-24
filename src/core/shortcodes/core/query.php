@@ -32,7 +32,7 @@ foreach ( array(
 				'type'       => 'selectbox',
 				'properties' => array(
 					'placeholder' => __( 'Any author', 'Render' ),
-					'options'     => render_user_dropdown( 'edit_posts' ),
+					'options'     => render_sc_user_list( 'edit_posts' ),
 				),
 			),
 			'post_type'   => array(

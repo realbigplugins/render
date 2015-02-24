@@ -36,6 +36,9 @@ class Render_tinymce extends Render {
 		// Localize data for rendering in the TinyMCE
 		add_action( 'render_localized_data', array( $this, 'rendering_data' ) );
 
+		// Localize translations
+		add_action( 'render_localized_data', array( __CLASS__, '_translations' ) );
+
 		// Add a pointer
 		add_filter( 'render_pointers', function ( $pointers ) {
 
@@ -146,6 +149,24 @@ class Render_tinymce extends Render {
 		$mceinit['entity_encoding']               = 'numeric';
 
 		return $mceinit;
+	}
+
+	/**
+	 * Provides translations for TinyMCE pages.
+	 *
+	 * @since  {{VERSION}}
+	 * @access private
+	 *
+	 * @param array $data The current localization data.
+	 * @return array The new localization data.
+	 */
+	static function _translations( $data ) {
+
+		$data['l18n']['add_shortcode'] = __( 'Add Shortcode', 'Render' );
+		$data['l18n']['select_content_from_editor'] = __( 'Please select content from the editor to enable this shortcode.', 'Render' );
+		$data['l18n']['cannot_place_shortcode_here'] = __( 'You cannot place this shortcode here.', 'Render' );
+
+		return $data;
 	}
 
 	/**
@@ -423,15 +444,15 @@ class Render_tinymce extends Render {
 		// Close the wrapper
 
 		// Delete notification
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip'>" . __( 'Press again to delete', 'Render' ) . "</$tag>";
+		$output .= '<span class=\'render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip\'>' . __( 'Press again to delete', 'Render' ) . "</span>";
 
 		// Action button
 		if ( ! isset( $data['hideActions'] ) ) {
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip'>";
-			$output .= "<$tag class='render-tinymce-tooltip-spacer'></$tag>";
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit'>edit</$tag>";
-			$output .= "<$tag class='render-tinymce-shortcode-wrapper-remove dashicons dashicons-no'>remove</$tag>";
-			$output .= "</$tag>";
+			$output .= '<span class="render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip">';
+			$output .= '<span class="render-tinymce-tooltip-spacer"></span>';
+			$output .= '<span class="render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit">edit</span>';
+			$output .= '<span class="render-tinymce-shortcode-wrapper-remove dashicons dashicons-no">remove</span>';
+			$output .= '</span>';
 		}
 
 		$output .= "</$tag>";

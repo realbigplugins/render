@@ -440,6 +440,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 				'label'       => __( 'Phone', 'Render' ),
 				'properties'  => array(
 					'prefix' => '<span class="dashicons dashicons-phone"></span>',
+					'prefixWidth' => 15,
 					'mask' => array(
 						'template' => 'phone',
 					),
@@ -453,6 +454,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 				'label'       => __( 'Email', 'Render' ),
 				'properties'  => array(
 					'prefix' => '<span class="dashicons dashicons-email"></span>',
+					'prefixWidth' => 15,
 				),
 				'validate' => array(
 					'EMAIL' => true,
@@ -469,8 +471,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
-					'shift_step' => 5,
-					'max'        => 200,
+					'shift_step' => 20,
 					'unit'       => array(
 						'default' => 'px',
 						'allowed' => array(

@@ -23,13 +23,12 @@ foreach (
 			'title'       => __( 'Logic', 'Render' ),
 			'description' => __( 'Allows for the use of conditional statements for showing content.', 'Render' ),
 			'atts'        => array(
-				'arg1'     => array(
+				'arg1'      => array(
 					'label'      => __( 'Argument One', 'Render' ),
 					'type'       => 'selectbox',
+					'required' => true,
 					'properties' => array(
-						'allowCustomInput' => true,
-						'default'          => 'logged_in',
-						'options'          => array(
+						'options' => array(
 							'logged_in'  => __( 'If user is logged in', 'Render' ),
 							'home'       => __( 'If current page is home page', 'Render' ),
 							'comments'   => __( 'If comments allowed', 'Render' ),
@@ -46,13 +45,13 @@ foreach (
 						),
 					),
 				),
-				'operator' => array(
+				'operator'  => array(
 					'label'      => __( 'Operator', 'Render' ),
 					'type'       => 'selectbox',
+					'required' => true,
+					'default' => '==',
 					'properties' => array(
-						'allowCustomInput' => true,
-						'default'          => '==',
-						'options'          => array(
+						'options' => array(
 							'=='  => __( 'equals', 'Render' ),
 							'===' => __( 'is identical to', 'Render' ),
 							'!='  => __( 'does not equal', 'Render' ),
@@ -64,22 +63,56 @@ foreach (
 						),
 					),
 				),
-				'arg2'     => array(
-					'label'       => __( 'Argument Two', 'Render' ),
-					'type'        => 'selectbox',
-					'properties'  => array(
+				'arg2'      => array(
+					'label'      => __( 'Argument Two', 'Render' ),
+					'type'       => 'selectbox',
+					'required' => true,
+					'default'          => 'true',
+					'properties' => array(
 						'allowCustomInput' => true,
-						'default'          => 'true',
 						'options'          => array(
 							'true'  => __( 'true', 'Render' ),
 							'false' => __( 'false', 'Render' ),
 						),
 					),
 				),
-				'param'    => array(
+				'param'     => array(
 					'label'       => __( 'Parameter (optional)', 'Render' ),
 					'description' => __( 'Used in some conditions to further specify the condition.', 'Render' ),
+					'type'        => 'selectbox',
+					'conditional' => array(
+//						'visibility' => array(
+//							'atts' => array(
+//								'arg1' => array(
+//									'type'  => 'IN',
+//									'value' => 'single,page,category,tag,tax,author',
+//								),
+//							),
+//						),
+//						'populate'   => array(
+//							'atts'     => array(
+//								'arg1',
+//							),
+//							'callback' => '_render_sc_logic_param_populate',
+//						),
+					),
 				),
+				// Currently only in use for wp_version. If used for more, make sure "required" is still applicable
+//				'param_alt' => array(
+//					'label'       => __( 'Parameter (optional)', 'Render' ),
+//					'description' => __( 'Used in some conditions to further specify the condition.', 'Render' ),
+//					'required'    => true,
+//					'conditional' => array(
+//						'visibility' => array(
+//							'atts' => array(
+//								'arg1' => array(
+//									'type'  => '==',
+//									'value' => 'wp_version',
+//								),
+//							),
+//						),
+//					),
+//				),
 			),
 			'render'      => true,
 			'wrapping'    => true,
@@ -93,7 +126,7 @@ foreach (
 			'atts'        => array(
 				'visibility' => array(
 					'label'       => __( 'Visibility', 'Render' ),
-					'description' => __( 'Hide or show for below times.', 'Render' ),
+					'description' => __( 'Hide or show for the below times.', 'Render' ),
 					'type'        => 'toggle',
 					'properties'  => array(
 						'values' => array(
@@ -150,7 +183,7 @@ foreach (
 						'placeholder' => __( 'Select one or more users', 'Render' ),
 						'multi'       => true,
 						'callback'    => array(
-							'function' => 'render_user_dropdown',
+							'function' => 'render_sc_user_list',
 						),
 					),
 				),
@@ -186,16 +219,17 @@ foreach (
 function _render_sc_logic( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
-		'arg1'     => 'logged_in',
-		'arg2'     => 'true',
-		'operator' => '==',
-		'param'    => '',
+		'arg1'      => 'logged_in',
+		'arg2'      => 'true',
+		'operator'  => '==',
+		'param'     => '',
+		'param_alt' => '',
 	), $atts );
 
 	// Escape atts
 	render_esc_atts( $atts );
 
-	$parameter = $atts['param'];
+	$parameter = $atts['param'] || $atts['param_alt'];
 
 	// Correctly set arg1 to appropriate function
 	$argument_1 = $atts['arg1'];
@@ -674,4 +708,63 @@ function render_sc_time_slider( $att_id, $att, $properties ) {
 		<div class="render-modal-att-slider" <?php echo $data; ?>></div>
 	</div>
 <?php
+}
+
+/**
+ * Populates the parameter selectbox conditionally for the logic shortcode.
+ *
+ * @since  {{VERSION}}
+ * @access private
+ *
+ * @param array $atts The dependent attributes.
+ * @return array The selectbox options.
+ */
+function _render_sc_logic_param_populate( $atts ) {
+
+	// category,tag,tax,author
+
+	$options = array();
+
+	switch ( $atts['arg1'] ) {
+
+		case 'single':
+
+			$options = render_sc_post_list( array(
+				'post_type' => 'post',
+			) );
+			break;
+
+		case 'page':
+
+			$options = render_sc_post_list( array(
+				'post_type' => 'page',
+			) );
+			break;
+
+		case 'category':
+
+			$options = render_sc_term_list( array(
+				'taxonomies' => array( 'category' ),
+			) );
+			break;
+
+		case 'tag':
+
+			$options = render_sc_term_list( array(
+				'taxonomies' => array( 'post_tag' ),
+			) );
+			break;
+
+		case 'tax':
+
+			$options = render_sc_term_list();
+			break;
+
+		case 'author':
+
+			$options = render_sc_user_list( 'edit_posts' );
+			break;
+	}
+
+	return $options;
 }

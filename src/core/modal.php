@@ -31,6 +31,9 @@ class Render_Modal {
 
 		// Output the Modal HTML
 		add_action( 'admin_footer', array( __CLASS__, '_modal_output' ) );
+
+		// Add translations
+		add_action( 'render_localized_data', array( __CLASS__, '_translations' ) );
 	}
 
 	/**
@@ -102,10 +105,28 @@ class Render_Modal {
 		);
 	}
 
-	public static function render_conditional_att_populate() {
+	/**
+	 * Provides translations for the modal.
+	 *
+	 * @since  {{VERSION}}
+	 * @access private
+	 *
+	 * @param array $data The current localization data.
+	 * @return array The new localization data.
+	 */
+	static function _translations( $data ) {
 
-		echo 'SCHWA';
-		die();
+		$data['l18n']['enter_valid_email']            = __( 'Please enter a valid email address', 'Render' );
+		$data['l18n']['enter_valid_url']              = __( 'Please enter a valid URL', 'Render' );
+		$data['l18n']['too_many_chars']               = __( 'too many chars', 'Render' );
+		$data['l18n']['too_few_chars']                = __( 'too few chars', 'Render' );
+		$data['l18n']['invalid_chars']                = __( 'Invalid characters', 'Render' );
+		$data['l18n']['no_numbers']                   = __( 'No numbers please', 'Render' );
+		$data['l18n']['only_numbers']                 = __( 'Only numbers please', 'Render' );
+		$data['l18n']['cannot_change_from_shortcode'] = __( 'Cannot change from current shortcode. Remove first.', 'Render' );
+		$data['l18n']['this_field_required']          = __( 'This field is required', 'Render' );
+
+		return $data;
 	}
 
 	/**
@@ -133,6 +154,11 @@ class Render_Modal {
 			if ( ( ! $advanced && ! isset( $att['advanced'] ) ) || $advanced && isset( $att['advanced'] ) ) {
 
 				$type = isset( $att['type'] ) ? $att['type'] : 'textbox';
+
+				// Advanced atts can't be required
+				if ( $advanced ) {
+					unset( $att['required'] );
+				}
 
 				// Section breaks
 				if ( $type == 'section_break' ) {
@@ -194,6 +220,7 @@ class Render_Modal {
 		$att['classes'][] = 'render-modal-att-row';
 		$att['classes'][] = isset( $att['label'] ) && $att['label'] === false ? 'render-modal-att-hide-label' : '';
 		$att['classes'][] = $type == 'hidden' ? 'hidden' : '';
+		$att['classes'][] = isset( $att['conditional']['populate'] ) ? 'render-modal-att-conditional-populate' : '';
 		$att['classes']   = array_filter( $att['classes'] );
 
 		// Setup data
@@ -275,10 +302,14 @@ class Render_Modal {
 	 * @param array  $properties Properties of the attribute field type.
 	 */
 	private static function att_type_hidden( $att_id, $att, $properties = array() ) {
+
+		$default = isset( $att['default'] ) ? $att['default'] : '';
 		?>
 		<input type="hidden" class="render-modal-att-input render-modal-att-hidden"
-		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
-		       name="<?php echo $att_id; ?>"/>
+		       value="<?php echo $default; ?>"
+		       name="<?php echo $att_id; ?>"
+		       data-default="<?php echo $default; ?>"
+			/>
 	<?php
 	}
 
@@ -311,6 +342,8 @@ class Render_Modal {
 		$mask = '';
 		$mask = $properties['mask'] ? 'data-mask="1"' : '';
 
+		$default = isset( $att['default'] ) ? $att['default'] : '';
+
 		if ( $properties['prefix'] || $properties['postfix'] ) : ?>
 			<div class="render-modal-att-textbox-fix">
 		<?php endif;
@@ -324,8 +357,9 @@ class Render_Modal {
 		<input type="text" class="render-modal-att-input render-modal-att-textbox"
 		       style="width: <?php echo "$width%"; ?>"
 		       placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : ''; ?>"
-		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+		       value="<?php echo $default; ?>"
 		       name="<?php echo $att_id; ?>"
+		       data-default="<?php echo $default; ?>"
 			<?php echo $mask; ?> />
 
 		<?php if ( $properties['postfix'] ) : ?>
@@ -437,9 +471,13 @@ class Render_Modal {
 	 * @param array  $att    Properties of the attribute.
 	 */
 	private static function att_type_textarea( $att_id, $att ) {
+
+		$default = isset( $att['default'] ) ? $att['default'] : '';
 		?>
-		<textarea class="render-modal-att-input render-modal-att-textarea" name="<?php echo $att_id; ?>"><?php
-			echo isset( $att['default'] ) ? $att['default_value'] : '';
+		<textarea class="render-modal-att-input render-modal-att-textarea"
+		          name="<?php echo $att_id; ?>"
+		          data-default="<?php echo $default; ?>"><?php
+			echo $default;
 			?></textarea>
 	<?php
 	}
@@ -478,20 +516,19 @@ class Render_Modal {
 			}
 		}
 
-		if ( empty( $properties['options'] ) && empty( $properties['groups'] ) ) {
-			echo isset( $properties['no_options'] ) ? $properties['no_options'] : 'No options available.';
+		$no_options = empty( $properties['options'] ) && empty( $properties['groups'] );
 
-			return;
-		}
+		if ( ! $no_options ) {
 
-		// Optgroup support
-		if ( ! isset( $properties['groups'] ) ) {
+			// Optgroup support
+			if ( ! isset( $properties['groups'] ) ) {
 
-			$properties['groups'] = array(
-				0 => array(
-					'options' => $properties['options'],
-				),
-			);
+				$properties['groups'] = array(
+					0 => array(
+						'options' => $properties['options'],
+					),
+				);
+			}
 		}
 
 		// Chosen support
@@ -501,50 +538,64 @@ class Render_Modal {
 		} else {
 			$chosen = '';
 		}
+
+		$default = isset( $att['default'] ) ? $att['default'] : '';
+
+		// Classes
+		$classes   = array();
+		$classes[] = 'render-chosen-container';
+		$classes[] = isset( $properties['allowCustomInput'] ) ? 'render-chosen-custom-input' : '';
+		$classes   = array_filter( $classes );
 		?>
 
-		<div
-			class="render-chosen-container <?php echo isset( $properties['allowCustomInput'] ) ? 'render-chosen-custom-input' : ''; ?>">
+		<span class="render-modal-selectbox-no-options" style="<?php echo ! $no_options ? 'display: none;' : ''; ?>">
+			<?php echo isset( $properties['no_options'] ) ? $properties['no_options'] : __( 'No options available.' ); ?>
+		</span>
+
+		<div class="<?php echo implode( ' ', $classes ); ?>" style="<?php echo $no_options ? 'display: none;' : ''; ?>">
 			<select name="<?php echo $att_id; ?>"
 			        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select an option'; ?>"
 			        class="render-modal-att-input <?php echo $chosen; ?>"
+			        data-default="<?php echo $default; ?>"
 				<?php echo isset( $properties['multi'] ) ? 'multiple' : ''; ?>>
 
 				<?php // Necessary for starting with nothing selected ?>
 				<option></option>
 
-				<?php foreach ( $properties['groups'] as $opt_group ) : ?>
+				<?php if ( isset( $properties['groups'] ) ) : ?>
+					<?php foreach ( $properties['groups'] as $opt_group ) : ?>
 
-					<?php if ( isset( $opt_group['label'] ) ) : ?>
-						<optgroup label="<?php echo $opt_group['label']; ?>">
-					<?php endif; ?>
+						<?php if ( isset( $opt_group['label'] ) ) : ?>
+							<optgroup label="<?php echo $opt_group['label']; ?>">
+						<?php endif; ?>
 
-					<?php foreach ( $opt_group['options'] as $option_value => $option ) : ?>
-						<?php
-						// Simple format support
-						if ( ! is_array( $option ) ) {
-							$option_label = $option;
-							$option       = array(
-								'label' => $option_label,
-							);
-						}
-						?>
-						<option
-							<?php echo isset( $option['icon'] ) ?
-								"data-icon='$option[icon]'" : ''; ?>
-							value="<?php echo $option_value; ?>"
-							<?php selected( $option_value, isset( $att['default'] ) ? $att['default'] : '' ); ?>
-							>
-							<?php echo ! isset( $option['label'] ) ? 'MOTHER EFF' : ''; ?>
-							<?php echo $option['label']; ?>
-						</option>
+						<?php foreach ( (array) $opt_group['options'] as $option_value => $option ) : ?>
+							<?php
+							// Simple format support
+							if ( ! is_array( $option ) ) {
+								$option_label = $option;
+								$option       = array(
+									'label' => $option_label,
+								);
+							}
+							?>
+							<option
+								<?php echo isset( $option['icon'] ) ? "data-icon='$option[icon]'" : ''; ?>
+								value="<?php echo $option_value; ?>"
+								<?php selected( $option_value, $default ); ?>
+								>
+								<?php echo ! isset( $option['label'] ) ? 'MOTHER EFF' : ''; ?>
+								<?php echo $option['label']; ?>
+							</option>
+						<?php endforeach; ?>
+
+						<?php if ( isset( $opt_group['label'] ) ) : ?>
+							</optgroup>
+						<?php endif; ?>
+
 					<?php endforeach; ?>
 
-					<?php if ( isset( $opt_group['label'] ) ) : ?>
-						</optgroup>
-					<?php endif; ?>
-
-				<?php endforeach; ?>
+				<?php endif; ?>
 
 			</select>
 
@@ -576,9 +627,12 @@ class Render_Modal {
 		);
 		$properties = wp_parse_args( $properties, $defaults );
 
+		$default = $properties['value'];
+
 		// If range slider
 		if ( isset( $properties['range'] ) ) {
 			$properties['values'] = isset( $properties['values'] ) ? $properties['values'] : '0-20';
+			$default              = $properties['values'];
 			unset( $properties['value'] );
 		}
 
@@ -594,7 +648,9 @@ class Render_Modal {
 			?>
 			<input type="hidden" class="render-modal-att-slider-value render-modal-att-input"
 			       value="<?php echo $properties['values']; ?>"
-			       name="<?php echo $att_id; ?>"/>
+			       name="<?php echo $att_id; ?>"
+			       data-default="<?php echo $default; ?>"
+				/>
 
 			<div class="render-modal-att-slider-range-text">
 				<span class="render-modal-att-slider-range-text-value1"><?php echo $values[0]; ?></span>
@@ -605,7 +661,9 @@ class Render_Modal {
 
 			<input type="text" class="render-modal-att-slider-value render-modal-att-input"
 			       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : '0'; ?>"
-			       name="<?php echo $att_id; ?>"/>
+			       name="<?php echo $att_id; ?>"
+			       data-default="<?php echo $default; ?>"
+				/>
 		<?php endif; ?>
 		<div class="render-modal-att-slider" <?php echo $data; ?>></div>
 	<?php
@@ -623,11 +681,14 @@ class Render_Modal {
 	 */
 	private static function att_type_colorpicker( $att_id, $att, $properties ) {
 
+		$default = isset( $att['default'] ) ? $att['default'] : '#bada55';
 		?>
 		<input type="text"
-		       value="<?php echo isset( $att['default'] ) ? $att['default'] : '#bada55'; ?>"
+		       value="<?php echo $default ?>"
 		       class="render-modal-att-colorpicker render-modal-att-input"
-		       name="<?php echo $att_id; ?>"/>
+		       name="<?php echo $att_id; ?>"
+		       data-default="<?php echo $default; ?>"
+			/>
 	<?php
 	}
 
@@ -666,6 +727,7 @@ class Render_Modal {
 			       data-max="<?php echo $properties['max']; ?>"
 			       data-step="<?php echo $properties['step']; ?>"
 			       data-shift-step="<?php echo $properties['shift_step']; ?>"
+			       data-default="<?php echo $default; ?>"
 				/>
 
 			<div class="render-modal-counter-up render-modal-button dashicons dashicons-plus"></div>
@@ -678,7 +740,6 @@ class Render_Modal {
 				<?php if ( isset( $unit['allowed'] ) ) : ?>
 
 					<select data-placeholder="<?php _e( 'Unit', 'Render' ); ?>">
-						<option></option>
 						<?php foreach ( $unit['allowed'] as $unit_value => $unit_label ) :
 							$unit_value = is_int( $unit_value ) ? $unit_label : $unit_value;
 							$selected   = isset( $unit['default'] ) ? selected( $unit_value, $unit['default'], false ) : '';
@@ -811,13 +872,17 @@ class Render_Modal {
 				<?php
 				break;
 		endswitch;
+
+		$default = isset( $att['default'] ) ? $att['default'] : '';
 		?>
 		<input type="button" value="Upload / Choose Media" class="render-modal-att-media-upload"
 		       data-type="<?php echo $properties['type']; ?>"/>
 		<input type="hidden"
-		       value="<?php echo isset( $att['default'] ) ? $att['default'] : ''; ?>"
+		       value="<?php echo $default ?>"
 		       class="render-modal-att-media render-modal-att-input"
-		       name="<?php echo $att_id; ?>"/>
+		       name="<?php echo $att_id; ?>"
+		       data-default="<?php echo $default; ?>"
+			/>
 	<?php
 	}
 

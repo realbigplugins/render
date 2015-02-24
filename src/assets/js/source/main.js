@@ -6,15 +6,5 @@
  * @package Render
  * @subpackage Scripts
  */
-var Render;
 (function ($) {
-	Render = {
-		init: function () {
-            // ... what are you lookin' at?
-		}
-	};
-
-	$(function () {
-		Render.init();
-	})
 })(jQuery);

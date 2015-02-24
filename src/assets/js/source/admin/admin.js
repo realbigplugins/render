@@ -8,17 +8,22 @@
  * @package Render
  * @subpackage Modal
  */
-var Render_Admin;
 (function ($) {
-    Render_Admin = {
-        init: function () {
-            // ... get out of here!
-        }
-    };
 
-    $(function () {
-        Render_Admin.init();
-    });
+    /**
+     * Shows an error in the console.
+     *
+     * @since {{VERSION}}
+     *
+     * @param {string} message The message to log.
+     */
+    window['render_log_error'] = function (message) {
+
+        console.log(
+            '%c ERROR: ' + message,
+            'color: #f00;'
+        );
+    }
 })(jQuery);
 
 // Sort by depth plugin

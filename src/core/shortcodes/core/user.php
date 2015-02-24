@@ -30,7 +30,7 @@ foreach (
 					'properties' => array(
 						'placeholder' => __( 'Defaults to the current user', 'Render' ),
 						'callback'    => array(
-							'function' => 'render_user_dropdown',
+							'function' => 'render_sc_user_list',
 						),
 					),
 				),
@@ -80,7 +80,7 @@ foreach (
 					'properties' => array(
 						'placeholder' => __( 'Defaults to the current user', 'Render' ),
 						'callback'    => array(
-							'function' => 'render_user_dropdown',
+							'function' => 'render_sc_user_list',
 						),
 					),
 				),
@@ -621,7 +621,7 @@ function render_sc_user_get_userdata( $user_ID ) {
  *
  * @return bool|array List of registered users.
  */
-function render_user_dropdown( $capability = 'read' ) {
+function render_sc_user_list( $capability = 'read' ) {
 
 	$users = get_users();
 

@@ -18,6 +18,7 @@ var Render_tinymce;
         min_load_time = false,
         last_message = 0,
         submitted = false,
+        l18n = Render_Data.l18n,
         $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
 
     Render_tinymce = {
@@ -122,7 +123,7 @@ var Render_tinymce;
                     // Establishes an icon class for the button with the prefix "mce-i-"
                     icon: 'render-mce-icon',
                     cmd: 'Render_Open',
-                    tooltip: 'Add Shortcode'
+                    tooltip: l18n.add_shortcode
                 });
 
                 // Fires when clicking the shortcode <> button in the tinymce toolbar
@@ -460,16 +461,19 @@ var Render_tinymce;
          */
         open: function (shortcode) {
 
-            // Reset the disabled shortcodes
-            $modal_shortcodes.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
-
             if (typeof shortcode !== 'undefined') {
                 Render_Modal.modify(shortcode);
             } else {
 
+                // Disable wrapping shortcodes when there's no selection
                 if (!Render_Modal.selection) {
-                    $modal_shortcodes.find('.render-modal-shortcode.wrapping:not(.nested-parent)').addClass('disabled')
-                        .data('shortcodeErrorMessage', 'Please select content from the editor to enable this shortcode.');
+                    $modal_shortcodes.find('.render-modal-shortcode.wrapping:not(.nested-parent)').each(function () {
+
+                        Render_Modal.disableShortcode(
+                            $(this),
+                            l18n.select_content_from_editor
+                        );
+                    });
                 }
 
                 Render_Modal.open();
@@ -479,10 +483,18 @@ var Render_tinymce;
             var $cursor_node = $(editor.selection.getNode()),
                 $nesting_shortcode = $cursor_node.length ? $cursor_node.closest('.nested-child') : false;
 
+            // Disable nesting shortcodes from being nested inside another
             if ($nesting_shortcode.length) {
+
                 var nesting_shortcode = $nesting_shortcode.parent().closest('.render-tinymce-shortcode-wrapper').data('code');
-                $modal_shortcodes.find('.render-modal-shortcode[data-code="' + nesting_shortcode + '"]').addClass('disabled')
-                    .data('shortcodeErrorMessage', 'You cannot place this shortcode here.');
+
+                $modal_shortcodes.find('.render-modal-shortcode[data-code="' + nesting_shortcode + '"]').each(function () {
+
+                    Render_Modal.disableShortcode(
+                        $(this),
+                        l18n.cannot_place_shortcode_here
+                    );
+                });
             }
         },
 
