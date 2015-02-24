@@ -241,9 +241,20 @@ class Render_tinymce extends Render {
 	 */
 	public static function render_ajax() {
 
-		global $post, $content;
+		global $post, $content, $wp_query;
 
 		if ( isset( $_REQUEST['post'] ) ) {
+
+			$wp_query = new WP_Query( array(
+				'p' => $_REQUEST['post'],
+			));
+
+			// Could be a page, and for some reason that requires a different parameter
+			if ( $wp_query->post_count === 0 ) {
+				$wp_query = new WP_Query( array(
+					'page_id' => $_REQUEST['post'],
+				));
+			}
 
 			if ( $post = get_post( $_REQUEST['post'] ) ) {
 				$post->post_content = $content;
@@ -396,7 +407,11 @@ class Render_tinymce extends Render {
 		} elseif ( isset( $data['useText'] ) ) {
 			$shortcode_output = $data['useText'];
 		} else {
+
 			$shortcode_output = do_shortcode( $entire_code );
+
+			// Un-escape the output
+			$shortcode_output = render_sc_attr_unescape( $shortcode_output );
 		}
 
 		// If the output contains any block tags, make sure the wrapper tag is a div

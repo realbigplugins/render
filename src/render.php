@@ -125,6 +125,19 @@ if ( ! class_exists( 'Render' ) ) {
 		);
 
 		/**
+		 * Escapes for shortcode attributes
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @var array
+		 */
+		public static $sc_attr_escapes = array(
+			'\'',
+			'[',
+			']'
+		);
+
+		/**
 		 * Constructs the class.
 		 *
 		 * @since 1.0.0
@@ -195,6 +208,7 @@ if ( ! class_exists( 'Render' ) ) {
 
 			// Filter content
 			add_filter( 'the_content', 'render_strip_paragraphs_around_shortcodes' );
+			add_filter( 'the_content', 'render_sc_attr_unescape', 15 );
 
 			// Initialize Render shortcodes
 			self::_shortcodes_init();

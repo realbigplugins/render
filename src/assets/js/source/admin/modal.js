@@ -1107,6 +1107,19 @@ var Render_Modal;
                     elements.active_shortcode.data('attsInit', true);
                 }
 
+                // Trigger change on inputs for the sake of conditional fields on initial shortcode open
+                elements.active_shortcode.find('.render-modal-att-row').each(function () {
+
+                    var attObj = $(this).data('attObj');
+
+                    // Oops
+                    if (typeof attObj == 'undefined') {
+                        return true; // continue $.each
+                    }
+
+                    attObj.$input.change();
+                });
+
                 // Scroll it into view
                 var shortcode_offset = elements.active_shortcode.position(),
                     scrollTop = elements.list.scrollTop(),
@@ -1803,9 +1816,6 @@ var Render_Modal;
                 });
             });
 
-            // Remove the "boundAtts" property, as it's no longer in use
-            delete this.conditionals.boundAtts;
-
             // Fire once on initial load to start the attribute hidden/shown/populated correctly
             //this.performConditionals();
         };
@@ -1819,6 +1829,11 @@ var Render_Modal;
 
             var _this = this;
             $.each(this.conditionals, function (type, conditional) {
+
+                // Only these 2 types are currently supported
+                if (type !== 'visibility' && type !== 'populate') {
+                    return true; // continue $.each
+                }
 
                 $.each(conditional.atts, function (att_ID, att) {
 
@@ -2906,7 +2921,8 @@ var Render_Modal;
         this.rebuildOptions = function (response) {
 
             var $no_options = this.$container.find('.render-modal-selectbox-no-options'),
-                $chosen_container = this.$container.find('.render-chosen-container');
+                $chosen_container = this.$container.find('.render-chosen-container'),
+                $description = this.$container.find('.render-modal-att-description');
 
             // Hide or show
             if (response.options.length === 0) {
@@ -2920,6 +2936,11 @@ var Render_Modal;
             } else {
                 $no_options.hide();
                 $chosen_container.show();
+            }
+
+            // Modify the description, if it's set
+            if (response.description) {
+                $description.html(response.description);
             }
 
             var options_html = '<option></option>';
@@ -3746,12 +3767,6 @@ var Render_Modal;
     // Helper functions //
     // ---------------- //
 
-    var sc_attr_escapes = [
-        '\'',
-        '[',
-        ']'
-    ];
-
     /**
      * Run the value through various sanitation methods to prepare for being a shortcode attribute.
      *
@@ -3766,13 +3781,13 @@ var Render_Modal;
         var charCode, regExp;
 
         // Run through all of the escapes
-        for (var i = 0; i < sc_attr_escapes.length; i++) {
+        $.each(Render_Data.sc_attr_escapes, function (i, escape) {
 
-            charCode = sc_attr_escapes[i].charCodeAt(0).toString();
+            charCode = escape.charCodeAt(0).toString();
 
-            regExp = new RegExp(esc_regex_string(sc_attr_escapes[i]), 'g');
+            regExp = new RegExp(esc_regex_string(escape), 'g');
             value = value.replace(regExp, '::' + charCode + '::');
-        }
+        });
 
         return value;
     }
@@ -3791,13 +3806,13 @@ var Render_Modal;
         var charCode, regExp;
 
         // Run through all of the escapes
-        for (var i = 0; i < sc_attr_escapes.length; i++) {
+        $.each(Render_Data.sc_attr_escapes, function (i, escape) {
 
-            charCode = sc_attr_escapes[i].charCodeAt(0).toString();
+            charCode = escape.charCodeAt(0).toString();
 
             regExp = new RegExp('::' + charCode + '::', 'g');
-            value = value.replace(regExp, sc_attr_escapes[i]);
-        }
+            value = value.replace(regExp, escape);
+        });
 
         return value;
     }

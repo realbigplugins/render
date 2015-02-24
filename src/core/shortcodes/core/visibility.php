@@ -3,7 +3,6 @@
  * Contains all Render packaged shortcodes within the Visibility category.
  *
  * @since      1.0.0
- *
  * @package    Render
  * @subpackage Shortcodes
  */
@@ -23,10 +22,10 @@ foreach (
 			'title'       => __( 'Logic', 'Render' ),
 			'description' => __( 'Allows for the use of conditional statements for showing content.', 'Render' ),
 			'atts'        => array(
-				'arg1'      => array(
+				'arg1'       => array(
 					'label'      => __( 'Argument One', 'Render' ),
 					'type'       => 'selectbox',
-					'required' => true,
+					'required'   => true,
 					'properties' => array(
 						'options' => array(
 							'logged_in'  => __( 'If user is logged in', 'Render' ),
@@ -45,38 +44,48 @@ foreach (
 						),
 					),
 				),
-				'operator'  => array(
+				'operator'   => array(
 					'label'      => __( 'Operator', 'Render' ),
 					'type'       => 'selectbox',
-					'required' => true,
-					'default' => '==',
+					'required'   => true,
+					'default'    => 'equals',
 					'properties' => array(
 						'options' => array(
-							'=='  => __( 'equals', 'Render' ),
-							'===' => __( 'is identical to', 'Render' ),
-							'!='  => __( 'does not equal', 'Render' ),
-							'!==' => __( 'is not identical to', 'Render' ),
-							'<'   => __( 'is less than', 'Render' ),
-							'>'   => __( 'is greater than', 'Render' ),
-							'<='  => __( 'is less than or equal to', 'Render' ),
-							'>='  => __( 'is greater than or equal to', 'Render' ),
+							'equals'                => __( 'equals', 'Render' ),
+							'identical'             => __( 'is identical to', 'Render' ),
+							'not_equal'        => __( 'does not equal', 'Render' ),
+							'not_identical'      => __( 'is not identical to', 'Render' ),
+							'less_than'             => __( 'is less than', 'Render' ),
+							'greater_than'          => __( 'is greater than', 'Render' ),
+							'less_than_or_equal'    => __( 'is less than or equal to', 'Render' ),
+							'greater_than_or_equal' => __( 'is greater than or equal to', 'Render' ),
 						),
 					),
 				),
-				'arg2'      => array(
-					'label'      => __( 'Argument Two', 'Render' ),
-					'type'       => 'selectbox',
-					'required' => true,
-					'default'          => 'true',
-					'properties' => array(
+				'arg2'       => array(
+					'label'       => __( 'Argument Two', 'Render' ),
+					'type'        => 'selectbox',
+					'required'    => true,
+					'default'     => 'true',
+					'properties'  => array(
 						'allowCustomInput' => true,
 						'options'          => array(
 							'true'  => __( 'true', 'Render' ),
 							'false' => __( 'false', 'Render' ),
 						),
 					),
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'arg1' => array(
+									'type'  => 'NOT IN',
+									'value' => 'wp_version',
+								),
+							),
+						),
+					),
 				),
-				'param'     => array(
+				'param'      => array(
 					'label'       => __( 'Parameter (optional)', 'Render' ),
 					'description' => __( 'Used in some conditions to further specify the condition.', 'Render' ),
 					'type'        => 'selectbox',
@@ -97,10 +106,10 @@ foreach (
 						),
 					),
 				),
-				// Currently only in use for wp_version. If used for more, make sure "required" is still applicable
-				'param_alt' => array(
-					'label'       => __( 'Parameter (optional)', 'Render' ),
-					'description' => __( 'Used in some conditions to further specify the condition.', 'Render' ),
+				// Currently only in use for wp_version. If used for more, make sure all properties still applicable
+				'wp_version' => array(
+					'label'       => __( 'Version', 'Render' ),
+					'description' => __( 'Enter the version number in the format "#.#.#".', 'Render' ),
 					'required'    => true,
 					'conditional' => array(
 						'visibility' => array(
@@ -210,26 +219,22 @@ foreach (
  *
  * @since  1.0.0
  * @access private
- *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
- *
  * @return bool True if statement succeeds, false otherwise. Doy!
  */
 function _render_sc_logic( $atts = array(), $content = '' ) {
 
 	$atts = shortcode_atts( array(
-		'arg1'      => 'logged_in',
-		'arg2'      => 'true',
-		'operator'  => '==',
-		'param'     => '',
-		'param_alt' => '',
+		'arg1'       => 'logged_in',
+		'arg2'       => 'true',
+		'operator'   => 'equals',
+		'param'      => '',
+		'wp_version' => '',
 	), $atts );
 
 	// Escape atts
 	render_esc_atts( $atts );
-
-	$parameter = $atts['param'] || $atts['param_alt'];
 
 	// Correctly set arg1 to appropriate function
 	$argument_1 = $atts['arg1'];
@@ -241,22 +246,22 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
 			$argument_1 = is_home();
 			break;
 		case 'single':
-			$argument_1 = is_single( $parameter );
+			$argument_1 = is_single( $atts['param'] );
 			break;
 		case 'page':
-			$argument_1 = is_page( $parameter );
+			$argument_1 = is_page( $atts['param'] );
 			break;
 		case 'category':
-			$argument_1 = is_category( $parameter );
+			$argument_1 = is_category( $atts['param'] );
 			break;
 		case 'tag':
-			$argument_1 = is_tag( $parameter );
+			$argument_1 = is_tag( $atts['param'] );
 			break;
 		case 'tax':
-			$argument_1 = is_tax( $parameter );
+			$argument_1 = is_tax( $atts['param'] );
 			break;
 		case 'author':
-			$argument_1 = is_author( $parameter );
+			$argument_1 = is_author( $atts['param'] );
 			break;
 		case 'archive':
 			$argument_1 = is_archive();
@@ -272,39 +277,73 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
 			break;
 		case 'wp_version':
 
-			$argument_1 = get_bloginfo( 'version' );
+			/**
+			 * If we're doing the version, we need to call on a special function for comparing.
+			 *
+			 * @since 1.0.0
+			 */
+			add_filter( 'render_sc_logic_operator', function ( $output, $argument_1, $argument_2, $operator, $content, $atts ) {
 
-			// If we're doing the version, we need to call on a special function for comparing
-			add_filter( 'render_sc_logic_operator', function ( $output, $argument_1, $argument_2, $content, $atts ) {
 
-				if ( $atts['arg1'] == 'version' ) {
-					switch ( $atts['operator'] ) {
-						case '==':
-							if ( version_compare( $argument_1, $argument_2, '=' ) ) {
-								return $content;
+				if ( $argument_1 == 'wp_version' ) {
+
+					$passing = false;
+
+					$argument_1 = get_bloginfo( 'version' );
+					$argument_2 = $atts['wp_version'];
+
+					switch ( $operator ) {
+
+						case 'equals':
+						case 'identical':
+
+						if ( version_compare( $argument_1, $argument_2, '=' ) ) {
+								$passing = true;
 							};
 							break;
-						case '===':
-							if ( version_compare( $argument_1, $argument_2, '==' ) ) {
-								return $content;
+
+						case 'not_equal':
+						case 'not_identical':
+
+							if ( version_compare( $argument_1, $argument_2, '!=' ) ) {
+								$passing = true;
 							};
 							break;
-						case '<':
-						case '<=':
-						case '>':
-						case '>=':
-						case '!=':
-							if ( version_compare( $argument_1, $argument_2, $atts['operator'] ) ) {
-								return $content;
+
+						case 'less_than':
+
+							if ( version_compare( $argument_1, $argument_2, '<' ) ) {
+								$passing = true;
 							};
 							break;
-						default:
-							return '';
+
+						case 'less_than_or_equal':
+
+							if ( version_compare( $argument_1, $argument_2, '<=' ) ) {
+								$passing = true;
+							};
+							break;
+
+						case 'greater_than':
+
+							if ( version_compare( $argument_1, $argument_2, '>' ) ) {
+								$passing = true;
+							};
+							break;
+
+						case 'greater_than_or_equal':
+
+							if ( version_compare( $argument_1, $argument_2, '>=' ) ) {
+								$passing = true;
+							};
+							break;
 					}
+
+					return $passing ? $content : '';
 				} else {
-					return $output;
+					return $content;
 				}
-			}, 10, 5 );
+			}, 10, 6 );
 
 			break;
 		default:
@@ -331,42 +370,42 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
 	$output   = '';
 	$operator = $atts['operator'];
 	switch ( $operator ) {
-		case '===':
+		case 'identical':
 			if ( $argument_1 === $argument_2 ) {
 				$output = $content;
 			}
 			break;
-		case '==':
+		case 'equals':
 			if ( $argument_1 == $argument_2 ) {
 				$output = $content;
 			}
 			break;
-		case '!=':
+		case 'not_equal':
 			if ( $argument_1 != $argument_2 ) {
 				$output = $content;
 			}
 			break;
-		case '!==':
+		case 'not_identical':
 			if ( $argument_1 !== $argument_2 ) {
 				$output = $content;
 			}
 			break;
-		case '<':
+		case 'less_than':
 			if ( $argument_1 < $argument_2 ) {
 				$output = $content;
 			}
 			break;
-		case '>':
+		case 'greater_than':
 			if ( $argument_1 > $argument_2 ) {
 				$output = $content;
 			}
 			break;
-		case '>=':
+		case 'greater_than_or_equal':
 			if ( $argument_1 >= $argument_2 ) {
 				$output = $content;
 			}
 			break;
-		case '<=':
+		case 'less_than_or_equal':
 			if ( $argument_1 <= $argument_2 ) {
 				$output = $content;
 			}
@@ -375,7 +414,7 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
 			$output = $content;
 	}
 
-	$output = apply_filters( 'render_sc_logic_operator', $output, $argument_1, $argument_2, $content, $atts );
+	$output = apply_filters( 'render_sc_logic_operator', $output, $argument_1, $argument_2, $operator, $content, $atts );
 
 	return do_shortcode( $output );
 }
@@ -385,10 +424,8 @@ function _render_sc_logic( $atts = array(), $content = '' ) {
  *
  * @since  1.0.0
  * @access private
- *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
- *
  * @return string The appropriately wrapped content.
  */
 function _render_sc_logic_tinymce( $atts = array(), $content = '' ) {
@@ -403,10 +440,8 @@ function _render_sc_logic_tinymce( $atts = array(), $content = '' ) {
  *
  * @since  1.0.0
  * @access private
- *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
- *
  * @return string The content, if it's returned
  */
 function _render_sc_hide_for_times( $atts = array(), $content = '' ) {
@@ -447,10 +482,8 @@ function _render_sc_hide_for_times( $atts = array(), $content = '' ) {
  *
  * @since  1.0.0
  * @access private
- *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
- *
  * @return string The appropriately wrapped content.
  */
 function _render_sc_hide_for_times_tinymce( $atts = array(), $content = '' ) {
@@ -465,10 +498,8 @@ function _render_sc_hide_for_times_tinymce( $atts = array(), $content = '' ) {
  *
  * @since  1.0.0
  * @access private
- *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
- *
  * @return string The content, if it's returned
  */
 function _render_sc_hide_for_users( $atts = array(), $content = '' ) {
@@ -506,10 +537,8 @@ function _render_sc_hide_for_users( $atts = array(), $content = '' ) {
  *
  * @since  1.0.0
  * @access private
- *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
- *
  * @return string The appropriately wrapped content.
  */
 function _render_sc_hide_for_users_tinymce( $atts = array(), $content = '' ) {
@@ -523,10 +552,8 @@ function _render_sc_hide_for_users_tinymce( $atts = array(), $content = '' ) {
  * Wraps content appropriately based on its existence, for use within the TinyMCE.
  *
  * @since 1.0.0
- *
  * @param string $content    The content output.
  * @param string $visibility Whether to hide or show content. Accepts 'hidden' or 'visible'.
- *
  * @return string The appropriately wrapped content.
  */
 function render_tinymce_visibility_wrap( $content = '', $visibility = 'visible' ) {
@@ -540,7 +567,6 @@ function render_tinymce_visibility_wrap( $content = '', $visibility = 'visible' 
  * Provides a selectbox attribute with options of all timezones.
  *
  * @since 1.0.0
- *
  * @return array Timezones.
  */
 function render_sc_timezone_dropdown() {
@@ -665,7 +691,6 @@ function render_sc_timezone_dropdown() {
  * Outputs the field HTML of a custom time-formatted slider attribute.
  *
  * @since 1.0.0
- *
  * @param string $att_id     The attribute ID.
  * @param array  $att        Properties of the attribute.
  * @param array  $properties Properties of the attribute field type.
@@ -715,64 +740,69 @@ function render_sc_time_slider( $att_id, $att, $properties ) {
  *
  * @since  {{VERSION}}
  * @access private
- *
  * @param array $atts The dependent attributes.
  * @return array The selectbox options.
  */
 function _render_sc_logic_param_populate( $atts ) {
 
 	$response = array(
-		'options' => array(),
+		'options'         => array(),
 		'no_options_text' => false,
+		'description'     => false,
 	);
 
 	switch ( $atts['arg1'] ) {
 
 		case 'single':
 
-			$response['options'] = render_sc_post_list( array(
+			$response['options']         = render_sc_post_list( array(
 				'post_type' => 'post',
 			) );
 			$response['no_options_text'] = __( 'No posts available.', 'Render' );
+			$response['description']     = __( 'Leave blank to just check if this is any post.', 'Render' );
 			break;
 
 		case 'page':
 
-			$response['options'] = render_sc_post_list( array(
+			$response['options']         = render_sc_post_list( array(
 				'post_type' => 'page',
 			) );
 			$response['no_options_text'] = __( 'No pages available.', 'Render' );
+			$response['description']     = __( 'Leave blank to just check if this is any page.', 'Render' );
 			break;
 
 		case 'category':
 
-			$response['options'] = render_sc_term_list( array(
+			$response['options']         = render_sc_term_list( array(
 				'taxonomies' => array( 'category' ),
 			) );
 			$response['no_options_text'] = __( 'No categories available.', 'Render' );
+			$response['description']     = __( 'Leave blank to just check if this is any category page.', 'Render' );
 			break;
 
 		case 'tag':
 
-			$response['options'] = render_sc_term_list( array(
+			$response['options']         = render_sc_term_list( array(
 				'taxonomies' => array( 'post_tag' ),
 			) );
 			$response['no_options_text'] = __( 'No tags available.', 'Render' );
+			$response['description']     = __( 'Leave blank to just check if this is any tag page.', 'Render' );
 			break;
 
 		case 'tax':
 
-			$response['options'] = render_sc_term_list();
+			$response['options']         = render_sc_term_list();
 			$response['no_options_text'] = __( 'No taxonomies available.', 'Render' );
+			$response['description']     = __( 'Leave blank to just check if this is any taxonomy page.', 'Render' );
 			break;
 
 		case 'author':
 
-			$response['options'] = render_sc_user_list( 'edit_posts' );
+			$response['options']         = render_sc_user_list( 'edit_posts' );
 			$response['no_options_text'] = __( 'No authors available.', 'Render' );
+			$response['description']     = __( 'Leave blank to just check if this is any author archive.', 'Render' );
 			break;
 	}
-
 
 	return $response;
 }

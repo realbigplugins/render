@@ -24,7 +24,7 @@ class Render_Modal {
 	public function __construct() {
 
 		// Localize the shortcodes
-		add_action( 'render_localized_data', array( __CLASS__, 'localize_shortcodes' ) );
+		add_filter( 'render_localized_data', array( __CLASS__, 'localize_shortcodes' ) );
 
 		// Enqueue styles and scripts for the modal
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_scripts' ) );
@@ -49,6 +49,9 @@ class Render_Modal {
 		global $Render;
 
 		$data['all_shortcodes'] = $Render->shortcodes;
+
+		// Also add in some extra data
+		$data['sc_attr_escapes'] = $Render::$sc_attr_escapes;
 
 		return $data;
 	}
@@ -243,11 +246,8 @@ class Render_Modal {
 			$att['descriptionAbove'] = true;
 		}
 
-		// Conditional attributes begin hidden
-		$hide = isset( $att['conditional']['visibility'] ) && $att['conditional']['visibility'] !== false ? 'style="display: none;"' : '';
 		?>
-		<div class="<?php echo implode( ' ', $att['classes'] ); ?>" <?php echo $data_output;
-		echo $hide; ?>>
+		<div class="<?php echo implode( ' ', $att['classes'] ); ?>" <?php echo $data_output; ?>>
 
 			<?php if ( isset( $att['label'] ) ) : ?>
 				<div class="render-modal-att-name">

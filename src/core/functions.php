@@ -75,6 +75,7 @@ function render_esc_atts( $atts ) {
 	}
 
 	foreach ( $atts as $i => $att ) {
+
 		$atts[ $i ] = esc_attr( $att );
 
 		// Turn bool strings into actual bool
@@ -83,6 +84,28 @@ function render_esc_atts( $atts ) {
 	}
 
 	return $atts;
+}
+
+/**
+ * Un-escapes the escaped shortcode attributes in the content.
+ *
+ * @since {{VERSION}}
+ *
+ * @param string $content The attribute to be escaped.
+ * @return string The escaped attribute.
+ */
+function render_sc_attr_unescape( $content ) {
+
+	global $Render;
+
+	$escapes = $Render::$sc_attr_escapes;
+
+	foreach ( $escapes as $escape ) {
+		$char_code = ord( $escape );
+		$content = preg_replace( "/::{$char_code}::/", $escape, $content );
+	}
+
+	return $content;
 }
 
 /**
