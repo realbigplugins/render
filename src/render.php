@@ -103,6 +103,24 @@ if ( ! class_exists( 'Render' ) ) {
 		public $admin_shortcodes = array();
 
 		/**
+		 * The default settings for shortcodes (set later).
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @var array
+		 */
+		public static $shortcode_defaults = array();
+
+		/**
+		 * The default settings for shortcode attributes (set later).
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @var array
+		 */
+		public static $att_defaults = array();
+
+		/**
 		 * All core shortcodes to include.
 		 *
 		 * @since 1.0.0
@@ -147,6 +165,7 @@ if ( ! class_exists( 'Render' ) ) {
 			// Make sure we should be here
 			if ( version_compare( '5.3', phpversion(), '>' ) ) {
 				$this->notice();
+
 				return;
 			}
 
@@ -221,8 +240,58 @@ if ( ! class_exists( 'Render' ) ) {
 		 */
 		public function post_init() {
 
+			/**
+			 * Defaults for the shortcode.
+			 *
+			 * Allows external plugins to modify the defaults for a Render shortcode setup.
+			 *
+			 * @since 1.0.0
+			 */
+			self::$shortcode_defaults = apply_filters( 'render_shortcode_defaults', array(
+				'function'    => '',
+				'title'       => '',
+				'description' => '',
+				'source'      => __( 'Unknown', 'Render' ),
+				'tags'        => '',
+				'category'    => 'other',
+				'atts'        => array(),
+				'example'     => '',
+				'wrapping'    => false,
+				'render'      => false,
+				//
+				// Some more obscure ones
+				'noDisplay'   => false,
+			) );
+
+			/**
+			 * Defaults for a shortcode attribute.
+			 *
+			 * Allows external plugins to modify defaults for a Render shortcode attribute.
+			 *
+			 * @since 1.0.0
+			 */
+			self::$att_defaults = apply_filters( 'render_shortcode_att_defaults', array(
+				'label'            => false,
+				'description'      => false,
+				'required'         => false,
+				'type'             => 'textbox',
+				'properties'       => array(),
+				'validate'         => false,
+				'sanitize'         => false,
+				'conditional'      => false,
+				'default'          => false,
+				'advanced'         => false,
+				'callback'         => false,
+				//
+				// Some more obscure ones
+				'descriptionAbove' => false,
+				'descriptionBelow' => true,
+				'initCallback'     => false,
+				'noInit'           => false,
+			) );
+
 			// Add shortcodes
-			self::add_shortcodes();
+			$this->add_shortcodes();
 
 			// Remove disabled shortcodes
 			if ( ! is_admin() ) {
@@ -393,138 +462,110 @@ if ( ! class_exists( 'Render' ) ) {
 		 * @global Render $Render         The main Render object.
 		 * @global array  $shortcode_tags All registered shortcodes.
 		 */
-		public static function add_shortcodes() {
+		public function add_shortcodes() {
 
-			global $Render, $shortcode_tags;
+			global $shortcode_tags;
 
 			// Add in all existing shortcode tags first (to account for "unregistered with Render" shortcodes)
+			$shortcodes = array();
 			if ( ! empty( $shortcode_tags ) ) {
 				foreach ( $shortcode_tags as $code => $callback ) {
 
 					$shortcode             = array();
-					$shortcode['code']     = $code;
+					$shortcode['title']    = render_translate_id_to_name( $code );
 					$shortcode['function'] = $callback;
 
 					// Add shortcode to Render
-					add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
-						$shortcodes[] = $shortcode;
+					$shortcodes[ $code ] = $shortcode;
+				}
+			}
 
-						return $shortcodes;
+			$shortcodes = apply_filters( 'render_add_shortcodes', $shortcodes );
+
+			if ( $shortcodes !== false ) {
+
+				foreach ( $shortcodes as $code => $args ) {
+
+					// Setup shortcode defaults
+					$args = $this->parse_shortcode( $args );
+
+					// Create the actual shortcode if it hasn't yet been created
+					if ( ! array_key_exists( $code, $shortcode_tags ) ) {
+						add_shortcode( $code, $args['function'] );
+					}
+
+					// Add the shortcode info to our list if it hasn't yet been added
+					if ( empty( $this->shortcodes ) || ! array_key_exists( $code, $this->shortcodes ) ) {
+						$this->shortcodes[ $code ] = $args;
+					}
+				}
+			}
+		}
+
+		/**
+		 * Parses the shortcode and sets up all defaults (including attribute defaults).
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @param array $shortcode The shortcode to parse.
+		 * @return array The parsed shortcode.
+		 */
+		public static function parse_shortcode( $shortcode ) {
+
+			// Setup shortcode defaults
+			$shortcode = wp_parse_args( $shortcode, self::$shortcode_defaults );
+
+			// If there are attributes, set up their defaults
+			if ( ! empty( $shortcode['atts'] ) ) {
+				$shortcode['atts'] = array_map( array( __CLASS__, 'parse_shortcode_att' ), $shortcode['atts'] );
+			}
+
+			// Add the wrapping property to the render data
+			if ( $shortcode['render'] ) {
+				if ( ! is_array( $shortcode['render'] ) ) {
+					$shortcode['render'] = array();
+				}
+				$shortcode['render']['wrapping'] = $shortcode['wrapping'];
+			}
+
+			return $shortcode;
+		}
+
+		/**
+		 * Sets up the shortcode attribute's defaults.
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @param array $att The att to parse.
+		 * @return array The parsed att.
+		 */
+		public static function parse_shortcode_att( $att ) {
+
+			// Establish default attribute properties (if any exist)
+			$att = wp_parse_args( $att, self::$att_defaults );
+
+			// Apply defaults to repeater fields as well
+			if ( isset( $att['properties']['fields'] ) ) {
+				array_walk( $att['properties']['fields'], function ( &$properties ) {
+					$properties = self::parse_shortcode_att( $properties );
+				} );
+			}
+
+			// Setup conditionals
+			if ( $att['conditional'] !== false ) {
+
+				// Flip array key / value and set the value to an empty array for populate conditionals.
+				// This makes it easier when creating the shortcode array because you can input a single
+				// dimensional, non-associative array.
+				if ( isset( $att['conditional']['populate'] ) ) {
+					$att['conditional']['populate']['atts'] = array_flip( $att['conditional']['populate']['atts'] );
+					array_walk( $att['conditional']['populate']['atts'], function ( &$value ) {
+						$value = array();
 					} );
 				}
 			}
 
-			$shortcodes = apply_filters( 'render_add_shortcodes', false );
-
-			if ( $shortcodes !== false ) {
-
-				foreach ( $shortcodes as $args ) {
-
-					/**
-					 * Defaults for the shortcode.
-					 *
-					 * Allows external plugins to modify the defaults for a Render shortcode setup.
-					 *
-					 * @since 1.0.0
-					 *
-					 * @param array    $defaults    {
-					 * @var string     $code        The shortcode "code" itself.
-					 * @var string     $function    The callback function for the shortcode.
-					 * @var string     $title       Title to show when identifying shortcode.
-					 * @var string     $description Description to show when identifying shortcode.
-					 * @var string     $source      Where the shortcode comes from (EG: Render, WordPress, Gravity Forms).
-					 * @var string     $tags        Searchable tags that describe the shortcode (comma delimited).
-					 * @var array      $category    Category for the shortcode (must be a registered category).
-					 * @var array      $atts        Shortcode attributes.
-					 * @var string     $example     Example of shortcode in use.
-					 * @var array $conditional      Conditional field for visibility and field population.
-					 * @var bool       $wrapping    Whether or not this shortcode accepts content.
-					 * @var bool|array $render      Whether or not to render this shortcode, also accepts properties.
-					 * @var bool       $noDisplay   Hides the shortcode from the modal if set to true.
-					 *                              }
-					 * @param array    $args        The current shortcode args.
-					 */
-					$defaults = apply_filters( 'render_shortcode_defaults', array(
-						'code'        => '',
-						'function'    => '',
-						'title'       => render_translate_id_to_name( $args['code'] ),
-						'description' => '',
-						'source'      => __( 'Unknown', 'Render' ),
-						'tags'        => '',
-						'category'    => 'other',
-						'atts'        => array(),
-						'example'     => '',
-						'wrapping'    => false,
-						'render'      => false,
-						'noDisplay'   => false,
-					), $args );
-					$args     = wp_parse_args( $args, $defaults );
-
-					/**
-					 * Defaults for a shortcode attribute.
-					 *
-					 * Allows external plugins to modify defaults for a Render shortcode attribute.
-					 *
-					 * @since 1.0.0
-					 *
-					 * @param array $att_defaults {
-					 * @var bool    $required     Whether or not this attribute is required for the shortcode.
-					 * @var bool    $disabled     Disables the attribute if set to true.
-					 *                            }
-					 * @param array $args         The current shortcode args.
-					 */
-					$att_defaults = apply_filters( 'render_shortcode_att_defaults', array(
-						'required' => false,
-						'validate' => array(),
-						'sanitize' => array(),
-						'conditional' => false,
-					), $args );
-
-					if ( ! empty( $args['atts'] ) ) {
-
-						foreach ( $args['atts'] as $i => $att ) {
-
-							// Establish default attribute properties (if any exist)
-							$args['atts'][ $i ] = wp_parse_args( $args['atts'][ $i ], $att_defaults );
-
-							// Setup conditionals
-							if ( isset( $att['conditional'] ) && $att['conditional'] !== false ) {
-
-								// Flip array key / value and set the value to an empty array
-								if ( isset( $att['conditional']['populate'] ) ) {
-									foreach ( $att['conditional']['populate']['atts'] as $_i => $_att ) {
-										$args['atts'][ $i ]['conditional']['populate']['atts'][ $_att ] = array();
-										unset( $args['atts'][ $i ]['conditional']['populate']['atts'][ $_i ] );
-									}
-								}
-							}
-						}
-					}
-
-					// Add the wrapping property to the render data
-					if ( $args['render'] ) {
-						if ( ! is_array( $args['render'] ) ) {
-							$args['render'] = array();
-						}
-						$args['render']['wrapping'] = $args['wrapping'];
-					}
-
-					// Create the actual shortcode if it hasn't yet been created
-					if ( ! array_key_exists( $args['code'], $shortcode_tags ) ) {
-						add_shortcode( $args['code'], $args['function'] );
-					}
-
-					// Add the shortcode info to our list if it hasn't yet been added
-					if ( empty( $Render->shortcodes ) || ! array_key_exists( $args['code'], $Render->shortcodes ) ) {
-
-						// Code will be used for the key
-						$code = $args['code'];
-						unset( $args['code'] );
-
-						$Render->shortcodes[ $code ] = $args;
-					}
-				}
-			}
+			return $att;
 		}
 
 		/**
@@ -561,8 +602,10 @@ if ( ! class_exists( 'Render' ) ) {
 		/**
 		 * Includes pointer necessities as needed and includes the primary Render pointer.
 		 *
-		 * @since {{VERSION}}
+		 * @since  {{VERSION}}
 		 * @access private
+		 *
+		 * @param WP_Screen|null $screen The current screen object.
 		 */
 		function _pointers( $screen ) {
 
@@ -631,7 +674,7 @@ if ( ! class_exists( 'Render' ) ) {
 				<p>
 					<?php
 					printf(
-					__( 'Render is not active because your server is not running at least PHP version 5.3. Please update or contact your server administrator. (PS: PHP 5.3 is %s year\'s old!)', 'Render' ),
+						__( 'Render is not active because your server is not running at least PHP version 5.3. Please update or contact your server administrator. (PS: PHP 5.3 is %s year\'s old!)', 'Render' ),
 						intval( date( 'y' ) ) - 9
 					);
 					?>

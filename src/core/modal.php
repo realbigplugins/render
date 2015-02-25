@@ -154,23 +154,21 @@ class Render_Modal {
 			 */
 			$att = apply_filters( 'render_att_loop', $att, $att_id, $advanced, $wrapping );
 
-			if ( ( ! $advanced && ! isset( $att['advanced'] ) ) || $advanced && isset( $att['advanced'] ) ) {
-
-				$type = isset( $att['type'] ) ? $att['type'] : 'textbox';
+			if ( ( $advanced && $att['advanced'] ) || ( ! $advanced && ! $att['advanced'] ) ) {
 
 				// Advanced atts can't be required
 				if ( $advanced ) {
-					unset( $att['required'] );
+					$att['required'] = false;
 				}
 
 				// Section breaks
-				if ( $type == 'section_break' ) {
+				if ( $att['type'] == 'section_break' ) {
 					?>
 					<p class="render-modal-att-section-break">
-						<?php echo isset( $att['label'] ) ? $att['label'] : ''; ?>
+						<?php echo $att['label'] ?>
 
 						<span class="render-modal-att-section-break-description">
-							<?php echo isset( $att['description'] ) ? $att['description'] : ''; ?>
+							<?php echo $att['description'] ?>
 						</span>
 					</p>
 					<?php
@@ -178,13 +176,13 @@ class Render_Modal {
 				}
 
 				// Placeholder
-				if ( $type == 'placeholder' ) {
+				if ( $att['type'] == 'placeholder' ) {
 					?>
 					<p class="render-modal-att-placeholder">
-						<?php echo isset( $att['label'] ) ? $att['label'] : ''; ?>
+						<?php echo $att['label'] ?>
 
 						<span class="render-modal-att-placeholder-description">
-							<?php echo isset( $att['description'] ) ? $att['description'] : ''; ?>
+							<?php echo $att['description'] ?>
 						</span>
 					</p>
 					<?php
@@ -192,16 +190,16 @@ class Render_Modal {
 				}
 
 				// Validation
-				if ( isset( $att['validate'] ) ) {
+				if ( ! empty( $att['validate'] ) ) {
 					$att['validate'] = implode( ',', (array) $att['validate'] );
 				}
 
 				// Sanitation
-				if ( isset( $att['sanitize'] ) ) {
+				if ( ! empty( $att['sanitize'] ) ) {
 					$att['sanitize'] = implode( ',', (array) $att['sanitize'] );
 				}
 
-				self::att_content( $att_id, $att, $type, $code );
+				self::att_content( $att_id, $att, $att['type'], $code );
 			}
 		}
 	}
@@ -214,27 +212,26 @@ class Render_Modal {
 	 *
 	 * @param string $att_id The ID of the attribute.
 	 * @param array  $att    Attribute properties.
-	 * @param string $type   The field type of the attribute.
 	 * @param string $code   The current shortcode.
 	 */
-	private static function att_content( $att_id, $att, $type, $code ) {
+	private static function att_content( $att_id, $att, $code ) {
 
 		// Setup classes
 		$att['classes'][] = 'render-modal-att-row';
-		$att['classes'][] = isset( $att['label'] ) && $att['label'] === false ? 'render-modal-att-hide-label' : '';
-		$att['classes'][] = $type == 'hidden' ? 'hidden' : '';
+		$att['classes'][] = $att['label'] === false ? 'render-modal-att-hide-label' : '';
+		$att['classes'][] = $att['type'] == 'hidden' ? 'hidden' : '';
 		$att['classes'][] = isset( $att['conditional']['populate'] ) ? 'render-modal-att-conditional-populate' : '';
 		$att['classes']   = array_filter( $att['classes'] );
 
 		// Setup data
 		$data                  = array();
 		$data['att-name']      = $att_id;
-		$data['att-type']      = $type;
-		$data['required']      = isset( $att['required'] ) ? $att['required'] : '';
-		$data['validate']      = isset( $att['validate'] ) ? '1' : '';
-		$data['sanitize']      = isset( $att['sanitize'] ) ? $att['sanitize'] : '';
-		$data['init-callback'] = isset( $att['initCallback'] ) ? $att['initCallback'] : '';
-		$data['no-init']       = isset( $att['noInit'] ) ? $att['noInit'] : '';
+		$data['att-type']      = $att['type'];
+		$data['required']      = $att['required'] !== false ? 'true' : 'false';
+		$data['validate']      = $att['validate'] !== false ? 'true' : 'false';
+		$data['sanitize']      = $att['sanitize'] !== false ? 'true' : 'false';
+		$data['init-callback'] = $att['initCallback'] !== false ? $att['initCallback'] : 'false';
+		$data['no-init']       = $att['noInit'] !== false ? 'true' : 'false';
 
 		$data_output = '';
 		foreach ( $data as $data_name => $data_value ) {
@@ -242,20 +239,20 @@ class Render_Modal {
 		}
 
 		// Repeater should have description above always
-		if ( $type == 'repeater' ) {
+		if ( $att['type'] == 'repeater' ) {
 			$att['descriptionAbove'] = true;
+			$att['descriptionBelow'] = true;
 		}
-
 		?>
 		<div class="<?php echo implode( ' ', $att['classes'] ); ?>" <?php echo $data_output; ?>>
 
-			<?php if ( isset( $att['label'] ) ) : ?>
+			<?php if ( ! empty( $att['label'] ) ) : ?>
 				<div class="render-modal-att-name">
 					<?php echo $att['label']; ?>
 				</div>
 			<?php endif; ?>
 
-			<?php if ( isset( $att['descriptionAbove'] ) && isset( $att['description'] ) ) : ?>
+			<?php if ( $att['descriptionAbove'] && $att['description'] !== false ) : ?>
 				<p class="render-modal-att-description">
 					<?php echo $att['description']; ?>
 				</p>
@@ -265,13 +262,13 @@ class Render_Modal {
 
 				<?php
 				// Output the att field
-				$callback = isset( $att['callback'] ) ? $att['callback'] : array( __CLASS__, "att_type_$type" );
+				$callback = $att['callback'] !== false ? $att['callback'] : array( __CLASS__, "att_type_$att[type]" );
 				if ( is_callable( $callback ) ) {
 					call_user_func(
 						$callback,
 						$att_id,
 						$att,
-						isset( $att['properties'] ) ? $att['properties'] : array(),
+						$att['properties'],
 						$code
 					);
 				} else {
@@ -279,7 +276,7 @@ class Render_Modal {
 				}
 				?>
 
-				<?php if ( ! isset( $att['descriptionAbove'] ) && isset( $att['description'] ) ) : ?>
+				<?php if ( $att['descriptionBelow'] && $att['description'] !== false ) : ?>
 					<p class="render-modal-att-description">
 						<?php echo $att['description']; ?>
 					</p>
@@ -297,18 +294,15 @@ class Render_Modal {
 	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id     The attribute ID.
-	 * @param array  $att        Properties of the attribute.
-	 * @param array  $properties Properties of the attribute field type.
+	 * @param string $att_id The attribute ID.
+	 * @param array  $att    Properties of the attribute.
 	 */
-	private static function att_type_hidden( $att_id, $att, $properties = array() ) {
-
-		$default = isset( $att['default'] ) ? $att['default'] : '';
+	private static function att_type_hidden( $att_id, $att ) {
 		?>
 		<input type="hidden" class="render-modal-att-input render-modal-att-hidden"
-		       value="<?php echo $default; ?>"
+		       value="<?php echo $att['default']; ?>"
 		       name="<?php echo $att_id; ?>"
-		       data-default="<?php echo $default; ?>"
+		       data-default="<?php echo $att['default']; ?>"
 			/>
 	<?php
 	}
@@ -339,10 +333,7 @@ class Render_Modal {
 		$width = $width - ( $properties['postfix'] ? $properties['postfixWidth'] : 0 );
 
 		// Input mask
-		$mask = '';
 		$mask = $properties['mask'] ? 'data-mask="1"' : '';
-
-		$default = isset( $att['default'] ) ? $att['default'] : '';
 
 		if ( $properties['prefix'] || $properties['postfix'] ) : ?>
 			<div class="render-modal-att-textbox-fix">
@@ -357,9 +348,9 @@ class Render_Modal {
 		<input type="text" class="render-modal-att-input render-modal-att-textbox"
 		       style="width: <?php echo "$width%"; ?>"
 		       placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : ''; ?>"
-		       value="<?php echo $default; ?>"
+		       value="<?php echo $att['default']; ?>"
 		       name="<?php echo $att_id; ?>"
-		       data-default="<?php echo $default; ?>"
+		       data-default="<?php echo $att['default']; ?>"
 			<?php echo $mask; ?> />
 
 		<?php if ( $properties['postfix'] ) : ?>
@@ -382,24 +373,29 @@ class Render_Modal {
 	 * @param string $att_id     The attribute ID.
 	 * @param array  $att        Properties of the attribute.
 	 * @param array  $properties Properties of the attribute field type.
-	 * @param string $code       The current shortcode.
+	 * @param string $shortcode  The current shortcode.
 	 */
-	private static function att_type_checkbox( $att_id, $att, $properties = array(), $code ) {
+	private static function att_type_checkbox( $att_id, $att, $properties = array(), $shortcode ) {
 
-		$unique_ID = md5( $code . $att_id );
+		$properties = wp_parse_args( $properties, array(
+			'value' => '1',
+			'label' => false,
+		) );
+
+		$unique_ID = md5( $shortcode . $att_id );
 		?>
 		<div class="render-switch">
 
 			<input type="checkbox" class="render-modal-att-input render-modal-att-checkbox"
 			       name="<?php echo $att_id; ?>"
 			       id="<?php echo $unique_ID; ?>"
-			       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : '1'; ?>"/>
+			       value="<?php echo $properties['value']; ?>"/>
 
 			<label for="<?php echo $unique_ID; ?>"></label>
 
 		</div>
 
-		<?php if ( isset( $properties['label'] ) ) : ?>
+		<?php if ( $properties['label'] !== false ) : ?>
 			<span class="render-modal-att-checkbox-label">
 				<?php echo $properties['label']; ?>
 			</span>
@@ -419,11 +415,17 @@ class Render_Modal {
 	 * @param string $att_id     The attribute ID.
 	 * @param array  $att        Properties of the attribute.
 	 * @param array  $properties Properties of the attribute field type.
-	 * @param string $code       The current shortcode.
+	 * @param string $shortcode  The current shortcode.
 	 */
-	private static function att_type_toggle( $att_id, $att, $properties = array(), $code ) {
+	private static function att_type_toggle( $att_id, $att, $properties = array(), $shortcode ) {
 
-		$unique_ID = md5( $code . $att_id );
+		$properties = wp_parse_args( $properties, array(
+			'values'        => array(),
+			'flip'          => false,
+			'deselectStyle' => false,
+		) );
+
+		$unique_ID = md5( $shortcode . $att_id );
 
 		// Get values
 		$values = array();
@@ -437,11 +439,11 @@ class Render_Modal {
 			       name="<?php echo $att_id; ?>"
 			       id="<?php echo $unique_ID; ?>"
 			       value="<?php echo $values[1][0]; ?>"
-				<?php echo isset( $properties['flip'] ) && $properties['flip'] === true ? 'checked' : ''; ?>
+				<?php echo $properties['flip'] ? 'checked' : ''; ?>
 				/>
 
 			<label for="<?php echo $unique_ID; ?>"
-			       class="<?php echo isset( $properties['deselectStyle'] ) ? 'disabled-style' : ''; ?>">
+			       class="<?php echo $properties['deselectStyle'] ? 'disabled-style' : ''; ?>">
 
 				<span class="render-modal-att-toggle-first">
 					<?php echo $values[0][1]; ?>
@@ -471,13 +473,11 @@ class Render_Modal {
 	 * @param array  $att    Properties of the attribute.
 	 */
 	private static function att_type_textarea( $att_id, $att ) {
-
-		$default = isset( $att['default'] ) ? $att['default'] : '';
 		?>
 		<textarea class="render-modal-att-input render-modal-att-textarea"
 		          name="<?php echo $att_id; ?>"
-		          data-default="<?php echo $default; ?>"><?php
-			echo $default;
+		          data-default="<?php echo $att['default']; ?>"><?php
+			echo $att['default'];
 			?></textarea>
 	<?php
 	}
@@ -492,10 +492,29 @@ class Render_Modal {
 	 * @param array  $att        Properties of the attribute.
 	 * @param array  $properties Properties of the attribute field type.
 	 */
-	private static function att_type_selectbox( $att_id, $att, $properties ) {
+	private static function att_type_selectbox( $att_id, $att, $properties = array() ) {
+
+		$properties = wp_parse_args( $properties, array(
+			'callback'         => false,
+			'groups'           => array(),
+			'options'          => array(),
+			'multi'            => false,
+			'placeholder'      => __( 'Select an option', 'Render' ),
+			'no_options'       => __( 'No options available.', 'Render' ),
+			'allowCustomInput' => false,
+			'allowIcons'       => false,
+			'allowDeselect'    => true,
+			'disableChosen'    => false,
+		) );
+
+		// Can't have these without Chosen
+		if ( $properties['disableChosen'] ) {
+			$properties['allowCustomInput'] = false;
+			$properties['allowIcons']       = false;
+		}
 
 		// If a callback is provided, use that to populate options
-		if ( isset( $properties['callback'] ) && is_callable( $properties['callback']['function'] ) ) {
+		if ( $properties['callback'] !== false && is_callable( $properties['callback']['function'] ) ) {
 
 			// Call with args, if they're set
 			if ( isset( $properties['callback']['args'] ) ) {
@@ -508,7 +527,7 @@ class Render_Modal {
 		if ( ! empty( $options ) ) {
 
 			// We need to merge our arrays, but we need to do it with either groups or options (whichever is in use)
-			$which = isset( $properties['groups'] ) ? 'groups' : 'options';
+			$which = ! empty( $properties['groups'] ) ? 'groups' : 'options';
 			if ( ! empty( $properties[ $which ] ) ) {
 				$properties[ $which ] = array_merge( $options, $properties[ $which ] );
 			} else {
@@ -521,7 +540,7 @@ class Render_Modal {
 		if ( ! $no_options ) {
 
 			// Optgroup support
-			if ( ! isset( $properties['groups'] ) ) {
+			if ( empty( $properties['groups'] ) ) {
 
 				$properties['groups'] = array(
 					0 => array(
@@ -532,38 +551,36 @@ class Render_Modal {
 		}
 
 		// Chosen support
-		if ( ! isset( $properties['disableChosen'] ) ) {
-			$chosen = 'chosen' . ( isset( $properties['allowCustomInput'] ) ? ' allow-custom-input' : '' );
-			$chosen .= isset( $properties['allowIcons'] ) ? ' allow-icons' : '';
+		if ( $properties['disableChosen'] === false ) {
+			$chosen = 'chosen' . ( $properties['allowCustomInput'] ? ' allow-custom-input' : '' );
+			$chosen .= $properties['allowIcons'] ? ' allow-icons' : '';
 		} else {
 			$chosen = '';
 		}
 
-		$default = isset( $att['default'] ) ? $att['default'] : '';
-
 		// Classes
 		$classes   = array();
 		$classes[] = 'render-chosen-container';
-		$classes[] = isset( $properties['allowCustomInput'] ) ? 'render-chosen-custom-input' : '';
+		$classes[] = $properties['allowCustomInput'] ? 'render-chosen-custom-input' : '';
 		$classes   = array_filter( $classes );
 		?>
 
 		<span class="render-modal-selectbox-no-options" style="<?php echo ! $no_options ? 'display: none;' : ''; ?>">
-			<?php echo isset( $properties['no_options'] ) ? $properties['no_options'] : __( 'No options available.' ); ?>
+			<?php echo $properties['no_options']; ?>
 		</span>
 
 		<div class="<?php echo implode( ' ', $classes ); ?>" style="<?php echo $no_options ? 'display: none;' : ''; ?>">
 			<select name="<?php echo $att_id; ?>"
-			        data-placeholder="<?php echo isset( $properties['placeholder'] ) ? $properties['placeholder'] : 'Select an option'; ?>"
+			        data-placeholder="<?php echo $properties['placeholder']; ?>"
 			        class="render-modal-att-input <?php echo $chosen; ?>"
-			        data-default="<?php echo $default; ?>"
-			        data-deselect="<?php echo isset( $properties['noDeselect'] ) ? 0 : 1; ?>"
-				<?php echo isset( $properties['multi'] ) ? 'multiple' : ''; ?>>
+			        data-default="<?php echo $att['default']; ?>"
+			        data-deselect="<?php echo $properties['allowDeselect'] ? 'true' : 'false'; ?>"
+				<?php echo $properties['multi'] ? 'multiple' : ''; ?>>
 
 				<?php // Necessary for starting with nothing selected ?>
 				<option></option>
 
-				<?php if ( isset( $properties['groups'] ) ) : ?>
+				<?php if ( ! empty( $properties['groups'] ) ) : ?>
 					<?php foreach ( $properties['groups'] as $opt_group ) : ?>
 
 						<?php if ( isset( $opt_group['label'] ) ) : ?>
@@ -583,7 +600,7 @@ class Render_Modal {
 							<option
 								<?php echo isset( $option['icon'] ) ? "data-icon='$option[icon]'" : ''; ?>
 								value="<?php echo $option_value; ?>"
-								<?php selected( $option_value, $default ); ?>
+								<?php selected( $option_value, $att['default'] ); ?>
 								>
 								<?php echo $option['label']; ?>
 							</option>
@@ -599,7 +616,7 @@ class Render_Modal {
 
 			</select>
 
-			<?php if ( isset( $properties['allowCustomInput'] ) ) : ?>
+			<?php if ( $properties['allowCustomInput'] ) : ?>
 				<div class="render-chosen-custom-input-icon dashicons dashicons-edit"></div>
 			<?php endif; ?>
 		</div>
@@ -619,21 +636,26 @@ class Render_Modal {
 	private static function att_type_slider( $att_id, $att, $properties ) {
 
 		// Establish defaults
-		$defaults   = array(
-			'value' => isset( $att['default'] ) ? $att['default'] : 0,
+		$properties = wp_parse_args( $properties, array(
+			'value' => $att['default'] !== '' ? $att['default'] : 0,
 			'min'   => 0,
 			'max'   => 100,
 			'step'  => 1,
-		);
-		$properties = wp_parse_args( $properties, $defaults );
+			'range' => false,
+		) );
 
 		$default = $properties['value'];
 
 		// If range slider
-		if ( isset( $properties['range'] ) ) {
+		if ( $properties['range'] ) {
+
+			$properties['range']  = 'true';
 			$properties['values'] = isset( $properties['values'] ) ? $properties['values'] : '0-20';
 			$default              = $properties['values'];
 			unset( $properties['value'] );
+
+		} else {
+			unset( $properties['range'] );
 		}
 
 		// Prepare data for the slider
@@ -660,7 +682,7 @@ class Render_Modal {
 		<?php else: ?>
 
 			<input type="text" class="render-modal-att-slider-value render-modal-att-input"
-			       value="<?php echo isset( $properties['value'] ) ? $properties['value'] : '0'; ?>"
+			       value="<?php echo $properties['value']; ?>"
 			       name="<?php echo $att_id; ?>"
 			       data-default="<?php echo $default; ?>"
 				/>
@@ -675,13 +697,12 @@ class Render_Modal {
 	 * @since  1.0.0
 	 * @access private
 	 *
-	 * @param string $att_id     The attribute ID.
-	 * @param array  $att        Properties of the attribute.
-	 * @param array  $properties Properties of the attribute field type.
+	 * @param string $att_id The attribute ID.
+	 * @param array  $att    Properties of the attribute.
 	 */
-	private static function att_type_colorpicker( $att_id, $att, $properties ) {
+	private static function att_type_colorpicker( $att_id, $att ) {
 
-		$default = isset( $att['default'] ) ? $att['default'] : '#bada55';
+		$default = $att['default'] !== '' ? $att['default'] : '#bada55';
 		?>
 		<input type="text"
 		       value="<?php echo $default ?>"
@@ -705,16 +726,15 @@ class Render_Modal {
 	private static function att_type_counter( $att_id, $att, $properties ) {
 
 		// Establish defaults
-		$defaults   = array(
+		$properties = wp_parse_args( $properties, array(
 			'min'        => 0,
 			'max'        => 1000,
 			'step'       => 1,
 			'shift_step' => 10,
 			'unit'       => false,
-		);
-		$properties = wp_parse_args( $properties, $defaults );
+		) );
 
-		$default = isset( $att['default'] ) ? $att['default'] : $properties['min'];
+		$default = $att['default'] !== '' ? $att['default'] : $properties['min'];
 		?>
 		<div class="render-modal-counter-container">
 			<div class="render-modal-counter-down render-modal-button dashicons dashicons-minus"></div>
@@ -772,8 +792,8 @@ class Render_Modal {
 	 */
 	private static function att_type_repeater( $att_id, $att, $properties ) {
 
-		// Setup defaults
-		$defaults   = array(
+		// Setup defaults;
+		$properties = wp_parse_args( $properties, array(
 			'fields'    => array(
 				'dummy_field' => array(
 					'type'    => 'hidden',
@@ -781,14 +801,13 @@ class Render_Modal {
 				),
 			),
 			'startWith' => 1,
-		);
-		$properties = wp_parse_args( $properties, $defaults );
+		) );
 
 		// Add content for nested shortcodes
 		if ( $att_id == 'nested_children' && ! isset( $properties['fields']['content'] ) ) {
-			$properties['fields']['content'] = array(
+			$properties['fields']['content'] = Render::parse_shortcode_att( array(
 				'type' => 'hidden',
-			);
+			) );
 		}
 
 		foreach ( $properties['fields'] as $field_ID => $field ) {
@@ -804,7 +823,7 @@ class Render_Modal {
 				}
 			} else {
 				foreach ( $properties['fields'] as $field_ID => $field ) {
-					unset( $properties['fields'][ $field_ID ]['noInit'] );
+					$properties['fields'][ $field_ID ]['noInit'] = false;
 				}
 			}
 			?>
@@ -873,7 +892,7 @@ class Render_Modal {
 				break;
 		endswitch;
 
-		$default = isset( $att['default'] ) ? $att['default'] : '';
+		$default = $att['default'] !== '' ? $att['default'] : '';
 		?>
 		<input type="button" value="Upload / Choose Media" class="render-modal-att-media-upload"
 		       data-type="<?php echo $properties['type']; ?>"/>
@@ -1024,9 +1043,8 @@ class Render_Modal {
 												<?php
 												// Figure out if any of the attributes belong to the advanced section
 												$advanced = false;
-												foreach ( $shortcode['atts'] as $_shortcode ) {
-													$advanced = array_key_exists( 'advanced', $_shortcode ) ? true : false;
-													if ( $advanced ) {
+												foreach ( $shortcode['atts'] as $att ) {
+													if ( $advanced = $att['advanced'] ) {
 														break;
 													}
 												}

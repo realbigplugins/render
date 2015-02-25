@@ -328,11 +328,11 @@ var Render_Modal;
             elements.active_shortcode.find('.render-modal-att-row').each(function () {
 
                 // Skip if already initialized or if set to not initialize
-                if (typeof $(this).data('attObj') != 'undefined' || $(this).attr('data-no-init')) {
+                if (typeof $(this).data('attObj') != 'undefined' || $(this).data('no-init')) {
                     return true; // Continue $.each
                 }
 
-                var att_type = $(this).attr('data-att-type'),
+                var att_type = $(this).data('att-type'),
                     attObj = false;
 
                 // Initialize each type of att
@@ -408,8 +408,8 @@ var Render_Modal;
                 $(this).data('attObj', attObj);
 
                 // Custom callback
-                if ($(this).attr('data-init-callback')) {
-                    window[$(this).attr('data-init-callback')]($(this), attObj);
+                if ($(this).data('init-callback') !== false) {
+                    window[$(this).data('init-callback')]($(this), attObj);
                 }
             });
 
@@ -467,9 +467,9 @@ var Render_Modal;
                     elements.list.find('.render-modal-shortcode').each(function () {
                         var title = $(this).find('.render-modal-shortcode-title').text(),
                             description = $(this).find('.render-modal-shortcode-description').text(),
-                            code = $(this).attr('data-code'),
-                            source = $(this).attr('data-source'),
-                            tags = $(this).attr('data-tags'),
+                            code = $(this).data('code'),
+                            source = $(this).data('source'),
+                            tags = $(this).data('tags'),
                             search_string = title + description + code + source + tags;
 
                         if (search_string.toLowerCase().indexOf(search_query.toLowerCase()) < 0) {
@@ -554,7 +554,7 @@ var Render_Modal;
             this.closeShortcode();
 
             elements.active_shortcode = $container;
-            this.active_shortcode = $container.attr('data-code');
+            this.active_shortcode = $container.data('code');
 
             // Change submit button
             if (this.modifying) {
@@ -694,7 +694,7 @@ var Render_Modal;
          */
         filterByCategory: function ($e) {
 
-            var category = $e.attr('data-category'),
+            var category = $e.data('category'),
                 shortcodes = elements.list.find('li');
 
             // Set all other categories to inactive, and this one to active
@@ -710,7 +710,7 @@ var Render_Modal;
                 shortcodes.show();
             } else {
                 shortcodes.each(function () {
-                    if (category !== $(this).attr('data-category')) {
+                    if (category !== $(this).data('category')) {
                         $(this).hide();
                     } else {
                         $(this).show();
@@ -873,7 +873,13 @@ var Render_Modal;
             while (match = attRegEx.exec(_atts)) {
 
                 var name = match[3],
-                    value = match[4];
+                    value = match[4],
+                    shortcode_att = render_data[code]['atts'][name];
+
+                // Skip if not an attribute of the shortcode
+                if (typeof shortcode_att == 'undefined') {
+                    continue;
+                }
 
                 // Un-escape from being an attr value
                 if (typeof value != 'undefined' && value.length) {
@@ -1229,8 +1235,8 @@ var Render_Modal;
 
             this.sanitize();
 
-            var code = elements.active_shortcode.attr('data-code'),
-                title = elements.active_shortcode.attr('data-title'),
+            var code = elements.active_shortcode.data('code'),
+                title = elements.active_shortcode.data('title'),
                 props = render_data[code],
                 atts = {},
                 att_output = '',
@@ -1385,13 +1391,13 @@ var Render_Modal;
                     return true; // Continue $.each
                 }
 
-                var required = attObj.$container.attr('data-required'),
-                    do_validate = attObj.$container.attr('data-validate'),
+                var required = attObj.$container.data('required'),
+                    do_validate = attObj.$container.data('validate'),
                     att_value = attObj._getValue(),
                     att_valid = true;
 
                 // Basic required and field being empty and field not matching default
-                if (required === '1' && !att_value) {
+                if (required && !att_value) {
                     att_valid = false;
                     validated = false;
                     attObj.setInvalid(l18n.this_field_required);
@@ -1401,7 +1407,7 @@ var Render_Modal;
                 }
 
                 // If there's validation, let's do it
-                if (do_validate.length) {
+                if (do_validate) {
 
                     var validations = render_data[attObj.shortcode]['atts'][attObj.name]['validate'];
 
@@ -1537,7 +1543,7 @@ var Render_Modal;
                     return true; // Continue $.each
                 }
 
-                var do_sanitize = attObj.$container.attr('data-sanitize'),
+                var do_sanitize = attObj.$container.data('sanitize'),
                     att_value = attObj._getValue();
 
                 if (do_sanitize && att_value !== null && att_value.length) {
@@ -1719,9 +1725,9 @@ var Render_Modal;
             // Setup properties
             this.$container = $e;
             this.$input = this.$container.find('.render-modal-att-input');
-            this.name = $e.attr('data-att-name');
+            this.name = $e.data('att-name');
             this.fieldname = this.$container.find('.render-modal-att-name').text().trim();
-            this.shortcode = this.$container.closest('.render-modal-shortcode').attr('data-code');
+            this.shortcode = this.$container.closest('.render-modal-shortcode').data('code');
 
             // Default value
             this.default_value = this.$input.data('default');
@@ -2656,7 +2662,7 @@ var Render_Modal;
                 options = {
                     width: '100%',
                     search_contains: true,
-                    allow_single_deselect: typeof $chosen.data('deselect') != 'undefined' ? $chosen.data('deselect') : 1
+                    allow_single_deselect: $chosen.data('deselect')
                 };
 
             // Not using Chosen
@@ -2705,7 +2711,7 @@ var Render_Modal;
 
                     $(this).find('option').each(function (index) {
 
-                        var icon = $(this).attr('data-icon');
+                        var icon = $(this).data('icon');
 
                         if (!icon) {
                             return true; // Continue &.each
@@ -3078,36 +3084,9 @@ var Render_Modal;
 
                 for (i = 0; i < allowed_data.length; i++) {
 
-                    var _data = $this.attr('data-' + allowed_data[i]);
+                    var _data = $this.data('' + allowed_data[i]);
                     if (_data) {
                         data[allowed_data[i]] = _data;
-                    }
-                }
-
-                // Make sure various values are int
-                var int_vals = [
-                    'max',
-                    'min',
-                    'step',
-                    'value'
-                ];
-
-                for (i = 0; i < int_vals.length; i++) {
-                    if (data[int_vals[i]]) {
-                        data[int_vals[i]] = parseInt(data[int_vals[i]]);
-                    }
-                }
-
-                // Bool values
-                var bool_vals = [
-                    'range',
-                    'disabled',
-                    'animate'
-                ];
-
-                for (i = 0; i < bool_vals.length; i++) {
-                    if (data[bool_vals[i]]) {
-                        data[bool_vals[i]] = data[bool_vals[i]] === '1';
                     }
                 }
 
@@ -3174,7 +3153,7 @@ var Render_Modal;
 
                     var $slider = $(this).siblings('.render-modal-att-slider');
 
-                    if ($slider.attr('data-range')) {
+                    if ($slider.data('range')) {
 
                         // Range slider
                         var $text = $(this).siblings('.render-modal-att-slider-range-text'),
@@ -3187,8 +3166,8 @@ var Render_Modal;
                     } else {
 
                         // Normal slider
-                        var min = parseInt($slider.attr('data-min')),
-                            max = parseInt($slider.attr('data-max')),
+                        var min = parseInt($slider.data('min')),
+                            max = parseInt($slider.data('max')),
                             val = parseInt($(this).val());
 
                         // Set the jQuery UI slider to match the new text value
@@ -3248,8 +3227,8 @@ var Render_Modal;
                 max: max
             });
 
-            $slider.attr('data-min', min);
-            $slider.attr('data-max', max);
+            $slider.data('min', min);
+            $slider.data('max', max);
 
             if (value < min) {
                 this.setValue(min);
@@ -3394,10 +3373,10 @@ var Render_Modal;
                 $input = $container.find('.render-modal-att-counter'),
                 $button_down = $input.siblings('.render-modal-counter-down'),
                 $button_up = $input.siblings('.render-modal-counter-up'),
-                min = parseInt($input.attr('data-min')),
-                max = parseInt($input.attr('data-max')),
-                step = parseInt($input.attr('data-step')),
-                shift_step = parseInt($input.attr('data-shift-step'));
+                min = parseInt($input.data('min')),
+                max = parseInt($input.data('max')),
+                step = parseInt($input.data('step')),
+                shift_step = parseInt($input.data('shift-step'));
 
             // Set the "+" and "-" to disabled accordingly
             if (parseInt($input.val()) == min) {
@@ -3442,8 +3421,8 @@ var Render_Modal;
 
                 var $button_up = $(this).siblings('.render-modal-counter-up'),
                     $button_down = $(this).siblings('.render-modal-counter-down'),
-                    min = parseInt($input.attr('data-min')),
-                    max = parseInt($input.attr('data-max'));
+                    min = parseInt($input.data('min')),
+                    max = parseInt($input.data('max'));
 
                 if (parseInt($(this).val()) >= max) {
 
@@ -3522,8 +3501,8 @@ var Render_Modal;
             value = values[0]; // The number
 
             // Make sure the "+" and "-" buttons have the right classes
-            var min = this.$input.attr('data-min'),
-                max = this.$input.attr('data-max');
+            var min = this.$input.data('min'),
+                max = this.$input.data('max');
 
             if (value == min) {
                 this.$input.siblings('.render-modal-counter-down').addClass('disabled');
@@ -3561,8 +3540,8 @@ var Render_Modal;
                 max = response.options.max,
                 value = this.getValue();
 
-            this.$input.attr('data-min', min);
-            this.$input.attr('data-max', max);
+            this.$input.data('min', min);
+            this.$input.data('max', max);
 
             if (value < min) {
                 this.setValue(min.toString());

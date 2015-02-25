@@ -23,7 +23,12 @@ function render_add_shortcode( $shortcode ) {
 
 	// Add shortcode to Render
 	add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
-		$shortcodes[] = $shortcode;
+
+		// Unset the code first
+		$code = $shortcode['code'];
+		unset( $shortcodes['code'] );
+
+		$shortcodes[ $code ] = $shortcode;
 
 		return $shortcodes;
 	} );
@@ -102,7 +107,7 @@ function render_sc_attr_unescape( $content ) {
 
 	foreach ( $escapes as $escape ) {
 		$char_code = ord( $escape );
-		$content = preg_replace( "/::{$char_code}::/", $escape, $content );
+		$content   = preg_replace( "/::{$char_code}::/", $escape, $content );
 	}
 
 	return $content;
@@ -411,15 +416,15 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 		case 'post_type_list':
 
 			$output = array(
-				'label' => __( 'Post Type', 'Render' ),
-				'type' => 'selectbox',
-				'default' => 'any',
+				'label'      => __( 'Post Type', 'Render' ),
+				'type'       => 'selectbox',
+				'default'    => 'any',
 				'properties' => array(
-					'noDeselect' => true,
-					'options' => array(
+					'allowDeselect' => false,
+					'options'       => array(
 						'any' => __( 'Any', 'Render' ),
 					),
-					'callback' => array(
+					'callback'      => array(
 						'function' => 'render_sc_post_type_list',
 					),
 				),
@@ -465,7 +470,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 				'description' => __( 'Links to a post / page.', 'Render' ),
 				'type'        => 'selectbox',
 				'properties'  => array(
-					'placeholder' => __( 'Select a post / page, or type a link', 'Render' ),
+					'placeholder'      => __( 'Select a post / page, or type a link', 'Render' ),
 					'allowCustomInput' => true,
 					'groups'           => array(),
 					'callback'         => array(
@@ -478,11 +483,11 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 		case 'phone':
 
 			$output = array(
-				'label'       => __( 'Phone', 'Render' ),
-				'properties'  => array(
-					'prefix' => '<span class="dashicons dashicons-phone"></span>',
+				'label'      => __( 'Phone', 'Render' ),
+				'properties' => array(
+					'prefix'      => '<span class="dashicons dashicons-phone"></span>',
 					'prefixWidth' => 15,
-					'mask' => array(
+					'mask'        => array(
 						'template' => 'phone',
 					),
 				),
@@ -492,12 +497,12 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 		case 'email':
 
 			$output = array(
-				'label'       => __( 'Email', 'Render' ),
-				'properties'  => array(
-					'prefix' => '<span class="dashicons dashicons-email"></span>',
+				'label'      => __( 'Email', 'Render' ),
+				'properties' => array(
+					'prefix'      => '<span class="dashicons dashicons-email"></span>',
 					'prefixWidth' => 15,
 				),
-				'validate' => array(
+				'validate'   => array(
 					'EMAIL' => true,
 				),
 			);
@@ -508,7 +513,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			$orientation = isset( $args['orientation'] ) ? $args['orientation'] : '';
 
 			$output = array(
-				'label'      => sprintf( __( 'Border %s Radius', 'Render' ), $orientation),
+				'label'      => sprintf( __( 'Border %s Radius', 'Render' ), $orientation ),
 				'advanced'   => true,
 				'type'       => 'counter',
 				'properties' => array(
@@ -535,7 +540,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 				'properties' => array(
 					'values' => array(
 						'DSC' => __( 'Descending', 'Render' ),
-						'ASC'  => __( 'Ascending', 'Render' ),
+						'ASC' => __( 'Ascending', 'Render' ),
 					),
 				),
 			);
@@ -546,7 +551,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			$output = array(
 				'label'      => __( 'Order by', 'Render' ),
 				'type'       => 'selectbox',
-				'default' => 'date',
+				'default'    => 'date',
 				'properties' => array(
 					'options' => array(
 						'none'          => __( 'None', 'Render' ),
@@ -682,8 +687,8 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
  *
  * @since 1.0.3
  *
- * @param string   $button_ID    The ID of the TinyMCE button, or the hook for the media button
- * @param string   $button_label The readable label that describes the button.
+ * @param string $button_ID    The ID of the TinyMCE button, or the hook for the media button
+ * @param string $button_label The readable label that describes the button.
  */
 function render_disable_tinymce_button( $button_ID, $button_label ) {
 
@@ -700,10 +705,10 @@ function render_disable_tinymce_button( $button_ID, $button_label ) {
  * @since 1.0.3
  *
  * @param string $hook_name The name of the hook that adds the media button.
- * @param string $label The readable label that describes the button.
- * @param int $priority The priority of the hook.
+ * @param string $label     The readable label that describes the button.
+ * @param int    $priority  The priority of the hook.
  */
-function render_disable_tinymce_media_button( $hook_name, $label , $priority = 10 ) {
+function render_disable_tinymce_media_button( $hook_name, $label, $priority = 10 ) {
 
 	add_filter( 'render_disabled_tinymce_media_buttons', function ( $buttons ) use ( $hook_name, $priority ) {
 		$buttons[ $hook_name ] = $priority;

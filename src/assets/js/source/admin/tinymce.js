@@ -428,8 +428,8 @@ var Render_tinymce;
          */
         visualToLiteral: function (shortcode) {
 
-            var code = $(shortcode).attr('data-code'),
-                atts = $(shortcode).attr('data-atts'),
+            var code = $(shortcode).data('code'),
+                atts = $(shortcode).data('atts'),
                 shortcode_content = $(shortcode).find('.render-tinymce-shortcode-content').html();
 
             var output = '[' + code;
@@ -700,13 +700,18 @@ var Render_tinymce;
 
             $shortcodes.each(function () {
 
-                var atts = $(this).attr('data-atts'),
-                    code = $(this).attr('data-code'),
+                var atts = $(this).data('atts'),
+                    code = $(this).data('code'),
                     shortcode_content = $(this).find('.render-tinymce-shortcode-content').first().html(),
                     output = '[' + code;
 
                 if (atts) {
-                    atts = JSON.parse(atts);
+
+                    // Parse if they aren't already ($.data auto parses it)
+                    if (typeof atts !== 'object') {
+                        atts = JSON.parse(atts);
+                    }
+
                     var _atts = '';
                     $.each(atts, function (name, value) {
                         _atts += ' ' + name + '=\'' + value + '\'';

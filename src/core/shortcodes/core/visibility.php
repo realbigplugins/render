@@ -698,11 +698,10 @@ function render_sc_timezone_dropdown() {
 function render_sc_time_slider( $att_id, $att, $properties ) {
 
 	// Establish defaults
-	$defaults   = array(
-		'values' => isset( $att['default'] ) ? $att['default'] : '480-840',
+	$properties = wp_parse_args( $properties, array(
+		'values' => $att['default'] !== false ? $att['default'] : '480-840',
 		'step'   => 15,
-	);
-	$properties = wp_parse_args( $properties, $defaults );
+	) );
 
 	// Custom slide callback
 	$properties['slide'] = 'timeSlider';
@@ -710,6 +709,11 @@ function render_sc_time_slider( $att_id, $att, $properties ) {
 	// Non-editables
 	$properties['min'] = 0;
 	$properties['max'] = 1440;
+
+	// Range
+	if ( isset( $properties['range'] ) ) {
+		$properties['range'] = $properties['range'] === true ? 'true' : '';
+	}
 
 	// Prepare data for the slider
 	$data = '';
