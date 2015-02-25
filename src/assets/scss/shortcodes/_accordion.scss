@@ -1,11 +1,6 @@
 @import "../global";
 
-.render-accordion-wrapper {
-
-}
-
 .render-accordion-section {
-
 
   .render-accordion-section-heading {
     position: relative;
@@ -42,13 +37,4 @@
   .render-accordion-section-content {
     padding: 10px;
   }
-}
-
-// Tinymce
-.render-tinymce-shortcode-wrapper.render_accordion_wrapper {
-  .render-tinymce-dummy-container {
-    display: none;
-  }
-
-  padding: 5px;
 }

@@ -297,9 +297,6 @@ if ( ! class_exists( 'Render' ) ) {
 				$this->remove_disabled_shortcodes();
 			}
 
-			// Add editor styles
-			self::add_editor_styles();
-
 			// Licensing
 			require_once __DIR__ . '/core/licensing/licensing.php';
 
@@ -376,6 +373,11 @@ if ( ! class_exists( 'Render' ) ) {
 		 */
 		public static function _register_files() {
 
+			/*--------*
+			 * Styles *
+			 *--------*/
+
+			// Frontend
 			wp_register_style(
 				'render',
 				RENDER_URL . "/assets/css/render.min.css",
@@ -383,6 +385,7 @@ if ( ! class_exists( 'Render' ) ) {
 				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
+			// Admin
 			wp_register_style(
 				'render-admin',
 				RENDER_URL . "/assets/css/render-admin.min.css",
@@ -390,6 +393,15 @@ if ( ! class_exists( 'Render' ) ) {
 				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
+			// TinyMCE
+			wp_register_style(
+				'render-tinymce',
+				RENDER_URL . "/assets/css/render-tinymce.min.css",
+				null,
+				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
+			);
+
+			// Chosen
 			wp_register_style(
 				'render-chosen',
 				RENDER_URL . '/includes/chosen/chosen.min.css',
@@ -397,6 +409,11 @@ if ( ! class_exists( 'Render' ) ) {
 				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
+			/*---------*
+			 * Scripts *
+			 *---------*/
+
+			// Frontend
 			wp_register_script(
 				'render',
 				RENDER_URL . "/assets/js/render.min.js",
@@ -404,6 +421,7 @@ if ( ! class_exists( 'Render' ) ) {
 				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
+			// Admin
 			wp_register_script(
 				'render-admin',
 				RENDER_URL . "/assets/js/render-admin.min.js",
@@ -411,6 +429,7 @@ if ( ! class_exists( 'Render' ) ) {
 				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
+			// Chosen
 			wp_register_script(
 				'render-chosen',
 				RENDER_URL . '/includes/chosen/chosen.jquery.min.js',
@@ -418,6 +437,7 @@ if ( ! class_exists( 'Render' ) ) {
 				defined( 'Render_DEVELOPMENT' ) ? time() : RENDER_VERSION
 			);
 
+			// Masked input
 			wp_register_script(
 				'render-masked-input',
 				RENDER_URL . '/includes/input-mask/jquery.masked-input.js',
@@ -565,37 +585,6 @@ if ( ! class_exists( 'Render' ) ) {
 			}
 
 			return $att;
-		}
-
-		/**
-		 * Easy way of adding extra styles to TinyMCE, via Render.
-		 *
-		 * This is also where add_theme_support() for Render will add the custom stylesheet.
-		 *
-		 * @since 1.0.0
-		 */
-		public static function add_editor_styles() {
-
-			global $_wp_theme_features;
-
-			$styles = array(
-				RENDER_URL . '/assets/css/render.min.css',
-			);
-
-			if ( isset( $_wp_theme_features['render'] ) && is_array( $_wp_theme_features['render'] ) ) {
-				$styles = array_merge( $styles, $_wp_theme_features['render'] );
-			}
-
-			/**
-			 * Allows developers to easily add or remove Render added styles from TinyMCE.
-			 *
-			 * @since 1.0.0
-			 */
-			$styles = apply_filters( 'render_editor_styles', $styles );
-
-			foreach ( (array) $styles as $style ) {
-				add_editor_style( $style );
-			}
 		}
 
 		/**

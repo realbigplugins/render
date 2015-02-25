@@ -20,12 +20,16 @@ module.exports = function (grunt) {
                 livereload: true
             },
             sass: {
-                files: ['src/assets/scss/**/*.scss', '!src/assets/scss/admin/**/*.scss'],
+                files: ['src/assets/scss/**/*.scss', '!src/assets/scss/admin/**/*.scss', '!src/assets/scss/tinymce/**/*.scss'],
                 tasks: ['sass:src', 'autoprefixer', 'notify:sass']
             },
             sass_admin: {
                 files: ['src/assets/scss/admin/**/*.scss', 'src/assets/scss/_global.scss'],
                 tasks: ['sass:admin', 'autoprefixer', 'notify:sass_admin']
+            },
+            sass_tinymce: {
+                files: ['src/assets/scss/tinymce/**/*.scss', 'src/assets/scss/_global.scss'],
+                tasks: ['sass:tinymce', 'autoprefixer', 'notify:sass_tinymce']
             },
             js: {
                 files: ['src/assets/js/source/**/*.js', '!src/assets/js/source/admin/**/*.js'],
@@ -92,6 +96,11 @@ module.exports = function (grunt) {
             admin: {
                 files: {
                     'src/assets/css/render-admin.min.css': 'src/assets/scss/admin/admin.scss'
+                }
+            },
+            tinymce: {
+                files: {
+                    'src/assets/css/render-tinymce.min.css': 'src/assets/scss/tinymce/tinymce.scss'
                 }
             }
         },
@@ -234,6 +243,12 @@ module.exports = function (grunt) {
                 options: {
                     title: pkg.name,
                     message: 'SASS Admin Completed'
+                }
+            },
+            sass_tinymce: {
+                options: {
+                    title: pkg.name,
+                    message: 'SASS TinyMCE Completed'
                 }
             },
             js: {

@@ -1,0 +1,54 @@
+@import "../../global";
+
+@mixin columns-width($column) {
+  &.columns-1 #{$column} {
+    width: 100%;
+  }
+
+  &.columns-2 #{$column} {
+    width: 50%;
+  }
+
+  &.columns-3 #{$column} {
+    width: 33.3333%;
+  }
+
+  &.columns-4 #{$column} {
+    width: 25%;
+  }
+
+  &.columns-5 #{$column} {
+    width: 20%;
+  }
+
+  &.columns-6 #{$column} {
+    width: 16.6666%;
+  }
+}
+
+.render-tinymce-shortcode-wrapper.render_columns_wrapper {
+  @include clearfix;
+  @include columns-width('.render-tinymce-shortcode-wraper.render-column-section');
+  padding: 5px 0 5px 5px;
+}
+
+.render-tinymce-shortcode-wrapper.render_column_section {
+  @extend .render-column-section;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  padding: 0 5px 0 0;
+
+  > .render-column-section {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25) inset;
+    border: 1px solid #ccc;
+    padding: 5px;
+
+    // Reset inner-columns
+    width: auto;
+    float: none;
+    box-sizing: inherit;
+    margin: 0;
+  }
+}

@@ -56,6 +56,9 @@ class Render_tinymce extends Render {
 
 			return $pointers;
 		});
+
+		// Add editor styles
+		self::add_editor_styles();
 	}
 
 	/**
@@ -128,6 +131,38 @@ class Render_tinymce extends Render {
 		}
 
 		return $buttons;
+	}
+
+	/**
+	 * Easy way of adding extra styles to TinyMCE, via Render.
+	 *
+	 * This is also where add_theme_support() for Render will add the custom stylesheet.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function add_editor_styles() {
+
+		global $_wp_theme_features;
+
+		$styles = array(
+			RENDER_URL . '/assets/css/render.min.css',
+			RENDER_URL . '/assets/css/render-tinymce.min.css',
+		);
+
+		if ( isset( $_wp_theme_features['render'] ) && is_array( $_wp_theme_features['render'] ) ) {
+			$styles = array_merge( $styles, $_wp_theme_features['render'] );
+		}
+
+		/**
+		 * Allows developers to easily add or remove Render added styles from TinyMCE.
+		 *
+		 * @since 1.0.0
+		 */
+		$styles = apply_filters( 'render_editor_styles', $styles );
+
+		foreach ( (array) $styles as $style ) {
+			add_editor_style( $style );
+		}
 	}
 
 	/**

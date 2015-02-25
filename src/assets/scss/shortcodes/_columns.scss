@@ -36,31 +36,3 @@
   margin: 0;
   padding: 10px;
 }
-
-// Tinymce
-.render-tinymce-shortcode-wrapper.render_columns_wrapper {
-  @include clearfix;
-  @include columns-width('.render-tinymce-shortcode-wraper.render-column-section');
-  padding: 5px 0 5px 5px;
-}
-
-.render-tinymce-shortcode-wrapper.render_column_section {
-  @extend .render-column-section;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
-  padding: 0 5px 0 0;
-
-  > .render-column-section {
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.25) inset;
-    border: 1px solid #ccc;
-    padding: 5px;
-
-    // Reset inner-columns
-    width: auto;
-    float: none;
-    box-sizing: inherit;
-    margin: 0;
-  }
-}

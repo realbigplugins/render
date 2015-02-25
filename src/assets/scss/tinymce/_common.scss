@@ -1,12 +1,17 @@
-@import "global";
+@import "../global";
 
 $tooltip-arrow-size: 6px;
 $tooltip-height: 30px;
 $tooltip-color: #f5f5f5;
 $tooltip-border-color: #aaa;
 
-body#tinymce {
+html {
+  height: auto !important;
+}
+
+body {
   background: #fff;
+  height: auto !important;
 }
 
 .render-tinymce-shortcode-wrapper {

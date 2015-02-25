@@ -1,0 +1,27 @@
+@import "../../global";
+
+// Wrapper
+.render-tinymce-shortcode-wrapper.render_tabs_wrapper {
+  .render-tinymce-dummy-container {
+    display: none;
+  }
+
+  .render-tabs-section-wrapper {
+    padding: 0;
+  }
+
+  .render-tabs-navigation-tab {
+    margin-left: 0;
+  }
+}
+
+// Individual tab
+.render-tinymce-shortcode-wrapper.render_tab_section {
+  position: relative;
+  padding: 20px 10px;
+  border-top: 1px solid #bbb;
+
+  &:first-of-type {
+    border-top: none;
+  }
+}
