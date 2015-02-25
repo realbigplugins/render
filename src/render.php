@@ -61,7 +61,13 @@ define( 'RENDER_PRIMARY_COLOR_LIGHT', '#74b6c2' );
  */
 define( 'RENDER_PRIMARY_FONT_COLOR', '#ffffff' );
 
-if ( ! class_exists( 'Render' ) ) {
+// Uninstall
+if ( isset( $callable ) && $callable == 'render_uninstall' ) {
+	define( 'RENDER_UNINSTALLING', true );
+	require_once __DIR__ . '/core/uninstall.php';
+}
+
+if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 
 	/**
 	 * Class Render
@@ -207,6 +213,10 @@ if ( ! class_exists( 'Render' ) ) {
 		 */
 		public static function pre_init() {
 
+			// Hook database interactions for options
+			add_action( 'updated_option', array( __CLASS__, 'updated_option' ), 10, 1 );
+			add_action( 'deleted_option', array( __CLASS__, 'deleted_option' ), 10, 1 );
+
 			// Initialize functions
 			self::_require_files();
 
@@ -231,6 +241,18 @@ if ( ! class_exists( 'Render' ) ) {
 
 			// Initialize Render shortcodes
 			self::_shortcodes_init();
+
+			// Uninstall hook. Only apply if the setting is set
+			if ( get_option( 'render_delete_on_uninstall' ) ) {
+				register_uninstall_hook( plugin_basename( __FILE__ ), 'render_uninstall' );
+			} else {
+
+				// Make sure to remove the hook (no way to do so via WP functions)
+				// @see is_uninstallable_plugin()
+				$uninstallable_plugins = (array) get_option( 'uninstall_plugins', array() );
+				unset( $uninstallable_plugins[ plugin_basename( __FILE__ ) ] );
+				update_option( 'uninstall_plugins', $uninstallable_plugins );
+			}
 		}
 
 		/**
@@ -322,6 +344,59 @@ if ( ! class_exists( 'Render' ) ) {
 
 			// Modal
 			require_once __DIR__ . '/core/modal.php';
+		}
+
+		/**
+		 * Fires on updating an option.
+		 *
+		 * When the option being updated is a Render option, that option is stored in a different option, to keep track
+		 * of it for plugin uninstall.
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @param string $option The option name that was just updated.
+		 */
+		public static function updated_option( $option ) {
+
+			// Only apply to render options (and not the render_updated_options option, that would cause an infinite loop)
+			if ( strpos( $option, 'render_' ) !== false && $option != 'render_updated_options' ) {
+
+				// Get the options list
+				$update_options = get_option( 'render_updated_options', array() );
+
+				// Add the new option in
+				$update_options[] = $option;
+				$update_options = array_unique( $update_options );
+
+				// Save it
+				update_option( 'render_updated_options', $update_options );
+			}
+		}
+
+		/**
+		 * Fires on deleting an option.
+		 *
+		 * When the option being deleted is a Render option, that option is deleted from a different option, to keep
+		 * track of it for plugin uninstall.
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @param string $option The option name that was just updated.
+		 */
+		public static function deleted_option( $option ) {
+
+			// Only apply to render options (and not the render_updated_options option, that would cause an infinite loop)
+			if ( strpos( $option, 'render_' ) !== false && $option != 'render_updated_options' ) {
+
+				// Get the options list
+				$update_options = get_option( 'render_updated_options', array() );
+
+				// Remove the option
+				unset( $update_options[ $option ] );
+
+				// Save it
+				update_option( 'render_updated_options', $update_options );
+			}
 		}
 
 		/**
@@ -672,6 +747,6 @@ if ( ! class_exists( 'Render' ) ) {
 		}
 	}
 
-	// Instantiate the class and then initialize the shortcodes
+	// Don't initialize the class on uninstall
 	$Render = Render::_getInstance();
 }
