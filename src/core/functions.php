@@ -680,6 +680,31 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
 
 		return $extensions;
 	} );
+
+	/**
+	 * Adds a licensing nag if the license is not valid.
+	 *
+	 * @since {{VERSION}}
+	 */
+	add_action( 'after_plugin_row_' . plugin_basename( $file_path ), function () use( $extension, $name ) {
+
+		if ( render_check_license( $extension, $name ) != 'valid' ) {
+
+			$html = '</tr><tr class="plugin-update-tr"><td colspan="3" class="plugin-update"><div class="update-message">';
+
+			$html .= __( sprintf(
+				'%sRegister Render%s to receive access to support and updates. If you don\'t have one, you can  %sPurchase one here%s.',
+				'<a href="' . admin_url() . 'admin.php?page=render-settings">',
+				'</a>',
+				'<a href="http://realbigplugins.com/plugins/render/">',
+				'</a>'
+			), 'Render' );
+
+			$html .= '</div></td>';
+
+			echo $html;
+		}
+	});
 }
 
 /**
