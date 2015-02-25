@@ -255,7 +255,6 @@ if ( ! class_exists( 'Render' ) ) {
 				'tags'        => '',
 				'category'    => 'other',
 				'atts'        => array(),
-				'example'     => '',
 				'wrapping'    => false,
 				'render'      => false,
 				//

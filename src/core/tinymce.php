@@ -369,7 +369,7 @@ class Render_tinymce extends Render {
 			if ( isset( $data['dummyContent'] ) ) {
 				$content = $data['dummyContent'];
 			} else {
-				$content = 'No content selected.';
+				$content = __( 'No content selected.', 'Render' );
 			}
 		}
 
