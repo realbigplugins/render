@@ -1361,8 +1361,6 @@ var Render_Modal;
             // Construct the output
             output = '[' + code + att_output + ']' + content;
 
-            console.log(output);
-
             this.output = {
                 all: output,
                 code: code,
@@ -1744,7 +1742,6 @@ var Render_Modal;
             this.conditionals = this.conditionals || false;
 
             this.storeOriginalValue();
-            this.setupChange();
 
             this.postInit($e);
 
@@ -1761,23 +1758,6 @@ var Render_Modal;
          */
         this.storeOriginalValue = function () {
             this.original_value = this.$input.val();
-        };
-
-        /**
-         * Establishes what triggers the input change.
-         *
-         * Seems redundant, but this gives other attributes the ability to change what triggers the change
-         *
-         * @since {{VERSION}}
-         */
-        this.setupChange = function () {
-
-            var attObj = this;
-
-            //this.$input.on('change', function () {
-            //    var value = attObj.getValue();
-            //    $(this).trigger('render-att-change', value);
-            //});
         };
 
         /**
@@ -2085,7 +2065,6 @@ var Render_Modal;
             this.setValid();
             this.$input.prop('disabled', false);
             this.$input.trigger('render:att_revert');
-
         };
 
         /**
@@ -2129,7 +2108,8 @@ var Render_Modal;
          */
         this._setValue = function (value) {
             this.setValue(value);
-            this.$input.trigger('render:att_setValue', value).change();
+            this.$input.change();
+            this.$input.trigger('render:att_setValue', value);
         };
 
         /**
@@ -3246,11 +3226,11 @@ var Render_Modal;
             $slider.data('max', max);
 
             if (value < min) {
-                this.setValue(min);
+                this._setValue(min);
             }
 
             if (value > max) {
-                this.setValue(max);
+                this._setValue(max);
             }
         };
 
@@ -3559,11 +3539,11 @@ var Render_Modal;
             this.$input.data('max', max);
 
             if (value < min) {
-                this.setValue(min.toString());
+                this._setValue(min.toString());
             }
 
             if (value > max) {
-                this.setValue(max.toString());
+                this._setValue(max.toString());
             }
         };
 

@@ -241,7 +241,7 @@ class Render_Modal {
 		// Repeater should have description above always
 		if ( $att['type'] == 'repeater' ) {
 			$att['descriptionAbove'] = true;
-			$att['descriptionBelow'] = true;
+			$att['descriptionBelow'] = false;
 		}
 		?>
 		<div class="<?php echo implode( ' ', $att['classes'] ); ?>" <?php echo $data_output; ?>>
