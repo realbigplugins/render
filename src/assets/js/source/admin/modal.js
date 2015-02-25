@@ -1283,6 +1283,9 @@ var Render_Modal;
                         count = new_count > count ? new_count : count;
                     });
 
+                    if (typeof atts.nested_children_count == 'undefined') {
+                        atts.nested_children_count = {};
+                    }
                     atts.nested_children_count.value = count;
 
                     for (var i = 0; i < count; i++) {
@@ -1357,6 +1360,8 @@ var Render_Modal;
 
             // Construct the output
             output = '[' + code + att_output + ']' + content;
+
+            console.log(output);
 
             this.output = {
                 all: output,
@@ -2418,6 +2423,7 @@ var Render_Modal;
 
                 var keyCode = e.keyCode || e.which;
 
+                // Tab key
                 if (keyCode == 9) {
                     e.preventDefault();
                     var start = $(this).get(0).selectionStart;
@@ -2431,6 +2437,15 @@ var Render_Modal;
                     // put caret at right position again
                     $(this).get(0).selectionStart =
                         $(this).get(0).selectionEnd = start + 4;
+                }
+            });
+
+            // Shift + enter should submit the form
+            this.$input.keydown(function (event) {
+
+                if (event.keyCode == 13 && event.shiftKey) {
+                    event.preventDefault();
+                    Render_Modal.update();
                 }
             });
 
@@ -2448,7 +2463,7 @@ var Render_Modal;
          * @returns {*} The attribute field value.
          */
         this.getValue = function () {
-            return this.$input.text();
+            return this.$input.val();
         };
 
         this.init($e);
