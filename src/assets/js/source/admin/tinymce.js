@@ -321,6 +321,38 @@ var Render_tinymce;
                     }
                 });
 
+                // When clicking an image with a shortcode, don't allow resizing
+                _editor.on('nodechange', function (event) {
+
+                    // Must be image
+                    if (event.element.nodeName != 'IMG') {
+                        return;
+                    }
+
+                    var $img = $(event.element),
+                        $shortcode = $img.closest('.render-tinymce-shortcode-wrapper'),
+                        $body = $(editor.getBody()),
+                        shortcode_data, $resize_elements;
+
+                    // Must be in a shortcode
+                    if (!$shortcode.length) {
+                        return;
+                    }
+
+                    shortcode_data = Render_Data.all_shortcodes[$shortcode.data('code')].render;
+
+                    // Must not have image editing allowed
+                    if (typeof shortcode_data != 'undefined' && typeof shortcode_data.allowImageEditing != 'undefined') {
+                        return;
+                    }
+
+                    // Hide the handles
+                    setTimeout(function () {
+                        $resize_elements = $body.find('.mce-resizehandle');
+                        $resize_elements.hide();
+                    }, 1);
+                });
+
                 _editor.on('init', function () {
                     Render_tinymce.editorBinds($(editor.getBody()));
                 });
@@ -689,7 +721,7 @@ var Render_tinymce;
          */
         convertRenderedToLiteral: function (content) {
 
-            var $container = $('<div />').append($(content));
+            var $container = $('<div />').append(content);
 
             // Remove dummy containers
             $container.find('.render-tinymce-dummy-container').each(function () {

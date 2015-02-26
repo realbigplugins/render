@@ -178,7 +178,7 @@ class Render_Tracking {
 			'sslverify' => false,
 		);
 
-		wp_remote_post( 'https://realbigplugins.com/', $args );
+		wp_remote_post( 'https://tracking.realbigplugins.com/', $args );
 	}
 }
 

@@ -396,6 +396,11 @@ class Render_tinymce extends Render {
 			$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, '_replace_shortcodes' ), $_content );
 		}
 
+		// If the shortcode explicitely said to leave alone, completely pass over
+		if ( isset( $data['ignore'] ) && ( $data['ignore'] == true || $data['ignore'] == 'true' ) ) {
+			return $entire_code;
+		}
+
 		// If this is a wrapping code, but no content is provided, use dummy content
 		if ( empty( $content ) &&
 		     isset( $data['wrapping'] ) &&
@@ -447,6 +452,15 @@ class Render_tinymce extends Render {
 
 			// Un-escape the output
 			$shortcode_output = render_sc_attr_unescape( $shortcode_output );
+
+			// Make sure images are non-editable (unless told otherwise)
+			if ( ! isset( $data['wrapping'] ) || $data['wrapping'] == 'false' || $data['wrapping'] == false ) {
+				$shortcode_output  = preg_replace(
+					'/<img/',
+					'<img data-mce-placeholder="1" style="outline: none !important;"',
+					$shortcode_output
+				);
+			}
 		}
 
 		// If the output contains any block tags, make sure the wrapper tag is a div
@@ -479,13 +493,14 @@ class Render_tinymce extends Render {
 		 */
 		$classes = apply_filters( "render_tinymce_shortcode_wrapper_classes_$code", $classes );
 
-		$output = '';
-
-		// Start the wrapper
-
+		// Parse the atts
 		if ( ! empty( $atts ) ) {
 			$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
 		}
+
+		$output = '';
+
+		// Start the wrapper
 
 		$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable " . implode( ' ', $classes ) . "' data-code='$code' data-atts='$atts'>";
 
