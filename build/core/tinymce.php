@@ -35,6 +35,30 @@ class Render_tinymce extends Render {
 
 		// Localize data for rendering in the TinyMCE
 		add_action( 'render_localized_data', array( $this, 'rendering_data' ) );
+
+		// Localize translations
+		add_action( 'render_localized_data', array( __CLASS__, '_translations' ) );
+
+		// Add a pointer
+		add_filter( 'render_pointers', function ( $pointers ) {
+
+			$pointers['tinymce_button'] = array(
+				'title' => __( 'Add A Shortcode', 'Render' ),
+				'content' => __( 'This is your new, easy way to add shortcodes to the editor. Click here to get started!', 'Render' ),
+				'target' => 'i.mce-i-render-mce-icon',
+				'position' => array(
+					'edge' => 'bottom',
+					'align' => 'center',
+				),
+				'trigger' => 'render-tinymce-post-render',
+				'classes' => 'tinymce-pointer'
+			);
+
+			return $pointers;
+		});
+
+		// Add editor styles
+		self::add_editor_styles();
 	}
 
 	/**
@@ -110,6 +134,38 @@ class Render_tinymce extends Render {
 	}
 
 	/**
+	 * Easy way of adding extra styles to TinyMCE, via Render.
+	 *
+	 * This is also where add_theme_support() for Render will add the custom stylesheet.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function add_editor_styles() {
+
+		global $_wp_theme_features;
+
+		$styles = array(
+			RENDER_URL . '/assets/css/render.min.css',
+			RENDER_URL . '/assets/css/render-tinymce.min.css',
+		);
+
+		if ( isset( $_wp_theme_features['render'] ) && is_array( $_wp_theme_features['render'] ) ) {
+			$styles = array_merge( $styles, $_wp_theme_features['render'] );
+		}
+
+		/**
+		 * Allows developers to easily add or remove Render added styles from TinyMCE.
+		 *
+		 * @since 1.0.0
+		 */
+		$styles = apply_filters( 'render_editor_styles', $styles );
+
+		foreach ( (array) $styles as $style ) {
+			add_editor_style( $style );
+		}
+	}
+
+	/**
 	 * This filter allows the tinymce.init() args to be modified.
 	 *
 	 * Currently, I'm adding some extended_valid_elements so that tinymce doesn't strip my empty tags (mainly spans).
@@ -131,9 +187,27 @@ class Render_tinymce extends Render {
 	}
 
 	/**
+	 * Provides translations for TinyMCE pages.
+	 *
+	 * @since  1.1-alpha-3
+	 * @access private
+	 *
+	 * @param array $data The current localization data.
+	 * @return array The new localization data.
+	 */
+	static function _translations( $data ) {
+
+		$data['l18n']['add_shortcode'] = __( 'Add Shortcode', 'Render' );
+		$data['l18n']['select_content_from_editor'] = __( 'Please select content from the editor to enable this shortcode.', 'Render' );
+		$data['l18n']['cannot_place_shortcode_here'] = __( 'You cannot place this shortcode here.', 'Render' );
+
+		return $data;
+	}
+
+	/**
 	 * Adds localized data for rendering.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0.0`
 	 *
 	 * @global Render $Render The main Render object.
 	 *
@@ -202,9 +276,20 @@ class Render_tinymce extends Render {
 	 */
 	public static function render_ajax() {
 
-		global $post, $content;
+		global $post, $content, $wp_query;
 
 		if ( isset( $_REQUEST['post'] ) ) {
+
+			$wp_query = new WP_Query( array(
+				'p' => $_REQUEST['post'],
+			));
+
+			// Could be a page, and for some reason that requires a different parameter
+			if ( $wp_query->post_count === 0 ) {
+				$wp_query = new WP_Query( array(
+					'page_id' => $_REQUEST['post'],
+				));
+			}
 
 			if ( $post = get_post( $_REQUEST['post'] ) ) {
 				$post->post_content = $content;
@@ -287,6 +372,24 @@ class Render_tinymce extends Render {
 		$atts        = $matches[3];
 		$_content    = $matches[5];
 
+		// Get our shortcode data
+		$data = $render_shortcode_data[ $code ];
+
+		// Get our atts
+		$atts = shortcode_parse_atts( $atts );
+
+		// Nested shortcode children
+		if ( isset( $data['nested']['parent'] ) ) {
+
+			// Don't allow this shortcode to be edited
+			$data['hideActions'] = true;
+
+			// Set default dummy content
+			if ( ! isset( $data['dummyContent'] ) ) {
+				$data['dummyContent'] = '(Enter section content)';
+			}
+		}
+
 		// Search again for any nested shortcodes (loops infinitely)
 		if ( ! empty( $_content ) ) {
 			$pattern = get_shortcode_regex();
@@ -295,16 +398,14 @@ class Render_tinymce extends Render {
 
 		// If this is a wrapping code, but no content is provided, use dummy content
 		if ( empty( $content ) &&
-		     isset( $render_shortcode_data[ $code ]['wrapping'] ) &&
-		     $render_shortcode_data[ $code ]['wrapping'] === 'true'
+		     isset( $data['wrapping'] ) &&
+		     $data['wrapping'] === 'true'
 		) {
-			if ( isset( $render_shortcode_data[ $code ]['dummyContent'] ) ) {
-				$content = $render_shortcode_data[ $code ]['dummyContent'];
+			if ( isset( $data['dummyContent'] ) ) {
+				$content = $data['dummyContent'];
 			} else {
-				$content = 'No content selected.';
+				$content = __( 'No content selected.', 'Render' );
 			}
-
-			$entire_code = str_replace( '][', "]{$content}[", $entire_code );
 		}
 
 		// Properly wrap the content
@@ -312,21 +413,22 @@ class Render_tinymce extends Render {
 
 			// Wrap the content in a special element, but first decide if it needs to be div or span
 			$tag      = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
-			$editable = isset( $render_shortcode_data[ $code ]['contentNonEditable'] ) ? '' : 'render-tinymce-editable';
+
+			// Override tag
+			$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;
+
+			$editable = isset( $data['contentNonEditable'] ) ? '' : 'render-tinymce-editable';
 			$content  = "<$tag class='render-tinymce-shortcode-content $editable'>$content</$tag>";
 		}
 
 		// Replace the content with the new content
-		if ( ! empty( $_content ) ) {
+		if ( ! empty( $content ) ) {
 			$entire_code = str_replace( "]{$_content}[", "]{$content}[", $entire_code );
 		}
 
 		// Get the atts prepared for JSON
 		if ( ! empty( $atts ) ) {
-			$atts = shortcode_parse_atts( $atts );
-			if ( ! empty( $atts ) ) {
-				$atts = json_encode( $atts );
-			}
+			$atts = json_encode( $atts );
 		}
 
 		// Check for tinymce callback
@@ -335,24 +437,47 @@ class Render_tinymce extends Render {
 		}
 
 		// Get the shortcode output (if rendering set)
-		if ( ! isset( $render_shortcode_data[ $code ] ) ) {
+		if ( ! isset( $data ) ) {
 			$shortcode_output = $entire_code;
-		} elseif ( isset( $render_shortcode_data[ $code ]['useText'] ) ) {
-			$shortcode_output = $render_shortcode_data[ $code ]['useText'];
+		} elseif ( isset( $data['useText'] ) ) {
+			$shortcode_output = $data['useText'];
 		} else {
+
 			$shortcode_output = do_shortcode( $entire_code );
+
+			// Un-escape the output
+			$shortcode_output = render_sc_attr_unescape( $shortcode_output );
 		}
 
 		// If the output contains any block tags, make sure the wrapper tag is a div
 		$tag = preg_match( render_block_regex(), $shortcode_output ) ? 'div' : 'span';
 
 		// Override tag
-		$tag = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'div' : $tag;
+		$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;
+
+		$classes = array();
+
+		// The code
+		$classes[] = $code;
 
 		// Whether or not to style the code
-		$nostyle = isset( $render_shortcode_data[ $code ]['noStyle'] ) ? '' : ' styled';
+		$classes[] = ! isset( $data['noStyle'] ) ? 'styled' : '';
 
-		$block = isset( $render_shortcode_data[ $code ]['displayBlock'] ) ? 'block' : '';
+		// If the code should be forced as displayBlock
+		$classes[] = isset( $data['displayBlock'] ) ? 'block' : '';
+
+		// If the shortcode is a nested child
+		$classes[] = isset( $data['nested']['parent'] ) ? 'nested-child' : '';
+
+		// Hidden tooltip
+		$classes[] = isset( $data['hideActions'] ) ? 'hide-actions' : '';
+
+		/**
+		 * Allows external filtering of the wrapper classes.
+		 *
+		 * @since 1.1-alpha-3
+		 */
+		$classes = apply_filters( "render_tinymce_shortcode_wrapper_classes_$code", $classes );
 
 		$output = '';
 
@@ -362,21 +487,23 @@ class Render_tinymce extends Render {
 			$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
 		}
 
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable $code $nostyle $block' data-code='$code' data-atts='$atts'>";
+		$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable " . implode( ' ', $classes ) . "' data-code='$code' data-atts='$atts'>";
 
 		$output .= ! empty( $shortcode_output ) ? $shortcode_output : '<span class="render-shortcode-no-output">(no output)</span>';
 
 		// Close the wrapper
 
 		// Delete notification
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip'>" . __( 'Press again to delete', 'Render' ) . "</$tag>";
+		$output .= '<span class=\'render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip\'>' . __( 'Press again to delete', 'Render' ) . "</span>";
 
 		// Action button
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip'>";
-		$output .= "<$tag class='render-tinymce-tooltip-spacer'></$tag>";
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit'>edit</$tag>";
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper-remove dashicons dashicons-no'>remove</$tag>";
-		$output .= "</$tag>";
+		if ( ! isset( $data['hideActions'] ) ) {
+			$output .= '<span class="render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip">';
+			$output .= '<span class="render-tinymce-tooltip-spacer"></span>';
+			$output .= '<span class="render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit">edit</span>';
+			$output .= '<span class="render-tinymce-shortcode-wrapper-remove dashicons dashicons-no">remove</span>';
+			$output .= '</span>';
+		}
 
 		$output .= "</$tag>";
 
@@ -384,16 +511,18 @@ class Render_tinymce extends Render {
 	}
 }
 
-// Always add the AJAX
-add_action( 'render_tinymce_ajax', array( 'Render_tinymce', 'render_ajax' ), 1 );
-add_action( 'wp_ajax_render_render_shortcode', array( 'Render_tinymce', 'render_shortcode' ) );
-add_action( 'wp_ajax_render_render_shortcodes', array( 'Render_tinymce', 'render_shortcodes' ) );
+/**
+ * Instantiates the class if on a screen that uses it.
+ *
+ * @since 1.0.0
+ */
+add_action( 'current_screen', function ( $screen ) {
 
-// Instantiates the class if on a screen that uses it
-add_action( 'current_screen', '_render_init_tinymce' );
-
-function _render_init_tinymce( $screen ) {
-
+	/**
+	 * Allows external filtering of what screens the TinyMCE functionality can appear on.
+	 *
+	 * @since 1.0.0
+	 */
 	$allowed_screens = apply_filters( 'render_tinymce_allowed_screens', array(
 		'post',
 		'widgets',
@@ -403,4 +532,9 @@ function _render_init_tinymce( $screen ) {
 	if ( in_array( $screen->base, $allowed_screens ) ) {
 		new Render_tinymce();
 	}
-}
+} );
+
+// Always add the AJAX
+add_action( 'render_tinymce_ajax', array( 'Render_tinymce', 'render_ajax' ), 1 );
+add_action( 'wp_ajax_render_render_shortcode', array( 'Render_tinymce', 'render_shortcode' ) );
+add_action( 'wp_ajax_render_render_shortcodes', array( 'Render_tinymce', 'render_shortcodes' ) );

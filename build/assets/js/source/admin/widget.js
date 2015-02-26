@@ -12,9 +12,10 @@
 
 var Render_Widget;
 (function ($) {
-    var active_widget, self;
+    var active_widget, self,
+        render_data = Render_Data.all_shortcodes;
 
-    Render_Widget = {
+        Render_Widget = {
 
         /**
          * Initializes the object.
@@ -74,7 +75,44 @@ var Render_Widget;
          */
         update: function () {
 
-            self.change(Render_Modal.output.all, Render_Modal.output.title, 'modify-remove', Render_Modal.output.title);
+            if (Render_Modal.output) {
+
+                /* ------------- *
+                 * Add Shortcode *
+                 * ------------- */
+
+                // Toggle the button text
+                active_widget.find('.modify-remove').show();
+                active_widget.find('.add').hide();
+
+                // Toggle the "preview" text
+                active_widget.find('.shortcode-title').show().html(Render_Modal.output.title);
+                active_widget.find('.nothing-added').hide();
+
+                // Toggle the inputs
+                active_widget.find('.render-widget-shortcode-title').val(Render_Modal.output.title);
+                active_widget.find('.render-widget-shortcode').val(Render_Modal.output.all);
+            } else {
+
+                /* ---------------- *
+                 * Remove Shortcode *
+                 * ---------------- */
+
+                // Toggle the button text
+                active_widget.find('.add').show();
+                active_widget.find('.modify-remove').hide();
+
+                // Toggle the "preview" text
+                active_widget.find('.nothing-added').show();
+                active_widget.find('.shortcode-title').hide();
+
+                // Toggle the inputs
+                active_widget.find('.render-widget-shortcode-title').val('');
+                active_widget.find('.render-widget-shortcode').val('');
+            }
+
+            // Force save widget
+            active_widget.closest('div.widget').find('input.widget-control-save').click();
         },
 
         /**
@@ -85,7 +123,8 @@ var Render_Widget;
         remove: function () {
 
             Render_Modal.close();
-            self.change('', '', 'add', false);
+            self.update();
+            //self.change('', '', 'add', false);
         },
 
         /**

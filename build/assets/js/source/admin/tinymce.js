@@ -4,6 +4,7 @@
  * @since 1.0.0
  *
  * @global tinymce
+ * @global ajaxurl
  * @global Render_Modal
  * @global Render_Data
  * @global Render_MCECallbacks
@@ -16,7 +17,9 @@ var Render_tinymce;
     var editor, $texteditor, $editor, $loader,
         min_load_time = false,
         last_message = 0,
-        submitted = false;
+        submitted = false,
+        l18n = Render_Data.l18n,
+        $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
 
     Render_tinymce = {
 
@@ -73,7 +76,7 @@ var Render_tinymce;
          */
         editorBinds: function ($body) {
 
-            $body.on('mouseover', '.render-tinymce-shortcode-wrapper', function (e) {
+            $body.on('mouseover', '.render-tinymce-shortcode-wrapper:not(.hide-actions)', function (e) {
 
                 e.stopPropagation();
 
@@ -89,7 +92,7 @@ var Render_tinymce;
                 e.stopPropagation();
 
                 // Remove all other active tooltips
-                $body.find('.render-tinymce-shortcode-wrapper-actions.active').removeClass('active');
+                $body.find('.render-tinymce-shortcode-wrapper-actions.active:not(.hide-actions)').removeClass('active');
             })
         },
 
@@ -120,7 +123,7 @@ var Render_tinymce;
                     // Establishes an icon class for the button with the prefix "mce-i-"
                     icon: 'render-mce-icon',
                     cmd: 'Render_Open',
-                    tooltip: 'Add Shortcode'
+                    tooltip: l18n.add_shortcode
                 });
 
                 // Fires when clicking the shortcode <> button in the tinymce toolbar
@@ -182,7 +185,7 @@ var Render_tinymce;
                         $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper');
                         content = $shortcode.find('.render-tinymce-shortcode-content').html();
                         container_html = $('<div />').append($shortcode.clone()).html();
-                        shortcode = Render_tinymce.visualToLiteral(container_html);
+                        shortcode = Render_tinymce.convertRenderedToLiteral(container_html);
 
                         if (content && content.length) {
                             Render_Modal.selection = content;
@@ -234,6 +237,49 @@ var Render_tinymce;
                     }
                 }
 
+                // KeyDown (includes backspace)
+                _editor.onKeyDown.add(function (editor, event) {
+
+                    var node = editor.selection.getNode(),
+                        node_content = $(node).html();
+
+                    if (node && !$(node).hasClass('render-tinymce-shortcode-content')) {
+                        return;
+                    }
+
+                    var curElm = editor.selection.getRng().startContainer,
+                        range = editor.selection.getBookmark(curElm.textContent).rng;
+
+                    if (typeof range === 'undefined') {
+                        return;
+                    }
+
+                    var caretPos = range.startOffset;
+
+                    // Convert char codes to literal for counting purposes
+                    var literal_text = $('<div />').html(node_content).text();
+
+                    // Beginning of shortcode
+                    if (caretPos === 0) {
+
+                        // Don't allow backspace or left arrow to do anything
+                        if (event.which === 8 || event.which === 37) {
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+
+                    // End of shortcode
+                    if (caretPos === literal_text.length) {
+
+                        // Don't right arrow to do anything
+                        if (event.which === 39) {
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+                });
+
                 // Keypress (printable keys) in the editor
                 _editor.onKeyPress.add(function (editor, event) {
 
@@ -266,10 +312,12 @@ var Render_tinymce;
                             newChar = '&nbsp;';
                         }
 
-                        event.preventDefault();
                         $(node).html(literal_text + newChar);
                         editor.selection.select(node, true);
                         editor.selection.collapse(false);
+
+                        event.preventDefault();
+                        return false;
                     }
                 });
 
@@ -380,8 +428,8 @@ var Render_tinymce;
          */
         visualToLiteral: function (shortcode) {
 
-            var code = $(shortcode).attr('data-code'),
-                atts = $(shortcode).attr('data-atts'),
+            var code = $(shortcode).data('code'),
+                atts = $(shortcode).data('atts'),
                 shortcode_content = $(shortcode).find('.render-tinymce-shortcode-content').html();
 
             var output = '[' + code;
@@ -413,20 +461,40 @@ var Render_tinymce;
          */
         open: function (shortcode) {
 
-            var $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
-
             if (typeof shortcode !== 'undefined') {
-                $modal_shortcodes.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
                 Render_Modal.modify(shortcode);
             } else {
 
+                // Disable wrapping shortcodes when there's no selection
                 if (!Render_Modal.selection) {
-                    $modal_shortcodes.find('.render-modal-shortcode.wrapping').addClass('disabled');
-                } else {
-                    $modal_shortcodes.find('.render-modal-shortcode.wrapping.disabled').removeClass('disabled');
+                    $modal_shortcodes.find('.render-modal-shortcode.wrapping:not(.nested-parent)').each(function () {
+
+                        Render_Modal.disableShortcode(
+                            $(this),
+                            l18n.select_content_from_editor
+                        );
+                    });
                 }
 
                 Render_Modal.open();
+            }
+
+            // Hide any identical shortcodes if in a nesting shortcode
+            var $cursor_node = $(editor.selection.getNode()),
+                $nesting_shortcode = $cursor_node.length ? $cursor_node.closest('.nested-child') : false;
+
+            // Disable nesting shortcodes from being nested inside another
+            if ($nesting_shortcode.length) {
+
+                var nesting_shortcode = $nesting_shortcode.parent().closest('.render-tinymce-shortcode-wrapper').data('code');
+
+                $modal_shortcodes.find('.render-modal-shortcode[data-code="' + nesting_shortcode + '"]').each(function () {
+
+                    Render_Modal.disableShortcode(
+                        $(this),
+                        l18n.cannot_place_shortcode_here
+                    );
+                });
             }
         },
 
@@ -446,18 +514,17 @@ var Render_tinymce;
          */
         update: function () {
 
+            // If we're editing a shortcode, select the node with TinyMCE
             var $shortcode = $(editor.dom.select('.render-tinymce-editing'));
+            if ($shortcode.length) {
+                editor.selection.select($shortcode.get(0));
+            }
 
             // Replace or insert the content
-            if ($shortcode.length) {
-                $shortcode.replaceWith(Render_Modal.output.all);
+            if (editor.selection.getContent().length) {
+                editor.selection.setContent(Render_Modal.output.all);
             } else {
-
-                if (editor.selection.getContent().length) {
-                    editor.selection.setContent(Render_Modal.output.all);
-                } else {
-                    editor.insertContent(Render_Modal.output.all);
-                }
+                editor.insertContent(Render_Modal.output.all);
             }
 
             // Render the shortcodes
@@ -633,13 +700,18 @@ var Render_tinymce;
 
             $shortcodes.each(function () {
 
-                var atts = $(this).attr('data-atts'),
-                    code = $(this).attr('data-code'),
+                var atts = $(this).data('atts'),
+                    code = $(this).data('code'),
                     shortcode_content = $(this).find('.render-tinymce-shortcode-content').first().html(),
                     output = '[' + code;
 
                 if (atts) {
-                    atts = JSON.parse(atts);
+
+                    // Parse if they aren't already ($.data auto parses it)
+                    if (typeof atts !== 'object') {
+                        atts = JSON.parse(atts);
+                    }
+
                     var _atts = '';
                     $.each(atts, function (name, value) {
                         _atts += ' ' + name + '=\'' + value + '\'';

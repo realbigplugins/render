@@ -1,0 +1,42 @@
+@import "../global";
+
+.render-pointer {
+
+  // Title
+  h3 {
+    border-color: lighten($primary-color, 10%);
+    background: $primary-color;
+
+    // Icon
+    &:before {
+      @include icon('render-logo-condensed');
+      color: $primary-color;
+      line-height: 33px;
+      text-indent: 3px;
+      font-size: 17px;
+    }
+  }
+
+  // Admin Menu Pointer
+  &.admin-menu-pointer {
+    .wp-pointer-content, .wp-pointer-arrow {
+      margin-top: 5px;
+      margin-bottom: -5px;
+    }
+  }
+
+  // TinyMCE Pointer
+  &.tinymce-pointer {
+    .wp-pointer-arrow {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  // Widget pointer
+  &.widget-pointer {
+    .wp-pointer-arrow {
+      margin-top: -27px;
+    }
+  }
+}

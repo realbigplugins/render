@@ -5,7 +5,7 @@ Donate link: http://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=admin%
 Tags: shortcodes, render, visual, editor, package, bundle
 Requires at least: 3.8.0
 Tested up to: 4.1
-Stable tag: 1.0.5
+Stable tag: 1.1-alpha-3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,18 @@ Using this plugin is very simple. All you have to do is:
 3. View available shortcodes by going to Shortcodes in the admin menu
 
 == Changelog ==
+
+= 1.1-alpha-3 =
+* UPDATE: Conditional visibility and population for attributes.
+* UPDATE: Delete database options on uninstall now available from Settings.
+* UPDATE: Shift + enter submits modal when in text area.
+* UPDATE: Added WP Pointers throughout.
+* UPDATE: Custom input selectbox visually labeled.
+* UPDATE: Tab shortcode.
+* UPDATE: Revised and improved columns shortcode.
+* UPDATE: Accordion shortcode.
+* UPDATE: Shortcodes no longer return default attribute values.
+* DEVELOPERS: Nesting shortcode "type" now available!
 
 = 1.0.5 =
 * FIX: Users drop-down was un-populated.

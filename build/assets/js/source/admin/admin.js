@@ -8,17 +8,22 @@
  * @package Render
  * @subpackage Modal
  */
-var Render_Admin;
 (function ($) {
-    Render_Admin = {
-        init: function () {
-            // ... get out of here!
-        }
-    };
 
-    $(function () {
-        Render_Admin.init();
-    });
+    /**
+     * Shows an error in the console.
+     *
+     * @since 1.1-alpha-3
+     *
+     * @param {string} message The message to log.
+     */
+    window['render_log_error'] = function (message) {
+
+        console.log(
+            '%c ERROR: ' + message,
+            'color: #f00;'
+        );
+    }
 })(jQuery);
 
 // Sort by depth plugin
@@ -39,3 +44,16 @@ jQuery.fn.sortByDepth = function () {
     }
     return jQuery(result);
 };
+
+// Get unique array
+Array.prototype.getUnique = function(){
+    var u = {}, a = [];
+    for(var i = 0, l = this.length; i < l; ++i){
+        if(u.hasOwnProperty(this[i])) {
+            continue;
+        }
+        a.push(this[i]);
+        u[this[i]] = 1;
+    }
+    return a;
+}

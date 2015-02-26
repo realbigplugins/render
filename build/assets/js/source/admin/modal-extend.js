@@ -18,24 +18,19 @@
     window['timeSliderInit'] = function ($attRow, attObj) {
 
         // Initialize the values to be in a time format
-        var ui = {},
-            $input = $attRow.find('.render-modal-att-slider-value');
-        ui.values = $input.val().split('-');
+        var ui = {};
 
-        timeSlider(null, ui, $input);
+        ui.values = attObj.$input.val().split('-');
+        timeSlider(null, ui, attObj.$input);
 
         // Attach the timeSlider function to the setValue method of the attObj
-        attObj.setValue = function (value) {
-
-            // The original method content
-            this.$input.val(value);
-            this.$input.change();
+        attObj.$input.on('render:att_setValue', function (event, value) {
 
             // Our new bind
             var ui = {};
             ui.values = value.split('-');
-            timeSlider(null, ui, this.$input);
-        }
+            timeSlider(null, ui, attObj.$input);
+        });
     };
 
     /**

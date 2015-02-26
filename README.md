@@ -1,5 +1,5 @@
 # Render
-### v1.1-alpha-2
+### v1.1-alpha-3
 
 Render is a powerful plugin which enables you to insert useful and powerful functionality into your content. All without writing or even seeing any code.
 
@@ -35,7 +35,10 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 
 ## Changelog
 
-### [{{VERSION}}](https://github.com/brashrebel/render/releases/tag/v{{VERSION}})
+### [1.1-alpha-3](https://github.com/brashrebel/render/releases/tag/v1.1-alpha-3)
+* UPDATE: Conditional visibility and population for attributes.
+* UPDATE: Delete database options on uninstall now available from Settings.
+* UPDATE: Shift + enter submits modal when in text area.
 * UPDATE: Added WP Pointers throughout.
 * UPDATE: Custom input selectbox visually labeled.
 * UPDATE: Tab shortcode.
@@ -44,7 +47,7 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 * UPDATE: Shortcodes no longer return default attribute values.
 * DEVELOPERS: Nesting shortcode "type" now available! 
 
-### [1.0.5](https://github.com/brashrebel/render/releases/tag/v1.0.5)
+### [1.1-alpha-3](https://github.com/brashrebel/render/releases/tag/v1.1-alpha-3)
 * FIX: Users drop-down was un-populated.
 * FIX: Repeater attribute fields adding extra, unused attributes to shortcode output.
 

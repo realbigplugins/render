@@ -21,7 +21,7 @@ foreach (
 		 *
 		 * The parent wrapper for an accordion.
 		 *
-		 * @since {{VERSION}}
+		 * @since 1.1-alpha-3
 		 * @nestedChild render_accordion_section
 		 */
 		array(
@@ -96,7 +96,7 @@ foreach (
 		 *
 		 * The child for adding sections to an accordion wrapper.
 		 *
-		 * @since {{VERSION}}
+		 * @since 1.1-alpha-3
 		 * @nestedParent render_accordion_wrapper
 		 */
 		array(
@@ -429,7 +429,7 @@ foreach (
 		 *
 		 * Create a grid of sections divided into columns.
 		 *
-		 * @since {{VERSION}}
+		 * @since 1.1-alpha-3
 		 * @nestedChild render_column_section
 		 */
 		array(
@@ -466,7 +466,7 @@ foreach (
 		 *
 		 * An individual column section.
 		 *
-		 * @since {{VERSION}}
+		 * @since 1.1-alpha-3
 		 * @nestedParent render_columns_wrapper
 		 */
 		array(
@@ -486,7 +486,7 @@ foreach (
 		 *
 		 * Creates a tabbed layout for the content.
 		 *
-		 * @since {{VERSION}}
+		 * @since 1.1-alpha-3
 		 * @nestedChild render_tab_section
 		 */
 		array(
@@ -569,7 +569,7 @@ foreach (
 		 *
 		 * An individual tab section.
 		 *
-		 * @since {{VERSION}}
+		 * @since 1.1-alpha-3
 		 * @nestedParent render_tabs_wrapper
 		 */
 		array(
@@ -603,7 +603,7 @@ foreach (
 /**
  * The main wrapper for an accordion.
  *
- * @since  {{VERSION}}
+ * @since  1.1-alpha-3
  * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -636,7 +636,7 @@ function _render_sc_accordion_wrapper( $atts = array(), $content = '' ) {
 /**
  * Sections for inside the accordion wrapper.
  *
- * @since  {{VERSION}}
+ * @since  1.1-alpha-3
  * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -789,7 +789,7 @@ function _render_sc_box( $atts = array(), $content = '' ) {
 /**
  * Wrapper for a column section.
  *
- * @since  {{VERSION}}
+ * @since  1.1-alpha-3
  * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -818,7 +818,7 @@ function _render_sc_columns_wrapper( $atts = array(), $content = '' ) {
 /**
  * Sections for inside the columns wrapper.
  *
- * @since  {{VERSION}}
+ * @since  1.1-alpha-3
  * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -842,7 +842,7 @@ function _render_sc_column_section( $atts = array(), $content = '' ) {
  *
  * This adds a filter that will add the proper columns class onto the TinyMCE shortcode wrapper.
  *
- * @since  {{VERSION}}
+ * @since  1.1-alpha-3
  * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -861,7 +861,7 @@ function _render_sc_columns_wrapper_tinymce( $atts = array(), $content = '' ) {
 	/**
 	 * Adds the proper columns class onto the shortcode wrapper.
 	 *
-	 * @since {{VERSION}}
+	 * @since 1.1-alpha-3
 	 */
 	add_filter( 'render_tinymce_shortcode_wrapper_classes_render_columns_wrapper', function ( $classes ) use ( $atts ) {
 
@@ -879,7 +879,7 @@ function _render_sc_columns_wrapper_tinymce( $atts = array(), $content = '' ) {
 /**
  * Wraps content in a tabbed layout.
  *
- * @since  {{VERSION}}
+ * @since  1.1-alpha-3
  * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.
@@ -955,7 +955,7 @@ function _render_sc_tabs_wrapper( $atts = array(), $content = '' ) {
 /**
  * Wraps content in a tab section.
  *
- * @since  {{VERSION}}
+ * @since  1.1-alpha-3
  * @access private
  *
  * @param array  $atts    The attributes sent to the shortcode.

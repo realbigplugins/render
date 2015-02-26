@@ -61,6 +61,7 @@ class Render_AdminPage_Settings extends Render {
 	public static function register_settings() {
 
 		register_setting( 'render_options', 'render_render_visual' );
+		register_setting( 'render_options', 'render_delete_on_uninstall' );
 
 		// TinyMCE
 		/** This filter is documented in src/core/licensing/settings.php */
@@ -221,7 +222,7 @@ class Render_AdminPage_Settings extends Render {
 					</tr>
 					<tr valign="top">
 						<th scope="row">
-							<?php _e( 'Use the magical visual renderer?', 'Render' ); ?>
+							<?php _e( 'Use the magical visual renderer', 'Render' ); ?>
 						</th>
 						<td>
 							<div class="render-switch large">
@@ -272,6 +273,33 @@ class Render_AdminPage_Settings extends Render {
 							</td>
 						</tr>
 					<?php endif; ?>
+
+
+					<tr valign="top">
+						<th scope="row">
+							<?php _e( 'Delete ALL Render data on uninstall', 'Render' ); ?>
+						</th>
+						<td>
+
+							<?php $delete_on_uninstall = get_option( 'render_delete_on_uninstall' ); ?>
+
+							<div class="render-switch">
+								<input type="checkbox"
+								       name="render_delete_on_uninstall"
+								       id="render_delete_on_uninstall"
+								       value="1"
+									<?php checked( '1', $delete_on_uninstall ); ?> />
+
+								<label for="render_delete_on_uninstall" class="disabled-style"></label>
+							</div>
+
+							<?php if ( $delete_on_uninstall ) : ?>
+								<p class="description">
+									<?php _e( '<strong>WARNING</strong>: if you uninstall Render, you can NOT restore saved information.', 'Render' ); ?>
+								</p>
+							<?php endif; ?>
+						</td>
+					</tr>
 				</table>
 
 				<?php submit_button(); ?>

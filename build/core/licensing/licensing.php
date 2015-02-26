@@ -11,7 +11,7 @@ if ( ! defined( 'REALBIGPLUGINS_STORE_URL' ) ) {
 }
 
 // load our custom updater
-if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
+if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 	include( __DIR__ . '/EDD_SL_Plugin_Updater.php' );
 }
 
@@ -27,7 +27,7 @@ foreach ( $extension_licenses as $extension => $label ) {
 	 *
 	 * @since 1.0.0
 	 */
-	add_action( 'admin_init', function() use ( $extension, $label ) {
+	add_action( 'admin_init', function () use ( $extension, $label ) {
 
 		// listen for our activate button to be clicked
 		if ( isset( $_POST["{$extension}_license_activate"] ) ) {
@@ -44,7 +44,8 @@ foreach ( $extension_licenses as $extension => $label ) {
 			$api_params = array(
 				'edd_action' => 'activate_license',
 				'license'    => $license,
-				'item_name'  => urlencode( $extension !== 'render' ? "Render {$label}" : 'Render' ), // the name of our product in EDD
+				'item_name'  => urlencode( $extension !== 'render' ? "Render {$label}" : 'Render' ),
+				// the name of our product in EDD
 				'url'        => home_url()
 			);
 
@@ -68,14 +69,14 @@ foreach ( $extension_licenses as $extension => $label ) {
 			// $license_data->license will be either "valid" or "invalid"
 			update_option( "{$extension}_license_status", $license_data->license );
 		}
-	});
+	} );
 
 	/**
 	 * Deactivate the license.
 	 *
 	 * @since 1.0.0
 	 */
-	add_action( 'admin_init', function() use ( $extension, $label )  {
+	add_action( 'admin_init', function () use ( $extension, $label ) {
 
 		// listen for our activate button to be clicked
 		if ( isset( $_POST["{$extension}_license_deactivate"] ) ) {
@@ -93,7 +94,6 @@ foreach ( $extension_licenses as $extension => $label ) {
 				'edd_action' => 'deactivate_license',
 				'license'    => $license,
 				'item_name'  => urlencode( $extension !== 'render' ? "Render {$label}" : 'Render' ),
-				// the name of our product in EDD
 				'url'        => home_url()
 			);
 
@@ -119,5 +119,39 @@ foreach ( $extension_licenses as $extension => $label ) {
 				delete_option( "{$extension}_license_status" );
 			}
 		}
-	});
+	} );
+}
+
+function render_check_license( $extension, $label ) {
+
+	$license = trim( get_option( "{$extension}_license_key" ) );
+
+	$api_params = array(
+		'edd_action' => 'check_license',
+		'license'    => $license,
+		'item_name'  => urlencode( $extension !== 'render' ? "Render {$label}" : 'Render' ),
+		'url'        => home_url()
+	);
+
+	// Call the custom API.
+	$response = wp_remote_get(
+		add_query_arg( $api_params, REALBIGPLUGINS_STORE_URL ),
+		array(
+			'timeout'   => 15,
+			'sslverify' => false
+		)
+	);
+
+	if ( is_wp_error( $response ) ) {
+		return false;
+	}
+
+	$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+
+	if ( $license_data->license == 'valid' ) {
+		return 'valid';
+		// this license is still valid
+	} else {
+		return 'invalid';
+	}
 }

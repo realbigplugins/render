@@ -1,7 +1,7 @@
 @import 'common';
-@import 'tinymce';
+@import 'shortcodes/accordion';
+@import 'shortcodes/tabs';
 @import 'shortcodes/button';
 @import 'shortcodes/box';
 @import 'shortcodes/columns';
-@import 'shortcodes/logic';
-@import 'shortcodes/restrict-content';
+@import 'tinymce/shortcodes/restrict-content';

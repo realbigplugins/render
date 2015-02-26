@@ -979,7 +979,7 @@ var Render_Modal;
         /**
          * Disables the shortcode from being used.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {jQuery} $shortcode The shortcode element to disable.
          * @param {string} new_message The message to display when clicked.
@@ -997,7 +997,7 @@ var Render_Modal;
         /**
          * Enables the shortcode.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {jQuery} $shortcode The shortcode element to enable.
          */
@@ -1015,7 +1015,7 @@ var Render_Modal;
         /**
          * Shows the disabled message.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {jQuery} $shortcode The shortcode element to show the disabled message.
          * @param {bool} show Whether to show or hide the message.
@@ -1701,7 +1701,7 @@ var Render_Modal;
         /**
          * Attribute fiend conditionals.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @type {object|bool}
          */
@@ -1710,7 +1710,7 @@ var Render_Modal;
         /**
          * Whether or not this attribute is hidden (used for conditionals).
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @type {boolean}
          */
@@ -1763,7 +1763,7 @@ var Render_Modal;
         /**
          * Sets up the attribute's conditionals.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @private
          */
@@ -1814,7 +1814,7 @@ var Render_Modal;
         /**
          * Performs conditional checks and actions.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          */
         this.performConditionals = function () {
 
@@ -1911,7 +1911,7 @@ var Render_Modal;
             /**
              * Compares all existing conditions and shows or hides the attribute row.
              *
-             * @since {{VERSION}}
+             * @since 1.1-alpha-3
              *
              * @param {object} atts The conditional properties.
              */
@@ -2153,7 +2153,7 @@ var Render_Modal;
         /**
          * Rebuilds the available option(s).
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {object} response The AJAX response.
          */
@@ -2180,7 +2180,7 @@ var Render_Modal;
         /**
          * Customizable post-init function.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          */
         this.postInit = function () {
         };
@@ -2215,7 +2215,7 @@ var Render_Modal;
         /**
          * The input mask properties.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @type {boolean|object}
          */
@@ -2227,7 +2227,7 @@ var Render_Modal;
         /**
          * Sets up the textbox
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          */
         this.postInit = function () {
 
@@ -2286,7 +2286,7 @@ var Render_Modal;
          *
          * Causes mask to take effect, if there is one.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {*} value The value to set to.
          */
@@ -2309,7 +2309,7 @@ var Render_Modal;
         /**
          * Applies a mask to the input field.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          */
         this.applyMask = function () {
 
@@ -2377,7 +2377,7 @@ var Render_Modal;
         /**
          * Sets up the textarea.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -2465,7 +2465,7 @@ var Render_Modal;
         /**
          * Sets up the checkbox.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -2605,7 +2605,7 @@ var Render_Modal;
         /**
          * Rebuilds the available options.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {object} response The AJAX response.
          */
@@ -2646,7 +2646,7 @@ var Render_Modal;
         /**
          * Constructs the Chosen input.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -2932,7 +2932,7 @@ var Render_Modal;
         /**
          * Rebuilds the available options.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {object} response The AJAX response.
          */
@@ -2984,7 +2984,7 @@ var Render_Modal;
         /**
          * Sets up the colorpicker object.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3046,7 +3046,7 @@ var Render_Modal;
         /**
          * Constructs the jQuery UI Slider object.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3206,7 +3206,7 @@ var Render_Modal;
          *
          * For this one, it changes the available min and max.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {object} response The AJAX response.
          */
@@ -3253,7 +3253,7 @@ var Render_Modal;
         /**
          * Sets up the WP Media integration.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3358,7 +3358,7 @@ var Render_Modal;
         /**
          * Sets up the counter object.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3525,7 +3525,7 @@ var Render_Modal;
          *
          * For this one, it changes the available min and max.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {object} response The AJAX response.
          */
@@ -3566,7 +3566,7 @@ var Render_Modal;
         /**
          * Sets up repeater fields.
          *
-         * @since {{VERSION}}
+         * @since 1.1-alpha-3
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3755,7 +3755,7 @@ var Render_Modal;
     /**
      * Run the value through various sanitation methods to prepare for being a shortcode attribute.
      *
-     * @since {{VERSION}}
+     * @since 1.1-alpha-3
      * @global sc_attr_escapes
      *
      * @param {string} value The value to escape.
@@ -3780,7 +3780,7 @@ var Render_Modal;
     /**
      * Un-escapes the shortcode attribute.
      *
-     * @since {{VERSION}}
+     * @since 1.1-alpha-3
      * @global sc_attr_escapes
      *
      * @param {string} value The value to un-escape.
@@ -3805,7 +3805,7 @@ var Render_Modal;
     /**
      * Escapes a string for use as a regular expression.
      *
-     * @since {{VERSION}}
+     * @since 1.1-alpha-3
      *
      * @param {string} string The string to be escaped.
      * @returns {string} The escaped string.
@@ -3893,7 +3893,7 @@ var Render_Modal;
     /**
      * Parses the attribute output of a repeater field.
      *
-     * @since {{VERSION}}
+     * @since 1.1-alpha-3
      *
      * @param object The repeater field "object"
      * @returns {Array} Sorted fields

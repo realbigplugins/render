@@ -23,7 +23,12 @@ function render_add_shortcode( $shortcode ) {
 
 	// Add shortcode to Render
 	add_filter( 'render_add_shortcodes', function ( $shortcodes ) use ( $shortcode ) {
-		$shortcodes[] = $shortcode;
+
+		// Unset the code first
+		$code = $shortcode['code'];
+		unset( $shortcodes['code'] );
+
+		$shortcodes[ $code ] = $shortcode;
 
 		return $shortcodes;
 	} );
@@ -75,6 +80,7 @@ function render_esc_atts( $atts ) {
 	}
 
 	foreach ( $atts as $i => $att ) {
+
 		$atts[ $i ] = esc_attr( $att );
 
 		// Turn bool strings into actual bool
@@ -83,6 +89,28 @@ function render_esc_atts( $atts ) {
 	}
 
 	return $atts;
+}
+
+/**
+ * Un-escapes the escaped shortcode attributes in the content.
+ *
+ * @since 1.1-alpha-3
+ *
+ * @param string $content The attribute to be escaped.
+ * @return string The escaped attribute.
+ */
+function render_sc_attr_unescape( $content ) {
+
+	global $Render;
+
+	$escapes = $Render::$sc_attr_escapes;
+
+	foreach ( $escapes as $escape ) {
+		$char_code = ord( $escape );
+		$content   = preg_replace( "/::{$char_code}::/", $escape, $content );
+	}
+
+	return $content;
 }
 
 /**
@@ -385,6 +413,24 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			);
 			break;
 
+		case 'post_type_list':
+
+			$output = array(
+				'label'      => __( 'Post Type', 'Render' ),
+				'type'       => 'selectbox',
+				'default'    => 'any',
+				'properties' => array(
+					'allowDeselect' => false,
+					'options'       => array(
+						'any' => __( 'Any', 'Render' ),
+					),
+					'callback'      => array(
+						'function' => 'render_sc_post_type_list',
+					),
+				),
+			);
+			break;
+
 		case 'terms_list':
 
 			$output = array(
@@ -416,15 +462,110 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 			break;
 
 		case 'link':
+
+			// FIXME Allow args to be passed through to render_sc_post_list which allows choosing what's used as the value and name in the options list
+
 			$output = array(
 				'label'       => __( 'Link', 'Render' ),
-				'description' => __( 'Links to a post / page. Also accepts custom input.', 'Render' ),
+				'description' => __( 'Links to a post / page.', 'Render' ),
 				'type'        => 'selectbox',
 				'properties'  => array(
+					'placeholder'      => __( 'Select a post / page, or type a link', 'Render' ),
 					'allowCustomInput' => true,
 					'groups'           => array(),
 					'callback'         => array(
 						'function' => 'render_sc_post_list',
+					),
+				),
+			);
+			break;
+
+		case 'phone':
+
+			$output = array(
+				'label'      => __( 'Phone', 'Render' ),
+				'properties' => array(
+					'prefix'      => '<span class="dashicons dashicons-phone"></span>',
+					'prefixWidth' => 15,
+					'mask'        => array(
+						'template' => 'phone',
+					),
+				),
+			);
+			break;
+
+		case 'email':
+
+			$output = array(
+				'label'      => __( 'Email', 'Render' ),
+				'properties' => array(
+					'prefix'      => '<span class="dashicons dashicons-email"></span>',
+					'prefixWidth' => 15,
+				),
+				'validate'   => array(
+					'EMAIL' => true,
+				),
+			);
+			break;
+
+		case 'border-radius':
+
+			$orientation = isset( $args['orientation'] ) ? $args['orientation'] : '';
+
+			$output = array(
+				'label'      => sprintf( __( 'Border %s Radius', 'Render' ), $orientation ),
+				'advanced'   => true,
+				'type'       => 'counter',
+				'properties' => array(
+					'shift_step' => 20,
+					'unit'       => array(
+						'default' => 'px',
+						'allowed' => array(
+							'px',
+							'%',
+							'em',
+							'rem',
+							'pt',
+						),
+					),
+				),
+			);
+			break;
+
+		case 'post_order':
+
+			$output = array(
+				'label'      => __( 'Order', 'Render' ),
+				'type'       => 'toggle',
+				'properties' => array(
+					'values' => array(
+						'DSC' => __( 'Descending', 'Render' ),
+						'ASC' => __( 'Ascending', 'Render' ),
+					),
+				),
+			);
+			break;
+
+		case 'post_orderby':
+
+			$output = array(
+				'label'      => __( 'Order by', 'Render' ),
+				'type'       => 'selectbox',
+				'default'    => 'date',
+				'properties' => array(
+					'options' => array(
+						'none'          => __( 'None', 'Render' ),
+						'ID'            => __( 'Post ID', 'Render' ),
+						'author'        => __( 'Author', 'Render' ),
+						'title'         => __( 'Title', 'Render' ),
+						'name'          => __( 'Name (slug)', 'Render' ),
+						'type'          => __( 'Post Type', 'Render' ),
+						'date'          => __( 'Date', 'Render' ),
+						'modified'      => __( 'Last Modified', 'Render' ),
+						'parent'        => __( 'Parent', 'Render' ),
+						'rand'          => __( 'Random', 'Render' ),
+						'comment_count' => __( 'Comment Count', 'Render' ),
+						'menu_order'    => __( 'Menu Order', 'Render' ),
 					),
 				),
 			);
@@ -458,7 +599,6 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
  * @since 1.0.0
  */
 function render_enqueue_modal() {
-	include_once( RENDER_PATH . 'core/modal.php' );
 	new Render_Modal();
 }
 
@@ -540,6 +680,31 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
 
 		return $extensions;
 	} );
+
+	/**
+	 * Adds a licensing nag if the license is not valid.
+	 *
+	 * @since 1.1-alpha-3
+	 */
+	add_action( 'after_plugin_row_' . plugin_basename( $file_path ), function () use( $extension, $name ) {
+
+		if ( render_check_license( $extension, $name ) != 'valid' ) {
+
+			$html = '</tr><tr class="plugin-update-tr"><td colspan="3" class="plugin-update"><div class="update-message">';
+
+			$html .= __( sprintf(
+				'%sRegister Render%s to receive access to support and updates. If you don\'t have one, you can  %sPurchase one here%s.',
+				'<a href="' . admin_url() . 'admin.php?page=render-settings">',
+				'</a>',
+				'<a href="http://realbigplugins.com/plugins/render/">',
+				'</a>'
+			), 'Render' );
+
+			$html .= '</div></td>';
+
+			echo $html;
+		}
+	});
 }
 
 /**
@@ -547,8 +712,8 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
  *
  * @since 1.0.3
  *
- * @param string   $button_ID    The ID of the TinyMCE button, or the hook for the media button
- * @param string   $button_label The readable label that describes the button.
+ * @param string $button_ID    The ID of the TinyMCE button, or the hook for the media button
+ * @param string $button_label The readable label that describes the button.
  */
 function render_disable_tinymce_button( $button_ID, $button_label ) {
 
@@ -565,10 +730,10 @@ function render_disable_tinymce_button( $button_ID, $button_label ) {
  * @since 1.0.3
  *
  * @param string $hook_name The name of the hook that adds the media button.
- * @param string $label The readable label that describes the button.
- * @param int $priority The priority of the hook.
+ * @param string $label     The readable label that describes the button.
+ * @param int    $priority  The priority of the hook.
  */
-function render_disable_tinymce_media_button( $hook_name, $label , $priority = 10 ) {
+function render_disable_tinymce_media_button( $hook_name, $label, $priority = 10 ) {
 
 	add_filter( 'render_disabled_tinymce_media_buttons', function ( $buttons ) use ( $hook_name, $priority ) {
 		$buttons[ $hook_name ] = $priority;
@@ -581,4 +746,69 @@ function render_disable_tinymce_media_button( $hook_name, $label , $priority = 1
 	}
 
 	render_disable_tinymce_button( $hook_name, $label );
+}
+
+/**
+ * Builds the HTML output for selectbox options.
+ *
+ * Loosely based on how the Modal outputs the selectbox.
+ *
+ * @since 1.1-alpha-3
+ * @see   Render_Modal::att_type_selectbox()
+ *
+ * @param array $options The options.
+ * @return string The options HTML.
+ */
+function render_build_options_html( $options ) {
+
+	$no_options = empty( $options );
+
+	$groups = $options;
+	if ( ! $no_options ) {
+
+		// Optgroup support
+		$opt_groups = false;
+		foreach ( $options as $option ) {
+			if ( $opt_groups = is_array( $option ) ) {
+				break;
+			}
+		}
+
+		if ( ! $opt_groups ) {
+			$groups = array(
+				array(
+					'options' => $options,
+				),
+			);
+		}
+	}
+
+	$output = '<option></option>';
+	if ( ! $no_options ) {
+		foreach ( $groups as $opt_group ) {
+
+			if ( isset( $opt_group['label'] ) ) {
+				$output .= "<optgroup label=\"$opt_group[label]\" >";
+			}
+
+			foreach ( (array) $opt_group['options'] as $option_value => $option ) {
+				// Simple format support
+				if ( ! is_array( $option ) ) {
+					$option_label = $option;
+					$option       = array(
+						'label' => $option_label,
+					);
+				}
+
+				$output .= "<option value=\"$option_value\">";
+				$output .= $option['label'];
+				$output .= '</option>';
+			}
+			if ( isset( $opt_group['label'] ) ) {
+				$output .= '</optgroup>';
+			}
+		}
+	}
+
+	return $output;
 }

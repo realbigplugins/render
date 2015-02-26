@@ -100,11 +100,11 @@ class Render_Widget extends WP_Widget {
 			</span>
 			</p>
 
-			<?php if ( $current_screen->base != 'customize' ) : ?>
+			<?php if ( ! is_object( $current_screen ) || $current_screen->base != 'customize' ) : ?>
 				<p class="render-widget-customizer-message">
 					<?php
 					printf(
-						__( ' In order to see a live preview, please use the %s.', 'Render' ),
+						__( 'In order to see a live preview, please use the %s.', 'Render' ),
 						'<a href="/wp-admin/customize.php?return=%2Fwp-admin%2Fwidgets.php">customizer</a>'
 					);
 					?>
@@ -131,35 +131,91 @@ add_action( 'customize_controls_enqueue_scripts', array( 'Render_Modal', 'admin_
 add_action( 'customize_controls_enqueue_scripts', array( 'Render', '_admin_enqueue_files' ) );
 add_action( 'customize_controls_print_footer_scripts', array( 'Render_Modal', '_modal_output' ) );
 
+/**
+ * Registers the Render widget.
+ *
+ * @since 1.0.0
+ */
 function _render_register_widget() {
 	register_widget( 'Render_Widget' );
 }
 
+/**
+ * Adds actions for the widgets page.
+ *
+ * @since 1.0.0
+ *
+ * @param WP_Screen $screen The current screen object.
+ */
 function _render_widget_add_actions( $screen ) {
 
 	if ( $screen->base !== 'widgets' && $screen->base !== 'customize' ) {
 		return;
 	}
 
+	// Add a pointer
+	add_filter( 'render_pointers', function ( $pointers ) {
+
+		$pointers['widget_init'] = array(
+			'title' => __( 'The Render Widget', 'Render' ),
+			'content' => sprintf(
+						__( 'Here is your new Render widget! Put this in your sidebar to easily add <strong>shortcodes</strong>. Please use the %s for a live preview!', 'Render' ),
+						'<a href="/wp-admin/customize.php?return=%2Fwp-admin%2Fwidgets.php">customizer</a>'
+					),
+			'target' => '#widget-list [id*="render_widget"]',
+			'position' => array(
+				'edge' => 'left',
+				'align' => 'center',
+			),
+			'classes' => 'widget-pointer',
+		);
+
+		return $pointers;
+	});
+
 	add_filter( 'render_att_pre_loop', '_render_add_content_to_atts', 10, 3 );
 
-	include_once( RENDER_PATH . '/core/modal.php' );
+	// Include the modal
+	include_once __DIR__ . '/modal.php';
 	new Render_Modal();
 }
 
+/**
+ * Adds the "content" att to shortcodes on the Widgets page.
+ *
+ * @since 1.0.0
+ *
+ * @param array $atts The current shortcode's atts.
+ * @param string $code The code of the current shortcode.
+ * @param array $shortcode The current shortcode properties.
+ * @return array The new attributes
+ */
 function _render_add_content_to_atts( $atts, $code, $shortcode ) {
 
 	if ( $shortcode['wrapping'] ) {
-		$atts = array_merge(
-			array(
-				'content' => array(
-					'type'     => 'textarea',
-					'label'    => __( 'Content', 'Render' ),
-					'required' => true,
-				)
-			),
-			$atts
-		);
+
+		$content_att = Render::parse_shortcode_att( array(
+			'type'     => 'textarea',
+			'label'    => __( 'Content', 'Render' ),
+			'required' => true,
+		) );
+
+		// Add to repeater here instead for nested shortcodes
+		if ( isset( $shortcode['render']['nested']['child'] ) ) {
+
+			$atts['nested_children']['properties']['fields']['content'] = $content_att;
+
+			// Remove the dummy field, if it's set. Having the content makes it no longer necessary
+			unset( $atts['nested_children']['properties']['fields']['dummy_field'] );
+		} else {
+
+			$atts = array_merge(
+				array(
+					'content' => $content_att,
+				),
+				$atts
+			);
+		}
 	}
 
 	return $atts;

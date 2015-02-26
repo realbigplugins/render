@@ -11,12 +11,15 @@
 var Render_Modal;
 (function ($) {
 
+    //noinspection JSUnresolvedVariable
     var elements = {},
         shortcodes = {},
         slide_transition = 150,
         categories_sliding = false,
         render_modal_open = false,
         error_color = '#ec6750',
+        l18n = Render_Data.l18n,
+        render_data = Render_Data.all_shortcodes,
         _search_timeout, search_loading;
 
     Render_Modal = {
@@ -56,6 +59,7 @@ var Render_Modal;
          * @since 1.0.0
          */
         establishElements: function () {
+
             elements.wrap = $('#render-modal-wrap');
             elements.submit = $('#render-modal-submit');
             elements.backdrop = $('#render-modal-backdrop');
@@ -324,527 +328,54 @@ var Render_Modal;
             elements.active_shortcode.find('.render-modal-att-row').each(function () {
 
                 // Skip if already initialized or if set to not initialize
-                if ($(this).data('attObj') || $(this).attr('data-no-init')) {
+                if (typeof $(this).data('attObj') != 'undefined' || $(this).data('no-init')) {
                     return true; // Continue $.each
                 }
 
-                var att_type = $(this).attr('data-att-type'),
-                    $container = $(this).find('.render-modal-att-field'),
-                    attObj;
+                var att_type = $(this).data('att-type'),
+                    attObj = false;
 
-                // Initialize each type of att (this is as big one!)
+                // Initialize each type of att
                 switch (att_type) {
+
+                    case 'hidden':
+
+                        attObj = new Hidden($(this));
+                        break;
+
                     case 'selectbox':
 
                         attObj = new Selectbox($(this));
-
-                        // Apply Chosen
-                        var $chosen = $(this).find('.chosen'),
-                            options = {
-                                width: '100%',
-                                search_contains: true,
-                                allow_single_deselect: true
-                            };
-
-                        if ($chosen.hasClass('allow-icons')) {
-                            options.disable_search = true;
-                        }
-
-                        $chosen.chosen(options);
-
-                        // Fix scroll issue
-                        $container.find('.chosen-results').bind('mousewheel', function (e) {
-                            $(this).scrollTop($(this).scrollTop() - e.originalEvent.wheelDeltaY);
-                            return false;
-                        });
-
-                        // Extend functionality to allow icons
-                        if ($chosen.hasClass('allow-icons')) {
-
-                            $chosen.on('chosen:showing_dropdown chosen:updated', function () {
-
-                                $(this).find('option').each(function (index) {
-
-                                    var icon = $(this).attr('data-icon');
-
-                                    if (!icon) {
-                                        return true; // Continue &.each
-                                    }
-
-                                    if (icon) {
-                                        $container.find('.chosen-results li').eq(index - 1).prepend(
-                                            '<span class="' + icon + '"></span>'
-                                        )
-                                    }
-                                });
-                            });
-
-                            $chosen.on('change', function () {
-
-                                var icon = 'dashicons ' + $chosen.val();
-
-                                if (!$chosen.val()) {
-                                    $container.find('.chosen-single .dashicons').remove();
-                                } else {
-                                    $container.find('.chosen-single span').prepend(
-                                        '<span class="' + icon + '"></span>'
-                                    );
-                                }
-                            });
-
-                            // Trigger change when setting the value (for initial Modal opens)
-                            $chosen.on('render:att_setValue', function () {
-                                $chosen.trigger('change');
-                            });
-                        }
-
-                        // Extend functionality to allow custom text input (if enabled on input)
-                        if ($chosen.hasClass('allow-custom-input')) {
-
-                            var $input_text = $container.find('.chosen-search input[type="text"]');
-
-                            // Hide the "no results..."
-                            $chosen.on('chosen:no_results', function () {
-                                $container.find('.no-results').remove();
-                            });
-
-                            // Clear input field and data on change (this should be when the deselect)
-                            $chosen.change(function () {
-
-                                if ($chosen.data('chosen-custom-input')) {
-                                    $input_text.val('');
-                                    $chosen.removeData('chosen-custom-input');
-                                }
-                            });
-
-                            // Use the custom value when hiding the dropdown
-                            $chosen.on('chosen:hiding_dropdown', function (e, a) {
-
-                                var search_text = $input_text.val(),
-                                    Chosen = $chosen.data('chosen');
-
-                                // If no searching, get outta here
-                                if (!search_text) {
-                                    $chosen.removeData('chosen-custom-input');
-                                    return;
-                                }
-
-                                // Set the preview text to our custom input (and make it not look like the default text)
-                                $container.find('.chosen-single').removeClass('chosen-default')
-                                    .find('> span').html(search_text);
-
-                                // Tell the Modal to use this new custom data
-                                $chosen.data('chosen-custom-input', search_text);
-
-                                // Remove focus from input and clear any leftover input
-                                $input_text.val('').blur();
-
-                                // Manually add choice deselect and event
-                                Chosen.single_deselect_control_build();
-                            });
-
-                            // Populate search text if using custom input
-                            $chosen.on('chosen:showing_dropdown', function () {
-
-                                var custom_text = $chosen.data('chosen-custom-input');
-
-                                if (custom_text) {
-                                    $input_text.val(custom_text);
-                                }
-                            });
-
-                            // Clear search text on clicking an option and set to that option
-                            $container.on('click', 'li.active-result', function () {
-
-                                // Clear and de-select the custom input
-                                $input_text.val('').blur();
-
-                                // Unfortunately, by this time the custom text has been used, so we have to manually
-                                // tell Chosen to use the option we clicked
-                                var Chosen = $chosen.data('chosen'),
-                                    value = Chosen.results_data[$(this).data('option-array-index')].value;
-
-                                $chosen.val(value)
-                                    .trigger('chosen:updated')
-                                    .removeData('chosen-custom-input');
-                            });
-
-                            // Pressing enter when typing a custom value shouldn't close the Modal, just use the text
-                            $input_text.keyup(function (e) {
-
-                                if (e.which == 13) {
-
-                                    // Make sure we don't keep chosen focused
-                                    $input_text.blur();
-
-                                    // TODO Figure out why I can't just trigger "chosen:close"...
-
-                                    var Chosen = $chosen.data('chosen'),
-                                        custom_text = $input_text.val();
-
-                                    if (custom_text) {
-                                        Chosen.close_field();
-                                        $input_text.val(custom_text);
-                                        $chosen.trigger('chosen:hiding_dropdown');
-                                    }
-
-                                    return false;
-                                }
-                            });
-                        }
                         break;
+
                     case 'colorpicker':
 
                         attObj = new Colorpicker($(this));
-
-                        $(this).find('.render-modal-att-colorpicker').each(function () {
-                            var data = $(this).data();
-                            $(this).wpColorPicker(data);
-                        });
                         break;
 
                     case 'media':
 
                         attObj = new Media($(this));
-
-                        $(this).find('.render-modal-att-media-upload').click(function (event) {
-
-                            // TODO Figure out various frame types and how to utilize this better
-                            var options = {
-                                    frame: 'post',
-                                    state: 'insert',
-                                    button: 'Use Media', // FIXME doesn't work
-                                    multiple: false
-                                },
-                                $this = $(this),
-                                type = $this.data('type'),
-                                json;
-
-                            if (type == 'gallery') {
-                                options.multiple = true;
-                            }
-
-                            var file_frame = wp.media.frames.file_frame = wp.media(options);
-
-                            file_frame.open();
-
-                            file_frame.on('insert', function () {
-
-                                json = file_frame.state().get('selection').first().toJSON();
-
-                                if (0 > $.trim(json.url.length)) {
-                                    return;
-                                }
-
-                                switch (type) {
-                                    case 'image':
-                                        $this.siblings('.render-modal-att-media-preview-image').attr('src', json.url);
-                                        $this.siblings('.render-modal-att-input').val(json.id);
-                                        break;
-
-                                    case 'audio':
-                                        $this.siblings('.render-modal-att-media-preview-audio').html(json.url);
-                                        $this.siblings('.render-modal-att-input').val(json.url);
-                                        break;
-
-                                    case 'video':
-                                        $this.siblings('.render-modal-att-media-preview-video').html(json.url);
-                                        $this.siblings('.render-modal-att-input').val(json.url);
-                                        break;
-                                }
-                            });
-                        });
-
                         break;
 
                     case 'slider':
 
                         attObj = new Slider($(this));
-
-                        $(this).find('.render-modal-att-slider').each(function () {
-
-                            var $this = $(this),
-                                $input = $this.siblings('.render-modal-att-slider-value'),
-                                data = {}, i;
-
-                            // Skip if the slider's already been initilaized
-                            if (typeof $(this).data('uiSlider') !== 'undefined') {
-                                return true; // Continue $.each
-                            }
-
-                            // Get the data
-                            var allowed_data = [
-                                'animate',
-                                'disabled',
-                                'max',
-                                'min',
-                                'orientation',
-                                'step',
-                                'value',
-                                'values',
-                                'range',
-                                'slide'
-                            ];
-
-                            for (i = 0; i < allowed_data.length; i++) {
-
-                                var _data = $this.attr('data-' + allowed_data[i]);
-                                if (_data) {
-                                    data[allowed_data[i]] = _data;
-                                }
-                            }
-
-                            // Make sure various values are int
-                            var int_vals = [
-                                'max',
-                                'min',
-                                'step',
-                                'value'
-                            ];
-
-                            for (i = 0; i < int_vals.length; i++) {
-                                if (data[int_vals[i]]) {
-                                    data[int_vals[i]] = parseInt(data[int_vals[i]]);
-                                }
-                            }
-
-                            // Bool values
-                            var bool_vals = [
-                                'range',
-                                'disabled',
-                                'animate'
-                            ];
-
-                            for (i = 0; i < bool_vals.length; i++) {
-                                if (data[bool_vals[i]]) {
-                                    data[bool_vals[i]] = data[bool_vals[i]] === '1';
-                                }
-                            }
-
-                            // If the input had a number, and a default isn't set, use it
-                            if ($input.val() && !data.value) {
-                                if (data.values) {
-                                    data.values = $input.val();
-                                } else {
-                                    data.value = $input.val();
-                                }
-                            }
-
-                            // Custom slide callback
-                            if (data.slide) {
-
-                                var slide_callback = data.slide;
-
-                                data.slide = function (event, ui) {
-                                    return window[slide_callback](event, ui, $input);
-                                }
-                            } else {
-                                if (data.values) {
-                                    data.slide = function (event, ui) {
-
-                                        // Prevent overlap
-                                        if (ui.values[0] >= ui.values[1] || ui.values[1] <= ui.values[0]) {
-                                            return false;
-                                        }
-
-                                        // Output the ranges to the text and the input
-                                        var $text = $input.siblings('.render-modal-att-slider-range-text');
-
-                                        $text.find('.render-modal-att-slider-range-text-value1').html(ui.values[0]);
-                                        $text.find('.render-modal-att-slider-range-text-value2').html(ui.values[1]);
-
-                                        $input.val(ui.values[0] + '-' + ui.values[1]);
-                                    };
-                                } else {
-                                    data.slide = function (event, ui) {
-                                        $input.val(ui.value);
-                                    };
-                                }
-                            }
-
-                            // Set the values to an array (if a range slider)
-                            if (data.values) {
-                                data.values = data.values.split('-');
-                            }
-
-                            // Make sure this gets no duplicate handlers
-                            $input.off();
-
-                            // Only numbers (or negative)
-                            $input.keypress(function (e) {
-
-                                if (!String.fromCharCode(e.which).match(/[0-9|-]/)) {
-                                    highlight($(this));
-                                    e.preventDefault();
-                                }
-                            });
-
-                            // Change the slider and keep the numbers in the allowed range
-                            $input.change(function () {
-
-                                var $slider = $(this).siblings('.render-modal-att-slider');
-
-                                if ($slider.attr('data-range')) {
-
-                                    // Range slider
-                                    var $text = $(this).siblings('.render-modal-att-slider-range-text'),
-                                        values = $(this).val().split('-');
-
-                                    $text.find('.render-modal-att-slider-range-text-value1').html(values[0]);
-                                    $text.find('.render-modal-att-slider-range-text-value2').html(values[1]);
-
-                                    $slider.slider('values', values);
-                                } else {
-
-                                    // Normal slider
-                                    var min = parseInt($slider.attr('data-min')),
-                                        max = parseInt($slider.attr('data-max')),
-                                        val = parseInt($(this).val());
-
-                                    // Set the jQuery UI slider to match the new text value
-                                    $slider.slider('value', $(this).val());
-
-                                    // Keep in range
-                                    if (val < min) {
-                                        highlight($(this));
-                                        $(this).val(min);
-                                    } else if (val > max) {
-                                        highlight($(this));
-                                        $(this).val(max);
-                                    }
-
-                                    // Erase leading zeros
-                                    $(this).val(parseInt($(this).val(), 10));
-                                }
-                            });
-
-                            // Initialize the slider
-                            $this.slider(data);
-                        });
-
                         break;
 
                     case 'counter':
 
                         attObj = new Counter($(this));
-
-                        var shift_down = false,
-                            $input = $(this).find('.render-modal-att-counter'),
-                            $button_down = $input.siblings('.render-modal-counter-down'),
-                            $button_up = $input.siblings('.render-modal-counter-up'),
-                            min = parseInt($input.attr('data-min')),
-                            max = parseInt($input.attr('data-max')),
-                            step = parseInt($input.attr('data-step')),
-                            shift_step = parseInt($input.attr('data-shift-step'));
-
-                        // Set the "+" and "-" to disabled accordingly
-                        if (parseInt($input.val()) == min) {
-                            $button_down.addClass('disabled');
-                        } else {
-                            $button_down.removeClass('disabled');
-                        }
-
-                        if (parseInt($input.val()) == max) {
-                            $button_up.addClass('disabled');
-                        } else {
-                            $button_up.removeClass('disabled');
-                        }
-
-                        // If holding shift, let us know so we can use the shift_step later
-                        $(document).keydown(function (e) {
-                            if (e.which === 16) {
-                                shift_down = true;
-                            }
-                        });
-
-                        $(document).keyup(function (e) {
-                            if (e.which === 16) {
-                                shift_down = false;
-                            }
-                        });
-
-                        // Click on the "+"
-                        $(this).find('.render-modal-counter-up').click(function () {
-                            $input.val(parseInt($input.val()) + (shift_down ? shift_step : step));
-                            $input.change();
-                        });
-
-                        // Click on the "-"
-                        $(this).find('.render-modal-counter-down').click(function () {
-                            $input.val(parseInt($input.val()) - (shift_down ? shift_step : step));
-                            $input.change();
-                        });
-
-                        // Keep the number within its limits
-                        $input.off().change(function () {
-
-                            var $button_up = $(this).siblings('.render-modal-counter-up'),
-                                $button_down = $(this).siblings('.render-modal-counter-down');
-
-                            if (parseInt($(this).val()) >= max) {
-
-                                if (parseInt($(this).val()) > max) {
-                                    highlight($(this));
-                                }
-
-                                $(this).val(max);
-                                $button_up.addClass('disabled');
-                                $button_down.removeClass('disabled');
-                            } else if (parseInt($(this).val()) <= min) {
-
-                                if (parseInt($(this).val()) < min) {
-                                    highlight($(this));
-                                }
-
-                                $(this).val(min);
-                                $button_down.addClass('disabled');
-                                $button_up.removeClass('disabled');
-                            } else {
-
-                                $button_up.removeClass('disabled');
-                                $button_down.removeClass('disabled');
-                            }
-                        });
-
-                        // Units selectbox
-                        var $select = $(this).find('select');
-
-                        if ($select.length) {
-
-                            $select.chosen({
-                                width: '100px',
-                                disable_search: true
-                            });
-                        }
-
                         break;
 
                     case 'repeater':
 
                         attObj = new Repeater($(this));
-
-                        initRepeaterButtons($(this));
-
                         break;
 
                     case 'checkbox':
 
                         attObj = new Checkbox($(this));
-
-                        $(this).find('.render-modal-att-checkbox').change(function () {
-
-                            if ($(this).prop('checked')) {
-                                $container.find('.render-modal-att-checkbox-label').addClass('checked');
-                            } else {
-                                $container.find('.render-modal-att-checkbox-label').removeClass('checked');
-                            }
-                        });
-
-                        $(this).find('.render-modal-att-checkbox-label').click(function () {
-                            var $checkbox_input = $container.find('.render-modal-att-checkbox');
-                            $checkbox_input.prop('checked', !$checkbox_input.prop('checked')).trigger('change');
-                        });
-
                         break;
 
                     case 'toggle':
@@ -854,59 +385,35 @@ var Render_Modal;
 
                     case 'textarea':
 
-                        attObj = new Textbox($(this));
+                        attObj = new TextArea($(this));
+                        break;
 
-                        // Disable Render Modal actions
-                        $(this).find('textarea').keyup(function (e) {
+                    case 'textbox':
 
-                            // Enter, up arrow, down arrow
-                            if (e.which == 13 || e.which == 38 || e.which == 40) {
-                                e.preventDefault();
-                                return false;
-                            }
-                        });
-
-                        /*
-                        Allow tab to indent instead of going to the next input
-
-                        Taken from http://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea#answer-6637396
-                        Much thanks to user "kasdega"!
-                         */
-                        $(this).delegate('textarea', 'keydown', function (e) {
-
-                            var keyCode = e.keyCode || e.which;
-
-                            if (keyCode == 9) {
-                                e.preventDefault();
-                                var start = $(this).get(0).selectionStart;
-                                var end = $(this).get(0).selectionEnd;
-
-                                // set textarea value to: text before caret + tab + text after caret
-                                $(this).val($(this).val().substring(0, start)
-                                + "    "
-                                + $(this).val().substring(end));
-
-                                // put caret at right position again
-                                $(this).get(0).selectionStart =
-                                    $(this).get(0).selectionEnd = start + 4;
-                            }
-                        });
-
+                        attObj = new TextBox($(this));
                         break;
 
                     default:
 
-                        attObj = new Textbox($(this));
+                        render_log_error('Invalid attribute type "' + att_type + '" for shortcode ' + $(this).data('code'));
                         break;
+                }
+
+                // Something bad happened!
+                if (typeof attObj === false) {
+                    render_log_error('No attObj for shortcode ' + $(this).data('code'));
+                    return true; // continue $.each
                 }
 
                 $(this).data('attObj', attObj);
 
                 // Custom callback
-                if ($(this).attr('data-init-callback')) {
-                    window[$(this).attr('data-init-callback')]($(this), attObj);
+                if ($(this).data('init-callback') !== false) {
+                    window[$(this).data('init-callback')]($(this), attObj);
                 }
             });
+
+            elements.active_shortcode.trigger('render-modal-shortcode-init');
         },
 
         /**
@@ -960,9 +467,9 @@ var Render_Modal;
                     elements.list.find('.render-modal-shortcode').each(function () {
                         var title = $(this).find('.render-modal-shortcode-title').text(),
                             description = $(this).find('.render-modal-shortcode-description').text(),
-                            code = $(this).attr('data-code'),
-                            source = $(this).attr('data-source'),
-                            tags = $(this).attr('data-tags'),
+                            code = $(this).data('code'),
+                            source = $(this).data('source'),
+                            tags = $(this).data('tags'),
                             search_string = title + description + code + source + tags;
 
                         if (search_string.toLowerCase().indexOf(search_query.toLowerCase()) < 0) {
@@ -1025,20 +532,14 @@ var Render_Modal;
 
             var $container = $e.closest('.render-modal-shortcode');
 
-            this.clearShortcodeErrors();
+            // Make sure all shortcodes are don't show disabled text
+            elements.list.find('.render-modal-shortcode.render-modal-shortcode-disabled').each(function () {
+                Render_Modal.toggleDisabledText($(this), false);
+            });
 
             // Bail if the shortcode is disabled
-            if ($container.hasClass('disabled')) {
-
-                // Error message
-                var $description = $container.find('.render-modal-shortcode-description');
-                $description.data('shortcodeDescriptionText', $description.html());
-                $description.html('Please select content from the editor to enable this shortcode.');
-
-                $container.addClass('render-modal-shortcode-error-message');
-
-                highlight($container);
-
+            if ($container.hasClass('render-modal-shortcode-disabled')) {
+                this.toggleDisabledText($container, true);
                 return;
             }
 
@@ -1053,7 +554,7 @@ var Render_Modal;
             this.closeShortcode();
 
             elements.active_shortcode = $container;
-            this.active_shortcode = $container.attr('data-code');
+            this.active_shortcode = $container.data('code');
 
             // Change submit button
             if (this.modifying) {
@@ -1123,20 +624,6 @@ var Render_Modal;
             this.populateShortcode(this.current_shortcode.atts);
         },
 
-        /**
-         * Clears error messages in the shortcode item.
-         *
-         * @since 1.0.0
-         */
-        clearShortcodeErrors: function () {
-
-            // Remove any previous error messages
-            elements.list.find('.render-modal-shortcode.render-modal-shortcode-error-message').
-                find('.render-modal-shortcode-description').each(function () {
-                    $(this).html($(this).data('shortcodeDescriptionText'));
-                    $(this).closest('.render-modal-shortcode').removeClass('render-modal-shortcode-error-message');
-                });
-        },
 
         /**
          * Shows and hides advanced shortcode attributes.
@@ -1207,7 +694,7 @@ var Render_Modal;
          */
         filterByCategory: function ($e) {
 
-            var category = $e.attr('data-category'),
+            var category = $e.data('category'),
                 shortcodes = elements.list.find('li');
 
             // Set all other categories to inactive, and this one to active
@@ -1223,7 +710,7 @@ var Render_Modal;
                 shortcodes.show();
             } else {
                 shortcodes.each(function () {
-                    if (category !== $(this).attr('data-category')) {
+                    if (category !== $(this).data('category')) {
                         $(this).hide();
                     } else {
                         $(this).show();
@@ -1384,7 +871,22 @@ var Render_Modal;
                 match;
 
             while (match = attRegEx.exec(_atts)) {
-                atts[match[3]] = match[4];
+
+                var name = match[3],
+                    value = match[4],
+                    shortcode_att = render_data[code]['atts'][name];
+
+                // Skip if not an attribute of the shortcode
+                if (typeof shortcode_att == 'undefined') {
+                    continue;
+                }
+
+                // Un-escape from being an attr value
+                if (typeof value != 'undefined' && value.length) {
+                    value = unescape_sc_attr(value);
+                }
+
+                atts[name] = value;
             }
 
             // Add on the content if there's a content attribute
@@ -1392,11 +894,61 @@ var Render_Modal;
                 atts.content = HTMLtoTextarea(content);
             }
 
+            // Deal with nesting shortcodes
+            var nested;
+            if (typeof render_data[code]['render'] !== 'undefined') {
+                nested = typeof render_data[code]['render']['nested'] !== 'undefined';
+            } else {
+                nested = false;
+            }
+
+            if (nested && content) {
+
+                var shortcodeRegEx = new RegExp(shortcode_regex, 'g'),
+                    child_code = render_data[code].render.nested.child;
+
+                // Make sure it's set
+                if (typeof atts.nested_children == 'undefined') {
+                    atts.nested_children = {};
+                } else {
+                    atts.nested_children = JSON.parse(atts.nested_children);
+                }
+
+                // Cycle through nested children
+                while (match = shortcodeRegEx.exec(content)) {
+
+                    if (match[2] == child_code) {
+
+                        if (typeof atts.nested_children['content'] != 'undefined') {
+                            // Att already set, append new value
+                            atts.nested_children['content'] += '::sep::' + match[5];
+                        } else {
+                            atts.nested_children['content'] = match[5];
+                        }
+                    }
+                }
+
+                // Add the nested children att back in (now with the content!)
+                atts.nested_children = JSON.stringify(atts.nested_children);
+            }
+
             this.modifying = true;
 
             this.setActiveShortcode(code);
 
             elements.active_shortcode.addClass('current-shortcode');
+
+            // Disable all other shortcodes (you should NOT be able to switch from this one)
+            if (nested) {
+                elements.list.find('.render-modal-shortcode').each(function () {
+
+                    if ($(this).hasClass('current-shortcode')) {
+                        return true; // continue $.each
+                    }
+
+                    Render_Modal.disableShortcode($(this), l18n.cannot_change_from_shortcode);
+                });
+            }
 
             this.current_shortcode = {
                 all: shortcode,
@@ -1425,6 +977,64 @@ var Render_Modal;
         },
 
         /**
+         * Disables the shortcode from being used.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {jQuery} $shortcode The shortcode element to disable.
+         * @param {string} new_message The message to display when clicked.
+         */
+        disableShortcode: function ($shortcode, new_message) {
+
+            var message = {
+                originalText: $shortcode.find('.render-modal-shortcode-description').html().trim(),
+                newText: new_message
+            };
+
+            $shortcode.addClass('render-modal-shortcode-disabled').data('renderDisabledShortcodeMessages', message);
+        },
+
+        /**
+         * Enables the shortcode.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {jQuery} $shortcode The shortcode element to enable.
+         */
+        enableShortcode: function ($shortcode) {
+
+            // No need if shortcode isn't disabled
+            if (!$shortcode.hasClass('render-modal-shortcode-disabled')) {
+                return;
+            }
+
+            this.toggleDisabledText($shortcode, false);
+            $shortcode.removeClass('render-modal-shortcode-disabled');
+        },
+
+        /**
+         * Shows the disabled message.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {jQuery} $shortcode The shortcode element to show the disabled message.
+         * @param {bool} show Whether to show or hide the message.
+         */
+        toggleDisabledText: function ($shortcode, show) {
+
+            var message = $shortcode.data('renderDisabledShortcodeMessages');
+
+            if (show === true) {
+                highlight($shortcode);
+                $shortcode.addClass('render-modal-shortcode-error-message')
+                    .find('.render-modal-shortcode-description').html(message.newText);
+            } else {
+                $shortcode.removeClass('render-modal-shortcode-error-message')
+                    .find('.render-modal-shortcode-description').html(message.originalText);
+            }
+        },
+
+        /**
          * Populates the shortcode item with attributes.
          *
          * @since 1.0.0
@@ -1437,8 +1047,15 @@ var Render_Modal;
 
                 var attObj = elements.active_shortcode.find('.render-modal-att-row[data-att-name="' + name + '"]').data('attObj');
 
-                if (attObj) {
+                // If there is an attObj, set the value
+                if (typeof attObj != 'undefined') {
                     attObj._setValue(value);
+                }
+
+                // If this IS dynamically populated then also give it some data for after the AJAX population call is
+                // completed
+                if (attObj && attObj.$container.hasClass('render-modal-att-conditional-populate')) {
+                    attObj.$input.data('renderPopulateValue', value);
                 }
             });
         },
@@ -1495,6 +1112,19 @@ var Render_Modal;
                     this.initAtts();
                     elements.active_shortcode.data('attsInit', true);
                 }
+
+                // Trigger change on inputs for the sake of conditional fields on initial shortcode open
+                elements.active_shortcode.find('.render-modal-att-row').each(function () {
+
+                    var attObj = $(this).data('attObj');
+
+                    // Oops
+                    if (typeof attObj == 'undefined') {
+                        return true; // continue $.each
+                    }
+
+                    attObj.$input.change();
+                });
 
                 // Scroll it into view
                 var shortcode_offset = elements.active_shortcode.position(),
@@ -1555,13 +1185,19 @@ var Render_Modal;
 
             render_modal_open = false;
 
+            this.output = false;
+
             elements.list.scrollTop(0);
             elements.wrap.hide();
             elements.backdrop.hide();
 
             this.closeShortcode();
-            this.clearShortcodeErrors();
             this.clearSearch();
+
+            // Remove all errors
+            elements.list.find('.render-modal-shortcode').each(function () {
+                Render_Modal.enableShortcode($(this));
+            });
 
             // Refresh categories at top
             elements.categories.find('.active').removeClass('active');
@@ -1599,10 +1235,21 @@ var Render_Modal;
 
             this.sanitize();
 
+            var code = elements.active_shortcode.data('code'),
+                title = elements.active_shortcode.data('title'),
+                props = render_data[code],
+                atts = {},
+                att_output = '',
+                content = '',
+                selection = this.selection,
+                output, nested;
 
-            var code = elements.active_shortcode.attr('data-code'),
-                title = elements.active_shortcode.attr('data-title'),
-                props, output, atts = {}, selection = this.selection;
+            // Nesting
+            if (typeof render_data[code]['render'] !== 'undefined') {
+                nested = typeof render_data[code]['render']['nested'] !== 'undefined';
+            } else {
+                nested = false;
+            }
 
             // Get the atts
             elements.active_shortcode.find('.render-modal-att-row').each(function () {
@@ -1614,43 +1261,112 @@ var Render_Modal;
                     return true; // Continue $.each
                 }
 
-                atts[attObj.name] = attObj._getValue();
+                atts[attObj.name] = {
+                    value: attObj._getValue(),
+                    attObj: attObj
+                };
             });
 
-            props = Render_Data.all_shortcodes[code];
+            // Get the content
+            if (props.wrapping) {
+                if (nested) {
 
-            output = '[' + code;
+                    var nested_children = JSON.parse(atts.nested_children.value),
+                        fields = parseRepeaterField(nested_children),
+                        children = '',
+                        count = 0,
+                        child_code = render_data[code].render.nested.child; // From rendering data
+
+                    // Get the count
+                    $.each(nested_children, function (name, value) {
+                        var new_count = value.split('::sep::').length;
+                        count = new_count > count ? new_count : count;
+                    });
+
+                    if (typeof atts.nested_children_count == 'undefined') {
+                        atts.nested_children_count = {};
+                    }
+                    atts.nested_children_count.value = count;
+
+                    for (var i = 0; i < count; i++) {
+
+                        // Get the attributes
+                        var attributes = '',
+                            child_content = typeof fields[i].content != 'undefined' && fields[i].content != '' ? fields[i].content : '';
+
+                        $.each(fields[i], function (name, value) {
+
+                            if (name == 'content') {
+                                return true; // continue $.each
+                            }
+
+                            attributes += ' ' + name + '="' + value + '"';
+                        });
+
+                        // Construct the nested children
+                        children += '[' + child_code + attributes + ']' + child_content + '[/' + child_code + ']';
+                    }
+
+                    content = children;
+
+                    // Remove content from the nested children so it doesn't get used as an attribute
+                    delete nested_children.content;
+                    atts.nested_children.value = JSON.stringify(nested_children);
+
+                    // Delete this attribute if it's empty
+                    if (atts.nested_children.value == '{}') {
+                        delete atts.nested_children;
+                    }
+
+                } else {
+
+                    if (typeof atts.content !== 'undefined') {
+                        content = atts.content.value;
+                    } else {
+                        content = selection;
+                    }
+                }
+
+                content += '[/' + code + ']';
+            }
 
             // Add on atts if they exist
             if (atts) {
-                $.each(atts, function (name, value) {
+                $.each(atts, function (name, properties) {
 
-                    // Set up the selection to be content if it exists
-                    if (name === 'content') {
+                    var value = properties.value,
+                        attObj = properties.attObj || false;
 
-                        // Run through filters first
-                        selection = textareaToHTML(value);
-                        return true; // Continue $.each
+                    // Make sure value is proper format
+                    value = typeof value == 'undefined' || value === null ? '' : value;
+
+                    // Skip if default value or no value
+                    if ((attObj !== false && value == attObj.default_value) || ! value) {
+                        return true; // continue $.each
                     }
 
+                    // Make sure the value is always text
+                    value = value.toString();
+
+                    // Escape for use as attr value
+                    value = escape_sc_attr(value);
+
                     // Add the att to the shortcode output
-                    if (value && value.length) {
-                        output += ' ' + name + '=\'' + value + '\'';
+                    if (value.length) {
+                        att_output += ' ' + name + "='" + value + "'";
                     }
                 });
             }
 
-            output += ']';
-
-            if (props.wrapping) {
-                output += selection + '[/' + code + ']';
-            }
+            // Construct the output
+            output = '[' + code + att_output + ']' + content;
 
             this.output = {
                 all: output,
                 code: code,
                 atts: atts,
-                title: title
+                title: title,
+                nested: nested
             };
 
             $(document).trigger('render-modal-update');
@@ -1673,106 +1389,129 @@ var Render_Modal;
 
                 var attObj = $(this).data('attObj');
 
-                // Skip if no attObj
-                if (!attObj) {
+                // Skip if no attObj or if field is not visible
+                if (!attObj || !attObj.$container.is(':visible')) {
                     return true; // Continue $.each
                 }
 
-                var required = attObj.$container.attr('data-required'),
-                    validate = attObj.$container.attr('data-validate'),
+                var required = attObj.$container.data('required'),
+                    do_validate = attObj.$container.data('validate'),
                     att_value = attObj._getValue(),
                     att_valid = true;
 
-                // Basic required and field being empty
-                if (required === '1' && !att_value && validated) {
+                // Basic required and field being empty and field not matching default
+                if (required && !att_value) {
                     att_valid = false;
                     validated = false;
-                    attObj.setInvalid('This field is required');
+                    attObj.setInvalid(l18n.this_field_required);
                     return true; // continue $.each iteration
                 } else if (!att_value) {
                     return true; //continue $.each iteration
                 }
 
                 // If there's validation, let's do it
-                if (validate.length) {
+                if (do_validate) {
 
-                    validate = Render_Modal._stringToObject(validate);
+                    var validations = render_data[attObj.shortcode]['atts'][attObj.name]['validate'];
 
-                    $.each(validate, function (type, value) {
+                    $.each(validations, function (type, value) {
 
-                        var regEx,
+                        var regExp,
                             url_pattern = '[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b' +
                                 '([-a-zA-Z0-9@:%_\\+.~#?&//=]*)',
-                            email_pattern = '\\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\\b';
+                            email_pattern = '\\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\\b',
+                            match, i;
 
 
                         // Validate for many different types
                         switch (type) {
 
                             // Url validation
-                            case 'url':
-                                regEx = new RegExp(url_pattern, 'ig');
+                            case 'URL':
+                                regExp = new RegExp(url_pattern, 'ig');
 
-                                if (!att_value.match(regEx)) {
+                                if (!att_value.match(regExp)) {
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid('Please enter a valid URL');
+                                    attObj.setInvalid(l18n.enter_valid_url);
                                 }
                                 break;
 
                             // Email validation
-                            case 'email':
+                            case 'EMAIL':
 
-                                regEx = new RegExp(email_pattern, 'ig');
+                                regExp = new RegExp(email_pattern, 'ig');
 
-                                if (!att_value.match(regEx)) {
+                                if (!att_value.match(regExp)) {
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid('Please enter a valid Email');
+                                    attObj.setInvalid(l18n.enter_valid_email);
                                 }
                                 break;
 
+                            // Specific characters only
+                            case 'CONTAINS ONLY':
+
+                                // Prepare regex string
+                                value = value.split('');
+                                for (i = 0; i < value.length; i++) {
+                                    value[i] = esc_regex_string(value[i]) + (i !== value.length - 1 ? '|' : '');
+                                }
+                                value = value.join('');
+
+                                regExp = new RegExp(value, 'g');
+                                match = att_value.match(regExp);
+
+                                if (match === null || att_value.length !== match.length) {
+
+                                    att_valid = false;
+                                    validated = false;
+                                    attObj.setInvalid(l18n.invalid_chars);
+                                }
+
+                                break;
+
                             // Maximum character count
-                            case 'maxchar':
+                            case 'MAX CHAR':
 
                                 if (att_value.length > parseInt(value)) {
 
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid((att_value.length - parseInt(value)) + ' too many characters.');
+                                    attObj.setInvalid((att_value.length - parseInt(value)) + ' ' + l18n.too_many_chars);
                                 }
                                 break;
 
                             // Minimum character count
-                            case 'minchar':
+                            case 'MIN CHAR':
 
                                 if (att_value.length < parseInt(value)) {
 
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid((parseInt(value)) - att_value.length + ' too few characters.');
+                                    attObj.setInvalid((parseInt(value)) - att_value.length + ' ' + l18n.too_few_chars);
                                 }
                                 break;
 
                             // No numbers allowed
-                            case 'charonly':
+                            case 'CHAR ONLY':
 
                                 if (att_value.match(/[0-9]/)) {
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid('No numbers please');
+                                    attObj.setInvalid(l18n.no_numbers);
                                 }
                                 break;
 
                             // Only numbers allowed
-                            case 'intonly':
+                            case 'INT ONLY':
 
                                 var numbers = att_value.match(/[0-9]+/);
 
                                 if (!numbers || (numbers[0] !== numbers.input)) {
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid('Only numbers please');
+                                    attObj.setInvalid(l18n.only_numbers);
                                 }
                                 break;
 
@@ -1807,17 +1546,26 @@ var Render_Modal;
                     return true; // Continue $.each
                 }
 
-                var sanitize = Render_Modal._stringToObject($(this).attr('data-sanitize')),
+                var do_sanitize = attObj.$container.data('sanitize'),
                     att_value = attObj._getValue();
 
-                if (sanitize && att_value !== null && att_value.length) {
-                    $.each(sanitize, function (type, value) {
+                if (do_sanitize && att_value !== null && att_value.length) {
+
+                    var sanitations = render_data[attObj.shortcode]['atts'][attObj.name]['sanitize'];
+
+                    $.each(sanitations, function (type, value) {
 
                         switch (type) {
-                            case 'url':
+
+                            case 'URL':
                                 if (!att_value.match(/https?:\/\//)) {
-                                    attObj._setValue('http://' + att_value);
+                                    att_value = 'http://' + att_value;
                                 }
+                                break;
+
+                            case 'INT ONLY':
+
+                                att_value = att_value.replace(/[^0-9]/g, '');
                                 break;
 
                             // If no matches, throw an error
@@ -1825,6 +1573,8 @@ var Render_Modal;
                                 throw new Error('Render -> Unsupported sanitation method "' + type + '" for the shortcode "' + attObj.shortcode + '" at field "' + attObj.fieldname + '"');
 
                         }
+
+                        attObj._setValue(att_value);
                     });
                 }
             });
@@ -1839,9 +1589,9 @@ var Render_Modal;
          */
         refresh: function (shortcode) {
 
-            shortcode = typeof shortcode !== 'undefined' ? shortcode : elements.active_shortcode;
+            shortcode = shortcode || elements.active_shortcode;
 
-            if (shortcode) {
+            if (shortcode.length) {
 
                 shortcode.find('.render-modal-att-row').each(function () {
 
@@ -1904,6 +1654,15 @@ var Render_Modal;
         this.original_value = null;
 
         /**
+         * The default value of the attribute.
+         *
+         * @since 1.0.0
+         *
+         * @type {*}
+         */
+        this.default_value = null;
+
+        /**
          * The name tag of the attribute field.
          *
          * @since 1.0.0
@@ -1940,22 +1699,56 @@ var Render_Modal;
         this.$input = null;
 
         /**
+         * Attribute fiend conditionals.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @type {object|bool}
+         */
+        this.conditionals = false;
+
+        /**
+         * Whether or not this attribute is hidden (used for conditionals).
+         *
+         * @since 1.1-alpha-3
+         *
+         * @type {boolean}
+         */
+        this.hidden = false;
+
+        /**
          * Initializes the object.
          *
          * @since 1.0.0
          *
-         * @param {HTMLElement} $e The attribute row container.
+         * @param {{jQuery}} $e The attribute row container.
          */
         this.init = function ($e) {
 
             // Setup properties
             this.$container = $e;
             this.$input = this.$container.find('.render-modal-att-input');
-            this.name = $e.attr('data-att-name');
+            this.name = $e.data('att-name');
             this.fieldname = this.$container.find('.render-modal-att-name').text().trim();
-            this.shortcode = this.$container.closest('.render-modal-shortcode').attr('data-code');
+            this.shortcode = this.$container.closest('.render-modal-shortcode').data('code');
+
+            // Default value
+            this.default_value = this.$input.data('default');
+            this.default_value = typeof this.default_value != 'undefined' ? this.default_value.toString() : false;
+
+            // Conditionals
+            var data = render_data[this.shortcode]['atts'][this.name];
+            this.conditionals = typeof data != 'undefined' ? data['conditional'] : false;
+            this.conditionals = this.conditionals || false;
 
             this.storeOriginalValue();
+
+            this.postInit($e);
+
+            // Bind conditionals' initialization to the parent shortcode being finished initializing
+            if (this.conditionals !== false) {
+                $e.closest('.render-modal-shortcode').on('render-modal-shortcode-init', this._setupConditionals());
+            }
         };
 
         /**
@@ -1965,6 +1758,296 @@ var Render_Modal;
          */
         this.storeOriginalValue = function () {
             this.original_value = this.$input.val();
+        };
+
+        /**
+         * Sets up the attribute's conditionals.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @private
+         */
+        this._setupConditionals = function () {
+
+            // Create initial boundAtts array for tracking bound atts
+            if (!('boundAtts' in this.conditionals)) {
+                this.conditionals.boundAtts = [];
+            }
+
+            var _this = this;
+            $.each(this.conditionals, function (type, conditional) {
+
+                // Only these 2 types are currently supported
+                if (type !== 'visibility' && type !== 'populate') {
+                    return true; // continue $.each
+                }
+
+                $.each(conditional.atts, function (att_ID, att) {
+
+                    // Get the attribute this conditional is dependent on
+                    att.boundAtt = _this.$container.closest('.render-modal-shortcode-atts')
+                        .find('.render-modal-att-row[data-att-name="' + att_ID + '"]').data('attObj');
+
+                    // Something went wrong...
+                    if (typeof att.boundAtt == 'undefined' || typeof att.boundAtt.$input == 'undefined') {
+                        return true; // continue $.each
+                    }
+
+                    // Only attach handler once
+                    if (_this.conditionals.boundAtts.indexOf(att_ID) === -1) {
+
+                        // Add the att ID to the list to make sure it only gets bound once
+                        _this.conditionals.boundAtts.push(att_ID);
+
+                        // Bind the handler to the attribute changing
+                        att.boundAtt.$input.change(function () {
+                            _this.performConditionals();
+                        });
+                    }
+                });
+            });
+
+            // Fire once on initial load to start the attribute hidden/shown/populated correctly
+            //this.performConditionals();
+        };
+
+        /**
+         * Performs conditional checks and actions.
+         *
+         * @since 1.1-alpha-3
+         */
+        this.performConditionals = function () {
+
+            var _this = this;
+            $.each(this.conditionals, function (type, conditional) {
+
+                // Only these 2 types are currently supported
+                if (type !== 'visibility' && type !== 'populate') {
+                    return true; // continue $.each
+                }
+
+                $.each(conditional.atts, function (att_ID, att) {
+
+                    switch (type) {
+
+                        case 'visibility':
+
+                            if (compare_conditions(conditional.atts)) {
+
+                                _this.hidden = false;
+                                _this.$container.show('drop', {}, 300);
+
+                            } else {
+
+                                _this._revert();
+
+                                // If this was visible, then run again now that the values have been changed because other
+                                // dependent attributes could need to be hidden or shown now.
+                                if (_this.hidden !== true) {
+                                    _this.hidden = true;
+                                    _this.$container.hide('drop', {}, 300);
+                                    //_this.performConditionals();
+                                }
+                            }
+
+                            break;
+
+                        case 'populate':
+
+                            var data = {
+                                    action: 'render_conditional_att_populate',
+                                    atts: {},
+                                    callback: conditional.callback
+                                },
+                                cover_html = '<div class="render-att-populate-cover" style="display: none;">' +
+                                    '<span class="spinner"></span>' +
+                                    '</div>',
+                                $cover;
+
+                            $.each(conditional.atts, function (att_ID, att) {
+                                data.atts[att_ID] = att.boundAtt._getValue();
+                            });
+
+                            // Setup last populate to keep track and not do redundant repeats
+                            if (typeof att.lastPopulate == 'undefined') {
+                                att.lastPopulate = '';
+                            }
+
+                            // Skip if same as last call
+                            if (att.lastPopulate == JSON.stringify(data)) {
+                                break;
+                            }
+                            att.lastPopulate = JSON.stringify(data);
+
+                            // Place the cover
+                            _this.$container.find('.render-modal-att-field').append(cover_html);
+                            $cover = _this.$container.find('.render-att-populate-cover');
+                            $cover.fadeIn(300);
+
+                            $.post(ajaxurl, data, function (response) {
+
+                                // Set our new options!
+                                if (response !== false && 'rebuildOptions' in _this) {
+                                    _this.rebuildOptions(response);
+                                }
+
+                                // Set the value (if was set from populateShortcode())
+                                var value = _this.$input.data('renderPopulateValue');
+                                if (typeof value != 'undefined') {
+                                    _this._setValue(value);
+                                    _this.$input.data('renderPopulateValue', null);
+                                }
+
+                                $cover.fadeOut(300, function () {
+                                    $(this).remove();
+                                });
+                            });
+
+                            break;
+                    }
+                });
+            });
+
+            /**
+             * Compares all existing conditions and shows or hides the attribute row.
+             *
+             * @since 1.1-alpha-3
+             *
+             * @param {object} atts The conditional properties.
+             */
+            function compare_conditions(atts) {
+
+                var show = false;
+
+                $.each(atts, function (att_ID, att) {
+
+                    var passing = false,
+                        value = att.boundAtt.getValue(),
+                        operator_table = {
+                            '==': function (a, b) {
+                                return a == b;
+                            },
+                            '===': function (a, b) {
+                                return a === b;
+                            },
+                            '!=': function (a, b) {
+                                return a != b;
+                            },
+                            '!==': function (a, b) {
+                                return a !== b;
+                            },
+                            '>': function (a, b) {
+                                return a > b;
+                            },
+                            '>=': function (a, b) {
+                                return a >= b;
+                            },
+                            '<': function (a, b) {
+                                return a < b;
+                            },
+                            '<=': function (a, b) {
+                                return a <= b;
+                            }
+                        };
+
+                    // Decide if this attribute is passing based on which type of conditional we're using
+                    switch (att.type) {
+
+                        case '==':
+                        case '===':
+                        case '!=':
+                        case '!==':
+
+                            if (operator_table[att.type](value, att.value)) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case '>':
+                        case '>=':
+                        case '<':
+                        case '<=':
+
+                            if (operator_table[att.type](parseFloat(value), parseFloat(att.value))) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'BETWEEN':
+
+                            if (parseFloat(value) > parseFloat(att.value.split(',')[0]) &&
+                                parseFloat(value) < parseFloat(att.value.split(',')[1])
+                            ) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'NOT BETWEEN':
+
+                            if (parseFloat(value) <= parseFloat(att.value.split(',')[0]) ||
+                                parseFloat(value) >= parseFloat(att.value.split(',')[1])
+                            ) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'CONTAINS':
+
+                            if (value.indexOf(att.value) !== -1) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'EXCLUDES':
+
+                            if (value.indexOf(att.value) === -1) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'IN':
+
+                            if (att.value.split(',').indexOf(value) !== -1) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'NOT IN':
+
+                            if (att.value.split(',').indexOf(value) === -1) {
+                                passing = true;
+                            }
+
+                            break;
+
+                        case 'NOT EMPTY':
+
+                            if (value.toString().length) {
+                                passing = true;
+                            }
+
+                            break;
+                    }
+
+                    // If we're passing, then we can show the attribute, UNLESS this condition is 'AND' and is not
+                    // passing; then we hide no matter what.
+                    if (passing) {
+                        show = true;
+                    } else if (att.relation == 'AND') {
+                        show = false;
+                        return false; // break $.each
+                    }
+                });
+
+                return show;
+            }
         };
 
         /**
@@ -1982,7 +2065,6 @@ var Render_Modal;
             this.setValid();
             this.$input.prop('disabled', false);
             this.$input.trigger('render:att_revert');
-
         };
 
         /**
@@ -1998,12 +2080,12 @@ var Render_Modal;
          * Fires the trigger and launches the getValue function.
          *
          * @since 1.0.0
-         *
-         * @private
          */
         this._getValue = function () {
-            this.$input.trigger('render:att_getValue');
-            return this.getValue();
+
+            var value = this.getValue();
+            this.$input.trigger('render:att_getValue', value);
+            return value;
         };
 
         /**
@@ -2021,13 +2103,13 @@ var Render_Modal;
          * Fires the trigger and launches the setValue function.
          *
          * @since 1.0.0
-         * @private
          *
-         * @param {*} value The value to set to.
+         *  @param {*} value The value to set to.
          */
         this._setValue = function (value) {
-            this.$input.trigger('render:att_setValue');
             this.setValue(value);
+            this.$input.change();
+            this.$input.trigger('render:att_setValue', value);
         };
 
         /**
@@ -2039,7 +2121,6 @@ var Render_Modal;
          */
         this.setValue = function (value) {
             this.$input.val(value);
-            this.$input.trigger('render:att_setValue');
         };
 
         /**
@@ -2056,7 +2137,7 @@ var Render_Modal;
             this.$container.addClass('invalid');
             this.errorMsg(msg);
             highlight(this.$input);
-            this.$input.trigger('render:att_setInvalid');
+            this.$input.trigger('render:att_setInvalid', msg);
         };
 
         /**
@@ -2067,6 +2148,17 @@ var Render_Modal;
         this.setValid = function () {
             this.$container.removeClass('invalid');
             this.$input.trigger('render:att_setValid');
+        };
+
+        /**
+         * Rebuilds the available option(s).
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {object} response The AJAX response.
+         */
+        this.rebuildOptions = function (response) {
+            this.$input.val(response.value);
         };
 
         /**
@@ -2084,7 +2176,31 @@ var Render_Modal;
 
             this.$errormsg.html(msg);
         };
+
+        /**
+         * Customizable post-init function.
+         *
+         * @since 1.1-alpha-3
+         */
+        this.postInit = function () {
+        };
     }
+
+    /**
+     * Modulation of AttAPI for the Hidden attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
+    var Hidden = function ($e) {
+
+        // Extends the AttAPI object
+        AttAPI.apply(this, arguments);
+
+        this.init($e);
+    };
 
     /**
      * Modulation of AttAPI for the Textbox attribute type.
@@ -2094,10 +2210,37 @@ var Render_Modal;
      * @param {HTMLElement} $e The attribute row container.
      * @constructor
      */
-    var Textbox = function ($e) {
+    var TextBox = function ($e) {
+
+        /**
+         * The input mask properties.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @type {boolean|object}
+         */
+        this.mask = false;
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
+
+        /**
+         * Sets up the textbox
+         *
+         * @since 1.1-alpha-3
+         */
+        this.postInit = function () {
+
+            // Trigger immediate change
+            this.$input.keyup(function () {
+                $(this).change();
+            });
+
+            // Apply the mask if there is one
+            if (typeof this.$input.data('mask') != 'undefined') {
+                this.applyMask();
+            }
+        };
 
         /**
          * Gets the attribute field current value.
@@ -2110,11 +2253,197 @@ var Render_Modal;
          */
         this.getValue = function () {
 
-            if (this.$input.prop('tagName') === 'textarea') {
-                return this.$input.text();
-            } else {
-                return this.$input.val();
+            // Return without mask
+            if (this.mask !== false) {
+
+                var regExp = '', i = 0, mask;
+
+                // Get our definitions to remove
+                $.each($.mask.definitions, function (name) {
+                    i++;
+                    regExp += (i !== 1 ? '|' : '') + esc_regex_string(name);
+                });
+                regExp = new RegExp(regExp, 'g');
+
+                // Remove the definitions from the mask to get all junk that needs to be removed from the att value
+                mask = this.mask.mask.replace(regExp, '').split('').getUnique();
+
+                regExp = '';
+                for (i = 0; i < mask.length; i++) {
+                    regExp += (i !== 0 ? '|' : '') + esc_regex_string(mask[i]);
+                }
+                regExp = new RegExp(regExp, 'g');
+
+                // Return the att value minus all of the spacers and such in the placeholder
+                return this.$input.val().replace(regExp, '');
             }
+
+            return this.$input.val();
+        };
+
+        /**
+         * Sets the attribute field to a specified value.
+         *
+         * Causes mask to take effect, if there is one.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {*} value The value to set to.
+         */
+        this.setValue = function (value) {
+
+            this.$input.val(value);
+
+            // Causes mask to take effect
+            if (this.mask !== false) {
+
+                this.$input.focus();
+
+                var $input = this.$input;
+                setTimeout(function () {
+                    $input.blur();
+                }, 50);
+            }
+        };
+
+        /**
+         * Applies a mask to the input field.
+         *
+         * @since 1.1-alpha-3
+         */
+        this.applyMask = function () {
+
+            this.mask = render_data[this.shortcode]['atts'][this.name]['properties']['mask'];
+
+            var mask, monospace, placeholder, options;
+
+            mask = this.mask.mask || '';
+            monospace = 'monospace' in this.mask;
+            placeholder = this.mask.placeholder || false;
+
+            // Optional templates
+            if ('template' in this.mask) {
+
+                switch (this.mask.template) {
+
+                    case 'phone':
+
+                        mask = '(999) 999-9999';
+                        monospace = true;
+                        break;
+
+                    case 'date':
+
+                        mask = '99/99/9999';
+                        placeholder = 'mm/dd/yyyy';
+                        monospace = true;
+                        break;
+                }
+
+            }
+
+            if (monospace) {
+                this.$input.addClass('code');
+            }
+
+            options = placeholder === false ? {} : {
+                placeholder: placeholder
+            };
+
+            this.mask = {
+                mask: mask,
+                placeholder: placeholder
+            };
+
+            this.$input.mask(mask, options);
+        };
+
+        this.init($e);
+    };
+
+    /**
+     * Modulation of AttAPI for the TextArea attribute type.
+     *
+     * @since 1.0.0
+     *
+     * @param {HTMLElement} $e The attribute row container.
+     * @constructor
+     */
+    var TextArea = function ($e) {
+
+        // Extends the AttAPI object
+        AttAPI.apply(this, arguments);
+
+        /**
+         * Sets up the textarea.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {{jQuery}} $container The current attribute row.
+         */
+        this.postInit = function ($container) {
+
+            // Disable Render Modal actions
+            this.$input.keyup(function (e) {
+
+                // Enter, up arrow, down arrow
+                if (e.which == 13 || e.which == 38 || e.which == 40) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            /*
+             Allow tab to indent instead of going to the next input
+
+             Taken from http://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea#answer-6637396
+             Much thanks to user "kasdega"!
+             */
+            $container.delegate('textarea', 'keydown', function (e) {
+
+                var keyCode = e.keyCode || e.which;
+
+                // Tab key
+                if (keyCode == 9) {
+                    e.preventDefault();
+                    var start = $(this).get(0).selectionStart;
+                    var end = $(this).get(0).selectionEnd;
+
+                    // set textarea value to: text before caret + tab + text after caret
+                    $(this).val($(this).val().substring(0, start)
+                    + "    "
+                    + $(this).val().substring(end));
+
+                    // put caret at right position again
+                    $(this).get(0).selectionStart =
+                        $(this).get(0).selectionEnd = start + 4;
+                }
+            });
+
+            // Shift + enter should submit the form
+            this.$input.keydown(function (event) {
+
+                if (event.keyCode == 13 && event.shiftKey) {
+                    event.preventDefault();
+                    Render_Modal.update();
+                }
+            });
+
+            // Trigger immediate change
+            this.$input.keyup(function () {
+                $(this).change();
+            });
+        };
+
+        /**
+         * Gets the attribute field current value.
+         *
+         * @since 1.0.0
+         *
+         * @returns {*} The attribute field value.
+         */
+        this.getValue = function () {
+            return this.$input.val();
         };
 
         this.init($e);
@@ -2134,6 +2463,30 @@ var Render_Modal;
         AttAPI.apply(this, arguments);
 
         /**
+         * Sets up the checkbox.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {{jQuery}} $container The current attribute row.
+         */
+        this.postInit = function ($container) {
+
+            $container.find('.render-modal-att-checkbox').change(function () {
+
+                if ($(this).prop('checked')) {
+                    $container.find('.render-modal-att-checkbox-label').addClass('checked');
+                } else {
+                    $container.find('.render-modal-att-checkbox-label').removeClass('checked');
+                }
+            });
+
+            $container.find('.render-modal-att-checkbox-label').click(function () {
+                var $checkbox_input = $container.find('.render-modal-att-checkbox');
+                $checkbox_input.prop('checked', !$checkbox_input.prop('checked')).trigger('change');
+            });
+        };
+
+        /**
          * Gets the attribute field current value.
          *
          * Getting the value here is just seeing if it's checked.
@@ -2147,7 +2500,7 @@ var Render_Modal;
             if (this.$input.prop('checked')) {
                 return this.$input.val();
             } else {
-                return false;
+                return '';
             }
         };
 
@@ -2179,7 +2532,7 @@ var Render_Modal;
             if (this.$input.prop('checked')) {
                 this.original_value = this.$input.val();
             } else {
-                this.original_value = false;
+                this.original_value = '';
             }
         };
 
@@ -2245,8 +2598,33 @@ var Render_Modal;
             if (this.$input.prop('checked')) {
                 this.original_value = this.$input.val();
             } else {
-                this.original_value = false;
+                this.original_value = this.$container.find('input[type="hidden"]').val();
             }
+        };
+
+        /**
+         * Rebuilds the available options.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {object} response The AJAX response.
+         */
+        this.rebuildOptions = function (response) {
+
+            var i = 0,
+                attObj = this;
+
+            $.each(response.options, function (value, label) {
+                i++;
+
+                if (i === 1) {
+                    attObj.$container.find('input[type="checkbox"]').val(value);
+                    attObj.$container.find('.render-modal-att-toggle-first').html(label);
+                } else {
+                    attObj.$container.find('input[type="hidden"]').val(value);
+                    attObj.$container.find('.render-modal-att-toggle-second').html(label);
+                }
+            });
         };
 
         this.init($e);
@@ -2264,6 +2642,207 @@ var Render_Modal;
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
+
+        /**
+         * Constructs the Chosen input.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {{jQuery}} $container The current attribute row.
+         */
+        this.postInit = function ($container) {
+
+            // Apply Chosen
+            var $chosen = $container.find('.render-modal-att-input.chosen'),
+                options = {
+                    width: '100%',
+                    search_contains: true,
+                    allow_single_deselect: $chosen.data('deselect')
+                };
+
+            // Not using Chosen
+            if ($chosen.length === 0) {
+                return;
+            }
+
+            if ($chosen.hasClass('allow-icons')) {
+                options.disable_search = true;
+            }
+
+            $chosen.chosen(options);
+
+            // Fix scroll issue
+            $container.find('.chosen-results').bind('mousewheel', function (e) {
+                $(this).scrollTop($(this).scrollTop() - e.originalEvent.wheelDeltaY);
+                return false;
+            });
+
+            // Make sure change triggers chosen to update
+            this.$input.change(function () {
+                $(this).trigger('chosen:updated');
+            });
+
+            // Scroll list as needed if chosen drop-down is cut off
+            $chosen.on('chosen:showing_dropdown', function () {
+
+                var $drop = $container.find('.chosen-drop'),
+                    $list = elements.list,
+                    drop_offset = $drop.offset().top + $drop.outerHeight(),
+                    list_offset = $list.offset().top + $list.outerHeight(),
+                    difference = drop_offset - list_offset;
+
+                // Bottom of chosen drop is out of the list
+                if (difference > 0) {
+                    $list.animate({
+                        scrollTop: $list.scrollTop() + difference
+                    }, 150);
+                }
+            });
+
+            // Extend functionality to allow icons
+            if ($chosen.hasClass('allow-icons')) {
+
+                $chosen.on('chosen:showing_dropdown chosen:updated', function () {
+
+                    $(this).find('option').each(function (index) {
+
+                        var icon = $(this).data('icon');
+
+                        if (!icon) {
+                            return true; // Continue &.each
+                        }
+
+                        if (icon) {
+                            $container.find('.chosen-results li').eq(index - 1).prepend(
+                                '<span class="' + icon + '"></span>'
+                            )
+                        }
+                    });
+                });
+
+                $chosen.on('change', function () {
+
+                    var icon = 'dashicons ' + $chosen.val();
+
+                    if (!$chosen.val()) {
+                        $container.find('.chosen-single .dashicons').remove();
+                    } else {
+                        $container.find('.chosen-single span').prepend(
+                            '<span class="' + icon + '"></span>'
+                        );
+                    }
+                });
+
+                // Trigger change when setting the value (for initial Modal opens)
+                $chosen.on('render:att_setValue', function () {
+                    $chosen.trigger('change');
+                });
+            }
+
+            // Extend functionality to allow custom text input (if enabled on input)
+            if ($chosen.hasClass('allow-custom-input')) {
+
+                var $input_text = $container.find('.chosen-search input[type="text"]');
+
+                // Hide the "no results..."
+                $chosen.on('chosen:no_results', function () {
+                    $container.find('.no-results').remove();
+                });
+
+                // Clear input field and data on change (this should be when the deselect)
+                $chosen.change(function () {
+
+                    if ($chosen.data('chosen-custom-input')) {
+                        $input_text.val('');
+                        $chosen.removeData('chosen-custom-input');
+                    }
+                });
+
+                // Manually trigger the chosen "closing" because it doesn't always launch after we manually
+                // build the single deselect
+                $container.on('mousedown', '.search-choice-close', function () {
+                    $chosen.trigger('chosen:hiding_dropdown');
+                });
+
+                // Use the custom value when hiding the dropdown
+                $chosen.on('chosen:hiding_dropdown', function () {
+
+                    var search_text = $input_text.val(),
+                        Chosen = $chosen.data('chosen');
+
+                    // If no searching, get outta here
+                    if (!search_text) {
+                        $chosen.removeData('chosen-custom-input');
+                        return;
+                    }
+
+                    // Set the preview text to our custom input (and make it not look like the default text)
+                    $container.find('.chosen-single').removeClass('chosen-default')
+                        .find('> span').html(search_text);
+
+                    // Tell the Modal to use this new custom data
+                    $chosen.data('chosen-custom-input', search_text);
+
+                    // Remove focus from input and clear any leftover input
+                    $input_text.val('').blur();
+
+                    // Make sure to trigger the input change
+                    $chosen.trigger('render-att-change');
+
+                    // Manually add choice deselect and event
+                    Chosen.single_deselect_control_build();
+                });
+
+                // Populate search text if using custom input
+                $chosen.on('chosen:showing_dropdown', function () {
+
+                    var custom_text = $chosen.data('chosen-custom-input');
+
+                    if (custom_text) {
+                        $input_text.val(custom_text);
+                    }
+                });
+
+                // Clear search text on clicking an option and set to that option
+                $container.on('click', 'li.active-result', function () {
+
+                    // Clear and de-select the custom input
+                    $input_text.val('').blur();
+
+                    // Unfortunately, by this time the custom text has been used, so we have to manually
+                    // tell Chosen to use the option we clicked
+                    var Chosen = $chosen.data('chosen'),
+                        value = Chosen.results_data[$(this).data('option-array-index')].value;
+
+                    $chosen.val(value)
+                        .trigger('chosen:updated')
+                        .removeData('chosen-custom-input');
+                });
+
+                // Pressing enter when typing a custom value shouldn't close the Modal, just use the text
+                $input_text.keyup(function (e) {
+
+                    if (e.which == 13) {
+
+                        // Make sure we don't keep chosen focused
+                        $input_text.blur();
+
+                        // TODO Figure out why I can't just trigger "chosen:close"...
+
+                        var Chosen = $chosen.data('chosen'),
+                            custom_text = $input_text.val();
+
+                        if (custom_text) {
+                            Chosen.close_field();
+                            $input_text.val(custom_text);
+                            $chosen.trigger('chosen:hiding_dropdown');
+                        }
+
+                        return false;
+                    }
+                });
+            }
+        };
 
         /**
          * Gets the attribute field current value.
@@ -2305,15 +2884,6 @@ var Render_Modal;
                 } else {
                     this.$input.val('');
                 }
-
-                this.$input.trigger('chosen:updated');
-                return;
-            }
-
-            // Custom input (value doesn't exist in options)
-            if (!this.$input.find('option[value="' + value + '"]').length) {
-                this.$container.find('.chosen-search input[type="text"]').val(value);
-                this.$input.trigger('chosen:hiding_dropdown');
                 return;
             }
 
@@ -2321,10 +2891,16 @@ var Render_Modal;
             if (this.$input.attr('multiple')) {
                 this.$input.val(value.split(','));
             } else {
+
+                // Custom input (value doesn't exist in options)
+                if (!this.$input.find('option[value="' + value + '"]').length) {
+                    this.$container.find('.chosen-search input[type="text"]').val(value);
+                    this.$input.trigger('chosen:hiding_dropdown');
+                    return;
+                }
+
                 this.$input.val(value);
             }
-
-            this.$input.trigger('chosen:updated');
         };
 
         /**
@@ -2335,7 +2911,6 @@ var Render_Modal;
          * @since 1.0.0
          */
         this.revert = function () {
-            this.$container.find('.chosen-custom-input').remove();
             this._setValue(this.original_value);
         };
 
@@ -2352,6 +2927,42 @@ var Render_Modal;
 
             this.$container.addClass('invalid');
             this.errorMsg(msg);
+        };
+
+        /**
+         * Rebuilds the available options.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {object} response The AJAX response.
+         */
+        this.rebuildOptions = function (response) {
+
+            var $no_options = this.$container.find('.render-modal-selectbox-no-options'),
+                $chosen_container = this.$container.find('.render-chosen-container'),
+                $description = this.$container.find('.render-modal-att-description');
+
+            // Hide or show
+            if (!response.options) {
+                $no_options.show();
+                $chosen_container.hide();
+
+                // Set the no options text, if it's set
+                if (response.no_options_text) {
+                    $no_options.html(response.no_options_text);
+                }
+            } else {
+                $no_options.hide();
+                $chosen_container.show();
+            }
+
+            // Modify the description, if it's set
+            if (response.description) {
+                $description.html(response.description);
+            }
+
+            this.$input.html(response.options);
+            this.$input.trigger('chosen:updated');
         };
 
         this.init($e);
@@ -2371,6 +2982,30 @@ var Render_Modal;
         AttAPI.apply(this, arguments);
 
         /**
+         * Sets up the colorpicker object.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {{jQuery}} $container The current attribute row.
+         */
+        this.postInit = function ($container) {
+
+            var _this = this;
+
+            $container.find('.render-modal-att-colorpicker').first().each(function () {
+
+                var data = $(this).data();
+
+                // Trigger input change
+                data.change = function () {
+                    _this.$input.trigger('render-att-change');
+                };
+
+                $(this).wpColorPicker(data);
+            });
+        };
+
+        /**
          * Sets the attribute field to a specified value.
          *
          * Triggers Iris colorpicker with new color.
@@ -2380,7 +3015,16 @@ var Render_Modal;
          * @param {*} value The value to set to.
          */
         this.setValue = function (value) {
+
+            // Bail if not initialized
+            if (typeof this.$input.data('wpWpColorPicker') === 'undefined') {
+
+                render_log_error('setValue() called before Iris init on attribute ' + this.name + ' in shortcode ' + this.shortcode);
+                return;
+            }
+
             this.$input.iris('color', value);
+            this.$input.change();
         };
 
         this.init($e);
@@ -2400,17 +3044,194 @@ var Render_Modal;
         AttAPI.apply(this, arguments);
 
         /**
-         * Sets the attribute field to a specified value.
+         * Constructs the jQuery UI Slider object.
          *
-         * Triggers the change to update jQuery UI Slider.
+         * @since 1.1-alpha-3
          *
-         * @since 1.0.0
-         *
-         * @param {*} value The value to set to.
+         * @param {{jQuery}} $container The current attribute row.
          */
-        this.setValue = function (value) {
-            this.$input.val(value);
-            this.$input.change();
+        this.postInit = function ($container) {
+
+            $container.find('.render-modal-att-slider').each(function () {
+
+                var $this = $(this),
+                    $input = $this.siblings('.render-modal-att-slider-value'),
+                    data = {}, i;
+
+                // Skip if the slider's already been initilaized
+                if (typeof $(this).data('uiSlider') !== 'undefined') {
+                    return true; // Continue $.each
+                }
+
+                // Get the data
+                var allowed_data = [
+                    'animate',
+                    'disabled',
+                    'max',
+                    'min',
+                    'orientation',
+                    'step',
+                    'value',
+                    'values',
+                    'range',
+                    'slide'
+                ];
+
+                for (i = 0; i < allowed_data.length; i++) {
+
+                    var _data = $this.data('' + allowed_data[i]);
+                    if (_data) {
+                        data[allowed_data[i]] = _data;
+                    }
+                }
+
+                // If the input had a number, and a default isn't set, use it
+                if ($input.val() && !data.value) {
+                    if (data.values) {
+                        data.values = $input.val();
+                    } else {
+                        data.value = $input.val();
+                    }
+                }
+
+                // Custom slide callback
+                if (data.slide) {
+
+                    var slide_callback = data.slide;
+
+                    data.slide = function (event, ui) {
+                        return window[slide_callback](event, ui, $input);
+                    }
+                } else {
+                    if (data.values) {
+                        data.slide = function (event, ui) {
+
+                            // Prevent overlap
+                            if (ui.values[0] >= ui.values[1] || ui.values[1] <= ui.values[0]) {
+                                return false;
+                            }
+
+                            // Output the ranges to the text and the input
+                            var $text = $input.siblings('.render-modal-att-slider-range-text');
+
+                            $text.find('.render-modal-att-slider-range-text-value1').html(ui.values[0]);
+                            $text.find('.render-modal-att-slider-range-text-value2').html(ui.values[1]);
+
+                            $input.val(ui.values[0] + '-' + ui.values[1]);
+                        };
+                    } else {
+                        data.slide = function (event, ui) {
+                            $input.val(ui.value);
+                        };
+                    }
+                }
+
+                // Set the values to an array (if a range slider)
+                if (data.values) {
+                    data.values = data.values.split('-');
+                }
+
+                // Make sure this gets no duplicate handlers
+                $input.off();
+
+                // Only numbers (or negative)
+                $input.keypress(function (e) {
+
+                    if (!String.fromCharCode(e.which).match(/[0-9|-]/)) {
+                        highlight($(this));
+                        e.preventDefault();
+                    }
+                });
+
+                // Change the slider and keep the numbers in the allowed range
+                $input.change(function () {
+
+                    var $slider = $(this).siblings('.render-modal-att-slider');
+
+                    if ($slider.data('range')) {
+
+                        // Range slider
+                        var $text = $(this).siblings('.render-modal-att-slider-range-text'),
+                            values = $(this).val().split('-');
+
+                        $text.find('.render-modal-att-slider-range-text-value1').html(values[0]);
+                        $text.find('.render-modal-att-slider-range-text-value2').html(values[1]);
+
+                        $slider.slider('values', values);
+                    } else {
+
+                        // Normal slider
+                        var min = parseInt($slider.data('min')),
+                            max = parseInt($slider.data('max')),
+                            val = parseInt($(this).val());
+
+                        // Set the jQuery UI slider to match the new text value
+                        $slider.slider('value', $(this).val());
+
+                        // Keep in range
+                        if (val < min) {
+                            highlight($(this));
+                            $(this).val(min);
+                        } else if (val > max) {
+                            highlight($(this));
+                            $(this).val(max);
+                        }
+
+                        // Erase leading zeros
+                        $(this).val(parseInt($(this).val(), 10));
+                    }
+                });
+
+                // Initialize the slider
+                $this.slider(data);
+            });
+        };
+
+        this.revert = function () {
+
+            // From original
+            this._setValue(this.original_value);
+
+            var $slider = this.$input.siblings('.render-modal-att-slider');
+
+            // Allows range to transition only when reverting (delay must match the CSS3 transition)
+            $slider.addClass('render-modal-att-slider-reverting');
+            setTimeout(function () {
+                $slider.removeClass('render-modal-att-slider-reverting');
+            }, 500);
+        };
+
+        /**
+         * Rebuilds the available options.
+         *
+         * For this one, it changes the available min and max.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {object} response The AJAX response.
+         */
+        this.rebuildOptions = function (response) {
+
+            var min = response.options.min,
+                max = response.options.max,
+                value = this.getValue(),
+                $slider = this.$input.siblings('.render-modal-att-slider');
+
+            $slider.slider('option', {
+                min: min,
+                max: max
+            });
+
+            $slider.data('min', min);
+            $slider.data('max', max);
+
+            if (value < min) {
+                this._setValue(min);
+            }
+
+            if (value > max) {
+                this._setValue(max);
+            }
         };
 
         this.init($e);
@@ -2428,6 +3249,64 @@ var Render_Modal;
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
+
+        /**
+         * Sets up the WP Media integration.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {{jQuery}} $container The current attribute row.
+         */
+        this.postInit = function ($container) {
+
+            $container.find('.render-modal-att-media-upload').click(function () {
+
+                // TODO Figure out various frame types and how to utilize this better
+                var options = {
+                        frame: 'post',
+                        state: 'insert',
+                        button: 'Use Media', // FIXME doesn't work
+                        multiple: false
+                    },
+                    $this = $(this),
+                    type = $this.data('type'),
+                    json;
+
+                if (type == 'gallery') {
+                    options.multiple = true;
+                }
+
+                var file_frame = wp.media.frames.file_frame = wp.media(options);
+
+                file_frame.open();
+
+                file_frame.on('insert', function () {
+
+                    json = file_frame.state().get('selection').first().toJSON();
+
+                    if (0 > $.trim(json.url.length)) {
+                        return;
+                    }
+
+                    switch (type) {
+                        case 'image':
+                            $this.siblings('.render-modal-att-media-preview-image').attr('src', json.url);
+                            $this.siblings('.render-modal-att-input').val(json.id);
+                            break;
+
+                        case 'audio':
+                            $this.siblings('.render-modal-att-media-preview-audio').html(json.url);
+                            $this.siblings('.render-modal-att-input').val(json.url);
+                            break;
+
+                        case 'video':
+                            $this.siblings('.render-modal-att-media-preview-video').html(json.url);
+                            $this.siblings('.render-modal-att-input').val(json.url);
+                            break;
+                    }
+                });
+            });
+        };
 
         /**
          * Sets the attribute field to a specified value.
@@ -2477,6 +3356,110 @@ var Render_Modal;
         AttAPI.apply(this, arguments);
 
         /**
+         * Sets up the counter object.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {{jQuery}} $container The current attribute row.
+         */
+        this.postInit = function ($container) {
+
+            var shift_down = false,
+                $input = $container.find('.render-modal-att-counter'),
+                $button_down = $input.siblings('.render-modal-counter-down'),
+                $button_up = $input.siblings('.render-modal-counter-up'),
+                min = parseInt($input.data('min')),
+                max = parseInt($input.data('max')),
+                step = parseInt($input.data('step')),
+                shift_step = parseInt($input.data('shift-step'));
+
+            // Set the "+" and "-" to disabled accordingly
+            if (parseInt($input.val()) == min) {
+                $button_down.addClass('disabled');
+            } else {
+                $button_down.removeClass('disabled');
+            }
+
+            if (parseInt($input.val()) == max) {
+                $button_up.addClass('disabled');
+            } else {
+                $button_up.removeClass('disabled');
+            }
+
+            // If holding shift, let us know so we can use the shift_step later
+            $(document).keydown(function (e) {
+                if (e.which === 16) {
+                    shift_down = true;
+                }
+            });
+
+            $(document).keyup(function (e) {
+                if (e.which === 16) {
+                    shift_down = false;
+                }
+            });
+
+            // Click on the "+"
+            $container.find('.render-modal-counter-up').click(function () {
+                $input.val(parseInt($input.val()) + (shift_down ? shift_step : step));
+                $input.change();
+            });
+
+            // Click on the "-"
+            $container.find('.render-modal-counter-down').click(function () {
+                $input.val(parseInt($input.val()) - (shift_down ? shift_step : step));
+                $input.change();
+            });
+
+            // Keep the number within its limits
+            $input.change(function () {
+
+                var $button_up = $(this).siblings('.render-modal-counter-up'),
+                    $button_down = $(this).siblings('.render-modal-counter-down'),
+                    min = parseInt($input.data('min')),
+                    max = parseInt($input.data('max'));
+
+                if (parseInt($(this).val()) >= max) {
+
+                    if (parseInt($(this).val()) > max) {
+                        highlight($(this));
+                    }
+
+                    $(this).val(max);
+                    $button_up.addClass('disabled');
+                    $button_down.removeClass('disabled');
+                } else if (parseInt($(this).val()) <= min) {
+
+                    if (parseInt($(this).val()) < min) {
+                        highlight($(this));
+                    }
+
+                    $(this).val(min);
+                    $button_down.addClass('disabled');
+                    $button_up.removeClass('disabled');
+                } else {
+
+                    $button_up.removeClass('disabled');
+                    $button_down.removeClass('disabled');
+                }
+            });
+
+            // Units selectbox
+            var $select = $container.find('select');
+
+            if ($select.length) {
+
+                $select.chosen({
+                    width: '100px',
+                    disable_search: true
+                });
+
+                // Make sure default value includes unit if the unit is set
+                this.default_value = this.default_value + $select.val();
+            }
+        };
+
+        /**
          * Gets the attribute field current value.
          *
          * Returns the value with the unit appended (if there is a unit type set).
@@ -2513,8 +3496,8 @@ var Render_Modal;
             value = values[0]; // The number
 
             // Make sure the "+" and "-" buttons have the right classes
-            var min = this.$input.attr('data-min'),
-                max = this.$input.attr('data-max');
+            var min = this.$input.data('min'),
+                max = this.$input.data('max');
 
             if (value == min) {
                 this.$input.siblings('.render-modal-counter-down').addClass('disabled');
@@ -2529,10 +3512,38 @@ var Render_Modal;
             }
 
             this.$input.val(value);
+            this.$input.change();
 
             // If a unit was found
             if (values.length > 1) {
                 this.$container.find('.render-modal-counter-unit-input').val(values[1]); // The unit
+            }
+        };
+
+        /**
+         * Rebuilds the available options.
+         *
+         * For this one, it changes the available min and max.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {object} response The AJAX response.
+         */
+        this.rebuildOptions = function (response) {
+
+            var min = response.options.min,
+                max = response.options.max,
+                value = this.getValue();
+
+            this.$input.data('min', min);
+            this.$input.data('max', max);
+
+            if (value < min) {
+                this._setValue(min.toString());
+            }
+
+            if (value > max) {
+                this._setValue(max.toString());
             }
         };
 
@@ -2551,6 +3562,88 @@ var Render_Modal;
 
         // Extends the AttAPI object
         AttAPI.apply(this, arguments);
+
+        /**
+         * Sets up repeater fields.
+         *
+         * @since 1.1-alpha-3
+         *
+         * @param {{jQuery}} $container The current attribute row.
+         */
+        this.postInit = function ($container) {
+            this.initRepeaterButtons($container);
+        };
+        /**
+         * Initializes the repeater field buttons.
+         *
+         * Sets up handlers for the repeater field add and remove buttons.
+         *
+         * @since 1.0.0
+         *
+         * @param {HTMLElement} $e The attribute row container.
+         */
+        this.initRepeaterButtons = function ($e) {
+
+            var $container = $e.find('.render-modal-att-field'),
+                _this = this;
+
+            // Add a new field after on pressing the "+"
+            $container.find('.render-modal-repeater-add').off().click(function () {
+
+                // Make sure we're not hitting a max first
+                var max = $(this).closest('.render-modal-repeater-field').data('max'),
+                    current = $(this).closest('.render-modal-att-field').find('.render-modal-repeater-field').length;
+
+                if (max && current >= parseInt(max) + 1) { // + 1 for invisible dummy field
+                    $(this).closest('.render-modal-att-field').effect('shake', {
+                        distance: 10
+                    }, 200);
+                    return;
+                }
+
+                // Clone the dummy field in after the current field
+                var $clone = $(this).closest('.render-modal-att-field').find('.render-modal-repeater-field.dummy-field').clone();
+
+                // Modify the clone
+                $clone.show();
+                $clone.find('.render-modal-att-row').removeAttr('data-no-init');
+                $clone.removeClass('dummy-field');
+
+                $(this).closest('.render-modal-repeater-field').after($clone);
+
+                // Re-build the attObj data for the newly cloned atts
+                Render_Modal.initAtts();
+
+                // Re-attach button handlers
+                _this.initRepeaterButtons($e);
+            });
+
+            // Delete the field on pressing the "-"
+            $container.find('.render-modal-repeater-remove').off().click(function () {
+
+                var $field = $(this).closest('.render-modal-repeater-field');
+
+                // If we're on the second (first visible) field and they're are no more (visible) fields besides this one
+                if ($field.index() == 1 && $(this).closest('.render-modal-att-row').find('.render-modal-repeater-field').length <= 2) {
+
+                    // Clear the inputs
+                    highlight($field);
+                    $field.find('.render-modal-att-row').each(function () {
+                        $(this).data('attObj').revert();
+                    });
+                } else {
+
+                    // Remove the field
+                    highlight($field);
+                    $field.effect('drop', {
+                        duration: 300,
+                        complete: function () {
+                            $(this).remove();
+                        }
+                    });
+                }
+            });
+        };
 
         /**
          * Reverts the attribute to its original values.
@@ -2589,7 +3682,7 @@ var Render_Modal;
 
                 var attObj = $(this).data('attObj');
 
-                if (values[attObj.name]) {
+                if (typeof values[attObj.name] != 'undefined') {
                     // Att already set, append new value
                     values[attObj.name] += '::sep::' + attObj._getValue();
                 } else {
@@ -2619,20 +3712,7 @@ var Render_Modal;
                 object = JSON.parse(object);
 
                 // Construct the fields object
-                var fields = [];
-                $.each(object, function (name, values) {
-
-                    var att_values = values.split('::sep::');
-
-                    for (var i = 0; i < att_values.length; i++) {
-
-                        if (!fields[i]) {
-                            fields[i] = {};
-                        }
-
-                        fields[i][name] = att_values[i];
-                    }
-                });
+                var fields = parseRepeaterField(object);
 
                 // Add as many new fields as necessary
                 for (var i = 1; i < fields.length; i++) {
@@ -2663,7 +3743,7 @@ var Render_Modal;
         Render_Modal.init();
     });
 
-    // Fires whenever the window is resized
+    // Fires whenever the window is re-sized
     $(window).resize(function () {
         Render_Modal.resize();
     });
@@ -2673,63 +3753,65 @@ var Render_Modal;
     // ---------------- //
 
     /**
-     * Initializes the repeater field buttons.
+     * Run the value through various sanitation methods to prepare for being a shortcode attribute.
      *
-     * Sets up handlers for the repeater field add and remove buttons.
+     * @since 1.1-alpha-3
+     * @global sc_attr_escapes
      *
-     * @since 1.0.0
-     *
-     * @param {HTMLElement} $e The attribute row container.
+     * @param {string} value The value to escape.
+     * @returns {string} The escaped string.
      */
-    function initRepeaterButtons($e) {
+    function escape_sc_attr(value) {
 
-        var $container = $e.find('.render-modal-att-field');
+        var charCode, regExp;
 
-        // Add a new field after on pressing the "+"
-        $container.find('.render-modal-repeater-add').off().click(function () {
+        // Run through all of the escapes
+        $.each(Render_Data.sc_attr_escapes, function (i, escape) {
 
-            // Clone the dummy field in after the current field
-            var $clone = $(this).closest('.render-modal-att-field').find('.render-modal-repeater-field.dummy-field').clone();
+            charCode = escape.charCodeAt(0).toString();
 
-            // Modify the clone
-            $clone.show();
-            $clone.find('.render-modal-att-row').removeAttr('data-no-init');
-            $clone.removeClass('dummy-field');
-
-            $(this).closest('.render-modal-repeater-field').after($clone);
-
-            // Re-build the attObj data for the newly cloned atts
-            Render_Modal.initAtts();
-
-            // Re-attach button handlers
-            initRepeaterButtons($e);
+            regExp = new RegExp(esc_regex_string(escape), 'g');
+            value = value.replace(regExp, '::' + charCode + '::');
         });
 
-        // Delete the field on pressing the "-"
-        $container.find('.render-modal-repeater-remove').off().click(function () {
+        return value;
+    }
 
-            var $field = $(this).closest('.render-modal-repeater-field');
+    /**
+     * Un-escapes the shortcode attribute.
+     *
+     * @since 1.1-alpha-3
+     * @global sc_attr_escapes
+     *
+     * @param {string} value The value to un-escape.
+     * @returns {string} The un-escaped string.
+     */
+    function unescape_sc_attr(value) {
 
-            // If we're on the second (first visible) field and they're are no more (visible) fields besides this one
-            if ($field.index() == 1 && $(this).closest('.render-modal-att-row').find('.render-modal-repeater-field').length <= 2) {
+        var charCode, regExp;
 
-                // Clear the inputs
-                highlight($field);
-                $field.find('.render-modal-att-row').each(function () {
-                    $(this).data('attObj').revert();
-                });
-            } else {
+        // Run through all of the escapes
+        $.each(Render_Data.sc_attr_escapes, function (i, escape) {
 
-                // Remove the field
-                highlight($field);
-                $field.effect('drop', {
-                    duration: 300,
-                    complete: function () {
-                        $(this).remove();
-                    }
-                });
-            }
+            charCode = escape.charCodeAt(0).toString();
+
+            regExp = new RegExp('::' + charCode + '::', 'g');
+            value = value.replace(regExp, escape);
         });
+
+        return value;
+    }
+
+    /**
+     * Escapes a string for use as a regular expression.
+     *
+     * @since 1.1-alpha-3
+     *
+     * @param {string} string The string to be escaped.
+     * @returns {string} The escaped string.
+     */
+    function esc_regex_string(string) {
+        return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
     /**
@@ -2737,38 +3819,29 @@ var Render_Modal;
      *
      * @since 1.0.0
      *
-     * @param {HTMLElement} $e The input field to highlight.
-     * @param {string} color The color to highlight.
-     * @param {string} font_color The color of the font to use when highlighting.
-     * @param {int} transition The animation time.
+     * @param {jQuery} $e The input field to highlight.
      */
-    function highlight($e, color, font_color, transition) {
+    function highlight($e) {
 
-        color = typeof color !== 'undefined' ? color : error_color;
-        font_color = typeof font_color !== 'undefined' ? font_color : '#fff';
-        transition = typeof transition !== 'undefined' ? transition : 300;
+        var background = error_color,
+            transition = 300,
+            orig_backgroundColor;
 
-        // Get and store the original color
-        var orig_colors = {};
-        if ($e.data('highlightOriginalColors')) {
-            orig_colors = $e.data('highlightOriginalColors');
-        } else {
-            orig_colors.background = $e.css('backgroundColor');
-            orig_colors.font = $e.css('color');
-            $e.data('highlightOriginalColors', orig_colors);
-        }
+        // Remove the colors to get the computed original colors and store them
+        $e.css('backgroundColor', '');
 
-        // Animate the color
-        $e.css({
-            backgroundColor: color,
-            color: font_color
-        }).stop().animate({
-            backgroundColor: orig_colors.background,
-            color: orig_colors.font
+        orig_backgroundColor = $e.css('backgroundColor');
+
+        // Set the highlight colors
+        $e.css('backgroundColor', background);
+
+        // Animate to orig colors
+        $e.animate({
+            backgroundColor: orig_backgroundColor
         }, {
             duration: transition,
             complete: function () {
-                $(this).removeAttr('style');
+                $(this).css('backgroundColor', '');
             }
         });
     }
@@ -2790,7 +3863,7 @@ var Render_Modal;
         //var regExpSpaces = new RegExp(String.fromCharCode(160), "g");
         value = value.replace(/&nbsp;/g, " ");
 
-        if (typeof window.switchEditors !== 'undefined' ) {
+        if (typeof window.switchEditors !== 'undefined') {
             value = window.switchEditors.pre_wpautop(value);
         }
 
@@ -2815,5 +3888,33 @@ var Render_Modal;
         value = value.replace(/\s/g, '&nbsp;');
 
         return value;
+    }
+
+    /**
+     * Parses the attribute output of a repeater field.
+     *
+     * @since 1.1-alpha-3
+     *
+     * @param object The repeater field "object"
+     * @returns {Array} Sorted fields
+     */
+    window['parseRepeaterField'] = function (object) {
+
+        var fields = [];
+        $.each(object, function (name, values) {
+
+            var att_values = values.split('::sep::');
+
+            for (var i = 0; i < att_values.length; i++) {
+
+                if (!fields[i]) {
+                    fields[i] = {};
+                }
+
+                fields[i][name] = att_values[i];
+            }
+        });
+
+        return fields;
     }
 })(jQuery);

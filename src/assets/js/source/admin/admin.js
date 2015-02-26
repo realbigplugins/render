@@ -13,7 +13,7 @@
     /**
      * Shows an error in the console.
      *
-     * @since {{VERSION}}
+     * @since 1.1-alpha-3
      *
      * @param {string} message The message to log.
      */

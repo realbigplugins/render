@@ -28,7 +28,7 @@ foreach (
 				'meta'        => array(
 					'label'       => __( 'Meta', 'Render' ),
 					'type'        => 'selectbox',
-					'description' => __( 'The meta information of the post to show (custom input allowed).', 'Render' ),
+					'description' => __( 'The meta information of the post to show.', 'Render' ),
 					'properties'  => array(
 						'default'          => 'title',
 						'placeholder'      => __( 'Select which meta to get', 'Render' ),
@@ -47,8 +47,16 @@ foreach (
 					),
 				),
 				'date_format' => render_sc_attr_template( 'date_format', array(
-					'description' => __( 'Only applies to some meta types.', 'Render' ),
-					'advanced'    => true,
+					'conditional' => array(
+						'visibility' => array(
+							'atts' => array(
+								'meta' => array(
+									'type' => '==',
+									'value' => 'published_date',
+								),
+							),
+						),
+					),
 				) ),
 			),
 			'render'      => true,
@@ -71,7 +79,7 @@ foreach (
  * Gets the post ID.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  *
@@ -144,7 +152,7 @@ function _render_sc_post_meta( $atts = array() ) {
  * Gets the post author.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -167,7 +175,7 @@ function _render_sc_post_author( $post ) {
  * Gets the post title.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -187,7 +195,7 @@ function _render_sc_post_title( $post ) {
  * Gets the post status.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -206,7 +214,7 @@ function _render_sc_post_status( $post ) {
  * Gets the post type.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -225,7 +233,7 @@ function _render_sc_post_type( $post ) {
  * The post excerpt.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -244,7 +252,7 @@ function _render_sc_post_excerpt( $post ) {
  * The post content.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param object $post The post object.
  *
@@ -261,7 +269,7 @@ function _render_sc_post_content( $post ) {
  * Gets the post publish date.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  * @param array $post The post object to use.
@@ -281,7 +289,7 @@ function _render_sc_post_published_date( $atts = array(), $post ) {
  * Gets the post word count.
  *
  * @since  0.3.0
- * @access Private
+ * @access private
  *
  * @param array $atts The attributes sent to the shortcode.
  *
@@ -376,9 +384,7 @@ function render_sc_post_list( $args = array() ) {
  */
 function render_sc_term_list( $args = array() ) {
 
-	if ( ! ( $taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : false ) ) {
-		return array();
-	}
+	$taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : get_taxonomies( array( 'public' => true, ) );
 
 	unset( $args['taxonomies'] );
 

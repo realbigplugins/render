@@ -1,0 +1,57 @@
+@import "../global";
+
+// Wraps the whole dang thing
+.render-tabs-wrapper {
+
+  // Navigation tabs at top
+  .render-tabs-navigation {
+    margin: 0;
+
+    .render-tabs-navigation-tab {
+      display: inline-block;
+      padding: 2px 10px;
+      border: 1px solid;
+      border-right-width: 0;
+      cursor: pointer;
+      position: relative;
+
+      &:last-of-type {
+        border-right-width: 1px;
+      }
+
+      &:hover, &.render-tabs-navigation-tab-active {
+        .render-tabs-navigation-tab-hover {
+          opacity: 1;
+        }
+      }
+
+      .render-tabs-navigation-tab-hover {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        opacity: 0;
+        transition: opacity $fast-transition;
+        z-index: 1;
+      }
+
+      .render-tabs-navigation-tab-content {
+        position: relative;
+        z-index: 2;
+      }
+    }
+  }
+
+  // Wraps all tabs' content
+  .render-tabs-section-wrapper {
+    border: 1px solid;
+    position: relative;
+    top: -1px; // Overlap tab borders
+    padding: 10px;
+  }
+
+  // Individual tab section
+  .render-tab-section {
+  }
+}

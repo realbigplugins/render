@@ -245,15 +245,20 @@ $render-modal-height: 800px;
         background-color: darken(#fff, 5%);
       }
 
-      &.disabled {
-        color: #aaa;
-      }
-
       &.current-shortcode {
         border-color: $primary-color !important;
       }
 
+      // Disabled and error messages
+      &.render-modal-shortcode-disabled {
+        color: #aaa;
+      }
+
       &.render-modal-shortcode-error-message {
+        .render-modal-shortcode-description, .render-modal-shortcode-title {
+          color: #444;
+        }
+
         .render-modal-shortcode-title:before {
           content: '!';
           display: inline-block;
@@ -265,19 +270,14 @@ $render-modal-height: 800px;
           border: 2px solid;
           font-size: 11px;
           font-weight: bold;
-          color: #ccc;
           vertical-align: 1px;
           margin-right: 2px;
-        }
-
-        .render-modal-shortcode-description {
-          font-weight: bold;
         }
       }
 
       &:hover {
 
-        &:not(.disabled) {
+        &:not(.render-modal-shortcode-disabled) {
           background-color: darken(#fff, 10%);
         }
 
@@ -370,7 +370,7 @@ $render-modal-height: 800px;
   }
 
   // Hide down arrow when shortcode is disabled
-  .render-modal-shortcode.disabled {
+  .render-modal-shortcode.render-modal-shortcode-disabled {
     .accordion-section-title:after {
       display: none;
     }
@@ -415,6 +415,31 @@ $render-modal-height: 800px;
     .render-modal-att-section-break-description {
       font-weight: normal;
       font-size: 80%;
+      display: block;
+    }
+  }
+
+  // Att placeholder
+  .render-modal-att-placeholder {
+    margin: 10px;
+    background: #f5f5f5;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    transition: border-color 300ms;
+    padding: 0;
+    line-height: 30px;
+    height: 30px;
+    text-align: center;
+  }
+
+  .render-modal-repeater-field {
+    .render-modal-att-placeholder {
+      margin: 10px 0;
+
+      &:first-of-type {
+        margin-top: 0;
+      }
     }
   }
 
@@ -450,12 +475,49 @@ $render-modal-height: 800px;
 
     @include clearfix;
 
+    // Invalid
     &.invalid {
       background: $error-color;
       color: #fff;
 
       .render-modal-att-field .render-modal-att-errormsg {
-        display: block;
+        display: block; // Make visible
+        float: left;
+        width: 100%;
+        margin-top: 5px;
+        font-style: italic;
+
+        &:before, &:after {
+          content: '-';
+          margin: 0 5px;
+        }
+      }
+
+      .render-modal-att-description {
+        color: #fff;
+      }
+    }
+
+    // No label
+    &.render-modal-att-hide-label {
+      .render-modal-att-name {
+        display: none;
+      }
+
+      .render-modal-att-field {
+        width: 100%;
+      }
+    }
+
+    // Repeater
+    &[data-att-type="repeater"] {
+      .render-modal-att-name {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .render-modal-att-field {
+        width: 100%;
       }
     }
   }
@@ -463,6 +525,21 @@ $render-modal-height: 800px;
   .render-modal-att-name {
     float: left;
     width: 25%;
+  }
+
+  .render-modal-att-description {
+    color: #999;
+    font-style: normal;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    clear: both;
+  }
+
+  // Counter description modification
+  .render-modal-att-row[data-att-type="counter"] {
+    .render-modal-att-description {
+      padding-top: 5px; // Because margin doesn't apply with floated element above
+    }
   }
 
   .render-modal-att-field {
@@ -479,11 +556,20 @@ $render-modal-height: 800px;
       }
     }
 
-    .render-modal-att-description {
-      color: #999;
-      font-style: normal;
-      margin-top: 5px;
-      margin-bottom: 0;
+    // Cover for re-populating
+    .render-att-populate-cover {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+      background: rgba(255,255,255,0.6);
+
+      .spinner {
+        float: none;
+        display: inline-block;
+      }
     }
 
     .render-modal-att-errormsg {
@@ -527,12 +613,58 @@ $render-modal-height: 800px;
       margin: 0;
     }
 
+    // Text Box Pre / Postfix
+    .render-modal-att-textbox-fix {
+
+      .render-modal-att-textbox-prefix, .render-modal-att-textbox-postfix, .render-modal-att-textbox {
+        float: left;
+        line-height: 19px;
+        height: 29px;
+        padding: 5px;
+        box-sizing: border-box;
+      }
+
+      .render-modal-att-textbox-prefix, .render-modal-att-textbox-postfix {
+        text-align: center;
+        background-color: #F3F3F3;
+
+        // Copy of input styling from WP
+        border: 1px solid #ddd;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.07);
+        color: #333;
+
+        .dashicons {
+          font-size: 18px;
+          height: auto;
+          width: auto;
+          position: relative;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #777;
+        }
+      }
+
+      .render-modal-att-textbox-prefix {
+        border-right-width: 0;
+      }
+
+      .render-modal-att-textbox-postfix {
+        border-left-width: 0;
+      }
+    }
+
     // Text Area
     .render-modal-att-textarea {
       width: 100%;
+      max-width: 100%;
       min-height: 100px;
       box-sizing: border-box;
       margin: 0;
+    }
+
+    // Hidden
+    .render-modal-att-hidden {
+      display: none;
     }
 
     // Checkbox
@@ -547,6 +679,20 @@ $render-modal-height: 800px;
 
       &.checked {
         color: inherit;
+      }
+    }
+
+    // Selectbox
+    .render-chosen-custom-input-icon {
+      position: absolute;
+      left: 4px;
+      top: 3px;
+      color: #999;
+    }
+
+    .render-chosen-custom-input {
+      .chosen-single {
+        padding-left: 27px;
       }
     }
 
@@ -569,6 +715,12 @@ $render-modal-height: 800px;
       }
     }
 
+    .render-modal-att-slider.render-modal-att-slider-reverting {
+      .ui-slider-range {
+        transition: left 500ms, width 500ms;
+      }
+    }
+
     .ui-widget-header {
       border: 1px solid darken($primary-color, 10%);
       @include primary-gradient-gloss;
@@ -584,7 +736,6 @@ $render-modal-height: 800px;
     $counter-size: 30px;
     .render-modal-counter-container {
       float: left;
-      width: 100%;
 
       .dashicons {
         float: left;
@@ -652,43 +803,28 @@ $render-modal-height: 800px;
 
     // Repeater
     .render-modal-repeater-field {
-      padding-top: 20px;
-      border-top: 1px solid #ccc;
-      margin-top: 20px;
+      @include clearfix;
       position: relative;
-
-      // Top item doesn't need a separator
-      &:nth-of-type(2) {
-        border-top: none;
-        margin-top: 0;
-        padding-top: 0;
-      }
-
-      // Clearfix
-      &:after {
-        content: ' ';
-        display: table;
-        clear: both;
-      }
+      border-top: 1px solid #ccc;
+      padding: 20px 0;
 
       .render-modal-repeater-inputs {
-        width: 80%;
+        width: 83%;
         float: left;
         box-sizing: border-box;
         margin: 0;
       }
 
       .render-modal-repeater-actions {
-        width: 20%;
         float: right;
         padding-left: 10px;
         box-sizing: border-box;
 
-        .render-modal-repeater-add {
-          float: left;
+        .render-modal-repeater-remove {
+          margin-left: 10px;
         }
 
-        .render-modal-repeater-remove {
+        .render-modal-repeater-add, .render-modal-repeater-remove {
           float: right;
         }
       }
@@ -721,18 +857,6 @@ $render-modal-height: 800px;
           font-style: italic;
           padding: 5px 5px 5px 0;
         }
-      }
-    }
-
-    // Repeater Effect
-    .ui-effects-wrapper {
-      height: auto !important;
-
-      // This would become :first-of-type and cause these properties to be lost, so we have to !important them
-      .render-modal-repeater-field {
-        border-top: 1px solid #ccc !important;
-        margin-top: 20px !important;
-        padding-top: 20px !important;
       }
     }
 
