@@ -16,7 +16,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach (
 	array(
-		// Query
+		/*
+		 * Query
+		 *
+		 * Queries information from the database to output a post list.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @att {selectbox} author      The author to grab posts from.
+		 * @att {selectbox} cateegory   The category to grab posts from.
+		 * @att {selectbox} tag         The tag to grab posts from.
+		 * @att {selectbox} post_type   The post type to grab posts from.
+		 * @att {selectbox} include     Specific posts to include.
+		 * @att {selectbox} exclude     Specific posts to exclude.
+		 * @att {counter}   numberposts How many posts to grab.
+		 * @att {toggle}    order       Which direction to order.
+		 * @att {selectbox} orderby     What to order the posts by.
+		 * @att {selectbox} post_status What post status to filter grabbed posts through.
+		 * @att {counter}   offset      How many posts into the results to start the list at.
+		 * @att {text}      s           Search parameter for filtering posts.
+		 * @att {text}      meta_key    The meta key for which to filter posts for.
+		 * @att {text}      meta_value  The value of the meta key to filter posts through.
+		 */
 		array(
 			'code'        => 'render_query',
 			'function'    => '_render_query',
