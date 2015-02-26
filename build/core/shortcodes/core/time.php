@@ -15,7 +15,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Loops through each shortcode and adds it to Render
 foreach ( array(
-	// Custom Date
+	/*
+	 * Custom Date
+	 *
+	 * Outputs the current date in a custom format.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @att {selectbox} format   The format to display the date.
+	 * @att {selectbox} timezone The timezone to use.
+	 */
 	array(
 		'code'        => 'render_date',
 		'function'    => '_render_sc_custom_date',

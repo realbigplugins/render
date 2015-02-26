@@ -9,9 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Displays the WP table for the Render shortocdes page.
  *
- * @since 1.0.0
+ * @since      1.0.0
  *
- * @package Render
+ * @package    Render
  * @subpackage Admin
  */
 class Render_ShortcodesTable extends WP_List_Table {
@@ -39,13 +39,27 @@ class Render_ShortcodesTable extends WP_List_Table {
 	 */
 	public function extra_tablenav( $which ) {
 
-		if ( $which === 'top' ) :
-			?>
+		if ( $which === 'top' ) : ?>
 			<div class="alignleft actions">
 				<?php $this->categories_dropdown(); ?>
-				<input type="submit" id="post-query-submit" class="button" value="<?php _e( 'Filter', 'Render' ); ?>">
+				<input type="submit" id="post-query-submit" class="button" value="<?php _e( 'Filter', 'Render' ); ?>"/>
 			</div>
-		<?php
+
+			<?php
+			// Allow filtering by disabled shortcodes (if any exist)
+			if ( render_get_disabled_shortcodes() ||
+			     ( ! render_get_disabled_shortcodes() && isset( $_GET['show-disabled'] ) )
+			) : ?>
+				<div class="alignleft actions">
+					<?php if ( isset( $_GET['show-disabled'] ) ) : ?>
+						<input type="submit" class="button render-show-disabled"
+						       value="<?php _e( 'Show All', 'Render' ); ?>"/>
+					<?php else: ?>
+						<input type="submit" class="button render-show-disabled" name="show-disabled"
+						       value="<?php _e( 'Show Disabled', 'Render' ); ?>"/>
+					<?php endif; ?>
+				</div>
+			<?php endif;
 		endif;
 	}
 
@@ -69,7 +83,8 @@ class Render_ShortcodesTable extends WP_List_Table {
 		<select name="category" id="filter-by-category" class="postform">
 			<option value="0"><?php _e( 'All categories', 'Render' ); ?></option>
 			<?php foreach ( $categories as $category_ID => $category ) : ?>
-				<option class="level-0" value="<?php echo $category_ID; ?>" <?php selected( $category_ID, $current_cat ); ?>>
+				<option class="level-0"
+				        value="<?php echo $category_ID; ?>" <?php selected( $category_ID, $current_cat ); ?>>
 					<?php echo $category['label']; ?>
 				</option>
 			<?php endforeach; ?>
@@ -182,7 +197,15 @@ class Render_ShortcodesTable extends WP_List_Table {
 		$items          = array();
 		$all_shortcodes = $Render->shortcodes;
 
+		// Get disabled shortcodes
+		$disabled = render_get_disabled_shortcodes();
+
 		foreach ( $all_shortcodes as $code => $shortcode ) {
+
+			// Skip if trying to view only disabled, and this shortcode isn't disabled
+			if ( isset( $_GET['show-disabled'] ) && ! in_array( $code, $disabled ) ) {
+				continue;
+			}
 
 			// Skip those set to hidden
 			if ( isset( $shortcode['noDisplay'] ) && $shortcode['noDisplay'] ) {
@@ -217,7 +240,7 @@ class Render_ShortcodesTable extends WP_List_Table {
 		}
 
 		// Sort them by the defined order
-		uasort( $items, function( $a, $b ) {
+		uasort( $items, function ( $a, $b ) {
 
 			// If no sort, default to title
 			$orderby = '' . ( ! empty( $_GET['orderby'] ) ? $_GET['orderby'] : 'name' );
@@ -230,7 +253,7 @@ class Render_ShortcodesTable extends WP_List_Table {
 
 			// Send final sort direction to usort
 			return ( $order === 'asc' ) ? $result : - $result;
-		});
+		} );
 
 		// Pagination
 		$per_page     = $this->get_items_per_page( 'shortcodes_per_page', 10 );
@@ -268,7 +291,7 @@ class Render_ShortcodesTable extends WP_List_Table {
 				"<a href='%s'>%s</a>",
 				add_query_arg(
 					array(
-						'action' => 'enable',
+						'action'     => 'enable',
 						'shortcodes' => $item['code'],
 					)
 				),
@@ -280,7 +303,7 @@ class Render_ShortcodesTable extends WP_List_Table {
 				"<a href='%s'>%s</a>",
 				add_query_arg(
 					array(
-						'action' => 'disable',
+						'action'     => 'disable',
 						'shortcodes' => $item['code'],
 					)
 				),
@@ -302,7 +325,7 @@ class Render_ShortcodesTable extends WP_List_Table {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $item The current row item.
+	 * @param array  $item        The current row item.
 	 * @param string $column_name The name of the column.
 	 * @return mixed|string The shortcode column output.
 	 */
@@ -319,7 +342,7 @@ class Render_ShortcodesTable extends WP_List_Table {
 			case 'source':
 			case 'description':
 
-			return $item[ $column_name ];
+				return $item[ $column_name ];
 				break;
 
 			case 'category':

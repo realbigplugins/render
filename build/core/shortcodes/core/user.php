@@ -16,7 +16,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach (
 	array(
-		// User Information
+		/*
+		 * User Information
+		 *
+		 * Gets specific information about a specific user (or the current user).
+		 *
+		 * @since 1.0.0
+		 *
+		 * @att {selectbox} user        The user to get information from.
+		 * @att {selectbox} property    What information to get about the user.
+		 * @att {selectbox} date_format How to format the date if the user information is a date.
+		 */
 		array(
 			'code'        => 'render_user_info',
 			'function'    => '_render_sc_user_info',

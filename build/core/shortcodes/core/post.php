@@ -16,7 +16,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach (
 	array(
-		// Post meta
+		/*
+		 * Post Meta
+		 *
+		 * Outputs desired information about a post.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @att {selectbox} post        The post to get information from.
+		 * @att {selectbox} meta        Which meta information to get.
+		 * @att {selectbox} date_format The format of the date for date meta.
+		 */
 		array(
 			'code'        => 'render_post_meta',
 			'function'    => '_render_sc_post_meta',

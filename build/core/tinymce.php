@@ -40,22 +40,10 @@ class Render_tinymce extends Render {
 		add_action( 'render_localized_data', array( __CLASS__, '_translations' ) );
 
 		// Add a pointer
-		add_filter( 'render_pointers', function ( $pointers ) {
+		add_filter( 'render_pointers', array( __CLASS__, 'add_pointers' ) );
 
-			$pointers['tinymce_button'] = array(
-				'title' => __( 'Add A Shortcode', 'Render' ),
-				'content' => __( 'This is your new, easy way to add shortcodes to the editor. Click here to get started!', 'Render' ),
-				'target' => 'i.mce-i-render-mce-icon',
-				'position' => array(
-					'edge' => 'bottom',
-					'align' => 'center',
-				),
-				'trigger' => 'render-tinymce-post-render',
-				'classes' => 'tinymce-pointer'
-			);
-
-			return $pointers;
-		});
+		// Add styles
+		add_filter( 'render_editor_styles', array( __CLASS__, 'add_render_editor_styles' ), 100 );
 
 		// Add editor styles
 		self::add_editor_styles();
@@ -100,7 +88,7 @@ class Render_tinymce extends Render {
 	 *
 	 * @since 1.0.3
 	 *
-	 * @param mixed|array $buttons All tinyMCE buttons.
+	 * @param mixed|array $buttons All TinyMCE buttons.
 	 *
 	 * @return mixed|array
 	 */
@@ -134,6 +122,47 @@ class Render_tinymce extends Render {
 	}
 
 	/**
+	 * Adds the TinyMCE pointer.
+	 *
+	 * @since 1.1-beta-1
+	 *
+	 * @param array $pointers The pointers to use.
+	 * @return array The new pointers.
+	 */
+	public static function add_pointers( $pointers ) {
+
+		$pointers['tinymce_button'] = array(
+			'title' => __( 'Add A Shortcode', 'Render' ),
+			'content' => __( 'This is your new, easy way to add shortcodes to the editor. Click here to get started!', 'Render' ),
+			'target' => 'i.mce-i-render-mce-icon',
+			'position' => array(
+				'edge' => 'bottom',
+				'align' => 'center',
+			),
+			'trigger' => 'render-tinymce-post-render',
+			'classes' => 'tinymce-pointer'
+		);
+
+		return $pointers;
+	}
+
+	/**
+	 * Adds the Render specific editor styles.
+	 *
+	 * @since 1.1-beta-1
+	 *
+	 * @param array $styles The editor styles.
+	 * @return array The new styles
+	 */
+	public static function add_render_editor_styles( $styles ) {
+
+		$styles[] = RENDER_URL . '/assets/css/render.min.css';
+		$styles[] = RENDER_URL . '/assets/css/render-tinymce.min.css';
+
+		return $styles;
+	}
+
+	/**
 	 * Easy way of adding extra styles to TinyMCE, via Render.
 	 *
 	 * This is also where add_theme_support() for Render will add the custom stylesheet.
@@ -144,10 +173,7 @@ class Render_tinymce extends Render {
 
 		global $_wp_theme_features;
 
-		$styles = array(
-			RENDER_URL . '/assets/css/render.min.css',
-			RENDER_URL . '/assets/css/render-tinymce.min.css',
-		);
+		$styles = array();
 
 		if ( isset( $_wp_theme_features['render'] ) && is_array( $_wp_theme_features['render'] ) ) {
 			$styles = array_merge( $styles, $_wp_theme_features['render'] );
@@ -157,6 +183,8 @@ class Render_tinymce extends Render {
 		 * Allows developers to easily add or remove Render added styles from TinyMCE.
 		 *
 		 * @since 1.0.0
+		 *
+		 * @hooked Render_tinymce::add_render_editor_styles 100
 		 */
 		$styles = apply_filters( 'render_editor_styles', $styles );
 
@@ -396,6 +424,11 @@ class Render_tinymce extends Render {
 			$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, '_replace_shortcodes' ), $_content );
 		}
 
+		// If the shortcode explicitely said to leave alone, completely pass over
+		if ( isset( $data['ignore'] ) && ( $data['ignore'] == true || $data['ignore'] == 'true' ) ) {
+			return $entire_code;
+		}
+
 		// If this is a wrapping code, but no content is provided, use dummy content
 		if ( empty( $content ) &&
 		     isset( $data['wrapping'] ) &&
@@ -447,6 +480,15 @@ class Render_tinymce extends Render {
 
 			// Un-escape the output
 			$shortcode_output = render_sc_attr_unescape( $shortcode_output );
+
+			// Make sure images are non-editable (unless told otherwise)
+			if ( ! isset( $data['wrapping'] ) || $data['wrapping'] == 'false' || $data['wrapping'] == false ) {
+				$shortcode_output  = preg_replace(
+					'/<img/',
+					'<img data-mce-placeholder="1" style="outline: none !important;"',
+					$shortcode_output
+				);
+			}
 		}
 
 		// If the output contains any block tags, make sure the wrapper tag is a div
@@ -479,13 +521,14 @@ class Render_tinymce extends Render {
 		 */
 		$classes = apply_filters( "render_tinymce_shortcode_wrapper_classes_$code", $classes );
 
-		$output = '';
-
-		// Start the wrapper
-
+		// Parse the atts
 		if ( ! empty( $atts ) ) {
 			$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
 		}
+
+		$output = '';
+
+		// Start the wrapper
 
 		$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable " . implode( ' ', $classes ) . "' data-code='$code' data-atts='$atts'>";
 

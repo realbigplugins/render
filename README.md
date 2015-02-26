@@ -47,7 +47,7 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 * UPDATE: Shortcodes no longer return default attribute values.
 * DEVELOPERS: Nesting shortcode "type" now available! 
 
-### [1.0.5](https://github.com/brashrebel/render/releases/tag/v1.0.5)
+### [1.1-beta-1](https://github.com/brashrebel/render/releases/tag/v1.0.5)
 * FIX: Users drop-down was un-populated.
 * FIX: Repeater attribute fields adding extra, unused attributes to shortcode output.
 

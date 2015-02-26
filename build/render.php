@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Render
  * Description: Render makes adding complex elements to your content simple and pain free. See what you can Render.
- * Version: 1.1-alpha-3
+ * Version: 1.1-beta-1
  * Author: Kyle Maurer & Joel Worsham
  * Author URI: http://realbigmarketing.com
  * Plugin URI: http://renderwp.com
@@ -251,6 +251,9 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 			// Initialize Render shortcodes
 			self::_shortcodes_init();
 
+			// Tracking
+			self::_tracking_init();
+
 			// Uninstall hook. Only apply if the setting is set
 			if ( get_option( 'render_delete_on_uninstall' ) ) {
 				register_uninstall_hook( plugin_basename( __FILE__ ), 'render_uninstall' );
@@ -353,6 +356,9 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 
 			// Modal
 			require_once __DIR__ . '/core/modal.php';
+
+			// Tracking
+			require_once __DIR__ . '/core/tracking.php';
 		}
 
 		/**
@@ -417,9 +423,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 */
 		private static function _admin() {
 
-			add_action( 'admin_menu', 'admin_page' );
-
-			function admin_page() {
+			add_action( 'admin_menu', function () {
 				add_menu_page(
 					'Render',
 					'Render',
@@ -429,7 +433,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 					'dashicons-admin-generic',
 					82.9
 				);
-			}
+			});
 
 			include_once __DIR__ . '/core/admin/settings.php';
 			include_once __DIR__ . '/core/admin/shortcodes.php';
@@ -551,7 +555,9 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 */
 		public static function _admin_enqueue_files() {
 
-			wp_localize_script( 'render-admin', 'Render_Data', apply_filters( 'render_localized_data', array() ) );
+			wp_localize_script( 'render-admin', 'Render_Data', apply_filters( 'render_localized_data', array(
+				'primary_color' => RENDER_PRIMARY_COLOR,
+			) ) );
 
 			wp_enqueue_script( 'render-admin' );
 			wp_enqueue_style( 'render-admin' );
@@ -683,21 +689,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 
 			// Add the primary pointer, just not to the customize page
 			if ( $screen->id != 'customize' ) {
-				add_filter( 'render_pointers', function ( $pointers ) {
-
-					$pointers['admin_menu'] = array(
-						'title'    => __( 'Welcome!', 'Render' ),
-						'content'  => __( 'Thanks for installing Render! You can access Render settings as well as view all available shortcodes here.', 'Render' ),
-						'target'   => '#toplevel_page_render-settings',
-						'position' => array(
-							'edge'  => 'bottom',
-							'align' => 'bottom',
-						),
-						'classes'  => 'admin-menu-pointer',
-					);
-
-					return $pointers;
-				} );
+				add_filter( 'render_pointers', array( __CLASS__, 'add_main_pointer' ) );
 			}
 
 			// Include pointers if necessary
@@ -706,6 +698,52 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 				// Include pointers
 				include_once __DIR__ . '/core/pointers.php';
 				new Render_Pointers();
+			}
+		}
+
+		/**
+		 * Adds the main Render pointer.
+		 *
+		 * @since 1.1-beta-1
+		 *
+		 * @param array $pointers The pointers to use.
+		 * @return array The new pointers.
+		 */
+		public static function add_main_pointer( $pointers ) {
+
+			$content = __( 'Thanks for installing Render! You can access Render settings as well as view all available shortcodes here.', 'Render' );
+			$content .= '</p><p><span id="render-tracking-message">';
+			$content .= __( 'Render would like to gather anonymous tracking data about your site to improve your Render experience!', 'Render' );
+			$content .= '<br/><br/><span style="text-align: center; width: 100%; display: inline-block;">';
+			$content .='<input type="button" class="button render-button" name="render-allow-tracking" value="Allow Tracking" />';
+			$content .= '&nbsp;';
+			$content .='<input type="button" class="button" value="Do Not Allow" />';
+			$content .= '</span></span>';
+
+			$pointers['admin_menu'] = array(
+				'title'    => __( 'Welcome To Render!', 'Render' ),
+				'content'  => $content,
+				'target'   => '#toplevel_page_render-settings',
+				'position' => array(
+					'edge'  => 'bottom',
+					'align' => 'bottom',
+				),
+				'classes'  => 'admin-menu-pointer',
+			);
+
+			return $pointers;
+		}
+
+		/**
+		 * Initializes tracking.
+		 *
+		 * @since 1.1-beta-1
+		 */
+		private static function _tracking_init() {
+
+			// Only do it if it's been approved
+			if ( get_option( 'render_allow_tracking' ) === '1' ) {
+				Render_Tracking::get_instance();
 			}
 		}
 

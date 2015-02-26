@@ -58,6 +58,10 @@ class Render_Pointers {
 		 * Allows external filtering of the pointers.
 		 *
 		 * @since 1.1-alpha-3
+		 *
+		 * @hooked Render_tinymce::add_pointers() 10
+		 * @hooked Render::add_main_pointer()     10
+		 * @hooked _render_widget_pointers()      10
 		 */
 		$this->pointers = apply_filters( 'render_pointers', $this->pointers );
 

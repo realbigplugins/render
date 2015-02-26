@@ -154,30 +154,40 @@ function _render_widget_add_actions( $screen ) {
 	}
 
 	// Add a pointer
-	add_filter( 'render_pointers', function ( $pointers ) {
-
-		$pointers['widget_init'] = array(
-			'title' => __( 'The Render Widget', 'Render' ),
-			'content' => sprintf(
-						__( 'Here is your new Render widget! Put this in your sidebar to easily add <strong>shortcodes</strong>. Please use the %s for a live preview!', 'Render' ),
-						'<a href="/wp-admin/customize.php?return=%2Fwp-admin%2Fwidgets.php">customizer</a>'
-					),
-			'target' => '#widget-list [id*="render_widget"]',
-			'position' => array(
-				'edge' => 'left',
-				'align' => 'center',
-			),
-			'classes' => 'widget-pointer',
-		);
-
-		return $pointers;
-	});
+	add_filter( 'render_pointers', '_render_widget_pointers' );
 
 	add_filter( 'render_att_pre_loop', '_render_add_content_to_atts', 10, 3 );
 
 	// Include the modal
 	include_once __DIR__ . '/modal.php';
 	new Render_Modal();
+}
+
+/**
+ * Adds the Render widget pointer.
+ *
+ * @since 1.1-beta-1
+ *
+ * @param array $pointers The pointers to use.
+ * @return array The new pointers.
+ */
+function _render_widget_pointers( $pointers ) {
+
+	$pointers['widget_init'] = array(
+		'title' => __( 'The Render Widget', 'Render' ),
+		'content' => sprintf(
+			__( 'Here is your new Render widget! Put this in your sidebar to easily add <strong>shortcodes</strong>. Please use the %s for a live preview!', 'Render' ),
+			'<a href="/wp-admin/customize.php?return=%2Fwp-admin%2Fwidgets.php">customizer</a>'
+		),
+		'target' => '#widget-list [id*="render_widget"]',
+		'position' => array(
+			'edge' => 'left',
+			'align' => 'center',
+		),
+		'classes' => 'widget-pointer',
+	);
+
+	return $pointers;
 }
 
 /**

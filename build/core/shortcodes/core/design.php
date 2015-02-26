@@ -23,6 +23,12 @@ foreach (
 		 *
 		 * @since 1.1-alpha-3
 		 * @nestedChild render_accordion_section
+		 *
+		 * @att {checkbox}    start_closed             Whether the first section should start open or not.
+		 * @att {colorpicker} heading_background       The color of section headings.
+		 * @att {colorpicker} heading_background_hover The color of section headings when hovered.
+		 * @att {colorpicker} heading_font_color       The color of section headings' font.
+		 * @nestedatt {textbox} heading The text for each section heading.
 		 */
 		array(
 			'code'        => 'render_accordion_wrapper',
@@ -488,6 +494,13 @@ foreach (
 		 *
 		 * @since 1.1-alpha-3
 		 * @nestedChild render_tab_section
+		 *
+		 * @att {toggle}      content_border             Whether or not the tab content should have border.
+		 * @att {colorpicker} border_color               The color for all borders.
+		 * @att {colorpicker} navigation_tab_color       The color for the navigation tabs' background.
+		 * @att {colorpicker} navigation_tab_hover_color The color for the navigation tabs' background when hovered.
+		 * @att {colorpicker} navigation_tab_font_color  The color for the navigation tabs' font.
+		 * @nestedatt {textbox} navigation_label The text for the navigation tabs.
 		 */
 		array(
 			'code'        => 'render_tabs_wrapper',

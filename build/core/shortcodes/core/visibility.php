@@ -15,7 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Loops through each shortcode and adds it to Render
 foreach (
 	array(
-		// Logic
+		/*
+		 * Logic
+		 *
+		 * Conditionally displays posts based on the given logic.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @att {selectbox} arg1       The first argument to compare.
+		 * @att {selectbox} operator   The operator to compare with.
+		 * @att {selectbox} arg2       The second argument to compare.
+		 * @att {selectbox} param      The conditional parameter for use in comparing some arguments.
+		 * @att {text}      wp_version The version of WordPress to check the current site against.
+		 */
 		array(
 			'code'        => 'render_logic',
 			'function'    => '_render_sc_logic',
@@ -126,7 +138,19 @@ foreach (
 			'render'      => true,
 			'wrapping'    => true,
 		),
-		// Hide for times
+		/*
+		 * Hide for times
+		 *
+		 * Only shows content at desired time-frames.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @att {toggle}    visibility Whether to hide or show the content when the time meets the supplied time-frames.
+		 * @att {repeater}  times      The time-frames to compare against.
+		 *      @field {slider} time A time-frame to compare against.
+		 *
+		 * @att {selectbox} timezone   The timezone to use.
+		 */
 		array(
 			'code'        => 'render_hide_for_times',
 			'function'    => '_render_sc_hide_for_times',
@@ -167,7 +191,16 @@ foreach (
 			'wrapping'    => true,
 			'render'      => true,
 		),
-		// Hide for users
+		/*
+		 * Hide for users
+		 *
+		 * Hides or shows content for specific users.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @att {toggle}    visibility Whether to hide or show for the specified users.
+		 * @att {selectbox} users      Which users to compare against.
+		 */
 		array(
 			'code'        => 'render_hide_for_users',
 			'function'    => '_render_sc_hide_for_users',

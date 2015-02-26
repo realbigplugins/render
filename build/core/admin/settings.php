@@ -62,6 +62,7 @@ class Render_AdminPage_Settings extends Render {
 
 		register_setting( 'render_options', 'render_render_visual' );
 		register_setting( 'render_options', 'render_delete_on_uninstall' );
+		register_setting( 'render_options', 'render_allow_tracking' );
 
 		// TinyMCE
 		/** This filter is documented in src/core/licensing/settings.php */
@@ -157,6 +158,8 @@ class Render_AdminPage_Settings extends Render {
 			<form method="post" action="options.php">
 
 				<?php settings_fields( 'render_options' ); ?>
+
+				<?php submit_button(); ?>
 
 				<table class="render-table form-table">
 					<tr valign="top">
@@ -274,6 +277,11 @@ class Render_AdminPage_Settings extends Render {
 						</tr>
 					<?php endif; ?>
 
+				</table>
+
+				<h3>Advanced Settings</h3>
+
+				<table class="render-table form-table">
 
 					<tr valign="top">
 						<th scope="row">
@@ -298,6 +306,26 @@ class Render_AdminPage_Settings extends Render {
 									<?php _e( '<strong>WARNING</strong>: if you uninstall Render, you can NOT restore saved information.', 'Render' ); ?>
 								</p>
 							<?php endif; ?>
+						</td>
+					</tr>
+
+					<tr valign="top">
+						<th scope="row">
+							<?php _e( 'Allow anonymous data tracking', 'Render' ); ?>
+						</th>
+						<td>
+
+							<?php $allow_tracking = get_option( 'render_allow_tracking' ); ?>
+
+							<div class="render-switch">
+								<input type="checkbox"
+								       name="render_allow_tracking"
+								       id="render_allow_tracking"
+								       value="1"
+									<?php checked( '1', $allow_tracking ); ?> />
+
+								<label for="render_allow_tracking" class="disabled-style"></label>
+							</div>
 						</td>
 					</tr>
 				</table>

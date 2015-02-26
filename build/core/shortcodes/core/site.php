@@ -15,7 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Loops through each shortcode and adds it to Render
 foreach ( array(
-	// Site Info
+	/*
+	 * Site Info
+	 *
+	 * Outputs specific information about the current site.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @att {selectbox} info Which information to grab.
+	 */
 	array(
 		'code'        => 'render_site_info',
 		'function'    => '_render_sc_site_info',

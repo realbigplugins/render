@@ -199,8 +199,8 @@ var Render_tinymce;
                     // Remove a shortcode
                     if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-remove')) {
 
-                        $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper');
-                        editor.dom.remove($shortcode[0]);
+                        $(event.target).closest('.render-tinymce-shortcode-wrapper').addClass('render-tinymce-editing');
+                        Render_tinymce.removeShortcode();
                     }
                 });
 
@@ -319,6 +319,38 @@ var Render_tinymce;
                         event.preventDefault();
                         return false;
                     }
+                });
+
+                // When clicking an image with a shortcode, don't allow resizing
+                _editor.on('nodechange', function (event) {
+
+                    // Must be image
+                    if (event.element.nodeName != 'IMG') {
+                        return;
+                    }
+
+                    var $img = $(event.element),
+                        $shortcode = $img.closest('.render-tinymce-shortcode-wrapper'),
+                        $body = $(editor.getBody()),
+                        shortcode_data, $resize_elements;
+
+                    // Must be in a shortcode
+                    if (!$shortcode.length) {
+                        return;
+                    }
+
+                    shortcode_data = Render_Data.all_shortcodes[$shortcode.data('code')].render;
+
+                    // Must not have image editing allowed
+                    if (typeof shortcode_data != 'undefined' && typeof shortcode_data.allowImageEditing != 'undefined') {
+                        return;
+                    }
+
+                    // Hide the handles
+                    setTimeout(function () {
+                        $resize_elements = $body.find('.mce-resizehandle');
+                        $resize_elements.hide();
+                    }, 1);
                 });
 
                 _editor.on('init', function () {
@@ -540,12 +572,17 @@ var Render_tinymce;
          */
         removeShortcode: function () {
 
-            var node = editor.selection.getNode(),
-                $node = $(node).hasClass('render-tinymce-shortcode-wrapper') ?
-                    $(node) :
-                    $(node).closest('.render-tinymce-shortcode-wrapper');
+            var $container = $('<div />').append($(editor.getBody()).html()),
+                $shortcode = $container.find('.render-tinymce-editing'),
+                $content = $shortcode.find('.render-tinymce-shortcode-content');
 
-            editor.dom.remove($node[0]);
+            if ($content.length) {
+                $shortcode.replaceWith($content.contents());
+            } else {
+                $shortcode.remove();
+            }
+
+            editor.setContent($container.html());
 
             Render_Modal.close();
         },
@@ -689,7 +726,7 @@ var Render_tinymce;
          */
         convertRenderedToLiteral: function (content) {
 
-            var $container = $('<div />').append($(content));
+            var $container = $('<div />').append(content);
 
             // Remove dummy containers
             $container.find('.render-tinymce-dummy-container').each(function () {

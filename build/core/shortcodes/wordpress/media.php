@@ -83,6 +83,9 @@ foreach (
 				),
 			),
 			'wrapping'    => true,
+			'render'      => array(
+				'ignore' => true,
+			),
 		),
 		// Gallery
 		array(
