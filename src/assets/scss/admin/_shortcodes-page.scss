@@ -23,4 +23,9 @@ body.render-shortcodes {
   .render-sc-list-disabled {
     opacity: 0.6;
   }
+
+  // Show Disabled button
+  .render-show-disabled {
+    margin: 1px 8px 0 0; // Mimicks other "action" buttons
+  }
 }
