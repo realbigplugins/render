@@ -637,7 +637,7 @@ class Render_Modal {
 
 		// Establish defaults
 		$properties = wp_parse_args( $properties, array(
-			'value' => $att['default'] !== '' ? $att['default'] : 0,
+			'value' => $att['default'] ? $att['default'] : 0,
 			'min'   => 0,
 			'max'   => 100,
 			'step'  => 1,
@@ -702,7 +702,7 @@ class Render_Modal {
 	 */
 	private static function att_type_colorpicker( $att_id, $att ) {
 
-		$default = $att['default'] !== '' ? $att['default'] : '#bada55';
+		$default = $att['default'] ? $att['default'] : '#bada55';
 		?>
 		<input type="text"
 		       value="<?php echo $default ?>"
@@ -734,7 +734,7 @@ class Render_Modal {
 			'unit'       => false,
 		) );
 
-		$default = $att['default'] !== '' ? $att['default'] : $properties['min'];
+		$default = $att['default'] ? $att['default'] : $properties['min'];
 		?>
 		<div class="render-modal-counter-container">
 			<div class="render-modal-counter-down render-modal-button dashicons dashicons-minus"></div>
@@ -892,7 +892,7 @@ class Render_Modal {
 				break;
 		endswitch;
 
-		$default = $att['default'] !== '' ? $att['default'] : '';
+		$default = $att['default'] ? $att['default'] : '';
 		?>
 		<input type="button" value="Upload / Choose Media" class="render-modal-att-media-upload"
 		       data-type="<?php echo $properties['type']; ?>"/>
