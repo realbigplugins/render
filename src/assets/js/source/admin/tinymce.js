@@ -199,8 +199,8 @@ var Render_tinymce;
                     // Remove a shortcode
                     if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-remove')) {
 
-                        $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper');
-                        editor.dom.remove($shortcode[0]);
+                        $(event.target).closest('.render-tinymce-shortcode-wrapper').addClass('render-tinymce-editing');
+                        Render_tinymce.removeShortcode();
                     }
                 });
 
@@ -572,12 +572,17 @@ var Render_tinymce;
          */
         removeShortcode: function () {
 
-            var node = editor.selection.getNode(),
-                $node = $(node).hasClass('render-tinymce-shortcode-wrapper') ?
-                    $(node) :
-                    $(node).closest('.render-tinymce-shortcode-wrapper');
+            var $container = $('<div />').append($(editor.getBody()).html()),
+                $shortcode = $container.find('.render-tinymce-editing'),
+                $content = $shortcode.find('.render-tinymce-shortcode-content');
 
-            editor.dom.remove($node[0]);
+            if ($content.length) {
+                $shortcode.replaceWith($content.contents());
+            } else {
+                $shortcode.remove();
+            }
+
+            editor.setContent($container.html());
 
             Render_Modal.close();
         },

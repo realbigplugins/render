@@ -1219,6 +1219,8 @@ var Render_Modal;
             this.active_shortcode = '';
             this.selection = '';
 
+            elements.last_active_shortcode = false;
+
             $(document).trigger('render-modal-close');
         },
 
