@@ -1904,32 +1904,61 @@ var Render_Modal;
                             $cover = _this.$container.find('.render-att-populate-cover');
                             $cover.fadeIn(300);
 
-                            $.ajax({
-                                type: 'POST',
-                                url: ajaxurl,
-                                data: data,
-                                success:function (response) {
+                            if (att['populating'] === true) {
 
-                                    // Set our new options!
-                                    if (response !== false && 'rebuildOptions' in _this) {
-                                        _this.rebuildOptions(response);
-                                        _this.$input.change();
-                                    }
-
-                                    // Set the value (if was set from populateShortcode())
-                                    var value = _this.$input.data('renderPopulateValue');
-                                    if (typeof value != 'undefined') {
-                                        _this._setValue(value);
-                                        _this.$input.data('renderPopulateValue', null);
-                                    }
-
-                                    $cover.fadeOut(300, function () {
-                                        $(this).remove();
-                                    });
+                                if (typeof att['populationQueue'] == 'undefined') {
+                                    att['populationQueue'] = [];
                                 }
-                                // FIXME async:false is bad, but I need something similar...
-                                //async: false
-                            });
+
+                                att['populationQueue'].push(data);
+                            }
+
+                            call_ajax(data);
+
+                            /**
+                             * Calls the populating AJAX.
+                             *
+                             * @since {{VERSION}}
+                             *
+                             * @param data The att data to send off.
+                             */
+                            function call_ajax(data) {
+
+                                att['populating'] = true;
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajaxurl,
+                                    data: data,
+                                    success:function (response) {
+
+                                        // Set our new options!
+                                        if (response !== false && 'rebuildOptions' in _this) {
+                                            _this.rebuildOptions(response);
+                                            _this.$input.change();
+                                        }
+
+                                        // Set the value (if was set from populateShortcode())
+                                        var value = _this.$input.data('renderPopulateValue');
+                                        if (typeof value != 'undefined') {
+                                            _this._setValue(value);
+                                            _this.$input.data('renderPopulateValue', null);
+                                        }
+
+                                        $cover.fadeOut(300, function () {
+                                            $(this).remove();
+                                        });
+
+                                        // If more in line, do them (this mimics synchronous calls)
+                                        if (att['populationQueue']) {
+                                            call_ajax(data[0]);
+                                            delete data[0];
+                                        } else {
+                                            att['populating'] = false;
+                                        }
+                                    }
+                                });
+                            }
 
                             break;
                     }
@@ -2948,6 +2977,12 @@ var Render_Modal;
             if (custom_text) {
                 return custom_text;
             } else {
+
+                // For multiple, join the values
+                if (this.$input.attr('multiple')) {
+                    return this.$input.val().filter(function(n){ return n != ''}).join(',');
+                }
+
                 return this.$input.val();
             }
         };
