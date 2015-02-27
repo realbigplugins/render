@@ -647,7 +647,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 			// Apply defaults to repeater fields as well
 			if ( isset( $att['properties']['fields'] ) ) {
 				array_walk( $att['properties']['fields'], function ( &$properties ) {
-					$properties = self::parse_shortcode_att( $properties );
+					$properties = Render::parse_shortcode_att( $properties );
 				} );
 			}
 
