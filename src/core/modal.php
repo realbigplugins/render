@@ -378,8 +378,10 @@ class Render_Modal {
 	private static function att_type_checkbox( $att_id, $att, $properties = array(), $shortcode ) {
 
 		$properties = wp_parse_args( $properties, array(
-			'value' => '1',
-			'label' => false,
+			'value'   => '1',
+			'label'   => false,
+			'checked' => false,
+			'uncheckedValue' => '0',
 		) );
 
 		$unique_ID = md5( $shortcode . $att_id );
@@ -389,7 +391,9 @@ class Render_Modal {
 			<input type="checkbox" class="render-modal-att-input render-modal-att-checkbox"
 			       name="<?php echo $att_id; ?>"
 			       id="<?php echo $unique_ID; ?>"
-			       value="<?php echo $properties['value']; ?>"/>
+			       value="<?php echo $properties['value']; ?>"
+				<?php checked( $properties['checked'], true ); ?>
+				/>
 
 			<label for="<?php echo $unique_ID; ?>"></label>
 
@@ -400,6 +404,9 @@ class Render_Modal {
 				<?php echo $properties['label']; ?>
 			</span>
 		<?php endif; ?>
+
+		<input type="hidden" class="render-modal-att-checkbox-unchecked"
+		       value="<?php echo $properties['uncheckedValue']; ?>" />
 	<?php
 	}
 

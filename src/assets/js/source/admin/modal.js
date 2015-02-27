@@ -1266,7 +1266,7 @@ var Render_Modal;
                 atts[attObj.name] = attObj._getValue();
 
                 // Don't use if default value
-                if (atts[attObj.name] == attObj.default_value) {
+                if (atts[attObj.name] === attObj.default_value) {
                     atts[attObj.name] = false;
                 }
             });
@@ -2561,7 +2561,7 @@ var Render_Modal;
             if (this.$input.prop('checked')) {
                 return this.$input.val();
             } else {
-                return '';
+                return this.$container.find('.render-modal-att-checkbox-unchecked').val();
             }
         };
 
@@ -2576,7 +2576,7 @@ var Render_Modal;
          */
         this.setValue = function (value) {
 
-            if (value) {
+            if (value === this.$input.val()) {
                 this.$input.prop('checked', true);
             } else {
                 this.$input.prop('checked', false);
@@ -2593,7 +2593,7 @@ var Render_Modal;
             if (this.$input.prop('checked')) {
                 this.original_value = this.$input.val();
             } else {
-                this.original_value = '';
+                this.original_value = this.$container.find('.render-modal-att-checkbox-unchecked').val();
             }
         };
 
