@@ -696,6 +696,32 @@ $render-modal-height: 800px;
       }
     }
 
+    .render-chosen-select-all, .render-chosen-deselect-all {
+      position: absolute;
+      top: 3px;
+      right: 0;
+      float: right;
+      font-size: 25px;
+      color: #aaa;
+      cursor: pointer;
+
+      &:hover {
+        color: #333;
+      }
+
+      &:nth-child(4) {
+        right: 25px;
+      }
+    }
+
+    .render-chosen-select-all {
+      top: 5px;
+    }
+
+    .chosen-choices {
+      padding-right: 50px;
+    }
+
     // Slider
     .render-modal-att-slider {
       position: absolute;

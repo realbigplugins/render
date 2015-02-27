@@ -199,7 +199,7 @@ class Render_Modal {
 					$att['sanitize'] = implode( ',', (array) $att['sanitize'] );
 				}
 
-				self::att_content( $att_id, $att, $att['type'], $code );
+				self::att_content( $att_id, $att, $code );
 			}
 		}
 	}
@@ -378,8 +378,10 @@ class Render_Modal {
 	private static function att_type_checkbox( $att_id, $att, $properties = array(), $shortcode ) {
 
 		$properties = wp_parse_args( $properties, array(
-			'value' => '1',
-			'label' => false,
+			'value'   => '1',
+			'label'   => false,
+			'checked' => false,
+			'uncheckedValue' => '0',
 		) );
 
 		$unique_ID = md5( $shortcode . $att_id );
@@ -389,7 +391,9 @@ class Render_Modal {
 			<input type="checkbox" class="render-modal-att-input render-modal-att-checkbox"
 			       name="<?php echo $att_id; ?>"
 			       id="<?php echo $unique_ID; ?>"
-			       value="<?php echo $properties['value']; ?>"/>
+			       value="<?php echo $properties['value']; ?>"
+				<?php checked( $properties['checked'], true ); ?>
+				/>
 
 			<label for="<?php echo $unique_ID; ?>"></label>
 
@@ -400,6 +404,9 @@ class Render_Modal {
 				<?php echo $properties['label']; ?>
 			</span>
 		<?php endif; ?>
+
+		<input type="hidden" class="render-modal-att-checkbox-unchecked"
+		       value="<?php echo $properties['uncheckedValue']; ?>" />
 	<?php
 	}
 
@@ -439,6 +446,7 @@ class Render_Modal {
 			       name="<?php echo $att_id; ?>"
 			       id="<?php echo $unique_ID; ?>"
 			       value="<?php echo $values[1][0]; ?>"
+			       data-default="<?php echo ! $properties['flip'] ? $values[0][0] : $values[1][0]; ?>"
 				<?php echo $properties['flip'] ? 'checked' : ''; ?>
 				/>
 
@@ -501,6 +509,7 @@ class Render_Modal {
 			'multi'            => false,
 			'placeholder'      => __( 'Select an option', 'Render' ),
 			'no_options'       => __( 'No options available.', 'Render' ),
+			'selectall'        => true,
 			'allowCustomInput' => false,
 			'allowIcons'       => false,
 			'allowDeselect'    => true,
@@ -553,7 +562,6 @@ class Render_Modal {
 		// Chosen support
 		if ( $properties['disableChosen'] === false ) {
 			$chosen = 'chosen' . ( $properties['allowCustomInput'] ? ' allow-custom-input' : '' );
-			$chosen .= $properties['allowIcons'] ? ' allow-icons' : '';
 		} else {
 			$chosen = '';
 		}
@@ -575,6 +583,8 @@ class Render_Modal {
 			        class="render-modal-att-input <?php echo $chosen; ?>"
 			        data-default="<?php echo $att['default']; ?>"
 			        data-deselect="<?php echo $properties['allowDeselect'] ? 'true' : 'false'; ?>"
+			        data-select-all="<?php echo $properties['selectall'] ? 'true' : 'false'; ?>"
+			        data-allow-icons="<?php echo $properties['allowIcons'] ? 'true' : 'false'; ?>"
 				<?php echo $properties['multi'] ? 'multiple' : ''; ?>>
 
 				<?php // Necessary for starting with nothing selected ?>

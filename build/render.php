@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Render
  * Description: Render makes adding complex elements to your content simple and pain free. See what you can Render.
- * Version: 1.1-beta-1
+ * Version: 1.1-beta-2
  * Author: Kyle Maurer & Joel Worsham
  * Author URI: http://realbigmarketing.com
  * Plugin URI: http://renderwp.com
@@ -656,7 +656,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 			// Apply defaults to repeater fields as well
 			if ( isset( $att['properties']['fields'] ) ) {
 				array_walk( $att['properties']['fields'], function ( &$properties ) {
-					$properties = self::parse_shortcode_att( $properties );
+					$properties = Render::parse_shortcode_att( $properties );
 				} );
 			}
 

@@ -18,6 +18,7 @@ var Render_tinymce;
         min_load_time = false,
         last_message = 0,
         submitted = false,
+        render_data = Render_Data.all_shortcodes,
         l18n = Render_Data.l18n,
         $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
 
@@ -367,26 +368,27 @@ var Render_tinymce;
                 });
 
                 // Prevent adding undo levels on rendering shortcodes
-                editor.on('BeforeAddUndo', function (event) {
-
-                    // Get any unmodified shortcodes
-                    var wp_regex = Render_Data.shortcode_regex.match(/\((\w+\|?)+\)/),
-                        shortodeRegEx, codes;
-
-                    if (wp_regex) {
-                        shortodeRegEx = new RegExp('\\[' + wp_regex[0], 'g');
-
-                        if (event.level.content.length) {
-                            codes = event.level.content.match(shortodeRegEx);
-                        }
-                    }
-
-                    // If we found any unmodified shortcodes, then this is the undo level that renders shortcodes, so
-                    // we DON'T want to add it to the undo levels
-                    if (codes) {
-                        event.preventDefault();
-                    }
-                });
+                // FIXME #136
+                //editor.on('BeforeAddUndo', function (event) {
+                //
+                //    // Get any unmodified shortcodes
+                //    var wp_regex = Render_Data.shortcode_regex.match(/\((\w+\|?)+\)/),
+                //        shortodeRegEx, codes;
+                //
+                //    if (wp_regex) {
+                //        shortodeRegEx = new RegExp('\\[' + wp_regex[0], 'g');
+                //
+                //        if (event.level.content.length) {
+                //            codes = event.level.content.match(shortodeRegEx);
+                //        }
+                //    }
+                //
+                //    // If we found any unmodified shortcodes, then this is the undo level that renders shortcodes, so
+                //    // we DON'T want to add it to the undo levels
+                //    if (codes) {
+                //        event.preventDefault();
+                //    }
+                //});
             });
         },
 
@@ -574,9 +576,12 @@ var Render_tinymce;
 
             var $container = $('<div />').append($(editor.getBody()).html()),
                 $shortcode = $container.find('.render-tinymce-editing'),
-                $content = $shortcode.find('.render-tinymce-shortcode-content');
+                $content = $shortcode.find('.render-tinymce-shortcode-content'),
+                data = render_data[$shortcode.data('code')]['render'],
+                nested = typeof data != 'undefined' && typeof data['nested'] != 'undefined';
 
-            if ($content.length) {
+            // Strip the shortcode if there is content and this isn't a nesting shortcode
+            if ($content.length && !nested) {
                 $shortcode.replaceWith($content.contents());
             } else {
                 $shortcode.remove();
