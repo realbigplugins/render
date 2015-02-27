@@ -775,7 +775,7 @@ function render_sc_time_slider( $att_id, $att, $properties ) {
 /**
  * Populates the parameter selectbox conditionally for the logic shortcode.
  *
- * @since  1.1-alpha-3
+ * @since  1.1-beta-1
  * @access private
  * @param array $atts The dependent attributes.
  * @return array The selectbox options.

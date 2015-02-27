@@ -1,5 +1,5 @@
 # Render
-### v1.1-alpha-3
+### v1.1-beta-1
 
 Render is a powerful plugin which enables you to insert useful and powerful functionality into your content. All without writing or even seeing any code.
 
@@ -35,7 +35,8 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 
 ## Changelog
 
-### [1.1-alpha-3](https://github.com/brashrebel/render/releases/tag/v1.1-alpha-3)
+### [1.1-beta-1](https://github.com/brashrebel/render/releases/tag/v1.1-beta-1)
+* UPDATE: Removing a wrapping shortcode now strips off the shortcode and leaves the content.
 * UPDATE: Conditional visibility and population for attributes.
 * UPDATE: Delete database options on uninstall now available from Settings.
 * UPDATE: Shift + enter submits modal when in text area.
@@ -45,13 +46,14 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 * UPDATE: Revised and improved columns shortcode.
 * UPDATE: Accordion shortcode.
 * UPDATE: Shortcodes no longer return default attribute values.
+* UPDATE: User opt-in tracking data.
 * DEVELOPERS: Nesting shortcode "type" now available! 
 
 ### [1.1-beta-1](https://github.com/brashrebel/render/releases/tag/v1.1-beta-1)
 * FIX: Users drop-down was un-populated.
 * FIX: Repeater attribute fields adding extra, unused attributes to shortcode output.
 
-### [1.0.4](https://github.com/brashrebel/render/releases/tag/v1.0.4)
+### [1.1-beta-1](https://github.com/brashrebel/render/releases/tag/v1.1-beta-1)
 * FIX: Styling messed up in Customizer.
 * UPDATE: Can close Render Modal by clicking off of it.
 

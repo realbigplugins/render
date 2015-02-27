@@ -2,7 +2,7 @@
 /**
  * Handles plugin cleanup by remove values from the database.
  *
- * @since 1.1-alpha-3
+ * @since 1.1-beta-1
  *
  * @package Render
  */
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Fires on uninstalling (deleting) the plugin. Removes data.
  *
- * @since 1.1-alpha-3
+ * @since 1.1-beta-1
  */
 function render_uninstall() {
 

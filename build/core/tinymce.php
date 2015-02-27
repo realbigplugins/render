@@ -217,7 +217,7 @@ class Render_tinymce extends Render {
 	/**
 	 * Provides translations for TinyMCE pages.
 	 *
-	 * @since  1.1-alpha-3
+	 * @since  1.1-beta-1
 	 * @access private
 	 *
 	 * @param array $data The current localization data.
@@ -517,7 +517,7 @@ class Render_tinymce extends Render {
 		/**
 		 * Allows external filtering of the wrapper classes.
 		 *
-		 * @since 1.1-alpha-3
+		 * @since 1.1-beta-1
 		 */
 		$classes = apply_filters( "render_tinymce_shortcode_wrapper_classes_$code", $classes );
 

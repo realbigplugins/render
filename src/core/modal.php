@@ -111,7 +111,7 @@ class Render_Modal {
 	/**
 	 * Provides translations for the modal.
 	 *
-	 * @since  1.1-alpha-3
+	 * @since  1.1-beta-1
 	 * @access private
 	 *
 	 * @param array $data The current localization data.
@@ -1113,7 +1113,7 @@ class Render_Modal {
 /**
  * AJAX callback for populating conditional shortcode attributes.
  *
- * @since 1.1-alpha-3
+ * @since 1.1-beta-1
  */
 add_action( 'wp_ajax_render_conditional_att_populate', function () {
 

@@ -1,7 +1,7 @@
 /**
  * Accordion shortcode functionality.
  *
- * @since 1.1-alpha-3
+ * @since 1.1-beta-1
  *
  * @package Render
  * @subpackage Scripts
