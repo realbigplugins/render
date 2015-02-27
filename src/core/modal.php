@@ -439,6 +439,7 @@ class Render_Modal {
 			       name="<?php echo $att_id; ?>"
 			       id="<?php echo $unique_ID; ?>"
 			       value="<?php echo $values[1][0]; ?>"
+			       data-default="<?php echo ! $properties['flip'] ? $values[0][0] : $values[1][0]; ?>"
 				<?php echo $properties['flip'] ? 'checked' : ''; ?>
 				/>
 
