@@ -315,7 +315,7 @@ function render_sc_post_type_list( $args = array() ) {
 /**
  * Returns a dynamic list of posts based on the supplied post_type.
  *
- * @since 1.1-beta-1
+ * @since 1.1-beta-2
  *
  * @param array|null $atts The attributes this output depends on.
  * @return array The new options list

@@ -1,5 +1,5 @@
 # Render
-### v1.1-beta-1
+### v1.1-beta-2
 
 Render is a powerful plugin which enables you to insert useful and powerful functionality into your content. All without writing or even seeing any code.
 
@@ -35,7 +35,7 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 
 ## Changelog
 
-### [1.1-beta-1](https://github.com/brashrebel/render/releases/tag/v1.1-beta-1)
+### [1.1-beta-2](https://github.com/brashrebel/render/releases/tag/v1.1-beta-2)
 * UPDATE: Removing a wrapping shortcode now strips off the shortcode and leaves the content.
 * UPDATE: Conditional visibility and population for attributes.
 * UPDATE: Delete database options on uninstall now available from Settings.
@@ -49,15 +49,15 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 * UPDATE: User opt-in tracking data.
 * DEVELOPERS: Nesting shortcode "type" now available! 
 
-### [1.1-beta-1](https://github.com/brashrebel/render/releases/tag/v1.1-beta-1)
+### [1.1-beta-2](https://github.com/brashrebel/render/releases/tag/v1.1-beta-2)
 * FIX: Users drop-down was un-populated.
 * FIX: Repeater attribute fields adding extra, unused attributes to shortcode output.
 
-### [1.1-beta-1](https://github.com/brashrebel/render/releases/tag/v1.1-beta-1)
+### [1.1-beta-2](https://github.com/brashrebel/render/releases/tag/v1.1-beta-2)
 * FIX: Styling messed up in Customizer.
 * UPDATE: Can close Render Modal by clicking off of it.
 
-### [1.0.3](https://github.com/brashrebel/render/releases/tag/v1.0.3)
+### [1.1-beta-2](https://github.com/brashrebel/render/releases/tag/v1.0.3)
 * UPDATE: Integration extensions now disable their applicable plugin's TinyMCE buttons, but can be re-enabled from Render Settings.
 * UPDATE: Allow seamless integration of licensing from extensions into Render.
 * UPDATE: Force require at least PHP 5.3.

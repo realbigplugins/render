@@ -1,7 +1,7 @@
 /**
  * Tabs shortcode functionality.
  *
- * @since 1.1-beta-1
+ * @since 1.1-beta-2
  *
  * @package Render
  * @subpackage Scripts

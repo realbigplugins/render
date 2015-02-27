@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Allows Render to track site information and send it back for logging. If user does not opt-in, this is not used at
  * all.
  *
- * @since      1.1-beta-1
+ * @since      1.1-beta-2
  *
  * @package    Render
  * @subpackage Tracking
@@ -21,7 +21,7 @@ class Render_Tracking {
 	/**
 	 * Instance of this class.
 	 *
-	 * @since 1.1-beta-1
+	 * @since 1.1-beta-2
 	 *
 	 * @var object
 	 */
@@ -43,7 +43,7 @@ class Render_Tracking {
 	 *
 	 * This allows the class to only be instantiated once.
 	 *
-	 * @since 1.1-beta-1
+	 * @since 1.1-beta-2
 	 *
 	 * @return object
 	 */
@@ -59,7 +59,7 @@ class Render_Tracking {
 	/**
 	 * Gathers tracking data and sends it off.
 	 *
-	 * @since 1.1-beta-1
+	 * @since 1.1-beta-2
 	 */
 	private function track() {
 
@@ -185,7 +185,7 @@ class Render_Tracking {
 /**
  * Allows or disallows tracking.
  *
- * @since 1.1-beta-1
+ * @since 1.1-beta-2
  */
 add_action( 'wp_ajax_render_tracking_ajax', function () {
 
@@ -210,7 +210,7 @@ add_action( 'wp_ajax_render_tracking_ajax', function () {
 /**
  * Provides translations for TinyMCE pages.
  *
- * @since  1.1-beta-1
+ * @since  1.1-beta-2
  * @access private
  *
  * @param array $data The current localization data.

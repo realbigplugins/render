@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-define( 'RENDER_VERSION', '1.1-beta-1' );
+define( 'RENDER_VERSION', '1.1-beta-2' );
 
 /**
  * The absolute server path to Render's root directory.
@@ -111,7 +111,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		/**
 		 * The default settings for shortcodes (set later).
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 *
 		 * @var array
 		 */
@@ -120,7 +120,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		/**
 		 * The default settings for shortcode attributes (set later).
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 *
 		 * @var array
 		 */
@@ -151,7 +151,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		/**
 		 * Escapes for shortcode attributes
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 *
 		 * @var array
 		 */
@@ -358,7 +358,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 * When the option being updated is a Render option, that option is stored in a different option, to keep track
 		 * of it for plugin uninstall.
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 *
 		 * @param string $option The option name that was just updated.
 		 */
@@ -385,7 +385,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 * When the option being deleted is a Render option, that option is deleted from a different option, to keep
 		 * track of it for plugin uninstall.
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 *
 		 * @param string $option The option name that was just updated.
 		 */
@@ -605,7 +605,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		/**
 		 * Parses the shortcode and sets up all defaults (including attribute defaults).
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 *
 		 * @param array $shortcode The shortcode to parse.
 		 * @return array The parsed shortcode.
@@ -634,7 +634,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		/**
 		 * Sets up the shortcode attribute's defaults.
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 *
 		 * @param array $att The att to parse.
 		 * @return array The parsed att.
@@ -671,7 +671,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		/**
 		 * Includes pointer necessities as needed and includes the primary Render pointer.
 		 *
-		 * @since  1.1-beta-1
+		 * @since  1.1-beta-2
 		 * @access private
 		 *
 		 * @param WP_Screen|null $screen The current screen object.
@@ -695,7 +695,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		/**
 		 * Adds the main Render pointer.
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 *
 		 * @param array $pointers The pointers to use.
 		 * @return array The new pointers.
@@ -728,7 +728,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		/**
 		 * Initializes tracking.
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 */
 		private static function _tracking_init() {
 
