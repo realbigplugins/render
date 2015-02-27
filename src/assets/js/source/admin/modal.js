@@ -1900,9 +1900,11 @@ var Render_Modal;
                             att.lastPopulate = JSON.stringify(data);
 
                             // Place the cover
-                            _this.$container.find('.render-modal-att-field').append(cover_html);
-                            $cover = _this.$container.find('.render-att-populate-cover');
-                            $cover.fadeIn(300);
+                            if (att['populating'] !== true) {
+                                _this.$container.find('.render-modal-att-field').append(cover_html);
+                                $cover = _this.$container.find('.render-att-populate-cover');
+                                $cover.fadeIn(300);
+                            }
 
                             if (att['populating'] === true) {
 
@@ -1911,6 +1913,7 @@ var Render_Modal;
                                 }
 
                                 att['populationQueue'].push(data);
+                                break;
                             }
 
                             call_ajax(data);
@@ -1938,6 +1941,12 @@ var Render_Modal;
                                             _this.$input.change();
                                         }
 
+                                        // If more in line, do them (this mimics synchronous calls)
+                                        if (att['populationQueue'].length) {
+                                            call_ajax(att['populationQueue'].shift());
+                                            return;
+                                        }
+
                                         // Set the value (if was set from populateShortcode())
                                         var value = _this.$input.data('renderPopulateValue');
                                         if (typeof value != 'undefined') {
@@ -1945,17 +1954,11 @@ var Render_Modal;
                                             _this.$input.data('renderPopulateValue', null);
                                         }
 
+                                        att['populating'] = false;
+
                                         $cover.fadeOut(300, function () {
                                             $(this).remove();
                                         });
-
-                                        // If more in line, do them (this mimics synchronous calls)
-                                        if (att['populationQueue']) {
-                                            call_ajax(data[0]);
-                                            delete data[0];
-                                        } else {
-                                            att['populating'] = false;
-                                        }
                                     }
                                 });
                             }
