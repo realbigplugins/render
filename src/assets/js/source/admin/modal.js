@@ -1906,6 +1906,7 @@ var Render_Modal;
                                 $cover.fadeIn(300);
                             }
 
+                            // If already populating, just add to queue, otherwise call the AJAX
                             if (att['populating'] === true) {
 
                                 if (typeof att['populationQueue'] == 'undefined') {
@@ -1913,10 +1914,10 @@ var Render_Modal;
                                 }
 
                                 att['populationQueue'].push(data);
-                                break;
-                            }
 
-                            call_ajax(data);
+                            } else {
+                                call_ajax(data);
+                            }
 
                             /**
                              * Calls the populating AJAX.
