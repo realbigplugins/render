@@ -1244,7 +1244,7 @@ var Render_Modal;
                 att_output = '',
                 content = '',
                 selection = this.selection,
-                output, nested;
+                output, nested, i, global_code, global_val, globalAtts = {};
 
             // Nesting
             if (typeof render_data[code]['render'] !== 'undefined') {
@@ -1263,17 +1263,34 @@ var Render_Modal;
                     return true; // Continue $.each
                 }
 
-                atts[attObj.name] = {
-                    value: attObj._getValue(),
-                    attObj: attObj
-                };
+                atts[attObj.name] = attObj._getValue();
+
+                // Don't use if default value
+                if (atts[attObj.name] == attObj.default_value) {
+                    atts[attObj.name] = false;
+                }
             });
 
+            // Global nesting atts
+            if (nested && typeof render_data[code]['render']['nested']['globalAtts'] != 'undefined') {
+
+                for (i = 0; i < render_data[code]['render']['nested']['globalAtts'].length; i++) {
+
+                    global_code = render_data[code]['render']['nested']['globalAtts'][i];
+                    global_val = atts[global_code];
+
+                    if (global_val) {
+                        globalAtts[global_code] = global_val;
+                    }
+                }
+            }
+
             // Get the content
-            if (props.wrapping) {
+            if (props['wrapping']) {
+
                 if (nested) {
 
-                    var nested_children = JSON.parse(atts.nested_children.value),
+                    var nested_children = JSON.parse(atts.nested_children),
                         fields = parseRepeaterField(nested_children),
                         children = '',
                         count = 0,
@@ -1288,13 +1305,20 @@ var Render_Modal;
                     if (typeof atts.nested_children_count == 'undefined') {
                         atts.nested_children_count = {};
                     }
-                    atts.nested_children_count.value = count;
+                    atts.nested_children_count = count;
 
-                    for (var i = 0; i < count; i++) {
+                    for (i = 0; i < count; i++) {
 
                         // Get the attributes
                         var attributes = '',
                             child_content = typeof fields[i].content != 'undefined' && fields[i].content != '' ? fields[i].content : '';
+
+                        // Add any globalAtts
+                        if (globalAtts !== {}) {
+                            $.each(globalAtts, function (name, value) {
+                                fields[i][name] = value;
+                            });
+                        }
 
                         $.each(fields[i], function (name, value) {
 
@@ -1313,17 +1337,17 @@ var Render_Modal;
 
                     // Remove content from the nested children so it doesn't get used as an attribute
                     delete nested_children.content;
-                    atts.nested_children.value = JSON.stringify(nested_children);
+                    atts.nested_children = JSON.stringify(nested_children);
 
                     // Delete this attribute if it's empty
-                    if (atts.nested_children.value == '{}') {
+                    if (atts.nested_children == '{}') {
                         delete atts.nested_children;
                     }
 
                 } else {
 
                     if (typeof atts.content !== 'undefined') {
-                        content = atts.content.value;
+                        content = atts.content;
                     } else {
                         content = selection;
                     }
@@ -1334,16 +1358,13 @@ var Render_Modal;
 
             // Add on atts if they exist
             if (atts) {
-                $.each(atts, function (name, properties) {
-
-                    var value = properties.value,
-                        attObj = properties.attObj || false;
+                $.each(atts, function (name, value) {
 
                     // Make sure value is proper format
                     value = typeof value == 'undefined' || value === null ? '' : value;
 
-                    // Skip if default value or no value
-                    if ((attObj !== false && value == attObj.default_value) || ! value) {
+                    // Skip if no value
+                    if (!value) {
                         return true; // continue $.each
                     }
 
@@ -1808,9 +1829,6 @@ var Render_Modal;
                     }
                 });
             });
-
-            // Fire once on initial load to start the attribute hidden/shown/populated correctly
-            //this.performConditionals();
         };
 
         /**
@@ -1886,23 +1904,31 @@ var Render_Modal;
                             $cover = _this.$container.find('.render-att-populate-cover');
                             $cover.fadeIn(300);
 
-                            $.post(ajaxurl, data, function (response) {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajaxurl,
+                                data: data,
+                                success:function (response) {
 
-                                // Set our new options!
-                                if (response !== false && 'rebuildOptions' in _this) {
-                                    _this.rebuildOptions(response);
+                                    // Set our new options!
+                                    if (response !== false && 'rebuildOptions' in _this) {
+                                        _this.rebuildOptions(response);
+                                        _this.$input.change();
+                                    }
+
+                                    // Set the value (if was set from populateShortcode())
+                                    var value = _this.$input.data('renderPopulateValue');
+                                    if (typeof value != 'undefined') {
+                                        _this._setValue(value);
+                                        _this.$input.data('renderPopulateValue', null);
+                                    }
+
+                                    $cover.fadeOut(300, function () {
+                                        $(this).remove();
+                                    });
                                 }
-
-                                // Set the value (if was set from populateShortcode())
-                                var value = _this.$input.data('renderPopulateValue');
-                                if (typeof value != 'undefined') {
-                                    _this._setValue(value);
-                                    _this.$input.data('renderPopulateValue', null);
-                                }
-
-                                $cover.fadeOut(300, function () {
-                                    $(this).remove();
-                                });
+                                // FIXME async:false is bad, but I need something similar...
+                                //async: false
                             });
 
                             break;
@@ -2660,14 +2686,17 @@ var Render_Modal;
                     width: '100%',
                     search_contains: true,
                     allow_single_deselect: $chosen.data('deselect')
-                };
+                },
+                allow_icons = $chosen.data('allow-icons'),
+                select_all = $chosen.data('select-all');
 
             // Not using Chosen
             if ($chosen.length === 0) {
                 return;
             }
 
-            if ($chosen.hasClass('allow-icons')) {
+            // Allow icons
+            if (allow_icons) {
                 options.disable_search = true;
             }
 
@@ -2701,8 +2730,64 @@ var Render_Modal;
                 }
             });
 
+            // Extend functionality to allow select / de-select all (only on multi-selects)
+            if (select_all && $chosen.attr('multiple')) {
+
+                $chosen.change(function () {
+
+                    var selected_options = $chosen.val(),
+                        $chosen_container = $container.find('.chosen-container'),
+                        $select_all = $chosen_container.find('.render-chosen-select-all'),
+                        $deselect_all = $chosen_container.find('.render-chosen-deselect-all');
+
+                    if (!$select_all.length && $chosen.find('option').length !== $chosen.find('option:selected').length) {
+
+                        $select_all = $('<div class="render-chosen-select-all dashicons dashicons-plus"></div>');
+                        $select_all.hide()
+                            .mousedown(function (event) {
+
+                                event.stopPropagation();
+
+                                $chosen.find('option')
+                                    .prop('selected', true)
+                                    .trigger('chosen:updated')
+                                    .change();
+                            })
+                            .appendTo($chosen_container)
+                            .show('drop', {direction: 'right'}, 150);
+
+                    } else if (!$deselect_all.length && selected_options) {
+
+                        $deselect_all = $('<div class="render-chosen-deselect-all dashicons dashicons-no"></div>');
+                        $deselect_all.hide()
+                            .mousedown(function (event) {
+
+                                event.stopPropagation();
+
+                                $chosen.find('option')
+                                    .prop('selected', false)
+                                    .trigger('chosen:updated')
+                                    .change();
+                            })
+                            .appendTo($chosen_container)
+                            .show('drop', {direction: 'right'}, 150);
+
+                    }
+
+                    // Remove the select all when everything's selected
+                    if ($chosen.find('option').length === $chosen.find('option:selected').length) {
+                        $select_all.hide('drop', {direction: 'right'}, 150, function () {$(this).remove()});
+                    }
+
+                    // Remove the deselect when nothing's selected
+                    if (!selected_options) {
+                        $deselect_all.hide('drop', {direction: 'right'}, 150, function () {$(this).remove()});;
+                    }
+                });
+            }
+
             // Extend functionality to allow icons
-            if ($chosen.hasClass('allow-icons')) {
+            if (allow_icons) {
 
                 $chosen.on('chosen:showing_dropdown chosen:updated', function () {
 

@@ -502,6 +502,7 @@ class Render_Modal {
 			'multi'            => false,
 			'placeholder'      => __( 'Select an option', 'Render' ),
 			'no_options'       => __( 'No options available.', 'Render' ),
+			'selectall'        => true,
 			'allowCustomInput' => false,
 			'allowIcons'       => false,
 			'allowDeselect'    => true,
@@ -554,7 +555,6 @@ class Render_Modal {
 		// Chosen support
 		if ( $properties['disableChosen'] === false ) {
 			$chosen = 'chosen' . ( $properties['allowCustomInput'] ? ' allow-custom-input' : '' );
-			$chosen .= $properties['allowIcons'] ? ' allow-icons' : '';
 		} else {
 			$chosen = '';
 		}
@@ -576,6 +576,8 @@ class Render_Modal {
 			        class="render-modal-att-input <?php echo $chosen; ?>"
 			        data-default="<?php echo $att['default']; ?>"
 			        data-deselect="<?php echo $properties['allowDeselect'] ? 'true' : 'false'; ?>"
+			        data-select-all="<?php echo $properties['selectall'] ? 'true' : 'false'; ?>"
+			        data-allow-icons="<?php echo $properties['allowIcons'] ? 'true' : 'false'; ?>"
 				<?php echo $properties['multi'] ? 'multiple' : ''; ?>>
 
 				<?php // Necessary for starting with nothing selected ?>
