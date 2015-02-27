@@ -199,7 +199,7 @@ class Render_Modal {
 					$att['sanitize'] = implode( ',', (array) $att['sanitize'] );
 				}
 
-				self::att_content( $att_id, $att, $att['type'], $code );
+				self::att_content( $att_id, $att, $code );
 			}
 		}
 	}
