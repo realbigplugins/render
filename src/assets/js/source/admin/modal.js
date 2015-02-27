@@ -2976,18 +2976,25 @@ var Render_Modal;
         this.getValue = function () {
 
             // Account for custom input
-            var custom_text = this.$input.data('chosen-custom-input');
+            var custom_text = this.$input.data('chosen-custom-input'),
+                value;
 
             if (custom_text) {
                 return custom_text;
             } else {
 
                 // For multiple, join the values
-                if (this.$input.attr('multiple')) {
-                    return this.$input.val().filter(function(n){ return n != ''}).join(',');
+                if (this['$input'].attr('multiple')) {
+                    value = this['$input'].val();
+
+                    if (value) {
+                        value.filter(function(n){ return n != ''}).join(',');
+                    }
+                } else {
+                    value = this['$input'].val();
                 }
 
-                return this.$input.val();
+                return value;
             }
         };
 
