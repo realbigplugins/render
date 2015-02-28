@@ -84,6 +84,7 @@ foreach (
 					'label'       => __( 'Include', 'Render' ),
 					'properties'  => array(
 						'multi' => true,
+						'placeholder' => 'Select an option',
 					),
 					'conditional' => array(
 						'populate' => array(
@@ -98,6 +99,7 @@ foreach (
 					'label'       => __( 'Exclude', 'Render' ),
 					'properties'  => array(
 						'multi' => true,
+						'placeholder' => 'Select an option',
 					),
 					'conditional' => array(
 						'populate' => array(

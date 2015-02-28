@@ -63,7 +63,7 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 * UPDATE: Force require at least PHP 5.3.
 * DEVELOPERS: Improve shortcode attribute template functionality, especially the post list template.
 
-### [1.0.2](https://github.com/brashrebel/render/releases/tag/v1.0.2)
+### [1.1-beta-2](https://github.com/brashrebel/render/releases/tag/v1.0.2)
 * FIX: Content in shortcodes disappearing when adding one shortcode into the entire content of another.
 * FIX: Potential PHP notice of defining a licensing constant.
 * UPDATE: Improved TinyMCE shortcode tooltip usability.

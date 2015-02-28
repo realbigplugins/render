@@ -463,8 +463,6 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 
 		case 'link':
 
-			// FIXME Allow args to be passed through to render_sc_post_list which allows choosing what's used as the value and name in the options list
-
 			$output = array(
 				'label'       => __( 'Link', 'Render' ),
 				'description' => __( 'Links to a post / page.', 'Render' ),
@@ -472,9 +470,9 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 				'properties'  => array(
 					'placeholder'      => __( 'Select a post / page, or type a link', 'Render' ),
 					'allowCustomInput' => true,
-					'groups'           => array(),
 					'callback'         => array(
 						'function' => 'render_sc_post_list',
+						'args' => $args,
 					),
 				),
 			);
