@@ -535,8 +535,20 @@ class Render_Modal {
 
 		if ( ! empty( $options ) ) {
 
-			// We need to merge our arrays, but we need to do it with either groups or options (whichever is in use)
-			$which = ! empty( $properties['groups'] ) ? 'groups' : 'options';
+			// Figure out if groups or not
+			$which = 'options';
+			foreach ( $options as $option_value ) {
+				if ( is_array( $option_value ) ) {
+					$which = 'groups';
+					break;
+				}
+			}
+
+			// Icons are different
+			if ( $properties['allowIcons'] ) {
+				$which = 'options';
+			}
+
 			if ( ! empty( $properties[ $which ] ) ) {
 				$properties[ $which ] = array_merge( $options, $properties[ $which ] );
 			} else {

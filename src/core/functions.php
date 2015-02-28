@@ -474,6 +474,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 					'allowCustomInput' => true,
 					'groups'           => array(),
 					'callback'         => array(
+						'groups'   => true,
 						'function' => 'render_sc_post_list',
 					),
 				),
