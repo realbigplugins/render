@@ -1,7 +1,7 @@
 /**
  * Adds WP pointers.
  *
- * @since 1.1-beta-1
+ * @since 1.1-beta-2
  *
  * @global Render_Data
  * @global ajaxurl

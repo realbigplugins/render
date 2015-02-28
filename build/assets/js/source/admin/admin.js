@@ -74,7 +74,7 @@
     /**
      * Shows an error in the console.
      *
-     * @since 1.1-beta-1
+     * @since 1.1-beta-2
      *
      * @param {string} message The message to log.
      */

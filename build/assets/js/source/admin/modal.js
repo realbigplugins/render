@@ -979,7 +979,7 @@ var Render_Modal;
         /**
          * Disables the shortcode from being used.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {jQuery} $shortcode The shortcode element to disable.
          * @param {string} new_message The message to display when clicked.
@@ -997,7 +997,7 @@ var Render_Modal;
         /**
          * Enables the shortcode.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {jQuery} $shortcode The shortcode element to enable.
          */
@@ -1015,7 +1015,7 @@ var Render_Modal;
         /**
          * Shows the disabled message.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {jQuery} $shortcode The shortcode element to show the disabled message.
          * @param {bool} show Whether to show or hide the message.
@@ -1724,7 +1724,7 @@ var Render_Modal;
         /**
          * Attribute fiend conditionals.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @type {object|bool}
          */
@@ -1733,7 +1733,7 @@ var Render_Modal;
         /**
          * Whether or not this attribute is hidden (used for conditionals).
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @type {boolean}
          */
@@ -1786,7 +1786,7 @@ var Render_Modal;
         /**
          * Sets up the attribute's conditionals.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @private
          */
@@ -1834,7 +1834,7 @@ var Render_Modal;
         /**
          * Performs conditional checks and actions.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          */
         this.performConditionals = function () {
 
@@ -1906,63 +1906,61 @@ var Render_Modal;
                                 $cover.fadeIn(300);
                             }
 
+                            if (typeof att['populationQueue'] == 'undefined') {
+                                att['populationQueue'] = [];
+                            }
+
                             // If already populating, just add to queue, otherwise call the AJAX
                             if (att['populating'] === true) {
-
-                                if (typeof att['populationQueue'] == 'undefined') {
-                                    att['populationQueue'] = [];
-                                }
-
                                 att['populationQueue'].push(data);
-
                             } else {
                                 call_ajax(data);
                             }
 
-                            /**
-                             * Calls the populating AJAX.
-                             *
-                             * @since 1.1-beta-2
-                             *
-                             * @param data The att data to send off.
-                             */
-                            function call_ajax(data) {
+                        /**
+                         * Calls the populating AJAX.
+                         *
+                         * @since 1.1-beta-2
+                         *
+                         * @param data The att data to send off.
+                         */
+                        function call_ajax(data) {
 
-                                att['populating'] = true;
+                            att['populating'] = true;
 
-                                $.ajax({
-                                    type: 'POST',
-                                    url: ajaxurl,
-                                    data: data,
-                                    success:function (response) {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajaxurl,
+                                data: data,
+                                success: function (response) {
 
-                                        // Set our new options!
-                                        if (response !== false && 'rebuildOptions' in _this) {
-                                            _this.rebuildOptions(response);
-                                            _this.$input.change();
-                                        }
-
-                                        // If more in line, do them (this mimics synchronous calls)
-                                        if (att['populationQueue'].length) {
-                                            call_ajax(att['populationQueue'].shift());
-                                            return;
-                                        }
-
-                                        // Set the value (if was set from populateShortcode())
-                                        var value = _this.$input.data('renderPopulateValue');
-                                        if (typeof value != 'undefined') {
-                                            _this._setValue(value);
-                                            _this.$input.data('renderPopulateValue', null);
-                                        }
-
-                                        att['populating'] = false;
-
-                                        $cover.fadeOut(300, function () {
-                                            $(this).remove();
-                                        });
+                                    // Set our new options!
+                                    if (response !== false && 'rebuildOptions' in _this) {
+                                        _this.rebuildOptions(response);
+                                        _this.$input.change();
                                     }
-                                });
-                            }
+
+                                    // If more in line, do them (this mimics synchronous calls)
+                                    if (att['populationQueue'].length) {
+                                        call_ajax(att['populationQueue'].shift());
+                                        return;
+                                    }
+
+                                    // Set the value (if was set from populateShortcode())
+                                    var value = _this.$input.data('renderPopulateValue');
+                                    if (typeof value != 'undefined') {
+                                        _this._setValue(value);
+                                        _this.$input.data('renderPopulateValue', null);
+                                    }
+
+                                    att['populating'] = false;
+
+                                    $cover.fadeOut(300, function () {
+                                        $(this).remove();
+                                    });
+                                }
+                            });
+                        }
 
                             break;
                     }
@@ -1972,7 +1970,7 @@ var Render_Modal;
             /**
              * Compares all existing conditions and shows or hides the attribute row.
              *
-             * @since 1.1-beta-1
+             * @since 1.1-beta-2
              *
              * @param {object} atts The conditional properties.
              */
@@ -2214,7 +2212,7 @@ var Render_Modal;
         /**
          * Rebuilds the available option(s).
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {object} response The AJAX response.
          */
@@ -2241,7 +2239,7 @@ var Render_Modal;
         /**
          * Customizable post-init function.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          */
         this.postInit = function () {
         };
@@ -2276,7 +2274,7 @@ var Render_Modal;
         /**
          * The input mask properties.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @type {boolean|object}
          */
@@ -2288,7 +2286,7 @@ var Render_Modal;
         /**
          * Sets up the textbox
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          */
         this.postInit = function () {
 
@@ -2347,7 +2345,7 @@ var Render_Modal;
          *
          * Causes mask to take effect, if there is one.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {*} value The value to set to.
          */
@@ -2370,7 +2368,7 @@ var Render_Modal;
         /**
          * Applies a mask to the input field.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          */
         this.applyMask = function () {
 
@@ -2438,7 +2436,7 @@ var Render_Modal;
         /**
          * Sets up the textarea.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -2526,7 +2524,7 @@ var Render_Modal;
         /**
          * Sets up the checkbox.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -2666,7 +2664,7 @@ var Render_Modal;
         /**
          * Rebuilds the available options.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {object} response The AJAX response.
          */
@@ -2707,7 +2705,7 @@ var Render_Modal;
         /**
          * Constructs the Chosen input.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -2809,12 +2807,17 @@ var Render_Modal;
 
                     // Remove the select all when everything's selected
                     if ($chosen.find('option').length === $chosen.find('option:selected').length) {
-                        $select_all.hide('drop', {direction: 'right'}, 150, function () {$(this).remove()});
+                        $select_all.hide('drop', {direction: 'right'}, 150, function () {
+                            $(this).remove()
+                        });
                     }
 
                     // Remove the deselect when nothing's selected
                     if (!selected_options) {
-                        $deselect_all.hide('drop', {direction: 'right'}, 150, function () {$(this).remove()});;
+                        $deselect_all.hide('drop', {direction: 'right'}, 150, function () {
+                            $(this).remove()
+                        });
+                        ;
                     }
                 });
             }
@@ -2988,7 +2991,9 @@ var Render_Modal;
                     value = this['$input'].val();
 
                     if (value) {
-                        value.filter(function(n){ return n != ''}).join(',');
+                        value.filter(function (n) {
+                            return n != ''
+                        }).join(',');
                     }
                 } else {
                     value = this['$input'].val();
@@ -3065,7 +3070,7 @@ var Render_Modal;
         /**
          * Rebuilds the available options.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {object} response The AJAX response.
          */
@@ -3117,7 +3122,7 @@ var Render_Modal;
         /**
          * Sets up the colorpicker object.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3179,7 +3184,7 @@ var Render_Modal;
         /**
          * Constructs the jQuery UI Slider object.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3339,7 +3344,7 @@ var Render_Modal;
          *
          * For this one, it changes the available min and max.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {object} response The AJAX response.
          */
@@ -3386,7 +3391,7 @@ var Render_Modal;
         /**
          * Sets up the WP Media integration.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3491,7 +3496,7 @@ var Render_Modal;
         /**
          * Sets up the counter object.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3658,7 +3663,7 @@ var Render_Modal;
          *
          * For this one, it changes the available min and max.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {object} response The AJAX response.
          */
@@ -3699,7 +3704,7 @@ var Render_Modal;
         /**
          * Sets up repeater fields.
          *
-         * @since 1.1-beta-1
+         * @since 1.1-beta-2
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3888,7 +3893,7 @@ var Render_Modal;
     /**
      * Run the value through various sanitation methods to prepare for being a shortcode attribute.
      *
-     * @since 1.1-beta-1
+     * @since 1.1-beta-2
      * @global sc_attr_escapes
      *
      * @param {string} value The value to escape.
@@ -3913,7 +3918,7 @@ var Render_Modal;
     /**
      * Un-escapes the shortcode attribute.
      *
-     * @since 1.1-beta-1
+     * @since 1.1-beta-2
      * @global sc_attr_escapes
      *
      * @param {string} value The value to un-escape.
@@ -3938,7 +3943,7 @@ var Render_Modal;
     /**
      * Escapes a string for use as a regular expression.
      *
-     * @since 1.1-beta-1
+     * @since 1.1-beta-2
      *
      * @param {string} string The string to be escaped.
      * @returns {string} The escaped string.
@@ -4026,7 +4031,7 @@ var Render_Modal;
     /**
      * Parses the attribute output of a repeater field.
      *
-     * @since 1.1-beta-1
+     * @since 1.1-beta-2
      *
      * @param object The repeater field "object"
      * @returns {Array} Sorted fields

@@ -57,7 +57,7 @@ Simply download the master zip (the button on the right that says "Download ZIP"
 * FIX: Styling messed up in Customizer.
 * UPDATE: Can close Render Modal by clicking off of it.
 
-### [1.1-beta-2](https://github.com/brashrebel/render/releases/tag/v1.0.3)
+### [1.1-beta-2](https://github.com/brashrebel/render/releases/tag/v1.1-beta-2)
 * UPDATE: Integration extensions now disable their applicable plugin's TinyMCE buttons, but can be re-enabled from Render Settings.
 * UPDATE: Allow seamless integration of licensing from extensions into Render.
 * UPDATE: Force require at least PHP 5.3.

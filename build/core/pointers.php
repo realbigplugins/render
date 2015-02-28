@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Adds in pointers to help new users to Render.
  *
- * @since      1.1-beta-1
+ * @since      1.1-beta-2
  *
  * @package    Render
  * @subpackage Pointers
@@ -20,7 +20,7 @@ class Render_Pointers {
 	/**
 	 * All WP pointers to incorporate into Render.
 	 *
-	 * @since  1.1-beta-1
+	 * @since  1.1-beta-2
 	 * @access private
 	 *
 	 * @var array
@@ -30,7 +30,7 @@ class Render_Pointers {
 	/**
 	 * Initializes the pointers class and includes necessities.
 	 *
-	 * @since 1.1-beta-1
+	 * @since 1.1-beta-2
 	 */
 	public function __construct() {
 
@@ -45,7 +45,7 @@ class Render_Pointers {
 	/**
 	 * Outputs the pointers' HTML and JS.
 	 *
-	 * @since  1.1-beta-1
+	 * @since  1.1-beta-2
 	 * @access private
 	 *
 	 * @param array|null $data The pointers data.
@@ -57,7 +57,7 @@ class Render_Pointers {
 		/**
 		 * Allows external filtering of the pointers.
 		 *
-		 * @since 1.1-beta-1
+		 * @since 1.1-beta-2
 		 *
 		 * @hooked Render_tinymce::add_pointers() 10
 		 * @hooked Render::add_main_pointer()     10

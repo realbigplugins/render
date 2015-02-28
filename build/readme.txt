@@ -5,7 +5,7 @@ Donate link: http://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=admin%
 Tags: shortcodes, render, visual, editor, package, bundle
 Requires at least: 3.8.0
 Tested up to: 4.1
-Stable tag: 1.1-beta-1
+Stable tag: 1.1-beta-2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,7 +40,7 @@ Using this plugin is very simple. All you have to do is:
 
 == Changelog ==
 
-= 1.1-beta-1 =
+= 1.1-beta-2 =
 * UPDATE: Conditional visibility and population for attributes.
 * UPDATE: Delete database options on uninstall now available from Settings.
 * UPDATE: Shift + enter submits modal when in text area.

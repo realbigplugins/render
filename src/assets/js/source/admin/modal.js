@@ -1906,63 +1906,61 @@ var Render_Modal;
                                 $cover.fadeIn(300);
                             }
 
+                            if (typeof att['populationQueue'] == 'undefined') {
+                                att['populationQueue'] = [];
+                            }
+
                             // If already populating, just add to queue, otherwise call the AJAX
                             if (att['populating'] === true) {
-
-                                if (typeof att['populationQueue'] == 'undefined') {
-                                    att['populationQueue'] = [];
-                                }
-
                                 att['populationQueue'].push(data);
-
                             } else {
                                 call_ajax(data);
                             }
 
-                            /**
-                             * Calls the populating AJAX.
-                             *
-                             * @since 1.1-beta-2
-                             *
-                             * @param data The att data to send off.
-                             */
-                            function call_ajax(data) {
+                        /**
+                         * Calls the populating AJAX.
+                         *
+                         * @since 1.1-beta-2
+                         *
+                         * @param data The att data to send off.
+                         */
+                        function call_ajax(data) {
 
-                                att['populating'] = true;
+                            att['populating'] = true;
 
-                                $.ajax({
-                                    type: 'POST',
-                                    url: ajaxurl,
-                                    data: data,
-                                    success:function (response) {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajaxurl,
+                                data: data,
+                                success: function (response) {
 
-                                        // Set our new options!
-                                        if (response !== false && 'rebuildOptions' in _this) {
-                                            _this.rebuildOptions(response);
-                                            _this.$input.change();
-                                        }
-
-                                        // If more in line, do them (this mimics synchronous calls)
-                                        if (att['populationQueue'].length) {
-                                            call_ajax(att['populationQueue'].shift());
-                                            return;
-                                        }
-
-                                        // Set the value (if was set from populateShortcode())
-                                        var value = _this.$input.data('renderPopulateValue');
-                                        if (typeof value != 'undefined') {
-                                            _this._setValue(value);
-                                            _this.$input.data('renderPopulateValue', null);
-                                        }
-
-                                        att['populating'] = false;
-
-                                        $cover.fadeOut(300, function () {
-                                            $(this).remove();
-                                        });
+                                    // Set our new options!
+                                    if (response !== false && 'rebuildOptions' in _this) {
+                                        _this.rebuildOptions(response);
+                                        _this.$input.change();
                                     }
-                                });
-                            }
+
+                                    // If more in line, do them (this mimics synchronous calls)
+                                    if (att['populationQueue'].length) {
+                                        call_ajax(att['populationQueue'].shift());
+                                        return;
+                                    }
+
+                                    // Set the value (if was set from populateShortcode())
+                                    var value = _this.$input.data('renderPopulateValue');
+                                    if (typeof value != 'undefined') {
+                                        _this._setValue(value);
+                                        _this.$input.data('renderPopulateValue', null);
+                                    }
+
+                                    att['populating'] = false;
+
+                                    $cover.fadeOut(300, function () {
+                                        $(this).remove();
+                                    });
+                                }
+                            });
+                        }
 
                             break;
                     }
@@ -2809,12 +2807,17 @@ var Render_Modal;
 
                     // Remove the select all when everything's selected
                     if ($chosen.find('option').length === $chosen.find('option:selected').length) {
-                        $select_all.hide('drop', {direction: 'right'}, 150, function () {$(this).remove()});
+                        $select_all.hide('drop', {direction: 'right'}, 150, function () {
+                            $(this).remove()
+                        });
                     }
 
                     // Remove the deselect when nothing's selected
                     if (!selected_options) {
-                        $deselect_all.hide('drop', {direction: 'right'}, 150, function () {$(this).remove()});;
+                        $deselect_all.hide('drop', {direction: 'right'}, 150, function () {
+                            $(this).remove()
+                        });
+                        ;
                     }
                 });
             }
@@ -2988,7 +2991,9 @@ var Render_Modal;
                     value = this['$input'].val();
 
                     if (value) {
-                        value.filter(function(n){ return n != ''}).join(',');
+                        value.filter(function (n) {
+                            return n != ''
+                        }).join(',');
                     }
                 } else {
                     value = this['$input'].val();
