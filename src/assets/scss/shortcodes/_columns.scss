@@ -31,8 +31,14 @@
 }
 
 .render-column-section {
+  @include clearfix;
   float: left;
   box-sizing: border-box;
   margin: 0;
   padding: 10px;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 }
