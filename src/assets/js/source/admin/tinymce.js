@@ -14,15 +14,21 @@
  */
 var Render_tinymce;
 (function ($) {
-    var editor, $texteditor, $editor, $loader,
-        min_load_time = false,
+    var min_load_time = false,
         last_message = 0,
-        submitted = false,
+        submitted_editors = [],
         render_data = Render_Data.all_shortcodes,
         l18n = Render_Data.l18n,
         $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
 
     Render_tinymce = {
+
+        /**
+         * The currently active editor.
+         *
+         * @since {{VERSION}}
+         */
+        active_editor: null,
 
         /**
          * Initializes the object.
@@ -33,11 +39,7 @@ var Render_tinymce;
 
             this.addToTinymce();
             this.binds();
-
-            $editor = $('#wp-content-editor-container');
-            $texteditor = $editor.find('.wp-editor-area');
-
-            this.createLoader();
+            this.createLoaders();
         },
 
         /**
@@ -104,22 +106,11 @@ var Render_tinymce;
          */
         addToTinymce: function () {
 
-            tinymce.PluginManager.add('render', function (_editor) {
-
-                /*
-                 * Only target content WYSIWYG. Fixes #105.
-                 * @since 1.0.1
-                 */
-                if (_editor.id !== 'content' ) {
-                    return;
-                }
+            tinymce.PluginManager.add('render', function (editor) {
 
                 var $body;
 
-                // Set the active editor
-                editor = _editor;
-
-                _editor.addButton('render_open', {
+                editor.addButton('render_open', {
 
                     // Establishes an icon class for the button with the prefix "mce-i-"
                     icon: 'render-mce-icon',
@@ -128,7 +119,7 @@ var Render_tinymce;
                 });
 
                 // Fires when clicking the shortcode <> button in the tinymce toolbar
-                _editor.addCommand('Render_Open', function () {
+                editor.addCommand('Render_Open', function () {
 
                     var selection, $selection;
 
@@ -148,17 +139,18 @@ var Render_tinymce;
                         Render_Modal.selection = editor.selection.getContent();
                     }
 
-                    Render_tinymce.open();
+                    Render_tinymce.active_editor = editor;
+                    Render_tinymce.open(null);
                 });
 
                 // WP default shortcut
-                _editor.addShortcut('alt+shift+s', '', 'render-open');
+                editor.addShortcut('alt+shift+s', '', 'render-open');
 
                 if (!Render_Data.do_render) {
                     return;
                 }
 
-                _editor.addButton('render_refresh', {
+                editor.addButton('render_refresh', {
 
                     // Establishes an icon class for the button with the prefix "mce-i-"
                     icon: 'render-mce-refresh-icon',
@@ -167,12 +159,15 @@ var Render_tinymce;
                 });
 
                 // Refresh the editor
-                _editor.addCommand('Render_Refresh', function () {
+                editor.addCommand('Render_Refresh', function () {
+                    Render_tinymce.active_editor = editor;
                     Render_tinymce.loadVisual();
                 });
 
                 // Click the editor
-                _editor.onClick.add(function (editor, event) {
+                editor.onClick.add(function (editor, event) {
+
+                    Render_tinymce.active_editor = editor;
 
                     // Remove delete overlay for all shortcodes
                     var $shortcode, content, container_html, shortcode;
@@ -239,7 +234,9 @@ var Render_tinymce;
                 }
 
                 // KeyDown (includes backspace)
-                _editor.onKeyDown.add(function (editor, event) {
+                editor.onKeyDown.add(function (editor, event) {
+
+                    Render_tinymce.active_editor = editor;
 
                     var node = editor.selection.getNode(),
                         node_content = $(node).html();
@@ -282,7 +279,9 @@ var Render_tinymce;
                 });
 
                 // Keypress (printable keys) in the editor
-                _editor.onKeyPress.add(function (editor, event) {
+                editor.onKeyPress.add(function (editor, event) {
+
+                    Render_tinymce.active_editor = editor;
 
                     var node = editor.selection.getNode(),
                         node_content = $(node).html();
@@ -323,7 +322,9 @@ var Render_tinymce;
                 });
 
                 // When clicking an image with a shortcode, don't allow resizing
-                _editor.on('nodechange', function (event) {
+                editor.on('nodechange', function (event) {
+
+                    Render_tinymce.active_editor = editor;
 
                     // Must be image
                     if (event.element.nodeName != 'IMG') {
@@ -354,15 +355,20 @@ var Render_tinymce;
                     }, 1);
                 });
 
-                _editor.on('init', function () {
+                editor.on('init', function () {
+                    Render_tinymce.active_editor = editor;
                     Render_tinymce.editorBinds($(editor.getBody()));
                 });
 
                 // Init and switch to Visual
-                _editor.on('init show', Render_tinymce.loadVisual);
+                editor.on('init show', function () {
+                    Render_tinymce.active_editor = editor;
+                    Render_tinymce.loadVisual();
+                });
 
                 // Switch to Text
-                _editor.on('hide', function () {
+                editor.on('hide', function () {
+                    Render_tinymce.active_editor = editor;
                     var content = editor.getContent({format: 'numeric'});
                     $texteditor.val(window.switchEditors.pre_wpautop(Render_tinymce.loadText(content)));
                 });
@@ -397,10 +403,9 @@ var Render_tinymce;
          *
          * @since 1.0.0
          */
-        createLoader: function () {
+        createLoaders: function () {
 
-            $editor.append('<div id="render-tinymce-loader" class="hide"><div class="spinner"></div><div class="text">></div></div>');
-            $loader = $('#render-tinymce-loader');
+            $('.wp-editor-container').append('<div class="render-tinymce-loader hide"><div class="spinner"></div><div class="text">></div></div>');
         },
 
         /**
@@ -410,9 +415,9 @@ var Render_tinymce;
          */
         loadVisual: function () {
 
-            var content = editor.getContent();
+            var content = Render_tinymce.active_editor.getContent();
             content = Render_tinymce.loadText(content);
-            Render_tinymce.convertLiteralToRendered(content, editor);
+            Render_tinymce.convertLiteralToRendered(content, Render_tinymce.active_editor);
         },
 
         /**
@@ -422,7 +427,7 @@ var Render_tinymce;
          */
         postRender: function () {
 
-            var $body = $(editor.getBody());
+            var $body = $(Render_tinymce.active_editor.getBody());
 
             $body.find('.render-tinymce-shortcode-wrapper').each(function () {
 
@@ -495,7 +500,7 @@ var Render_tinymce;
          */
         open: function (shortcode) {
 
-            if (typeof shortcode !== 'undefined') {
+            if (typeof shortcode !== 'undefined' && shortcode !== null) {
                 Render_Modal.modify(shortcode);
             } else {
 
@@ -514,7 +519,7 @@ var Render_tinymce;
             }
 
             // Hide any identical shortcodes if in a nesting shortcode
-            var $cursor_node = $(editor.selection.getNode()),
+            var $cursor_node = $(Render_tinymce.active_editor.selection.getNode()),
                 $nesting_shortcode = $cursor_node.length ? $cursor_node.closest('.nested-child') : false;
 
             // Disable nesting shortcodes from being nested inside another
@@ -538,7 +543,7 @@ var Render_tinymce;
          * @since 1.0.0
          */
         close: function () {
-            editor.focus();
+            this.active_editor.focus();
         },
 
         /**
@@ -549,16 +554,16 @@ var Render_tinymce;
         update: function () {
 
             // If we're editing a shortcode, select the node with TinyMCE
-            var $shortcode = $(editor.dom.select('.render-tinymce-editing'));
+            var $shortcode = $(this.active_editor.dom.select('.render-tinymce-editing'));
             if ($shortcode.length) {
-                editor.selection.select($shortcode.get(0));
+                this.active_editor.selection.select($shortcode.get(0));
             }
 
             // Replace or insert the content
-            if (editor.selection.getContent().length) {
-                editor.selection.setContent(Render_Modal.output.all);
+            if (this.active_editor.selection.getContent().length) {
+                this.active_editor.selection.setContent(Render_Modal.output.all);
             } else {
-                editor.insertContent(Render_Modal.output.all);
+                this.active_editor.insertContent(Render_Modal.output.all);
             }
 
             // Render the shortcodes
@@ -574,7 +579,7 @@ var Render_tinymce;
          */
         removeShortcode: function () {
 
-            var $container = $('<div />').append($(editor.getBody()).html()),
+            var $container = $('<div />').append($(Render_tinymce.active_editor.getBody()).html()),
                 $shortcode = $container.find('.render-tinymce-editing'),
                 $content = $shortcode.find('.render-tinymce-shortcode-content'),
                 data = render_data[$shortcode.data('code')]['render'],
@@ -587,7 +592,7 @@ var Render_tinymce;
                 $shortcode.remove();
             }
 
-            editor.setContent($container.html());
+            this.active_editor.setContent($container.html());
 
             Render_Modal.close();
         },
@@ -600,6 +605,9 @@ var Render_tinymce;
          * @param loading Whether to show or hide the overlay.
          */
         loading: function (loading) {
+
+            var $loader = $(Render_tinymce.active_editor.getContainer()).closest('.wp-editor-container')
+                .find('.render-tinymce-loader');
 
             if (loading) {
 
@@ -628,16 +636,6 @@ var Render_tinymce;
                 $('#content-tmce').prop('disabled', true);
                 $('#wp-content-media-buttons').addClass('disabled');
             } else {
-                waitMinimumLoadingTime();
-            }
-
-            function waitMinimumLoadingTime() {
-
-                // Don't remove the loader until the minimum load time has passed
-                if (min_load_time) {
-                    setTimeout(waitMinimumLoadingTime, 50);
-                    return;
-                }
 
                 $loader.addClass('hide');
                 $('#content-html').prop('disabled', false);
@@ -656,19 +654,29 @@ var Render_tinymce;
          */
         submit: function (event, $e) {
 
-            if (!submitted) {
-
-                submitted = true;
-
-                event.preventDefault();
-                var content = editor.getContent();
-
-                editor.on('PostProcess', function (e) {
-                    e.content = Render_tinymce.loadText(content);
-                });
-
-                $e.submit();
-            }
+            //var $editors = $('.wp-editor-wrap');
+            //
+            //$editors.each(function () {
+            //
+            //    var id = $(this).attr('id').match(/wp-(.*?)-wrap/);
+            //        editor = tinymce.get(id);
+            //
+            //    if (submitted_editors.indexOf(id)) {
+            //        return true; // continue $.each
+            //    }
+            //
+            //    submitted_editors.push(id);
+            //
+            //    event.preventDefault();
+            //
+            //    var content = editor.getContent();
+            //
+            //    editor.on('PostProcess', function (e) {
+            //        e.content = Render_tinymce.loadText(content);
+            //    });
+            //
+            //    $e.submit();
+            //});
         },
 
         /**
@@ -679,7 +687,7 @@ var Render_tinymce;
          * @returns The active editor.
          */
         getEditor: function () {
-            return editor;
+            return this.active_editor;
         },
 
         /**
@@ -688,9 +696,8 @@ var Render_tinymce;
          * @since 1.0.0
          *
          * @param content The content to convert.
-         * @param editor The active editor.
          */
-        convertLiteralToRendered: function (content, editor) {
+        convertLiteralToRendered: function (content) {
 
             Render_tinymce.loading(true);
 
@@ -704,21 +711,24 @@ var Render_tinymce;
             data.content = content;
             data.shortcode_data = Render_Data.rendered_shortcodes;
 
-            $.post(
-                ajaxurl,
-                data,
-                function (response) {
+            $.ajax({
+                url: ajaxurl,
+                method: 'POST',
+                data: data,
+                editor: this.active_editor,
+                success: function (response) {
 
-                    editor.setContent(response);
+                    this.editor.setContent(response);
 
                     // no-js support
-                    $(editor.getBody()).find('.no-js').css('display', 'none');
+                    $(this.editor.getBody()).find('.no-js').css('display', 'none');
 
+                    Render_tinymce.active_editor = this.editor;
                     Render_tinymce.loading(false);
 
                     $(document).trigger('render-tinymce-post-render');
                 }
-            );
+            });
         },
 
         /**
