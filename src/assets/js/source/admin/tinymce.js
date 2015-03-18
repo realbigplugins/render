@@ -604,8 +604,8 @@ var Render_tinymce;
          */
         loading: function (loading) {
 
-            var $loader = $(Render_tinymce.active_editor.getContainer()).closest('.wp-editor-container')
-                .find('.render-tinymce-loader');
+            var $container = $(Render_tinymce.active_editor.getContainer()).closest('.wp-editor-wrap'),
+                $loader = $container.find('.render-tinymce-loader');
 
             if (loading) {
 
@@ -630,15 +630,15 @@ var Render_tinymce;
 
                 $loader.find('.text').html(loading_messages[random_message]);
                 $loader.removeClass('hide');
-                $('#content-html').prop('disabled', true);
-                $('#content-tmce').prop('disabled', true);
-                $('#wp-content-media-buttons').addClass('disabled');
+                $container.find('.switch-html').prop('disabled', true);
+                $container.find('.switch-tmce').prop('disabled', true);
+                $container.find('.wp-media-buttons').addClass('disabled');
             } else {
 
                 $loader.addClass('hide');
-                $('#content-html').prop('disabled', false);
-                $('#content-tmce').prop('disabled', false);
-                $('#wp-content-media-buttons').removeClass('disabled');
+                $container.find('.switch-html').prop('disabled', false);
+                $container.find('.switch-tmce').prop('disabled', false);
+                $container.find('.wp-media-buttons').removeClass('disabled');
             }
         },
 

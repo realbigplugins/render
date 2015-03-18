@@ -13,6 +13,11 @@ i.mce-i-render-mce-refresh-icon {
   }
 }
 
+// Loader overlay container
+.wp-editor-container {
+  position: relative;
+}
+
 // Loader overlay
 .render-tinymce-loader {
   position: absolute;
@@ -61,14 +66,14 @@ i.mce-i-render-mce-refresh-icon {
   }
 }
 
-#content-html, #content-tmce {
+.switch-html, .switch-tmce {
   &:disabled {
     color: #bbb;
     cursor: default;
   }
 }
 
-#wp-content-media-buttons.disabled {
+.wp-media-buttons.disabled {
   position: relative;
 
   &:after {
@@ -85,8 +90,4 @@ i.mce-i-render-mce-refresh-icon {
   .button {
     opacity: 0.5;
   }
-}
-
-#render-tinymce-tempdiv {
-  display: none;
 }
