@@ -366,11 +366,9 @@ var Render_tinymce;
                     Render_tinymce.loadVisual();
                 });
 
-                // Switch to Text
-                editor.on('hide', function () {
-                    Render_tinymce.active_editor = editor;
-                    var content = editor.getContent({format: 'numeric'});
-                    $texteditor.val(window.switchEditors.pre_wpautop(Render_tinymce.loadText(content)));
+                // Switch to Text or Submit post
+                editor.on('PostProcess', function (e) {
+                    e.content = Render_tinymce.loadText(e.content);
                 });
 
                 // Prevent adding undo levels on rendering shortcodes
@@ -417,7 +415,7 @@ var Render_tinymce;
 
             var content = Render_tinymce.active_editor.getContent();
             content = Render_tinymce.loadText(content);
-            Render_tinymce.convertLiteralToRendered(content, Render_tinymce.active_editor);
+            Render_tinymce.convertLiteralToRendered(content);
         },
 
         /**
@@ -645,41 +643,6 @@ var Render_tinymce;
         },
 
         /**
-         * Fires when submitting the post (Publish).
-         *
-         * @since 1.0.0
-         *
-         * @param event
-         * @param $e
-         */
-        submit: function (event, $e) {
-
-            //var $editors = $('.wp-editor-wrap');
-            //
-            //$editors.each(function () {
-            //
-            //    var id = $(this).attr('id').match(/wp-(.*?)-wrap/);
-            //        editor = tinymce.get(id);
-            //
-            //    if (submitted_editors.indexOf(id)) {
-            //        return true; // continue $.each
-            //    }
-            //
-            //    submitted_editors.push(id);
-            //
-            //    event.preventDefault();
-            //
-            //    var content = editor.getContent();
-            //
-            //    editor.on('PostProcess', function (e) {
-            //        e.content = Render_tinymce.loadText(content);
-            //    });
-            //
-            //    $e.submit();
-            //});
-        },
-
-        /**
          * Gets the editor (from within the confines of this object).
          *
          * @since 1.0.0
@@ -718,12 +681,13 @@ var Render_tinymce;
                 editor: this.active_editor,
                 success: function (response) {
 
-                    this.editor.setContent(response);
+                    Render_tinymce.active_editor = this.editor;
+
+                    Render_tinymce.active_editor.setContent(response);
 
                     // no-js support
-                    $(this.editor.getBody()).find('.no-js').css('display', 'none');
+                    $(Render_tinymce.active_editor.getBody()).find('.no-js').css('display', 'none');
 
-                    Render_tinymce.active_editor = this.editor;
                     Render_tinymce.loading(false);
 
                     $(document).trigger('render-tinymce-post-render');

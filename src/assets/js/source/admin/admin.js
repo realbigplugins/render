@@ -48,7 +48,6 @@
                 };
 
                 $.post(ajaxurl, data, function (response) {
-                    console.log(response);
 
                     if (response.fail) {
                         return;
