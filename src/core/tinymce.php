@@ -206,8 +206,7 @@ class Render_tinymce extends Render {
 	 */
 	public static function modify_tinymce_init( $mceinit ) {
 
-		$mceinit['noneditable_noneditable_class'] = 'render-tinymce-noneditable';
-		$mceinit['noneditable_editable_class']    = 'render-tinymce-editable';
+		$mceinit['noneditable_noneditable_class'] = 'render-tinymce-shortcode-wrapper';
 		$mceinit['extended_valid_elements']       = 'span[*]';
 		$mceinit['entity_encoding']               = 'numeric';
 
@@ -450,8 +449,7 @@ class Render_tinymce extends Render {
 			// Override tag
 			$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;
 
-			$editable = isset( $data['contentNonEditable'] ) ? '' : 'render-tinymce-editable';
-			$content  = "<$tag class='render-tinymce-shortcode-content $editable'>$content</$tag>";
+			$content  = "<$tag class='render-tinymce-shortcode-content'>$content</$tag>";
 		}
 
 		// Replace the content with the new content
