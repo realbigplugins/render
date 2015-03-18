@@ -45,6 +45,16 @@ var Render_Modal;
         },
 
         /**
+         * Returns a Modal element.
+         *
+         * @param element The element to retrieve.
+         * @return The element.
+         */
+        getElement: function (element) {
+            return elements[element];
+        },
+
+        /**
          * Fires on window resize.
          *
          * @since 1.0.0

@@ -30,12 +30,18 @@ var Render_tinymce;
          */
         active_editor: null,
 
+        $shortcode_content_editor: null,
+
+        editing_shortcode_content_editor: null,
+
         /**
          * Initializes the object.
          *
          * @since 1.0.0
          */
         init: function () {
+
+            this.$shortcode_content_editor = $('#render-tinymce-sc-content-editor');
 
             this.addToTinymce();
             this.binds();
@@ -67,6 +73,16 @@ var Render_tinymce;
 
             $('#post').submit(function (event) {
                 Render_tinymce.submit(event, $(this));
+            });
+
+            this.$shortcode_content_editor.find('.submit').click(function () {
+                Render_tinymce.updateShortcodeContent();
+                return false;
+            });
+
+            this.$shortcode_content_editor.find('.cancel').click(function () {
+                Render_tinymce.closeShortcodeContentEditor();
+                return false;
             });
         },
 
@@ -170,15 +186,12 @@ var Render_tinymce;
                     Render_tinymce.active_editor = editor;
 
                     // Remove delete overlay for all shortcodes
-                    var $shortcode, content, container_html, shortcode;
-                    $body = $(editor.getBody());
+                    var $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper'),
+                        content, container_html, shortcode;
 
-                    $body.find('.render-tinymce-shortcode-wrapper.delete').removeClass('delete');
-
-                    // Edit a shortcode
                     if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-edit')) {
 
-                        $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper');
+                        // Edit a shortcode
                         content = $shortcode.find('.render-tinymce-shortcode-content').html();
                         container_html = $('<div />').append($shortcode.clone()).html();
                         shortcode = Render_tinymce.convertRenderedToLiteral(container_html);
@@ -190,13 +203,16 @@ var Render_tinymce;
                         $shortcode.addClass('render-tinymce-editing');
 
                         Render_tinymce.open(shortcode);
-                    }
+                    } else if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-remove')) {
 
-                    // Remove a shortcode
-                    if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-remove')) {
-
+                        // Remove a shortcode
                         $(event.target).closest('.render-tinymce-shortcode-wrapper').addClass('render-tinymce-editing');
                         Render_tinymce.removeShortcode();
+                    } else if ($shortcode.length && $shortcode.find('.render-tinymce-shortcode-content').length) {
+
+                        // Edit a shortcode's content
+                        $shortcode.addClass('render-tinymce-editing-content');
+                        Render_tinymce.editShortcodeContent();
                     }
                 });
 
@@ -393,6 +409,68 @@ var Render_tinymce;
                 //        event.preventDefault();
                 //    }
                 //});
+            });
+        },
+
+        editShortcodeContent: function () {
+
+            this.openShortcodeContentEditor();
+
+            var sc_editor = tinymce.get('render-tinymce-shortcode-content'),
+                content = $(this.active_editor.getBody())
+                    .find('.render-tinymce-editing-content .render-tinymce-shortcode-content').html();
+
+            sc_editor.setContent('<div id="#content">' + content + '</div>');
+
+            this.editing_shortcode_content_editor = this.active_editor;
+        },
+
+        updateShortcodeContent: function () {
+
+            var sc_editor = tinymce.get('render-tinymce-shortcode-content'),
+                content = $(sc_editor.getContent()).text(),
+                $shortcode = $(this.editing_shortcode_content_editor.getBody()).find('.render-tinymce-editing-content');
+
+            console.log(content);
+
+            $shortcode.find('.render-tinymce-shortcode-content').html(content);
+
+            this.closeShortcodeContentEditor();
+
+            // Render the shortcodes
+            if (Render_Data.do_render) {
+                this.loadVisual();
+            }
+        },
+
+        closeShortcodeContentEditor: function () {
+
+            var $container = $(this.editing_shortcode_content_editor.getContainer()).closest('.wp-editor-wrap'),
+                $backdrop = Render_Modal.getElement('backdrop');
+
+            this.$shortcode_content_editor.hide();
+            $backdrop.hide();
+
+            this.active_editor = this.editing_shortcode_content_editor;
+            this.editing_shortcode_content_editor = null;
+
+        },
+
+        openShortcodeContentEditor: function () {
+
+            var $backdrop = Render_Modal.getElement('backdrop');
+
+            this.$shortcode_content_editor.show();
+            $backdrop.show();
+
+            $backdrop.click(function (event) {
+
+                if (Render_tinymce.editing_shortcode_content_editor === null) {
+                    return;
+                }
+                console.log('test');
+                Render_tinymce.closeShortcodeContentEditor();
+                event.preventDefault();
             });
         },
 
@@ -754,5 +832,5 @@ var Render_tinymce;
 
     window['RenderRefreshTinyMCE'] = function () {
         Render_tinymce.loadVisual();
-    }
+    };
 })(jQuery);

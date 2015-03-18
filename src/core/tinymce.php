@@ -47,6 +47,9 @@ class Render_tinymce extends Render {
 
 		// Add editor styles
 		self::add_editor_styles();
+
+		// Output shortcode content editor
+		add_action( 'admin_footer', array( __CLASS__, '_output_shortcode_content_editor' ) );
 	}
 
 	/**
@@ -528,7 +531,7 @@ class Render_tinymce extends Render {
 
 		// Start the wrapper
 
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper render-tinymce-noneditable " . implode( ' ', $classes ) . "' data-code='$code' data-atts='$atts'>";
+		$output .= "<$tag class='render-tinymce-shortcode-wrapper " . implode( ' ', $classes ) . "' data-code='$code' data-atts='$atts'>";
 
 		$output .= ! empty( $shortcode_output ) ? $shortcode_output : '<span class="render-shortcode-no-output">(no output)</span>';
 
@@ -549,6 +552,23 @@ class Render_tinymce extends Render {
 		$output .= "</$tag>";
 
 		return $output;
+	}
+
+	function _output_shortcode_content_editor() {
+		?>
+		<div id="render-tinymce-sc-content-editor">
+			<?php
+			wp_editor( '<div id="content"></div>', 'render-tinymce-shortcode-content', array(
+				'textarea_rows' => 10,
+			));
+			?>
+
+			<div class="render-tinymce-sc-content-editor-actions">
+				<a href="#" class="submit button">Submit</a>
+				<a href="#" class="cancel button">Cancel</a>
+			</div>
+		</div>
+		<?php
 	}
 }
 

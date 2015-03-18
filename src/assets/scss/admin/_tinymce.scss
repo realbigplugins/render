@@ -13,6 +13,26 @@ i.mce-i-render-mce-refresh-icon {
   }
 }
 
+// Shortcode content editor
+#render-tinymce-sc-content-editor {
+  width: 400px;
+  position: fixed;
+  bottom: 50px;
+  left: 200px;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 100100; // Sit above everything (including render backdrop)
+
+  &.show {
+    display: block;
+  }
+
+  #wp-render-tinymce-shortcode-content-wrap {
+    width: 100%;
+  }
+}
+
 // Loader overlay
 .render-tinymce-loader {
   position: absolute;

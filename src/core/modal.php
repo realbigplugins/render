@@ -951,6 +951,7 @@ class Render_Modal {
 		// Gets all categories in use
 		$used_categories = render_get_shortcode_used_categories();
 		?>
+
 		<div id="render-modal-backdrop"></div>
 		<div id="render-modal-wrap" style="display: none;">
 			<div class="render-modal-title">
