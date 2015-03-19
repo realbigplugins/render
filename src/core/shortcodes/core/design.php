@@ -108,13 +108,14 @@ foreach (
 		array(
 			'code'      => 'render_accordion_section',
 			'function'  => '_render_sc_accordion_section',
+			'title'     => __( 'Accordion', 'Render' ),
 			'noDisplay' => true,
 			'wrapping'  => true,
 			'render'    => array(
 				'nested'       => array(
 					'parent' => 'render_accordion_wrapper',
 				),
-				'dummyContent' => '(Enter accordion section content here)',
+				'dummyContent' => 'Enter accordion section content here',
 				'noStyle'      => true,
 				'displayBlock' => true,
 			),
@@ -296,7 +297,8 @@ foreach (
 			),
 			'wrapping'    => true,
 			'render'      => array(
-				'noStyle' => true,
+				'noStyle'         => true,
+				'onlyAllowInline' => true,
 			),
 		),
 		/*
@@ -478,13 +480,15 @@ foreach (
 		array(
 			'code'      => 'render_column_section',
 			'function'  => '_render_sc_column_section',
+			'title'     => __( 'Column', 'Render' ),
 			'noDisplay' => true,
 			'wrapping'  => true,
 			'render'    => array(
+				'displayBlock' => true,
 				'nested'       => array(
 					'parent' => 'render_columns_wrapper',
 				),
-				'dummyContent' => '(Enter column content here)',
+				'dummyContent' => 'Enter column content here',
 			),
 		),
 		/*
@@ -594,7 +598,7 @@ foreach (
 				'nested'       => array(
 					'parent' => 'render_tabs_wrapper',
 				),
-				'dummyContent' => '(Enter tab content here)',
+				'dummyContent' => 'Enter tab content here',
 				'noStyle'      => true,
 				'displayBlock' => true,
 			),
@@ -860,6 +864,7 @@ function _render_sc_column_section( $atts = array(), $content = '' ) {
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
+ *
  * @return string The columns wrapper HTML.
  */
 function _render_sc_columns_wrapper_tinymce( $atts = array(), $content = '' ) {
@@ -897,6 +902,7 @@ function _render_sc_columns_wrapper_tinymce( $atts = array(), $content = '' ) {
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
+ *
  * @return string The tabs wrapper HTML.
  */
 function _render_sc_tabs_wrapper( $atts = array(), $content = '' ) {
@@ -973,6 +979,7 @@ function _render_sc_tabs_wrapper( $atts = array(), $content = '' ) {
  *
  * @param array  $atts    The attributes sent to the shortcode.
  * @param string $content The content inside the shortcode.
+ *
  * @return string The tab section HTML.
  */
 function _render_sc_tab_section( $atts = array(), $content = '' ) {
@@ -1211,6 +1218,7 @@ function render_sc_icon_list() {
  * @since 1.0.0
  *
  * @param array $atts The shortcode atts.
+ *
  * @return string The parsed border radius'.
  */
 function render_sc_parse_border_radius( $atts ) {

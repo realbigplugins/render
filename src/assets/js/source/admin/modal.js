@@ -28,6 +28,7 @@ var Render_Modal;
         active_shortcode: '',
         output: '',
         selection: '',
+        keepBackdrop: false,
         modifying: false,
 
         /**
@@ -1199,7 +1200,10 @@ var Render_Modal;
 
             elements.list.scrollTop(0);
             elements.wrap.hide();
-            elements.backdrop.hide();
+
+            if (this.keepBackdrop === false) {
+                elements.backdrop.hide();
+            }
 
             this.closeShortcode();
             this.clearSearch();

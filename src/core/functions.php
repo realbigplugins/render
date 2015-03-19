@@ -610,7 +610,7 @@ function render_enqueue_modal() {
  * @return string The regex.
  */
 function render_block_regex() {
-	return '/<(address|figcaption|ol|article|figure|output|aside|footer|p|audio|form|pre|blockquote|h[1-6]|section|canvas|header|table|dd|hgroup|tfoot|div|hr|ul|dl|video|fieldset|noscript)/';
+	return '(<\/?(address|figcaption|ol|article|figure|output|aside|footer|p|audio|form|pre|blockquote|h[1-6]|section|canvas|header|table|dd|hgroup|tfoot|div|hr|ul|dl|video|fieldset|noscript)([^>]*)>)';
 }
 
 /**

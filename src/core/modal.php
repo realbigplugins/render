@@ -78,6 +78,9 @@ class Render_Modal {
 			$wp_scripts->registered['jquery-ui-core']->ver
 		);
 
+		// For the time being, 1.11.4 is not out. Remove this when it is.
+		$jquery_ui_version = version_compare('1.11.3', $jquery_ui_version, '<' ) ? '1.11.3' : $jquery_ui_version;
+
 		/**
 		 * The stylesheet URL for jQuery UI.
 		 *

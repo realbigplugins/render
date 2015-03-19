@@ -591,7 +591,7 @@ function _render_sc_hide_for_users_tinymce( $atts = array(), $content = '' ) {
  */
 function render_tinymce_visibility_wrap( $content = '', $visibility = 'visible' ) {
 
-	$tag = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
+	$tag = preg_match( '/' . render_block_regex() . '/', $content ) ? 'div' : 'span';
 
 	return "<$tag class='render-content-$visibility'>" . do_shortcode( $content ) . "<span class='render-visibility-icon dashicons dashicons-" . ( $visibility == 'visible' ? 'visibility' : 'no' ) . "'></span></$tag>";
 }

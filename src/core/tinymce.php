@@ -33,6 +33,9 @@ class Render_tinymce extends Render {
 		add_filter( 'mce_buttons', array( __CLASS__, 'remove_tinymce_buttons' ), 10000 );
 		add_filter( 'tiny_mce_before_init', array( __CLASS__, 'modify_tinymce_init' ) );
 
+		// Enqueue styles and scripts for TinyMCE
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_scripts' ) );
+
 		// Localize data for rendering in the TinyMCE
 		add_action( 'render_localized_data', array( $this, 'rendering_data' ) );
 
@@ -130,23 +133,33 @@ class Render_tinymce extends Render {
 	 * @since 1.1-beta-2
 	 *
 	 * @param array $pointers The pointers to use.
+	 *
 	 * @return array The new pointers.
 	 */
 	public static function add_pointers( $pointers ) {
 
 		$pointers['tinymce_button'] = array(
-			'title' => __( 'Add A Shortcode', 'Render' ),
-			'content' => __( 'This is your new, easy way to add shortcodes to the editor. Click here to get started!', 'Render' ),
-			'target' => 'i.mce-i-render-mce-icon',
+			'title'    => __( 'Add A Shortcode', 'Render' ),
+			'content'  => __( 'This is your new, easy way to add shortcodes to the editor. Click here to get started!', 'Render' ),
+			'target'   => 'i.mce-i-render-mce-icon',
 			'position' => array(
-				'edge' => 'bottom',
+				'edge'  => 'bottom',
 				'align' => 'center',
 			),
-			'trigger' => 'render-tinymce-post-render',
-			'classes' => 'tinymce-pointer'
+			'trigger'  => 'render-tinymce-post-render',
+			'classes'  => 'tinymce-pointer'
 		);
 
 		return $pointers;
+	}
+
+	/**
+	 * Loads in included scripts needed for the TinyMCE functionality.
+	 *
+	 * @since {{VERSION}}
+	 */
+	static function admin_scripts() {
+		wp_enqueue_script( 'jquery-effects-scale' );
 	}
 
 	/**
@@ -155,6 +168,7 @@ class Render_tinymce extends Render {
 	 * @since 1.1-beta-2
 	 *
 	 * @param array $styles The editor styles.
+	 *
 	 * @return array The new styles
 	 */
 	public static function add_render_editor_styles( $styles ) {
@@ -185,7 +199,7 @@ class Render_tinymce extends Render {
 		/**
 		 * Allows developers to easily add or remove Render added styles from TinyMCE.
 		 *
-		 * @since 1.0.0
+		 * @since  1.0.0
 		 *
 		 * @hooked Render_tinymce::add_render_editor_styles 100
 		 */
@@ -223,12 +237,13 @@ class Render_tinymce extends Render {
 	 * @access private
 	 *
 	 * @param array $data The current localization data.
+	 *
 	 * @return array The new localization data.
 	 */
 	static function _translations( $data ) {
 
-		$data['l18n']['add_shortcode'] = __( 'Add Shortcode', 'Render' );
-		$data['l18n']['select_content_from_editor'] = __( 'Please select content from the editor to enable this shortcode.', 'Render' );
+		$data['l18n']['add_shortcode']               = __( 'Add Shortcode', 'Render' );
+		$data['l18n']['select_content_from_editor']  = __( 'Please select content from the editor to enable this shortcode.', 'Render' );
 		$data['l18n']['cannot_place_shortcode_here'] = __( 'You cannot place this shortcode here.', 'Render' );
 
 		return $data;
@@ -242,11 +257,15 @@ class Render_tinymce extends Render {
 	 * @global Render $Render The main Render object.
 	 *
 	 * @param array   $data   The previous rendering data.
+	 *
 	 * @return array The new rendering data.
 	 */
 	public function rendering_data( $data ) {
 
 		global $Render;
+
+		// Block regex
+		$data['block_regex'] = render_block_regex();
 
 		// WP shortcode regex
 		$data['shortcode_regex'] = get_shortcode_regex();
@@ -312,13 +331,13 @@ class Render_tinymce extends Render {
 
 			$wp_query = new WP_Query( array(
 				'p' => $_REQUEST['post'],
-			));
+			) );
 
 			// Could be a page, and for some reason that requires a different parameter
 			if ( $wp_query->post_count === 0 ) {
 				$wp_query = new WP_Query( array(
 					'page_id' => $_REQUEST['post'],
-				));
+				) );
 			}
 
 			if ( $post = get_post( $_REQUEST['post'] ) ) {
@@ -390,11 +409,12 @@ class Render_tinymce extends Render {
 	 * @global array $shortcode_tags        WP registered shortcodes.
 	 *
 	 * @param array  $matches               Matches supplied from preg_replace_callback(),
+	 *
 	 * @return string The substituted output.
 	 */
 	public static function _replace_shortcodes( $matches ) {
 
-		global $render_shortcode_data, $shortcode_tags;
+		global $render_shortcode_data, $shortcode_tags, $Render;
 
 		// "Extract" some of the found matches
 		$entire_code = $matches[0];
@@ -416,8 +436,10 @@ class Render_tinymce extends Render {
 
 			// Set default dummy content
 			if ( ! isset( $data['dummyContent'] ) ) {
-				$data['dummyContent'] = '(Enter section content)';
+				$data['dummyContent'] = 'Enter section content';
 			}
+
+			$data['dummyContent'] = "<span class=\"render-tinymce-shortcode-placeholder\">$data[dummyContent]</span>";
 		}
 
 		// Search again for any nested shortcodes (loops infinitely)
@@ -447,12 +469,12 @@ class Render_tinymce extends Render {
 		if ( ! empty( $content ) ) {
 
 			// Wrap the content in a special element, but first decide if it needs to be div or span
-			$tag      = preg_match( render_block_regex(), $content ) ? 'div' : 'span';
+			$tag = preg_match( '/' . render_block_regex() . '/', $content ) ? 'div' : 'span';
 
 			// Override tag
 			$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;
 
-			$content  = "<$tag class='render-tinymce-shortcode-content'>$content</$tag>";
+			$content = "<$tag class='render-tinymce-shortcode-content'>$content</$tag>";
 		}
 
 		// Replace the content with the new content
@@ -484,7 +506,7 @@ class Render_tinymce extends Render {
 
 			// Make sure images are non-editable (unless told otherwise)
 			if ( ! isset( $data['wrapping'] ) || $data['wrapping'] == 'false' || $data['wrapping'] == false ) {
-				$shortcode_output  = preg_replace(
+				$shortcode_output = preg_replace(
 					'/<img/',
 					'<img data-mce-placeholder="1" style="outline: none !important;"',
 					$shortcode_output
@@ -493,7 +515,7 @@ class Render_tinymce extends Render {
 		}
 
 		// If the output contains any block tags, make sure the wrapper tag is a div
-		$tag = preg_match( render_block_regex(), $shortcode_output ) ? 'div' : 'span';
+		$tag = preg_match( '/' . render_block_regex() . '/', $shortcode_output ) ? 'div' : 'span';
 
 		// Override tag
 		$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;
@@ -529,9 +551,11 @@ class Render_tinymce extends Render {
 
 		$output = '';
 
+		$name = $Render->shortcodes[ $code ]['title'];
+
 		// Start the wrapper
 
-		$output .= "<$tag class='render-tinymce-shortcode-wrapper " . implode( ' ', $classes ) . "' data-code='$code' data-atts='$atts'>";
+		$output .= "<$tag class='render-tinymce-shortcode-wrapper " . implode( ' ', $classes ) . "' data-code='$code' data-atts='$atts' data-name='$name'>";
 
 		$output .= ! empty( $shortcode_output ) ? $shortcode_output : '<span class="render-shortcode-no-output">(no output)</span>';
 
@@ -540,11 +564,23 @@ class Render_tinymce extends Render {
 		// Delete notification
 		$output .= '<span class=\'render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip\'>' . __( 'Press again to delete', 'Render' ) . "</span>";
 
+		// Change this so no edit content button is produced in the sc content editor
+		if ( $_POST['editor_id'] == 'render-tinymce-shortcode-content' || isset( $data['nested']['child'] ) ) {
+			$data['wrapping'] = 'false';
+		}
+
+		$edit_content = isset( $data['wrapping'] ) && $data['wrapping'] === 'true' ? 'render-tinymce-edit-content' : '';
+
 		// Action button
 		if ( ! isset( $data['hideActions'] ) ) {
-			$output .= '<span class="render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip">';
+			$output .= '<span class="render-tinymce-shortcode-wrapper-actions render-tinymce-tooltip ' . $edit_content . '">';
 			$output .= '<span class="render-tinymce-tooltip-spacer"></span>';
-			$output .= '<span class="render-tinymce-shortcode-wrapper-edit dashicons dashicons-edit">edit</span>';
+
+			if ( isset( $data['wrapping'] ) && $data['wrapping'] === 'true' ) {
+				$output .= '<span class="render-tinymce-shortcode-wrapper-edit-content dashicons dashicons-edit">edit content</span>';
+			}
+
+			$output .= '<span class="render-tinymce-shortcode-wrapper-edit dashicons render-icon-render-logo-condensed">edit</span>';
 			$output .= '<span class="render-tinymce-shortcode-wrapper-remove dashicons dashicons-no">remove</span>';
 			$output .= '</span>';
 		}
@@ -554,21 +590,35 @@ class Render_tinymce extends Render {
 		return $output;
 	}
 
-	function _output_shortcode_content_editor() {
+	static function _output_shortcode_content_editor() {
 		?>
 		<div id="render-tinymce-sc-content-editor">
-			<?php
-			wp_editor( '<div id="content"></div>', 'render-tinymce-shortcode-content', array(
-				'textarea_rows' => 10,
-			));
-			?>
+			<div class="render-tinymce-sc-content-editor-container">
 
-			<div class="render-tinymce-sc-content-editor-actions">
-				<a href="#" class="submit button">Submit</a>
-				<a href="#" class="cancel button">Cancel</a>
+				<h1 class="render-tinymce-sc-content-editor-title">
+					<?php _e( 'Edit', 'Render' ) ?>
+					<span class="render-tinymce-sc-content-editor-title-sc-name"></span>
+					<?php _e( 'Content', 'Render' ); ?>
+				</h1>
+
+				<?php
+				wp_editor( '<div id="content"></div>', 'render-tinymce-shortcode-content', array(
+					'textarea_rows' => 10,
+				) );
+				?>
+
+				<div class="render-tinymce-sc-content-editor-actions">
+					<a class="submitdelete deletion cancel" href="#"><?php _e( 'Cancel', 'Render' ); ?></a>
+
+					<a href="#" class="submit button render-button">
+						<?php _e( 'Change Content' ); ?>
+					</a>
+				</div>
+
+				<div class="render-tinymce-sc-content-editor-cover"></div>
 			</div>
 		</div>
-		<?php
+	<?php
 	}
 }
 
