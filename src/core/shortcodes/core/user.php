@@ -88,7 +88,9 @@ foreach (
 					),
 				) ),
 			),
-			'render'      => true,
+			'render'      => array(
+				'displayInline' => true,
+			),
 		),
 		// Login form
 		array(

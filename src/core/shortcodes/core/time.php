@@ -34,7 +34,9 @@ foreach ( array(
 			'format' => render_sc_attr_template( 'full_date_format' ),
 			'timezone'   => render_sc_attr_template( 'timezone' ),
 		),
-		'render'      => true,
+		'render'      => array(
+			'displayInline' => true,
+		),
 	),
 ) as $shortcode ) {
 

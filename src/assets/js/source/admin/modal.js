@@ -28,6 +28,7 @@ var Render_Modal;
         active_shortcode: '',
         output: '',
         selection: '',
+        keepBackdrop: false,
         modifying: false,
 
         /**
@@ -42,6 +43,16 @@ var Render_Modal;
             this.keyboardShortcuts();
             this.preventWindowScroll();
             this.search();
+        },
+
+        /**
+         * Returns a Modal element.
+         *
+         * @param element The element to retrieve.
+         * @return The element.
+         */
+        getElement: function (element) {
+            return elements[element];
         },
 
         /**
@@ -1189,7 +1200,10 @@ var Render_Modal;
 
             elements.list.scrollTop(0);
             elements.wrap.hide();
-            elements.backdrop.hide();
+
+            if (this.keepBackdrop === false) {
+                elements.backdrop.hide();
+            }
 
             this.closeShortcode();
             this.clearSearch();

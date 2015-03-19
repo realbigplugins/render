@@ -16,7 +16,6 @@ var Render_tinymce;
 (function ($) {
     var min_load_time = false,
         last_message = 0,
-        submitted_editors = [],
         render_data = Render_Data.all_shortcodes,
         l18n = Render_Data.l18n,
         $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
@@ -30,6 +29,10 @@ var Render_tinymce;
          */
         active_editor: null,
 
+        $shortcode_content_editor: null,
+
+        editing_shortcode_content_editor: null,
+
         /**
          * Initializes the object.
          *
@@ -37,8 +40,11 @@ var Render_tinymce;
          */
         init: function () {
 
+            this.$shortcode_content_editor = $('#render-tinymce-sc-content-editor');
+
             this.addToTinymce();
             this.binds();
+            this.keyboardShortcuts();
             this.createLoaders();
         },
 
@@ -65,8 +71,44 @@ var Render_tinymce;
                 Render_tinymce.postRender();
             });
 
-            $('#post').submit(function (event) {
-                Render_tinymce.submit(event, $(this));
+            this.$shortcode_content_editor.find('.submit').click(function () {
+                Render_tinymce.updateShortcodeContent();
+                return false;
+            });
+
+            this.$shortcode_content_editor.find('.cancel').click(function () {
+                Render_tinymce.closeShortcodeContentEditor();
+                return false;
+            });
+
+            Render_Modal.getElement('backdrop').click(function (event) {
+
+                if (Render_tinymce.editing_shortcode_content_editor === null) {
+                    return;
+                }
+
+                Render_tinymce.closeShortcodeContentEditor();
+                event.preventDefault();
+            });
+        },
+
+        keyboardShortcuts: function () {
+
+            $(document).keyup(function (e) {
+
+                // Don't bother if not open
+                if (this.editing_shortcode_content_editor === null) {
+                    return;
+                }
+
+                switch (e.which) {
+
+                    // Escape
+                    case 27:
+                        e.preventDefault();
+                        Render_tinymce.closeShortcodeContentEditor();
+                        break;
+                }
             });
         },
 
@@ -164,21 +206,18 @@ var Render_tinymce;
                     Render_tinymce.loadVisual();
                 });
 
-                // Click the editor
+                // Click the editor to edit shortcodes (but not in the sc content editor!)
                 editor.onClick.add(function (editor, event) {
 
                     Render_tinymce.active_editor = editor;
 
                     // Remove delete overlay for all shortcodes
-                    var $shortcode, content, container_html, shortcode;
-                    $body = $(editor.getBody());
+                    var $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper'),
+                        content, container_html, shortcode;
 
-                    $body.find('.render-tinymce-shortcode-wrapper.delete').removeClass('delete');
-
-                    // Edit a shortcode
                     if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-edit')) {
 
-                        $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper');
+                        // Edit a shortcode
                         content = $shortcode.find('.render-tinymce-shortcode-content').html();
                         container_html = $('<div />').append($shortcode.clone()).html();
                         shortcode = Render_tinymce.convertRenderedToLiteral(container_html);
@@ -190,134 +229,22 @@ var Render_tinymce;
                         $shortcode.addClass('render-tinymce-editing');
 
                         Render_tinymce.open(shortcode);
-                    }
 
-                    // Remove a shortcode
-                    if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-remove')) {
+                    } else if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-remove')) {
 
+                        // Remove a shortcode
                         $(event.target).closest('.render-tinymce-shortcode-wrapper').addClass('render-tinymce-editing');
                         Render_tinymce.removeShortcode();
-                    }
-                });
 
-                /**
-                 * Returns information about the character that's about to be deleted.
-                 *
-                 * Needs to be fired within the keyDown handler on the editor, and needs to be inside a check to make sure
-                 * the backspace key is being pressed. (not currently in use)
-                 *
-                 * @since 1.0.0
-                 *
-                 * @returns object Character to be deleted and its char code.
-                 */
-                function get_char_to_be_deleted() {
+                    } else if (
+                        editor.id != 'render-tinymce-shortcode-content' && !$shortcode.find('.nested-child').length &&
+                        $shortcode.length &&
+                        $shortcode.find('.render-tinymce-shortcode-content').length
+                    ) {
 
-                    //insert special marker char
-                    var dummy_node = '<span id="__dummycaret">\u2060</span>',
-                        current_node = editor.selection.getNode();
-
-                    editor.selection.setContent(dummy_node, {format: 'raw', no_events: 1});
-
-                    var node_content = $(current_node).text();
-
-                    var cursor_position = node_content.search('\u2060');
-
-                    // this is the character
-                    var char_before_cursor = cursor_position != 0 ? node_content.slice(cursor_position - 1, cursor_position) : 'NA';
-
-                    $(editor.getBody()).find('#__dummycaret').remove();
-
-                    return {
-                        char: char_before_cursor,
-                        char_code: node_content.charCodeAt(cursor_position - 1)
-                    }
-                }
-
-                // KeyDown (includes backspace)
-                editor.onKeyDown.add(function (editor, event) {
-
-                    Render_tinymce.active_editor = editor;
-
-                    var node = editor.selection.getNode(),
-                        node_content = $(node).html();
-
-                    if (node && !$(node).hasClass('render-tinymce-shortcode-content')) {
-                        return;
-                    }
-
-                    var curElm = editor.selection.getRng().startContainer,
-                        range = editor.selection.getBookmark(curElm.textContent).rng;
-
-                    if (typeof range === 'undefined') {
-                        return;
-                    }
-
-                    var caretPos = range.startOffset;
-
-                    // Convert char codes to literal for counting purposes
-                    var literal_text = $('<div />').html(node_content).text();
-
-                    // Beginning of shortcode
-                    if (caretPos === 0) {
-
-                        // Don't allow backspace or left arrow to do anything
-                        if (event.which === 8 || event.which === 37) {
-                            event.preventDefault();
-                            return false;
-                        }
-                    }
-
-                    // End of shortcode
-                    if (caretPos === literal_text.length) {
-
-                        // Don't right arrow to do anything
-                        if (event.which === 39) {
-                            event.preventDefault();
-                            return false;
-                        }
-                    }
-                });
-
-                // Keypress (printable keys) in the editor
-                editor.onKeyPress.add(function (editor, event) {
-
-                    Render_tinymce.active_editor = editor;
-
-                    var node = editor.selection.getNode(),
-                        node_content = $(node).html();
-
-                    if (node && !$(node).hasClass('render-tinymce-shortcode-content')) {
-                        return;
-                    }
-
-                    var curElm = editor.selection.getRng().startContainer,
-                        range = editor.selection.getBookmark(curElm.textContent).rng;
-
-                    if (typeof range === 'undefined') {
-                        return;
-                    }
-
-                    var caretPos = range.startOffset,
-                        char_to_delete = caretPos != 0 ? node_content.slice(caretPos - 1, caretPos) : '';
-
-                    // Convert char codes to literal for counting purposes
-                    var literal_text = $('<div />').html(node_content).text();
-
-                    // Insert char after string to prevent editing outside the shortcode
-                    if (caretPos === literal_text.length) {
-
-                        var newChar = String.fromCharCode(event.charCode);
-
-                        if (newChar === ' ') {
-                            newChar = '&nbsp;';
-                        }
-
-                        $(node).html(literal_text + newChar);
-                        editor.selection.select(node, true);
-                        editor.selection.collapse(false);
-
-                        event.preventDefault();
-                        return false;
+                        // Edit a shortcode's content
+                        $shortcode.addClass('render-tinymce-editing-content');
+                        Render_tinymce.editShortcodeContent();
                     }
                 });
 
@@ -356,14 +283,19 @@ var Render_tinymce;
                 });
 
                 editor.on('init', function () {
+
                     Render_tinymce.active_editor = editor;
                     Render_tinymce.editorBinds($(editor.getBody()));
                 });
 
                 // Init and switch to Visual
                 editor.on('init show', function () {
-                    Render_tinymce.active_editor = editor;
-                    Render_tinymce.loadVisual();
+
+                    // Delay allows for setting content before loading
+                    setTimeout(function () {
+                        Render_tinymce.active_editor = editor;
+                        Render_tinymce.loadVisual();
+                    }, 1);
                 });
 
                 // Switch to Text or Submit post
@@ -394,6 +326,178 @@ var Render_tinymce;
                 //    }
                 //});
             });
+        },
+
+        /**
+         * Fires when clicking on a shortcode or the edit content button in the shortcode actions toolbar.
+         *
+         * @since {{VERSION}}
+         */
+        editShortcodeContent: function () {
+
+            // Set the shortcode editing editor
+            this.editing_shortcode_content_editor = this.active_editor;
+
+            var $shortcode = $(this.editing_shortcode_content_editor.getBody()).find('.render-tinymce-editing-content'),
+                $content_container = $('<div />'),
+                content = $shortcode.find('.render-tinymce-shortcode-content').html();
+
+            // Remove any placeholders before editing the content
+            $content_container.append(content);
+            $content_container.find('.render-tinymce-shortcode-placeholder').remove();
+            content = $content_container.html();
+
+            this.openShortcodeContentEditor($shortcode, content);
+        },
+
+        /**
+         * Updates the currently being edited shortcode from the shortcode content editor.
+         *
+         * @since {{VERSION}}
+         */
+        updateShortcodeContent: function () {
+
+            var sc_editor = tinymce.get('render-tinymce-shortcode-content'),
+                content = sc_editor.getContent(),
+                $shortcode = $(this.editing_shortcode_content_editor.getBody()).find('.render-tinymce-editing-content'),
+                code = $shortcode.data('code');
+
+            // Pass content through some filtering
+            // Strip tags
+            if (render_data[code]['render'] && render_data[code]['render']['displayInline']) {
+                content = content.replace(new RegExp(Render_Data['block_regex'], 'gi'), '');
+            }
+
+            // Set the content of the shortcode being edited
+            $shortcode.find('.render-tinymce-shortcode-content').html(content);
+
+            this.closeShortcodeContentEditor();
+
+            // Render the shortcodes
+            if (Render_Data.do_render) {
+                this.loadVisual();
+            } else {
+                $shortcode.removeClass('render-tinymce-editing-content');
+            }
+        },
+
+        /**
+         * Closes the shortcode content editor modal.
+         *
+         * @since {{VERSION}}
+         */
+        closeShortcodeContentEditor: function () {
+
+            var $shortcode = $(this.editing_shortcode_content_editor.getBody()).find('.render-tinymce-editing-content');
+
+            // Make sure we tell TinyMCE we're not editing a shortcode anymore
+            $shortcode.removeClass('render-tinymce-editing-content');
+
+            // Hide the modal (no fancy animations here, just quick)
+            this.$shortcode_content_editor.hide().removeClass('active');
+
+            // Hide backdrop
+            Render_Modal.getElement('backdrop').hide();
+            Render_Modal.keepBackdrop = false;
+
+            // Reset the active editor
+            this.active_editor = this.editing_shortcode_content_editor;
+            this.editing_shortcode_content_editor = null;
+
+        },
+
+        /**
+         * Opens the shortcode content editor modal.
+         *
+         * When opening the modal, it animates it from where the shortcode is in the TinyMCE. This helps make apparent
+         * that you are editing a specific shortcode.
+         *
+         * @since {{VERSION}}
+         *
+         * @param $shortcode The shortcode being edited.
+         * @param content The content to place in the editor.
+         */
+        openShortcodeContentEditor: function ($shortcode, content) {
+
+            // Remove instance because moving the iframe breaks it
+            tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'render-tinymce-shortcode-content');
+
+            // Show the backdrop
+            Render_Modal.getElement('backdrop').show();
+            Render_Modal.keepBackdrop = true;
+
+            // Insert shortcode name into title
+            this.$shortcode_content_editor.find('.render-tinymce-sc-content-editor-title-sc-name').html(
+                $shortcode.data('name')
+            );
+
+            // Show the sc content editor (with a cool effect!)
+            var width = $(window).width() < 500 ? $(window).width() * 0.9 : 500,
+                height = $(window).height() < 600 ? $(window).height() * 0.9 : 600,
+                marginLeft = width / 2 * -1,
+                marginTop = height / 2 * -1,
+                $container = $(this.editing_shortcode_content_editor.getContainer()),
+                sc_offset_left = $shortcode.offset().left + ($shortcode.width() / 2) + $container.offset().left,
+                sc_offset_top = $shortcode.offset().top + ($shortcode.height() / 2) + $container.offset().top,
+                animation_time = 300,
+                window_scroll = $(window).scrollTop();
+
+            // Compensate for window scroll
+            if (window_scroll) {
+                sc_offset_top = sc_offset_top - window_scroll;
+            }
+
+            // Final size and starting position
+            this.$shortcode_content_editor.css({
+                width: width,
+                height: height,
+                marginLeft: marginLeft,
+                marginTop: marginTop,
+                left: sc_offset_left,
+                top: sc_offset_top
+            });
+
+            // Animate position from shortcode
+            this.$shortcode_content_editor.show().delay(100).animate({
+                left: '50%',
+                top: '50%'
+            }, animation_time);
+
+            // Grow the modal
+            this.$shortcode_content_editor.find('.render-tinymce-sc-content-editor-container').hide().show('scale', {
+                origin: ['middle', 'center'],
+                percent: 100,
+                scale: 'box',
+                complete: function () {
+
+                    // Delay fixes no-transition bug
+                    setTimeout(function () {
+
+                        var $sc_editor = Render_tinymce.$shortcode_content_editor;
+
+                        // Adding active removes the cover
+                        $sc_editor.addClass('active');
+
+                        // Re-initialize the editor now that the iframe is done moving
+                        tinymce.EditorManager.execCommand('mceAddEditor', true, 'render-tinymce-shortcode-content');
+
+                        var editor = tinymce.get('render-tinymce-shortcode-content');
+
+                        // Set the content to whatever the content was of the shortcode being edited
+                        editor.setContent(content);
+
+                        // Editor height
+                        var $main_editor = $('#wp-render-tinymce-shortcode-content-wrap');
+                        $main_editor.find('.mce-edit-area').css(
+                            'height',
+                            $sc_editor.height() -
+                            ($main_editor.height() - $main_editor.find('.mce-edit-area').height()) -
+                            $sc_editor.find('.render-tinymce-sc-content-editor-actions').outerHeight(true) -
+                            $sc_editor.find('.render-tinymce-sc-content-editor-title').outerHeight(true)
+                        );
+                    }, 1);
+                }
+            }, animation_time);
         },
 
         /**
@@ -673,6 +777,7 @@ var Render_tinymce;
             data.action = 'render_render_shortcodes';
             data.content = content;
             data.shortcode_data = Render_Data.rendered_shortcodes;
+            data.editor_id = this.active_editor.id;
 
             $.ajax({
                 url: ajaxurl,
@@ -712,6 +817,9 @@ var Render_tinymce;
                 $(this).replaceWith(this.childNodes);
             });
 
+            // Remove placeholders
+            $container.find('.render-tinymce-shortcode-placeholder').remove();
+
             var $shortcodes = $container.find('.render-tinymce-shortcode-wrapper').sortByDepth();
 
             $shortcodes.each(function () {
@@ -737,8 +845,8 @@ var Render_tinymce;
 
                 output += ']';
 
-                if (shortcode_content) {
-                    output += shortcode_content + '[/' + code + ']';
+                if (render_data[code]['wrapping']) {
+                    output += (shortcode_content || '') + '[/' + code + ']';
                 }
 
                 $(this).replaceWith(output);
@@ -754,5 +862,5 @@ var Render_tinymce;
 
     window['RenderRefreshTinyMCE'] = function () {
         Render_tinymce.loadVisual();
-    }
+    };
 })(jQuery);

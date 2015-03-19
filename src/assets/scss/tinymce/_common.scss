@@ -147,8 +147,12 @@ body {
     min-width: 60px;
     box-sizing: content-box;
 
+    &.render-tinymce-edit-content {
+      min-width: 90px;
+    }
+
     // Edit and remove buttons
-    .render-tinymce-shortcode-wrapper-edit, .render-tinymce-shortcode-wrapper-remove {
+    .render-tinymce-shortcode-wrapper-edit-content, .render-tinymce-shortcode-wrapper-edit, .render-tinymce-shortcode-wrapper-remove {
       line-height: $tooltip-height;
       cursor: pointer;
       opacity: 0.6;
@@ -162,10 +166,18 @@ body {
         width: 30px;
         line-height: $tooltip-height;
         color: #333;
+        font-size: 20px;
       }
 
       &:hover {
         opacity: 1;
+      }
+    }
+
+    .render-tinymce-shortcode-wrapper-edit {
+      &:before {
+        font-size: 14px;
+        margin-left: 2px;
       }
     }
   }
@@ -189,6 +201,21 @@ body {
 
   &:hover {
     border-color: #888;
+  }
+}
+
+// Dummy content
+.render-tinymce-shortcode-placeholder {
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  background: #ddd;
+  color: #999;
+  padding: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background: #ccc;
   }
 }
 

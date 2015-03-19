@@ -78,6 +78,9 @@ class Render_Modal {
 			$wp_scripts->registered['jquery-ui-core']->ver
 		);
 
+		// For the time being, 1.11.4 is not out. Remove this when it is.
+		$jquery_ui_version = version_compare('1.11.3', $jquery_ui_version, '<' ) ? '1.11.3' : $jquery_ui_version;
+
 		/**
 		 * The stylesheet URL for jQuery UI.
 		 *
@@ -951,6 +954,7 @@ class Render_Modal {
 		// Gets all categories in use
 		$used_categories = render_get_shortcode_used_categories();
 		?>
+
 		<div id="render-modal-backdrop"></div>
 		<div id="render-modal-wrap" style="display: none;">
 			<div class="render-modal-title">
