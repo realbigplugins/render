@@ -515,7 +515,7 @@ class Render_tinymce extends Render {
 		}
 
 		// If the output contains any block tags, make sure the wrapper tag is a div
-		$tag = preg_match( '/' . render_block_regex() . '/', $shortcode_output ) ? 'div' : 'span';
+		$tag = isset( $data['allowInlineOnly'] ) ? 'span' : 'div';
 
 		// Override tag
 		$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;

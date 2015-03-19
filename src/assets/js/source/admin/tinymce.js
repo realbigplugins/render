@@ -16,7 +16,6 @@ var Render_tinymce;
 (function ($) {
     var min_load_time = false,
         last_message = 0,
-        submitted_editors = [],
         render_data = Render_Data.all_shortcodes,
         l18n = Render_Data.l18n,
         $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
