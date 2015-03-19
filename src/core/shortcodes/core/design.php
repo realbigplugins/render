@@ -298,7 +298,7 @@ foreach (
 			'wrapping'    => true,
 			'render'      => array(
 				'noStyle'         => true,
-				'onlyAllowInline' => true,
+				'displayInline' => true,
 			),
 		),
 		/*

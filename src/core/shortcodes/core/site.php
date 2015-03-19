@@ -52,7 +52,9 @@ foreach ( array(
 				),
 			),
 		),
-		'render'      => true,
+		'render'      => array(
+			'displayInline' => true,
+		),
 	),
 ) as $shortcode ) {
 

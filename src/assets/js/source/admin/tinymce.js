@@ -364,7 +364,7 @@ var Render_tinymce;
 
             // Pass content through some filtering
             // Strip tags
-            if (render_data[code]['render'] && render_data[code]['render']['onlyAllowInline']) {
+            if (render_data[code]['render'] && render_data[code]['render']['displayInline']) {
                 content = content.replace(new RegExp(Render_Data['block_regex'], 'gi'), '');
             }
 

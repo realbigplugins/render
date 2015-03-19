@@ -465,14 +465,10 @@ class Render_tinymce extends Render {
 			}
 		}
 
+		$tag = isset( $data['displayInline'] ) ? 'span' : 'div';
+
 		// Properly wrap the content
 		if ( ! empty( $content ) ) {
-
-			// Wrap the content in a special element, but first decide if it needs to be div or span
-			$tag = preg_match( '/' . render_block_regex() . '/', $content ) ? 'div' : 'span';
-
-			// Override tag
-			$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;
 
 			$content = "<$tag class='render-tinymce-shortcode-content'>$content</$tag>";
 		}
@@ -514,12 +510,6 @@ class Render_tinymce extends Render {
 			}
 		}
 
-		// If the output contains any block tags, make sure the wrapper tag is a div
-		$tag = isset( $data['allowInlineOnly'] ) ? 'span' : 'div';
-
-		// Override tag
-		$tag = isset( $data['displayBlock'] ) ? 'div' : $tag;
-
 		$classes = array();
 
 		// The code
@@ -560,9 +550,6 @@ class Render_tinymce extends Render {
 		$output .= ! empty( $shortcode_output ) ? $shortcode_output : '<span class="render-shortcode-no-output">(no output)</span>';
 
 		// Close the wrapper
-
-		// Delete notification
-		$output .= '<span class=\'render-tinymce-shortcode-wrapper-delete render-tinymce-tooltip\'>' . __( 'Press again to delete', 'Render' ) . "</span>";
 
 		// Change this so no edit content button is produced in the sc content editor
 		if ( $_POST['editor_id'] == 'render-tinymce-shortcode-content' || isset( $data['nested']['child'] ) ) {
