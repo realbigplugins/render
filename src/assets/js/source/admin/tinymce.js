@@ -45,6 +45,7 @@ var Render_tinymce;
 
             this.addToTinymce();
             this.binds();
+            this.keyboardShortcuts();
             this.createLoaders();
         },
 
@@ -89,6 +90,26 @@ var Render_tinymce;
 
                 Render_tinymce.closeShortcodeContentEditor();
                 event.preventDefault();
+            });
+        },
+
+        keyboardShortcuts: function () {
+
+            $(document).keyup(function (e) {
+
+                // Don't bother if not open
+                if (this.editing_shortcode_content_editor === null) {
+                    return;
+                }
+
+                switch (e.which) {
+
+                    // Escape
+                    case 27:
+                        e.preventDefault();
+                        Render_tinymce.closeShortcodeContentEditor();
+                        break;
+                }
             });
         },
 
@@ -217,8 +238,7 @@ var Render_tinymce;
                         Render_tinymce.removeShortcode();
 
                     } else if (
-                        editor.id != 'render-tinymce-shortcode-content' &&
-                        !$shortcode.find('.nested-child').length &&
+                        editor.id != 'render-tinymce-shortcode-content' && !$shortcode.find('.nested-child').length &&
                         $shortcode.length &&
                         $shortcode.find('.render-tinymce-shortcode-content').length
                     ) {
