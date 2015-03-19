@@ -440,7 +440,13 @@ var Render_tinymce;
                 $container = $(this.editing_shortcode_content_editor.getContainer()),
                 sc_offset_left = $shortcode.offset().left + ($shortcode.width() / 2) + $container.offset().left,
                 sc_offset_top = $shortcode.offset().top + ($shortcode.height() / 2) + $container.offset().top,
-                animation_time = 300;
+                animation_time = 300,
+                window_scroll = $(window).scrollTop();
+
+            // Compensate for window scroll
+            if (window_scroll) {
+                sc_offset_top = sc_offset_top - window_scroll;
+            }
 
             // Final size and starting position
             this.$shortcode_content_editor.css({
