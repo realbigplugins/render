@@ -297,7 +297,7 @@ foreach (
 			),
 			'wrapping'    => true,
 			'render'      => array(
-				'noStyle'         => true,
+				'noStyle'       => true,
 				'displayInline' => true,
 			),
 		),
@@ -463,6 +463,7 @@ foreach (
 			),
 			'wrapping'    => true,
 			'render'      => array(
+				'noStyle'      => true,
 				'nested'       => array(
 					'child' => 'render_column_section',
 				),
@@ -484,6 +485,7 @@ foreach (
 			'noDisplay' => true,
 			'wrapping'  => true,
 			'render'    => array(
+				'noStyle'      => true,
 				'displayBlock' => true,
 				'nested'       => array(
 					'parent' => 'render_columns_wrapper',
@@ -592,6 +594,7 @@ foreach (
 		array(
 			'code'      => 'render_tab_section',
 			'function'  => '_render_sc_tab_section',
+			'title'     => __( 'Tab', 'Render' ),
 			'noDisplay' => true,
 			'wrapping'  => true,
 			'render'    => array(

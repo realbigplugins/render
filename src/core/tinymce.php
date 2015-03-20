@@ -598,7 +598,7 @@ class Render_tinymce extends Render {
 					<a class="submitdelete deletion cancel" href="#"><?php _e( 'Cancel', 'Render' ); ?></a>
 
 					<a href="#" class="submit button render-button">
-						<?php _e( 'Change Content' ); ?>
+						<?php _e( 'Update Content' ); ?>
 					</a>
 				</div>
 
