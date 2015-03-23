@@ -259,14 +259,16 @@ var Render_tinymce;
                         // Notify user you can't edit shortcode content when in sc content editor
                         if (editor.id == 'render-tinymce-shortcode-content') {
 
-                            var message = data['l18n']['cannot_edit_sc_content'];
+                            var message = data['l18n']['cannot_edit_sc_content'],
+                                timeout = null;
 
                             // Eventually show more detailed message
                             if (sc_editor_error_timeout !== null) {
                                 message = data['l18n']['cannot_edit_sc_content_detail'];
+                                timeout = 5000;
                             }
 
-                            Render_tinymce.showSCEditorError(message, 5000);
+                            Render_tinymce.showSCEditorError(message, timeout);
                             return;
                         }
 
@@ -534,13 +536,13 @@ var Render_tinymce;
          * @since {{VERSION}}
          *
          * @param {string} message   The error message to display.
-         * @param {int}    [timeout] How long to show the message (default of 3sec).
+         * @param {int}    [timeout] How long to show the message (default of 2sec).
          */
         showSCEditorError: function (message, timeout) {
 
             var $error = this.$shortcode_content_editor.find('.render-tinymce-sc-content-editor-error');
 
-            timeout = timeout || 3000;
+            timeout = timeout || 2000;
 
             $error.html(message).addClass('show');
 

@@ -246,7 +246,7 @@ class Render_tinymce extends Render {
 		$data['l18n']['select_content_from_editor']  = __( 'Please select content from the editor to enable this shortcode.', 'Render' );
 		$data['l18n']['cannot_place_shortcode_here'] = __( 'You cannot place this shortcode here.', 'Render' );
 		$data['l18n']['cannot_edit_sc_content']      = __( 'Set content of current shortcode first.', 'Render' );
-		$data['l18n']['cannot_edit_sc_content_detail']      = __( 'You must first finalize this shortcode\'s content before you can edit any shortcode\'s content inside of this one.', 'Render' );
+		$data['l18n']['cannot_edit_sc_content_detail']      = __( 'You must first update this content before you can edit that.', 'Render' );
 
 		return $data;
 	}
