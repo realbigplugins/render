@@ -232,7 +232,7 @@ var Render_tinymce;
                     if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-edit')) {
 
                         // Edit a shortcode
-                        content = $shortcode.find('.render-tinymce-shortcodve-content').html();
+                        content = $shortcode.find('.render-tinymce-shortcode-content').html();
                         container_html = $('<div />').append($shortcode.clone()).html();
                         shortcode = Render_tinymce.convertRenderedToLiteral(container_html);
 
