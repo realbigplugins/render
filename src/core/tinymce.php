@@ -245,8 +245,11 @@ class Render_tinymce extends Render {
 		$data['l18n']['add_shortcode']               = __( 'Add Shortcode', 'Render' );
 		$data['l18n']['select_content_from_editor']  = __( 'Please select content from the editor to enable this shortcode.', 'Render' );
 		$data['l18n']['cannot_place_shortcode_here'] = __( 'You cannot place this shortcode here.', 'Render' );
-		$data['l18n']['cannot_edit_sc_content']      = __( 'Set content of current shortcode first.', 'Render' );
-		$data['l18n']['cannot_edit_sc_content_detail']      = __( 'You must first update this content before you can edit that.', 'Render' );
+
+		// Translators: Please do not translate anything between curly-brackets: {shortcode1}, {shortcode2}. You may move them,
+		// but don't delete them. They will be replaced with the shortcode's being edited (EG: accordion, tab, button, etc.).
+		$data['l18n']['cannot_edit_sc_content']      = __( 'Update the content of this {shortcode1} first.', 'Render' );
+		$data['l18n']['cannot_edit_sc_content_detail']      = __( 'Update this {shortcode1} content, and then click on the {shortcode2} to edit the {shortcode2} content.', 'Render' );
 
 		return $data;
 	}

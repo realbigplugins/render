@@ -265,8 +265,12 @@ var Render_tinymce;
                             // Eventually show more detailed message
                             if (sc_editor_error_timeout !== null) {
                                 message = data['l18n']['cannot_edit_sc_content_detail'];
-                                timeout = 5000;
+                                timeout = 6000;
                             }
+
+                            // Replace {shortcode1} snd {shortcode2} with actual names
+                            message = message.replace(/\{shortcode1}/g, Render_tinymce.$shortcode_content_editor.data('name'));
+                            message = message.replace(/\{shortcode2}/g, $shortcode.data('name'));
 
                             Render_tinymce.showSCEditorError(message, timeout);
                             return;
@@ -461,6 +465,8 @@ var Render_tinymce;
                 $shortcode.data('name')
             );
 
+            this.$shortcode_content_editor.data('name', $shortcode.data('name'));
+
             // Show the sc content editor (with a cool effect!)
             var width = $(window).width() < 500 ? $(window).width() * 0.9 : 500,
                 height = $(window).height() < 600 ? $(window).height() * 0.9 : 600,
@@ -542,7 +548,7 @@ var Render_tinymce;
 
             var $error = this.$shortcode_content_editor.find('.render-tinymce-sc-content-editor-error');
 
-            timeout = timeout || 2000;
+            timeout = timeout || 3000;
 
             $error.html(message).addClass('show');
 
