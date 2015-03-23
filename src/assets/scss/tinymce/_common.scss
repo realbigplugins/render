@@ -160,6 +160,14 @@ body {
       width: 30px;
       text-indent: -99999px;
 
+      &.disabled {
+        opacity: 0.2;
+
+        &:hover {
+          opacity: 0.2;
+        }
+      }
+
       &:before {
         text-indent: 0;
         float: left;

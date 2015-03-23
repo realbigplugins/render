@@ -40,9 +40,10 @@
   border: none;
   box-shadow: none;
   padding: 0 5px 0 0;
+  transition: background 300ms;
 
   &:hover {
-    background: #F1F1F1;
+    background: #eee;
   }
 
   .render-tinymce-shortcode-placeholder {
@@ -50,6 +51,10 @@
   }
 
   > .render-column-section {
+//    background: #fff;
+//    box-shadow: 0 1px 3px rgba(0,0,0,0.25) inset;
+//    border: 1px solid #ccc;
+//    padding: 5px;
 
     // Reset inner-columns
     width: auto;

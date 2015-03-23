@@ -1,5 +1,5 @@
 /**
- * Adds the tinymce button.
+ * Adds the TinyMCE button and all TinyMCE functionality.
  *
  * @since 1.0.0
  *
@@ -14,11 +14,15 @@
  */
 var Render_tinymce;
 (function ($) {
-    var min_load_time = false,
+
+    //noinspection JSUnresolvedVariable
+    var data = Render_Data,
+        min_load_time = false,
         last_message = 0,
-        render_data = Render_Data.all_shortcodes,
-        l18n = Render_Data.l18n,
-        $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes');
+        render_shortcode_data = data['all_shortcodes'],
+        l18n = data['l18n'],
+        sc_editor_error_timeout = null,
+        $modal_shortcodes = $('#ender-modal-wrap').find('.render-modal-shortcodes');
 
     Render_tinymce = {
 
@@ -29,8 +33,18 @@ var Render_tinymce;
          */
         active_editor: null,
 
+        /**
+         * The jQuery HTML object for the shortcode content editor.
+         *
+         * @since {{VERSION}}
+         */
         $shortcode_content_editor: null,
 
+        /**
+         * The TinyMCE editor object of the currently being used editor.
+         *
+         * @since {{VERSION}}
+         */
         editing_shortcode_content_editor: null,
 
         /**
@@ -165,7 +179,7 @@ var Render_tinymce;
 
                     var selection, $selection;
 
-                    if (Render_Data.do_render) {
+                    if (data['do_render']) {
 
                         selection = editor.selection.getContent({format: 'html'});
                         $selection = '<div>' + selection + '</div>';
@@ -188,7 +202,7 @@ var Render_tinymce;
                 // WP default shortcut
                 editor.addShortcut('alt+shift+s', '', 'render-open');
 
-                if (!Render_Data.do_render) {
+                if (!data['do_render']) {
                     return;
                 }
 
@@ -218,7 +232,7 @@ var Render_tinymce;
                     if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-edit')) {
 
                         // Edit a shortcode
-                        content = $shortcode.find('.render-tinymce-shortcode-content').html();
+                        content = $shortcode.find('.render-tinymce-shortcodve-content').html();
                         container_html = $('<div />').append($shortcode.clone()).html();
                         shortcode = Render_tinymce.convertRenderedToLiteral(container_html);
 
@@ -237,10 +251,24 @@ var Render_tinymce;
                         Render_tinymce.removeShortcode();
 
                     } else if (
-                        editor.id != 'render-tinymce-shortcode-content' && !$shortcode.find('.nested-child').length &&
+                        !$shortcode.find('.nested-child').length &&
                         $shortcode.length &&
                         $shortcode.find('.render-tinymce-shortcode-content').length
                     ) {
+
+                        // Notify user you can't edit shortcode content when in sc content editor
+                        if (editor.id == 'render-tinymce-shortcode-content') {
+
+                            var message = data['l18n']['cannot_edit_sc_content'];
+
+                            // Eventually show more detailed message
+                            if (sc_editor_error_timeout !== null) {
+                                message = data['l18n']['cannot_edit_sc_content_detail'];
+                            }
+
+                            Render_tinymce.showSCEditorError(message, 5000);
+                            return;
+                        }
 
                         // Edit a shortcode's content
                         $shortcode.addClass('render-tinymce-editing-content');
@@ -268,10 +296,10 @@ var Render_tinymce;
                         return;
                     }
 
-                    shortcode_data = Render_Data.all_shortcodes[$shortcode.data('code')].render;
+                    shortcode_data = render_shortcode_data[$shortcode.data('code')]['render'];
 
                     // Must not have image editing allowed
-                    if (typeof shortcode_data != 'undefined' && typeof shortcode_data.allowImageEditing != 'undefined') {
+                    if (typeof shortcode_data != 'undefined' && typeof shortcode_data['allowImageEditing'] != 'undefined') {
                         return;
                     }
 
@@ -308,7 +336,7 @@ var Render_tinymce;
                 //editor.on('BeforeAddUndo', function (event) {
                 //
                 //    // Get any unmodified shortcodes
-                //    var wp_regex = Render_Data.shortcode_regex.match(/\((\w+\|?)+\)/),
+                //    var wp_regex = data.shortcode_regex.match(/\((\w+\|?)+\)/),
                 //        shortodeRegEx, codes;
                 //
                 //    if (wp_regex) {
@@ -364,8 +392,8 @@ var Render_tinymce;
 
             // Pass content through some filtering
             // Strip tags
-            if (render_data[code]['render'] && render_data[code]['render']['displayInline']) {
-                content = content.replace(new RegExp(Render_Data['block_regex'], 'gi'), '');
+            if (render_shortcode_data[code]['render'] && render_shortcode_data[code]['render']['displayInline']) {
+                content = content.replace(new RegExp(data['block_regex'], 'gi'), '');
             }
 
             // Set the content of the shortcode being edited
@@ -374,7 +402,7 @@ var Render_tinymce;
             this.closeShortcodeContentEditor();
 
             // Render the shortcodes
-            if (Render_Data.do_render) {
+            if (data['do_render']) {
                 this.loadVisual();
             } else {
                 $shortcode.removeClass('render-tinymce-editing-content');
@@ -498,6 +526,37 @@ var Render_tinymce;
                     }, 1);
                 }
             }, animation_time);
+        },
+
+        /**
+         * Displays an error in the shortcode content editor.
+         *
+         * @since {{VERSION}}
+         *
+         * @param {string} message   The error message to display.
+         * @param {int}    [timeout] How long to show the message (default of 3sec).
+         */
+        showSCEditorError: function (message, timeout) {
+
+            var $error = this.$shortcode_content_editor.find('.render-tinymce-sc-content-editor-error');
+
+            timeout = timeout || 3000;
+
+            $error.html(message).addClass('show');
+
+            // Reset (if already set) the timeout
+            if (sc_editor_error_timeout !== null) {
+                clearTimeout(sc_editor_error_timeout);
+                $error.effect('shake', {
+                    distance: 10,
+                    times: 2
+                }, 200);
+            }
+
+            sc_editor_error_timeout = setTimeout(function () {
+                $error.removeClass('show');
+                sc_editor_error_timeout = null;
+            }, timeout);
         },
 
         /**
@@ -669,7 +728,7 @@ var Render_tinymce;
             }
 
             // Render the shortcodes
-            if (Render_Data.do_render) {
+            if (data['do_render']) {
                 this.loadVisual();
             }
         },
@@ -684,7 +743,7 @@ var Render_tinymce;
             var $container = $('<div />').append($(Render_tinymce.active_editor.getBody()).html()),
                 $shortcode = $container.find('.render-tinymce-editing'),
                 $content = $shortcode.find('.render-tinymce-shortcode-content'),
-                data = render_data[$shortcode.data('code')]['render'],
+                data = render_shortcode_data[$shortcode.data('code')]['render'],
                 nested = typeof data != 'undefined' && typeof data['nested'] != 'undefined';
 
             // Strip the shortcode if there is content and this isn't a nesting shortcode
@@ -720,7 +779,7 @@ var Render_tinymce;
                 }, 1000);
 
                 // Get a random loading message
-                var loading_messages = Render_Data.loading_messages,
+                var loading_messages = data['loading_messages'],
                     random_message = Math.floor(Math.random() * (loading_messages.length));
 
                 // Make sure it's not the same message as last time (that's boring!)
@@ -768,21 +827,21 @@ var Render_tinymce;
 
             Render_tinymce.loading(true);
 
-            var data;
+            var post_data;
 
-            if (typeof Render_Data.render_data !== 'undefined') {
-                data = Render_Data.render_data;
+            if (typeof data['render_data'] !== 'undefined') {
+                post_data = data['render_data'];
             }
 
-            data.action = 'render_render_shortcodes';
-            data.content = content;
-            data.shortcode_data = Render_Data.rendered_shortcodes;
-            data.editor_id = this.active_editor.id;
+            post_data.action = 'render_render_shortcodes';
+            post_data.content = content;
+            post_data.shortcode_data = data['rendered_shortcodes'];
+            post_data.editor_id = this.active_editor.id;
 
             $.ajax({
                 url: ajaxurl,
                 method: 'POST',
-                data: data,
+                data: post_data,
                 editor: this.active_editor,
                 success: function (response) {
 
@@ -845,7 +904,7 @@ var Render_tinymce;
 
                 output += ']';
 
-                if (render_data[code]['wrapping']) {
+                if (render_shortcode_data[code]['wrapping']) {
                     output += (shortcode_content || '') + '[/' + code + ']';
                 }
 

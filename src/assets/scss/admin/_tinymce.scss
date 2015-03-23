@@ -65,9 +65,29 @@ i.mce-i-render-mce-refresh-icon {
     transition: opacity 300ms, visibility 300ms;
   }
 
+  .render-tinymce-sc-content-editor-error {
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    padding: 10px;
+    background: #ff5737;
+    color: #fff;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 300ms, opacity 300ms, bottom 300ms;
+
+    &.show {
+      opacity: 1;
+      visibility: visible;
+      bottom: 100px;
+    }
+  }
+
   .render-tinymce-sc-content-editor-actions {
     position: absolute;
     padding: 8px 16px;
+    height: 28px;
     bottom: -10px;
     left: 0;
     right: 0;
