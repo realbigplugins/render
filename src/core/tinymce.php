@@ -245,6 +245,8 @@ class Render_tinymce extends Render {
 		$data['l18n']['add_shortcode']               = __( 'Add Shortcode', 'Render' );
 		$data['l18n']['select_content_from_editor']  = __( 'Please select content from the editor to enable this shortcode.', 'Render' );
 		$data['l18n']['cannot_place_shortcode_here'] = __( 'You cannot place this shortcode here.', 'Render' );
+		$data['l18n']['cannot_edit_sc_content']      = __( 'Set content of current shortcode first.', 'Render' );
+		$data['l18n']['cannot_edit_sc_content_detail']      = __( 'You must first finalize this shortcode\'s content before you can edit any shortcode\'s content inside of this one.', 'Render' );
 
 		return $data;
 	}
@@ -552,9 +554,12 @@ class Render_tinymce extends Render {
 		// Close the wrapper
 
 		// Change this so no edit content button is produced in the sc content editor
-		if ( $_POST['editor_id'] == 'render-tinymce-shortcode-content' || isset( $data['nested']['child'] ) ) {
-			$data['wrapping'] = 'false';
+		if ( isset( $data['nested']['child'] ) ) {
+			$data['wrapping'] = false;
 		}
+
+		// Possibly disable the edit
+		$disable_edit = $_POST['editor_id'] == 'render-tinymce-shortcode-content' ? 'disabled' : '';
 
 		$edit_content = isset( $data['wrapping'] ) && $data['wrapping'] === 'true' ? 'render-tinymce-edit-content' : '';
 
@@ -564,7 +569,7 @@ class Render_tinymce extends Render {
 			$output .= '<span class="render-tinymce-tooltip-spacer"></span>';
 
 			if ( isset( $data['wrapping'] ) && $data['wrapping'] === 'true' ) {
-				$output .= '<span class="render-tinymce-shortcode-wrapper-edit-content dashicons dashicons-edit">edit content</span>';
+				$output .= '<span class="render-tinymce-shortcode-wrapper-edit-content dashicons dashicons-edit ' . $disable_edit . '">edit content</span>';
 			}
 
 			$output .= '<span class="render-tinymce-shortcode-wrapper-edit dashicons render-icon-render-logo-condensed">edit</span>';
@@ -593,6 +598,8 @@ class Render_tinymce extends Render {
 					'textarea_rows' => 10,
 				) );
 				?>
+
+				<div class="render-tinymce-sc-content-editor-error"></div>
 
 				<div class="render-tinymce-sc-content-editor-actions">
 					<a class="submitdelete deletion cancel" href="#"><?php _e( 'Cancel', 'Render' ); ?></a>

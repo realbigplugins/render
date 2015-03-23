@@ -297,7 +297,7 @@ foreach (
 			),
 			'wrapping'    => true,
 			'render'      => array(
-				'noStyle'         => true,
+				'noStyle'       => true,
 				'displayInline' => true,
 			),
 		),
@@ -463,6 +463,7 @@ foreach (
 			),
 			'wrapping'    => true,
 			'render'      => array(
+				'noStyle'      => true,
 				'nested'       => array(
 					'child' => 'render_column_section',
 				),
@@ -484,6 +485,7 @@ foreach (
 			'noDisplay' => true,
 			'wrapping'  => true,
 			'render'    => array(
+				'noStyle'      => true,
 				'displayBlock' => true,
 				'nested'       => array(
 					'parent' => 'render_columns_wrapper',
