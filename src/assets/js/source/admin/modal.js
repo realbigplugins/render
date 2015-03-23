@@ -1327,6 +1327,11 @@ var Render_Modal;
                         var attributes = '',
                             child_content = typeof fields[i].content != 'undefined' && fields[i].content != '' ? fields[i].content : '';
 
+                        // If this is a new shortcode and content was selected, add it to the first child
+                        if (!this.modifying && selection && i === 0) {
+                            child_content = selection;
+                        }
+
                         // Add any globalAtts
                         if (globalAtts !== {}) {
                             $.each(globalAtts, function (name, value) {

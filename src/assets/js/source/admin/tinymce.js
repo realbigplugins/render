@@ -752,18 +752,38 @@ var Render_tinymce;
                 $shortcode = $container.find('.render-tinymce-editing'),
                 $content = $shortcode.find('.render-tinymce-shortcode-content'),
                 data = render_shortcode_data[$shortcode.data('code')]['render'],
-                nested = typeof data != 'undefined' && typeof data['nested'] != 'undefined';
+                nested = typeof data != 'undefined' && typeof data['nested'] != 'undefined',
+                $new_content = $content.length ? $content.contents() : '';
 
-            // Strip the shortcode if there is content and this isn't a nesting shortcode
-            if ($content.length && !nested) {
-                $shortcode.replaceWith($content.contents());
-            } else {
-                $shortcode.remove();
+            // If this is a nesting shortcode, combine all of the nested children content, and use that for the new content
+            if (nested) {
+
+                var $contents;
+
+                $new_content = '';
+
+                $content.children('.render-tinymce-shortcode-wrapper.nested-child').each(function () {
+
+                    $(this).find('.render-tinymce-shortcode-content').first().each(function () {
+
+                        $contents = Render_tinymce.loadText($('<div />').append($(this).contents()).html());
+
+                        if ($new_content === '') {
+                            $new_content = $('<p />').append($contents);
+                        } else {
+                            $new_content = $new_content.add($('<p />').append($contents));
+                        }
+                    });
+                });
             }
+
+            $shortcode.replaceWith($new_content);
 
             this.active_editor.setContent($container.html());
 
             Render_Modal.close();
+
+            this.loadVisual();
         },
 
         /**
