@@ -22,7 +22,8 @@ var Render_tinymce;
         render_shortcode_data = data['all_shortcodes'],
         l18n = data['l18n'],
         sc_editor_error_timeout = null,
-        $modal_shortcodes = $('#ender-modal-wrap').find('.render-modal-shortcodes');
+        $modal_shortcodes = $('#ender-modal-wrap').find('.render-modal-shortcodes'),
+        key_map = [];
 
     Render_tinymce = {
 
@@ -220,12 +221,28 @@ var Render_tinymce;
                     Render_tinymce.loadVisual();
                 });
 
+                // Setup keymap
+                editor.onKeyDown.add(function (editor, e) {
+
+                    e = e || event; // to deal with IE
+                    key_map[e.keyCode] = true;
+
+                    $(document).trigger('render-tinymce-key-tracker', editor, e);
+                });
+
+                editor.onKeyUp.add(function (editor, e) {
+
+                    e = e || event; // to deal with IE
+                    delete key_map[e.keyCode];
+
+                    $(document).trigger('render-tinymce-key-tracker', editor, e);
+                });
+
                 // Click the editor to edit shortcodes (but not in the sc content editor!)
                 editor.onClick.add(function (editor, event) {
 
                     Render_tinymce.active_editor = editor;
 
-                    // Remove delete overlay for all shortcodes
                     var $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper'),
                         content, container_html, shortcode;
 
@@ -279,6 +296,96 @@ var Render_tinymce;
                         // Edit a shortcode's content
                         $shortcode.addClass('render-tinymce-editing-content');
                         Render_tinymce.editShortcodeContent();
+                    }
+                });
+
+                // If the cursor is somehow in a shortcode, and the backspace key is pressed, remove the highest-level
+                // up parent shortcode. This prevents any strange occurrences from happening when deleting nodes
+                // inside shortcodes
+                $(document).on('render-tinymce-key-tracker', function () {
+
+                    // Only fire on specific keys (or key combos)
+                    if (key_map[13] || // Enter
+                        key_map[8] ||  // Backspace
+                        key_map[46] || // Delete
+                        ((key_map[17] || key_map[91]) && key_map[86]) || // Paste
+                        ((key_map[17] || key_map[91]) && key_map[88])    // Cut
+                    ) {
+
+                        var $node = $(Render_tinymce.active_editor.selection.getNode()),
+                            $shortcode = $node.parents('.render-tinymce-shortcode-wrapper').last();
+
+                        // It's possible that the current node is a shortcode
+                        if (!$shortcode.length) {
+                            $shortcode = $node.closest('.render-tinymce-shortcode-wrapper');
+                        }
+
+                        // If we've found one (either the current node, or a parent somewhere up the DOM), delete it.
+                        if ($shortcode.length) {
+                            Render_tinymce.active_editor.dom.remove($shortcode.get(0));
+                        }
+                    }
+                });
+
+                // Set the cursor before or after a shortcode when clicking next to it
+                editor.on('click', function (event) {
+
+                    var x = event.clientX,
+                        y = event.clientY,
+                        $body = $(editor.getBody()),
+                        $first = $body.contents().first().filter('.render-tinymce-shortcode-wrapper'),
+                        $last = $body.contents().last().filter('.render-tinymce-shortcode-wrapper');
+
+                    if ($first.length && y < $first.offset().top) {
+
+                        // Click above block shortcode
+                        var $before = $('<p />').append('&nbsp;');
+
+                        $body.prepend($before);
+
+                        editor.selection.select($before.get(0));
+                        editor.selection.collapse(true);
+
+                        event.preventDefault();
+
+                    } else if ($last.length && y > $last.offset().top + $last.height()) {
+
+                        // Click below block shortcode
+                        var $after = $('<p />').append('&nbsp;');
+
+                        $body.append($after);
+
+                        editor.selection.select($after.get(0));
+                        editor.selection.collapse(true);
+
+                        event.preventDefault();
+
+                    } else {
+
+                        var $line = $(event.target),
+                            $line_last = $line.contents().last().filter('.render-tinymce-shortcode-wrapper'),
+                            $line_first = $line.contents().first().filter('.render-tinymce-shortcode-wrapper');
+
+                        if ($line_first.length && x < $line_first.offset().left) {
+
+                            // Click to the right of inline shortcode
+                            $line_first.before('&nbsp;');
+
+                            editor.selection.select($line.get(0));
+                            editor.selection.collapse();
+
+                            event.preventDefault();
+
+                        } else if ($line_last.length && x > $line_last.offset().left + $line_last.width()) {
+
+                            // Click to the left of inline shortcode
+                            event.preventDefault();
+
+                            $line_last.after('&nbsp;');
+
+                            editor.selection.select($line.get(0));
+                            editor.selection.collapse(false);
+                        }
                     }
                 });
 
@@ -361,6 +468,7 @@ var Render_tinymce;
                 //});
             });
         },
+
 
         /**
          * Fires when clicking on a shortcode or the edit content button in the shortcode actions toolbar.
@@ -595,22 +703,7 @@ var Render_tinymce;
          * @since 1.0.0
          */
         postRender: function () {
-
-            var $body = $(Render_tinymce.active_editor.getBody());
-
-            $body.find('.render-tinymce-shortcode-wrapper').each(function () {
-
-                // Determine if the shortcode is the LAST thing in its parent (including text)
-                var contents = $(this).parent().contents();
-                if (contents[contents.length - 1] == $(this).get(0)) {
-
-                    //Okay it is, so insert a dummy container afterwords
-                    var tag = $(this).prop('tagName').toLowerCase(),
-                        $dummy_node = $('<' + tag + ' class="render-tinymce-dummy-container">&#8203;</' + tag + '>');
-
-                    $(this).after($dummy_node);
-                }
-            });
+            // Nobody loves me...
         },
 
         /**
@@ -620,7 +713,6 @@ var Render_tinymce;
          */
         loadText: function (content) {
 
-            content = content.replace(/&#8203;/g, '');
             content = Render_tinymce.convertRenderedToLiteral(content);
 
             return content;

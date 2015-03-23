@@ -223,7 +223,7 @@ class Render_tinymce extends Render {
 	 */
 	public static function modify_tinymce_init( $mceinit ) {
 
-		$mceinit['noneditable_noneditable_class'] = 'render-tinymce-shortcode-wrapper';
+		$mceinit['noneditable_noneditable_class'] = 'render-tinymce-shortcode-noneditable';
 		$mceinit['extended_valid_elements']       = 'span[*]';
 		$mceinit['entity_encoding']               = 'numeric';
 
@@ -421,11 +421,18 @@ class Render_tinymce extends Render {
 
 		global $render_shortcode_data, $shortcode_tags, $Render;
 
+		static $parent;
+
 		// "Extract" some of the found matches
 		$entire_code = $matches[0];
 		$code        = $matches[2];
 		$atts        = $matches[3];
 		$_content    = $matches[5];
+
+		// Declare shortcode parent
+		if ($parent === null) {
+			$parent = $code;
+		}
 
 		// Get our shortcode data
 		$data = $render_shortcode_data[ $code ];
@@ -532,12 +539,17 @@ class Render_tinymce extends Render {
 		// Hidden tooltip
 		$classes[] = isset( $data['hideActions'] ) ? 'hide-actions' : '';
 
+		// Noneditable only if we're in a top-level shortcode
+		$classes[] = $parent == $code ? 'render-tinymce-shortcode-noneditable' : '';
+
 		/**
 		 * Allows external filtering of the wrapper classes.
 		 *
 		 * @since 1.1-beta-2
 		 */
 		$classes = apply_filters( "render_tinymce_shortcode_wrapper_classes_$code", $classes );
+
+		$classes = array_filter( $classes );
 
 		// Parse the atts
 		if ( ! empty( $atts ) ) {
@@ -581,6 +593,11 @@ class Render_tinymce extends Render {
 		}
 
 		$output .= "</$tag>";
+
+		// Reset the parent
+		if ($parent == $code) {
+			$parent = null;
+		}
 
 		return $output;
 	}
