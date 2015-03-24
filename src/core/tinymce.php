@@ -248,8 +248,8 @@ class Render_tinymce extends Render {
 
 		// Translators: Please do not translate anything between curly-brackets: {shortcode1}, {shortcode2}. You may move them,
 		// but don't delete them. They will be replaced with the shortcode's being edited (EG: accordion, tab, button, etc.).
-		$data['l18n']['cannot_edit_sc_content']      = __( 'Update the content of this {shortcode1} first.', 'Render' );
-		$data['l18n']['cannot_edit_sc_content_detail']      = __( 'Update this {shortcode1} content, and then click on the {shortcode2} to edit the {shortcode2} content.', 'Render' );
+		$data['l18n']['cannot_edit_sc_content']        = __( 'Update the content of this {shortcode1} first.', 'Render' );
+		$data['l18n']['cannot_edit_sc_content_detail'] = __( 'Update this {shortcode1} content, and then click on the {shortcode2} to edit the {shortcode2} content.', 'Render' );
 
 		return $data;
 	}
@@ -430,7 +430,7 @@ class Render_tinymce extends Render {
 		$_content    = $matches[5];
 
 		// Declare shortcode parent
-		if ($parent === null) {
+		if ( $parent === null ) {
 			$parent = $code;
 		}
 
@@ -468,7 +468,7 @@ class Render_tinymce extends Render {
 		// If this is a wrapping code, but no content is provided, use dummy content
 		if ( empty( $content ) &&
 		     isset( $data['wrapping'] ) &&
-		     $data['wrapping'] === 'true'
+		     $data['wrapping'] == 'true'
 		) {
 			if ( isset( $data['dummyContent'] ) ) {
 				$content = $data['dummyContent'];
@@ -513,7 +513,7 @@ class Render_tinymce extends Render {
 			$shortcode_output = render_sc_attr_unescape( $shortcode_output );
 
 			// Make sure images are non-editable (unless told otherwise)
-			if ( ! isset( $data['wrapping'] ) || $data['wrapping'] == 'false' || $data['wrapping'] == false ) {
+			if ( ! isset( $data['wrapping'] ) || $data['wrapping'] == 'false' ) {
 				$shortcode_output = preg_replace(
 					'/<img/',
 					'<img data-mce-placeholder="1" style="outline: none !important;"',
@@ -529,6 +529,9 @@ class Render_tinymce extends Render {
 
 		// Whether or not to style the code
 		$classes[] = ! isset( $data['noStyle'] ) ? 'styled' : '';
+
+		// Wrapping class
+		$classes[] = isset( $data['wrapping'] ) && $data['wrapping'] == 'true' ? 'wrapping' : '';
 
 		// If the code should be forced as displayBlock
 		$classes[] = isset( $data['displayBlock'] ) ? 'block' : '';
@@ -595,7 +598,7 @@ class Render_tinymce extends Render {
 		$output .= "</$tag>";
 
 		// Reset the parent
-		if ($parent == $code) {
+		if ( $parent == $code ) {
 			$parent = null;
 		}
 

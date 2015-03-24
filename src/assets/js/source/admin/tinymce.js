@@ -22,7 +22,7 @@ var Render_tinymce;
         render_shortcode_data = data['all_shortcodes'],
         l18n = data['l18n'],
         sc_editor_error_timeout = null,
-        $modal_shortcodes = $('#ender-modal-wrap').find('.render-modal-shortcodes'),
+        $modal_shortcodes = $('#render-modal-wrap').find('.render-modal-shortcodes'),
         key_map = [];
 
     Render_tinymce = {
@@ -112,7 +112,7 @@ var Render_tinymce;
             $(document).keyup(function (e) {
 
                 // Don't bother if not open
-                if (this.editing_shortcode_content_editor === null) {
+                if (!this.editing_shortcode_content_editor) {
                     return;
                 }
 
@@ -164,8 +164,6 @@ var Render_tinymce;
         addToTinymce: function () {
 
             tinymce.PluginManager.add('render', function (editor) {
-
-                var $body;
 
                 editor.addButton('render_open', {
 
@@ -259,7 +257,7 @@ var Render_tinymce;
 
                         $shortcode.addClass('render-tinymce-editing');
 
-                        Render_tinymce.open(shortcode);
+                        Render_tinymce.open(shortcode, $shortcode);
 
                     } else if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-remove')) {
 
@@ -804,26 +802,25 @@ var Render_tinymce;
          *
          * @since 1.0.0
          *
-         * @param shortcode The shortcode that was activated.
+         * @param [shortcode] The shortcode that was activated.
+         * @param [$shortcode] The shortcode DOM object.
          */
-        open: function (shortcode) {
+        open: function (shortcode, $shortcode) {
 
             if (typeof shortcode !== 'undefined' && shortcode !== null) {
                 Render_Modal.modify(shortcode);
-            } else {
+            }
+
+            if (!Render_Modal.selection) {
 
                 // Disable wrapping shortcodes when there's no selection
-                if (!Render_Modal.selection) {
-                    $modal_shortcodes.find('.render-modal-shortcode.wrapping:not(.nested-parent)').each(function () {
+                $modal_shortcodes.find('.render-modal-shortcode.wrapping:not(.nested-parent)').each(function () {
 
-                        Render_Modal.disableShortcode(
-                            $(this),
-                            l18n.select_content_from_editor
-                        );
-                    });
-                }
-
-                Render_Modal.open();
+                    Render_Modal.disableShortcode(
+                        $(this),
+                        l18n['select_content_from_editor']
+                    );
+                });
             }
 
             // Hide any identical shortcodes if in a nesting shortcode
@@ -839,10 +836,13 @@ var Render_tinymce;
 
                     Render_Modal.disableShortcode(
                         $(this),
-                        l18n.cannot_place_shortcode_here
+                        l18n['cannot_place_shortcode_here']
                     );
                 });
             }
+
+            // And finally, open the Modal
+            Render_Modal.open();
         },
 
         /**
@@ -851,6 +851,11 @@ var Render_tinymce;
          * @since 1.0.0
          */
         close: function () {
+
+            // Remove the currently being edited shortcode class (if any)
+            $(this.active_editor.dom.select('.render-tinymce-editing')).removeClass('render-tinymce-editing');
+
+            // Re-focus the editor
             this.active_editor.focus();
         },
 
@@ -892,7 +897,8 @@ var Render_tinymce;
                 $content = $shortcode.find('.render-tinymce-shortcode-content'),
                 data = render_shortcode_data[$shortcode.data('code')]['render'],
                 nested = typeof data != 'undefined' && typeof data['nested'] != 'undefined',
-                $new_content = $content.length ? $content.contents() : '';
+                $new_content = $content.length ? $content.contents() : '',
+                re_load = false;
 
             // If this is a nesting shortcode, combine all of the nested children content, and use that for the new content
             if (nested) {
@@ -904,6 +910,9 @@ var Render_tinymce;
                 $content.children('.render-tinymce-shortcode-wrapper.nested-child').each(function () {
 
                     $(this).find('.render-tinymce-shortcode-content').first().each(function () {
+
+                        // Because we're using loadText(), we'll need to re-load visual
+                        re_load = true;
 
                         $contents = Render_tinymce.loadText($('<div />').append($(this).contents()).html());
 
@@ -922,7 +931,9 @@ var Render_tinymce;
 
             Render_Modal.close();
 
-            this.loadVisual();
+            if (re_load) {
+                this.loadVisual();
+            }
         },
 
         /**
