@@ -227,7 +227,7 @@ var Render_tinymce;
                     e = e || event; // to deal with IE
                     key_map[e.keyCode] = true;
 
-                    $(document).trigger('render-tinymce-key-tracker', editor, e);
+                    $(document).trigger('render-tinymce-key-tracker', [editor, e]);
                 });
 
                 editor.onKeyUp.add(function (editor, e) {
@@ -235,7 +235,7 @@ var Render_tinymce;
                     e = e || event; // to deal with IE
                     delete key_map[e.keyCode];
 
-                    $(document).trigger('render-tinymce-key-tracker', editor, e);
+                    $(document).trigger('render-tinymce-key-tracker', [editor, e]);
                 });
 
                 // Click the editor to edit shortcodes (but not in the sc content editor!)
@@ -327,6 +327,47 @@ var Render_tinymce;
                     }
                 });
 
+                // If trying to delete lines above or below the shortcode, don't delete the shortcode itself!
+                editor.onKeyDown.add(function (editor, event) {
+
+                    var $node = $(editor.selection.getNode()),
+                        $shortcode_before = $node.prev('.render-tinymce-shortcode-wrapper'),
+                        $shortcode_after = $node.next('.render-tinymce-shortcode-wrapper'),
+                        cursor = editor.selection.getRng().startOffset;
+
+                    // Backspace
+                    if (event.which == 8) {
+
+                        // Delete line under shortcode
+                        if (cursor === 0 && $shortcode_before) {
+
+                            if (!$node.text().length) {
+                                console.log('above!');
+                                editor.dom.remove($node.get(0));
+                            }
+
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+
+                    // Delete
+                    if (event.which == 46) {
+
+                        // Delete line above shortcode
+                        if (cursor === $node.text().length && $shortcode_after) {
+
+                            if (!$node.text().length) {
+                                console.log('below!');
+                                editor.dom.remove($node.get(0));
+                            }
+
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+                });
+
                 // Set the cursor before or after a shortcode when clicking next to it
                 editor.on('click', function (event) {
 
@@ -342,6 +383,7 @@ var Render_tinymce;
                         var $before = $('<p />').append('&nbsp;');
 
                         $body.prepend($before);
+                        editor.nodeChanged();
 
                         editor.selection.select($before.get(0));
                         editor.selection.collapse(true);
@@ -354,6 +396,7 @@ var Render_tinymce;
                         var $after = $('<p />').append('&nbsp;');
 
                         $body.append($after);
+                        editor.nodeChanged();
 
                         editor.selection.select($after.get(0));
                         editor.selection.collapse(true);
@@ -370,6 +413,7 @@ var Render_tinymce;
 
                             // Click to the right of inline shortcode
                             $line_first.before('&nbsp;');
+                            editor.nodeChanged();
 
                             editor.selection.select($line.get(0));
                             editor.selection.collapse();
@@ -382,6 +426,7 @@ var Render_tinymce;
                             event.preventDefault();
 
                             $line_last.after('&nbsp;');
+                            editor.nodeChanged();
 
                             editor.selection.select($line.get(0));
                             editor.selection.collapse(false);
