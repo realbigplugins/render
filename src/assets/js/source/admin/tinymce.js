@@ -339,10 +339,9 @@ var Render_tinymce;
                     if (event.which == 8) {
 
                         // Delete line under shortcode
-                        if (cursor === 0 && $shortcode_before) {
+                        if (cursor === 0 && $shortcode_before.length) {
 
                             if (!$node.text().length) {
-                                console.log('above!');
                                 editor.dom.remove($node.get(0));
                             }
 
@@ -355,10 +354,9 @@ var Render_tinymce;
                     if (event.which == 46) {
 
                         // Delete line above shortcode
-                        if (cursor === $node.text().length && $shortcode_after) {
+                        if (cursor === $node.text().length && $shortcode_after.length) {
 
                             if (!$node.text().length) {
-                                console.log('below!');
                                 editor.dom.remove($node.get(0));
                             }
 
