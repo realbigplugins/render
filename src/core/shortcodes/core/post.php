@@ -325,7 +325,7 @@ function _render_sc_post_word_count( $atts = array() ) {
 	$content = $post->post_content;
 
 	// Strip this shortcode out to count the rest
-	$content = preg_replace( "/\\[render_post_word_count]/s", '', $content );
+	$content = preg_replace( '/\\[render_post_meta.*?meta=(\'|")word_count/s', '', $content );
 	$content = do_shortcode( $content );
 
 	// Strip tags
@@ -336,6 +336,20 @@ function _render_sc_post_word_count( $atts = array() ) {
 
 	// And then count it!
 	return str_word_count( $content );
+}
+
+/**
+ * Gets the post word count.
+ *
+ * @since  0.3.0
+ * @access private
+ *
+ * @param array $atts The attributes sent to the shortcode.
+ *
+ * @return string The post word count.
+ */
+function _render_sc_post_word_count_tinymce( $atts = array() ) {
+
 }
 
 /**
