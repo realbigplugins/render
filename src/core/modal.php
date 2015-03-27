@@ -395,6 +395,7 @@ class Render_Modal {
 			       name="<?php echo $att_id; ?>"
 			       id="<?php echo $unique_ID; ?>"
 			       value="<?php echo $properties['value']; ?>"
+			       data-default="<?php echo $properties['checked'] ? $properties['value'] : $properties['uncheckedValue']; ?>"
 				<?php checked( $properties['checked'], true ); ?>
 				/>
 
