@@ -309,6 +309,8 @@ function _render_sc_post_published_date( $atts = array(), $post ) {
  */
 function _render_sc_post_word_count( $atts = array() ) {
 
+	global $post;
+
 	$atts = shortcode_atts( array(
 		'post' => get_the_ID(),
 	), $atts );
@@ -316,9 +318,11 @@ function _render_sc_post_word_count( $atts = array() ) {
 	// Escape atts
 	render_esc_atts( $atts );
 
-	// Get the post object
-	if ( ( $post = get_post( $atts['post'] ) ) === null ) {
-		return render_sc_error( 'Cannot get post object.' );
+	// Get the post object if it's not already set
+	if ( ! $post || ! ( $post instanceof WP_Post ) ) {
+		if ( ( $post = get_post( $atts['post'] ) ) === null ) {
+			return render_sc_error( 'Cannot get post object.' );
+		}
 	}
 
 	// Get the filtered content
@@ -331,25 +335,11 @@ function _render_sc_post_word_count( $atts = array() ) {
 	// Strip tags
 	$content = strip_tags( $content );
 
-	// Convert nbsp to real space
-	$content = preg_replace( '/&nbsp;/', ' ', $content );
+	// Decode html entities
+	$content = html_entity_decode( $content );
 
 	// And then count it!
 	return str_word_count( $content );
-}
-
-/**
- * Gets the post word count.
- *
- * @since  0.3.0
- * @access private
- *
- * @param array $atts The attributes sent to the shortcode.
- *
- * @return string The post word count.
- */
-function _render_sc_post_word_count_tinymce( $atts = array() ) {
-
 }
 
 /**
