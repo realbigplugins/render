@@ -25,6 +25,11 @@ class Render_AdminPage_Settings extends Render {
 
 		add_action( 'admin_menu', array( $this, 'menu' ) );
 		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
+
+		// Download debug file
+		if ( isset( $_GET['render_download_debug'] ) ) {
+			$this->download_debug_log();
+		}
 	}
 
 	/**
@@ -106,6 +111,20 @@ class Render_AdminPage_Settings extends Render {
 		$classes .= 'render render-options';
 
 		return $classes;
+	}
+
+	/**
+	 * Sets the download headers and outputs debugging information.
+	 *
+	 * @since {{VERSION}}
+	 */
+	public function download_debug_log() {
+
+		header('Content-Type: text/plain'); // you can change this based on the file type
+		header('Content-Disposition: attachment; filename="render-debug.txt"');
+
+		include __DIR__ . '/debug.php';
+		exit();
 	}
 
 	/**
@@ -326,6 +345,15 @@ class Render_AdminPage_Settings extends Render {
 
 								<label for="render_allow_tracking" class="disabled-style"></label>
 							</div>
+						</td>
+					</tr>
+
+					<tr valign="top">
+						<th scope="row">
+							<?php _e( 'Debugging Information', 'Render' ); ?>
+						</th>
+						<td>
+							<a href="<?php echo add_query_arg('render_download_debug', 'true'); ?>" class="button">Download</a>
 						</td>
 					</tr>
 				</table>
