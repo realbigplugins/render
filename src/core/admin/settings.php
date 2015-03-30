@@ -28,7 +28,7 @@ class Render_AdminPage_Settings extends Render {
 
 		// Download debug file
 		if ( isset( $_GET['render_download_debug'] ) ) {
-			$this->download_debug_log();
+			add_action( 'admin_init', array( $this, 'download_debug_log' ) );
 		}
 	}
 
