@@ -682,7 +682,7 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
 	/**
 	 * Adds a licensing nag if the license is not valid.
 	 *
-	 * @since 1.1-beta-2
+	 * @since {{VERSION}}
 	 */
 	add_action( 'after_plugin_row_' . plugin_basename( $file_path ), function () use( $extension, $name ) {
 
