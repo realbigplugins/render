@@ -990,7 +990,7 @@ var Render_Modal;
         /**
          * Disables the shortcode from being used.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {jQuery} $shortcode The shortcode element to disable.
          * @param {string} new_message The message to display when clicked.
@@ -1008,7 +1008,7 @@ var Render_Modal;
         /**
          * Enables the shortcode.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {jQuery} $shortcode The shortcode element to enable.
          */
@@ -1026,7 +1026,7 @@ var Render_Modal;
         /**
          * Shows the disabled message.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {jQuery} $shortcode The shortcode element to show the disabled message.
          * @param {bool} show Whether to show or hide the message.
@@ -1743,7 +1743,7 @@ var Render_Modal;
         /**
          * Attribute fiend conditionals.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @type {object|bool}
          */
@@ -1752,7 +1752,7 @@ var Render_Modal;
         /**
          * Whether or not this attribute is hidden (used for conditionals).
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @type {boolean}
          */
@@ -1805,7 +1805,7 @@ var Render_Modal;
         /**
          * Sets up the attribute's conditionals.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @private
          */
@@ -1853,7 +1853,7 @@ var Render_Modal;
         /**
          * Performs conditional checks and actions.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          */
         this.performConditionals = function () {
 
@@ -1939,7 +1939,7 @@ var Render_Modal;
                         /**
                          * Calls the populating AJAX.
                          *
-                         * @since 1.1-beta-2
+                         * @since {{VERSION}}
                          *
                          * @param data The att data to send off.
                          */
@@ -1989,7 +1989,7 @@ var Render_Modal;
             /**
              * Compares all existing conditions and shows or hides the attribute row.
              *
-             * @since 1.1-beta-2
+             * @since {{VERSION}}
              *
              * @param {object} atts The conditional properties.
              */
@@ -2231,7 +2231,7 @@ var Render_Modal;
         /**
          * Rebuilds the available option(s).
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {object} response The AJAX response.
          */
@@ -2258,7 +2258,7 @@ var Render_Modal;
         /**
          * Customizable post-init function.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          */
         this.postInit = function () {
         };
@@ -2293,7 +2293,7 @@ var Render_Modal;
         /**
          * The input mask properties.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @type {boolean|object}
          */
@@ -2305,7 +2305,7 @@ var Render_Modal;
         /**
          * Sets up the textbox
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          */
         this.postInit = function () {
 
@@ -2364,7 +2364,7 @@ var Render_Modal;
          *
          * Causes mask to take effect, if there is one.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {*} value The value to set to.
          */
@@ -2387,7 +2387,7 @@ var Render_Modal;
         /**
          * Applies a mask to the input field.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          */
         this.applyMask = function () {
 
@@ -2455,7 +2455,7 @@ var Render_Modal;
         /**
          * Sets up the textarea.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -2543,7 +2543,7 @@ var Render_Modal;
         /**
          * Sets up the checkbox.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -2683,7 +2683,7 @@ var Render_Modal;
         /**
          * Rebuilds the available options.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {object} response The AJAX response.
          */
@@ -2724,7 +2724,7 @@ var Render_Modal;
         /**
          * Constructs the Chosen input.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3089,7 +3089,7 @@ var Render_Modal;
         /**
          * Rebuilds the available options.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {object} response The AJAX response.
          */
@@ -3141,7 +3141,7 @@ var Render_Modal;
         /**
          * Sets up the colorpicker object.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3203,7 +3203,7 @@ var Render_Modal;
         /**
          * Constructs the jQuery UI Slider object.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3363,7 +3363,7 @@ var Render_Modal;
          *
          * For this one, it changes the available min and max.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {object} response The AJAX response.
          */
@@ -3410,7 +3410,7 @@ var Render_Modal;
         /**
          * Sets up the WP Media integration.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3515,7 +3515,7 @@ var Render_Modal;
         /**
          * Sets up the counter object.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3682,7 +3682,7 @@ var Render_Modal;
          *
          * For this one, it changes the available min and max.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {object} response The AJAX response.
          */
@@ -3723,7 +3723,7 @@ var Render_Modal;
         /**
          * Sets up repeater fields.
          *
-         * @since 1.1-beta-2
+         * @since {{VERSION}}
          *
          * @param {{jQuery}} $container The current attribute row.
          */
@@ -3912,7 +3912,7 @@ var Render_Modal;
     /**
      * Run the value through various sanitation methods to prepare for being a shortcode attribute.
      *
-     * @since 1.1-beta-2
+     * @since {{VERSION}}
      * @global sc_attr_escapes
      *
      * @param {string} value The value to escape.
@@ -3937,7 +3937,7 @@ var Render_Modal;
     /**
      * Un-escapes the shortcode attribute.
      *
-     * @since 1.1-beta-2
+     * @since {{VERSION}}
      * @global sc_attr_escapes
      *
      * @param {string} value The value to un-escape.
@@ -3962,7 +3962,7 @@ var Render_Modal;
     /**
      * Escapes a string for use as a regular expression.
      *
-     * @since 1.1-beta-2
+     * @since {{VERSION}}
      *
      * @param {string} string The string to be escaped.
      * @returns {string} The escaped string.
@@ -4050,7 +4050,7 @@ var Render_Modal;
     /**
      * Parses the attribute output of a repeater field.
      *
-     * @since 1.1-beta-2
+     * @since {{VERSION}}
      *
      * @param object The repeater field "object"
      * @returns {Array} Sorted fields

@@ -92,7 +92,7 @@ function _render_sc_site_info( $atts = array() ) {
 
 	// Default bloginfo is the name, so if it returns name, but we didn't ask for name, it was an invalid option
 	if ( $output == get_bloginfo( 'name' ) && $atts['info'] !== 'name' ) {
-		$output = render_sc_error( 'Not a valid option.' );
+		$output = render_sc_error( __( 'Not a valid option.', 'Render' ) );
 	}
 
 	return $output;

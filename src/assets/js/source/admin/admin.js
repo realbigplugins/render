@@ -73,7 +73,7 @@
     /**
      * Shows an error in the console.
      *
-     * @since 1.1-beta-2
+     * @since {{VERSION}}
      *
      * @param {string} message The message to log.
      */

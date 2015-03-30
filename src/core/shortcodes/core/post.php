@@ -114,7 +114,7 @@ function _render_sc_post_meta( $atts = array() ) {
 
 	// Get the post object
 	if ( ( $post = get_post( $atts['post'] ) ) === null ) {
-		return render_sc_error( 'Cannot get post object.' );
+		return render_sc_error( __( 'Cannot get post object.', 'Render' ) );
 	}
 
 	// Attempt to get the meta and return it
@@ -145,7 +145,7 @@ function _render_sc_post_meta( $atts = array() ) {
 			if ( is_callable( "_render_sc_post_$atts[meta]" ) ) {
 				return call_user_func( "_render_sc_post_$atts[meta]", $post );
 			} else {
-				return render_sc_error( "Cannot get the post \"$atts[meta]\"." );
+				return render_sc_error( sprintf( __( "Cannot get the post %s.", 'Render' ), $atts['meta'] ) );
 			}
 			break;
 
@@ -154,7 +154,7 @@ function _render_sc_post_meta( $atts = array() ) {
 			if ( isset( $post->{$atts['meta']} ) ) {
 				return $post->{$atts['meta']};
 			} else {
-				return render_sc_error( "Cannot get the post \"$atts[meta]\"." );
+				return render_sc_error( sprintf( __( "Cannot get the post %s.", 'Render' ), $atts['meta'] ) );
 			}
 			break;
 	}
@@ -179,7 +179,7 @@ function _render_sc_post_author( $post ) {
 			return $author;
 		}
 	} else {
-		return render_sc_error( 'Cannot get post author.' );
+		return render_sc_error( __( 'Cannot get post author.', 'Render' ) );
 	}
 }
 
@@ -199,7 +199,7 @@ function _render_sc_post_title( $post ) {
 	if ( ! empty( $title ) ) {
 		return $title;
 	} else {
-		return render_sc_error( 'Cannot get post title.' );
+		return render_sc_error( __( 'Cannot get post title.', 'Render' ) );
 	}
 }
 
@@ -218,7 +218,7 @@ function _render_sc_post_status( $post ) {
 	if ( isset( $post->post_status ) ) {
 		return $post->post_status;
 	} else {
-		return render_sc_error( "Cannot get post status." );
+		return render_sc_error( __( 'Cannot get post status.', 'Render' ) );
 	}
 }
 
@@ -237,7 +237,7 @@ function _render_sc_post_type( $post ) {
 	if ( isset( $post->post_type ) ) {
 		return $post->post_type;
 	} else {
-		return render_sc_error( "Cannot get post type." );
+		return render_sc_error( __( 'Cannot get post type.', 'Render' ) );
 	}
 }
 
@@ -256,7 +256,7 @@ function _render_sc_post_excerpt( $post ) {
 	if ( isset( $post->post_excerpt ) ) {
 		return ! empty( $post->post_excerpt ) ? $post->post_excerpt : 'No excerpt.';
 	} else {
-		return render_sc_error( "Cannot get post excerpt." );
+		return render_sc_error( __( 'Cannot get post excerpt.', 'Render' ) );
 	}
 }
 
@@ -274,7 +274,7 @@ function _render_sc_post_content( $post ) {
 
 	$content = apply_filters( 'the_content', $post->post_content );
 
-	return ! empty( $content ) ? $content : 'No content.';
+	return ! empty( $content ) ? $content : __( 'No content.', 'Render' );
 }
 
 /**
@@ -293,7 +293,7 @@ function _render_sc_post_published_date( $atts = array(), $post ) {
 	if ( isset( $post->post_date ) ) {
 		return date( $atts['date_format'], strtotime( $post->post_date ) );
 	} else {
-		return render_sc_error( "Cannot get post published date." );
+		return render_sc_error( __( 'Cannot get post published date.', 'Render' ) );
 	}
 }
 
@@ -321,7 +321,7 @@ function _render_sc_post_word_count( $atts = array() ) {
 	// Get the post object if it's not already set
 	if ( ! $post || ! ( $post instanceof WP_Post ) ) {
 		if ( ( $post = get_post( $atts['post'] ) ) === null ) {
-			return render_sc_error( 'Cannot get post object.' );
+			return render_sc_error( __( 'Cannot get post object.', 'Render' ) );
 		}
 	}
 

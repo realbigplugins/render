@@ -166,7 +166,7 @@ function _render_widget_add_actions( $screen ) {
 /**
  * Adds the Render widget pointer.
  *
- * @since 1.1-beta-2
+ * @since {{VERSION}}
  *
  * @param array $pointers The pointers to use.
  * @return array The new pointers.

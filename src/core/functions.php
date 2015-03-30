@@ -94,7 +94,7 @@ function render_esc_atts( $atts ) {
 /**
  * Un-escapes the escaped shortcode attributes in the content.
  *
- * @since 1.1-beta-2
+ * @since {{VERSION}}
  *
  * @param string $content The attribute to be escaped.
  * @return string The escaped attribute.
@@ -751,7 +751,7 @@ function render_disable_tinymce_media_button( $hook_name, $label, $priority = 10
  *
  * Loosely based on how the Modal outputs the selectbox.
  *
- * @since 1.1-beta-2
+ * @since {{VERSION}}
  * @see   Render_Modal::att_type_selectbox()
  *
  * @param array $options The options.

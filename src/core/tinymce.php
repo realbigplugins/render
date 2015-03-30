@@ -130,7 +130,7 @@ class Render_tinymce extends Render {
 	/**
 	 * Adds the TinyMCE pointer.
 	 *
-	 * @since 1.1-beta-2
+	 * @since {{VERSION}}
 	 *
 	 * @param array $pointers The pointers to use.
 	 *
@@ -165,7 +165,7 @@ class Render_tinymce extends Render {
 	/**
 	 * Adds the Render specific editor styles.
 	 *
-	 * @since 1.1-beta-2
+	 * @since {{VERSION}}
 	 *
 	 * @param array $styles The editor styles.
 	 *
@@ -233,7 +233,7 @@ class Render_tinymce extends Render {
 	/**
 	 * Provides translations for TinyMCE pages.
 	 *
-	 * @since  1.1-beta-2
+	 * @since  {{VERSION}}
 	 * @access private
 	 *
 	 * @param array $data The current localization data.
@@ -549,7 +549,7 @@ class Render_tinymce extends Render {
 		/**
 		 * Allows external filtering of the wrapper classes.
 		 *
-		 * @since 1.1-beta-2
+		 * @since {{VERSION}}
 		 */
 		$classes = apply_filters( "render_tinymce_shortcode_wrapper_classes_$code", $classes );
 

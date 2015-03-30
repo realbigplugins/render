@@ -237,7 +237,7 @@ function _render_query( $atts = array() ) {
 		}
 		$output .= '</ul>';
 	} else {
-		$output = 'No posts found';
+		$output = __( 'No posts found.', 'Render' );
 	}
 
 	return $output;
@@ -317,7 +317,7 @@ function render_sc_post_type_list( $args = array() ) {
 /**
  * Returns a dynamic list of posts based on the supplied post_type.
  *
- * @since 1.1-beta-2
+ * @since {{VERSION}}
  *
  * @param array|null $atts The attributes this output depends on.
  * @return array The new options list

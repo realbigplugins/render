@@ -257,11 +257,11 @@ function _render_sc_user_info( $atts = array() ) {
 	render_esc_atts( $atts );
 
 	if ( $atts['property'] === false ) {
-		return render_sc_error( 'No property selected' );
+		return '';
 	}
 
 	if ( ! $user = render_sc_user_get_userdata( $atts['user'] ) ) {
-		return 'Cannot find specified user.';
+		return '';
 	}
 
 	switch ( $atts['property'] ) {
@@ -291,9 +291,37 @@ function _render_sc_user_info( $atts = array() ) {
 			if ( isset( $user->{$atts['property']} ) ) {
 				return $user->{$atts['property']};
 			} else {
-				return render_sc_error( "Cannot find user property $atts[property]." );
+				return '';
 			}
 			break;
+	}
+}
+
+function _render_sc_user_info_tinymce( $atts = array() ) {
+
+	$atts = shortcode_atts( array(
+		'user'        => get_current_user_id(),
+		'property'    => false,
+		'date_format' => get_option( 'date_format', 'F j, Y' ),
+	), $atts );
+
+	// Escape atts
+	render_esc_atts( $atts );
+
+	if ( $atts['property'] === false ) {
+		return render_tinymce_visibility_wrap( render_sc_error( __( 'No property selected', 'Render' ) ), 'hidden' );
+	}
+
+	if ( ! $user = render_sc_user_get_userdata( $atts['user'] ) ) {
+		return render_tinymce_visibility_wrap( __( 'Cannot find specified user.', 'Render' ), 'hidden' );
+	}
+
+	$output = _render_sc_user_info( $atts );
+
+	if ( empty( $output ) ) {
+		return render_tinymce_visibility_wrap( __( "Cannot get user $atts[property].", 'Render' ), 'hidden' );
+	} else {
+		return $output;
 	}
 }
 
@@ -312,7 +340,7 @@ function _render_sc_user_full_name( $user ) {
 	if ( isset( $user['first_name'] ) && isset( $user['last_name'] ) ) {
 		return $user['first_name'] . ' ' . $user['last_name'];
 	} else {
-		return render_sc_error( 'Cannot get user full name.' );
+		return '';
 	}
 }
 
@@ -331,7 +359,7 @@ function _render_sc_user_first_name( $user ) {
 	if ( isset( $user['first_name'] ) ) {
 		return $user['first_name'];
 	} else {
-		return render_sc_error( 'Cannot get user first name.' );
+		return '';
 	}
 }
 
@@ -350,7 +378,7 @@ function _render_sc_user_last_name( $user ) {
 	if ( isset( $user['last_name'] ) ) {
 		return $user['last_name'];
 	} else {
-		return render_sc_error( 'Cannot get user last name.' );
+		return '';
 	}
 }
 
@@ -369,7 +397,7 @@ function _render_sc_user_username( $user ) {
 	if ( isset( $user['user_login'] ) ) {
 		return $user['user_login'];
 	} else {
-		return render_sc_error( 'Cannot get username.' );
+		return '';
 	}
 }
 
@@ -388,7 +416,7 @@ function _render_sc_user_email( $user ) {
 	if ( isset( $user['user_email'] ) ) {
 		return $user['user_email'];
 	} else {
-		return render_sc_error( 'Cannot get user email address.' );
+		return '';
 	}
 }
 
@@ -407,7 +435,7 @@ function _render_sc_user_display_name( $user ) {
 	if ( isset( $user['display_name'] ) ) {
 		return $user['display_name'];
 	} else {
-		return render_sc_error( 'Cannot get user display name.' );
+		return '';
 	}
 }
 
@@ -427,7 +455,7 @@ function _render_sc_user_author_url( $user ) {
 	if ( ! empty( $url ) ) {
 		return $url;
 	} else {
-		return render_sc_error( 'Cannot get author url.' );
+		return '';
 	}
 }
 
@@ -446,7 +474,7 @@ function _render_sc_user_description( $user ) {
 	if ( isset( $user['description'] ) ) {
 		return $user['description'];
 	} else {
-		return render_sc_error( 'Cannot get user description.' );
+		return '';
 	}
 }
 
@@ -474,7 +502,7 @@ function _render_sc_user_role( $user ) {
 	if ( ! empty( $output ) ) {
 		return $output;
 	} else {
-		return render_sc_error( 'Cannot get user role.' );
+		return '';
 	}
 }
 
@@ -498,7 +526,7 @@ function _render_sc_user_user_registered( $user, $atts = array() ) {
 	if ( isset( $user['user_registered'] ) ) {
 		return date( $atts['date_format'], strtotime( $user['user_registered'] ) );
 	} else {
-		return render_sc_error( 'Cannot get user email address.' );
+		return '';
 	}
 }
 
