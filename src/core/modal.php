@@ -952,6 +952,15 @@ class Render_Modal {
 			return strcmp( $a['title'], $b['title'] );
 		} );
 
+		// Move unrecognized to bottom
+		foreach( $Render->shortcodes as $code => $shortcode ) {
+
+			if ( $shortcode['source'] == __( 'Unknown', 'Render' ) ) {
+				unset( $Render->shortcodes[ $code ] );
+				$Render->shortcodes[ $code ] = $shortcode;
+			}
+		}
+
 		// Gets all categories in use
 		$used_categories = render_get_shortcode_used_categories();
 		?>
