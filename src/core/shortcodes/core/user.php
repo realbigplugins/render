@@ -50,6 +50,7 @@ foreach (
 					'required'    => true,
 					'type'        => 'selectbox',
 					'properties'  => array(
+						'allowCustomInput' => true,
 						'groups' => array(
 							array(
 								'label'   => __( 'Name', 'Render' ),
