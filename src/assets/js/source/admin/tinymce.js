@@ -618,7 +618,10 @@ var Render_tinymce;
                 $shortcode.data('name')
             );
 
-            this.$shortcode_content_editor.data('name', $shortcode.data('name'));
+            this.$shortcode_content_editor.data({
+                name: $shortcode.data('name'),
+                code: $shortcode.data('code')
+            });
 
             // Show the sc content editor (with a cool effect!)
             var width = $(window).width() < 500 ? $(window).width() * 0.9 : 500,
@@ -811,14 +814,28 @@ var Render_tinymce;
                 Render_Modal.modify(shortcode);
             }
 
+            // Disable wrapping shortcodes when there's no selection
             if (!Render_Modal.selection) {
 
-                // Disable wrapping shortcodes when there's no selection
                 $modal_shortcodes.find('.render-modal-shortcode.wrapping:not(.nested-parent)').each(function () {
 
                     Render_Modal.disableShortcode(
                         $(this),
                         l18n['select_content_from_editor']
+                    );
+                });
+            }
+
+            // Disable adding a shortcode in another shortcode
+            if (this.editing_shortcode_content_editor) {
+
+                var code = this.$shortcode_content_editor.data('code');
+
+                $modal_shortcodes.find('.render-modal-shortcode[data-code="' + code + '"]').each(function () {
+
+                    Render_Modal.disableShortcode(
+                        $(this),
+                        l18n['cannot_nest_identical']
                     );
                 });
             }

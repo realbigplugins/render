@@ -245,6 +245,7 @@ class Render_tinymce extends Render {
 		$data['l18n']['add_shortcode']               = __( 'Add Shortcode', 'Render' );
 		$data['l18n']['select_content_from_editor']  = __( 'Please select content from the editor to enable this shortcode.', 'Render' );
 		$data['l18n']['cannot_place_shortcode_here'] = __( 'You cannot place this shortcode here.', 'Render' );
+		$data['l18n']['cannot_nest_identical']       = __( 'Cannot nest identical shortcodes.', 'Render' );
 
 		// Translators: Please do not translate anything between curly-brackets: {shortcode1}, {shortcode2}. You may move them,
 		// but don't delete them. They will be replaced with the shortcode's being edited (EG: accordion, tab, button, etc.).
