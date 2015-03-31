@@ -447,6 +447,10 @@ $render-modal-height: 800px;
   .chosen-container {
     width: 100% !important;
 
+    &.chosen-container-multi .chosen-choices li.search-field {
+      display: block !important;
+    }
+
     &.allow-custom-input {
       .no-results {
         display: none;
