@@ -445,6 +445,8 @@ $render-modal-height: 800px;
 
   // Chosen
   .chosen-container {
+    width: 100% !important;
+
     &.allow-custom-input {
       .no-results {
         display: none;
