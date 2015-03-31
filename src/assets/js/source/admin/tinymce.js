@@ -583,6 +583,10 @@ var Render_tinymce;
             // Hide the modal (no fancy animations here, just quick)
             this.$shortcode_content_editor.hide().removeClass('active');
 
+            // Remove loading overlay from editor and focus it
+            this.loading(false, this.editing_shortcode_content_editor);
+            this.editing_shortcode_content_editor.focus();
+
             // Hide backdrop
             Render_Modal.getElement('backdrop').hide();
             Render_Modal.keepBackdrop = false;
@@ -612,6 +616,9 @@ var Render_tinymce;
             // Show the backdrop
             Render_Modal.getElement('backdrop').show();
             Render_Modal.keepBackdrop = true;
+
+            // "Disable" the editor
+            this.loading(true, this.editing_shortcode_content_editor);
 
             // Insert shortcode name into title
             this.$shortcode_content_editor.find('.render-tinymce-sc-content-editor-title-sc-name').html(
@@ -687,6 +694,9 @@ var Render_tinymce;
                             $sc_editor.find('.render-tinymce-sc-content-editor-actions').outerHeight(true) -
                             $sc_editor.find('.render-tinymce-sc-content-editor-title').outerHeight(true)
                         );
+
+                        // Focus the editor
+                        Render_tinymce.active_editor.focus();
                     }, 1);
                 }
             }, animation_time);
@@ -959,10 +969,13 @@ var Render_tinymce;
          * @since 1.0.0
          *
          * @param loading Whether to show or hide the overlay.
+         * @param [editor] The editor to set to loading.
          */
-        loading: function (loading) {
+        loading: function (loading, editor) {
 
-            var $container = $(Render_tinymce.active_editor.getContainer()).closest('.wp-editor-wrap'),
+            editor = editor || Render_tinymce.active_editor;
+
+            var $container = $(editor.getContainer()).closest('.wp-editor-wrap'),
                 $loader = $container.find('.render-tinymce-loader');
 
             if (loading) {
