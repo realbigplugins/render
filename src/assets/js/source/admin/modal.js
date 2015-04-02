@@ -2836,7 +2836,6 @@ var Render_Modal;
                         $deselect_all.hide('drop', {direction: 'right'}, 150, function () {
                             $(this).remove()
                         });
-                        ;
                     }
                 });
             }
@@ -2918,21 +2917,25 @@ var Render_Modal;
                         return;
                     }
 
-                    // Set the preview text to our custom input (and make it not look like the default text)
-                    $container.find('.chosen-single').removeClass('chosen-default')
-                        .find('> span').html(search_text);
+                    // TODO Potentially figure out why I need this timeout... It keeps being overriden if I don't
+                    setTimeout(function () {
 
-                    // Tell the Modal to use this new custom data
-                    $chosen.data('chosen-custom-input', search_text);
+                        // Set the preview text to our custom input (and make it not look like the default text)
+                        $container.find('.chosen-single').removeClass('chosen-default')
+                            .find('> span').html(search_text);
 
-                    // Remove focus from input and clear any leftover input
-                    $input_text.val('').blur();
+                        // Tell the Modal to use this new custom data
+                        $chosen.data('chosen-custom-input', search_text);
 
-                    // Make sure to trigger the input change
-                    $chosen.trigger('render-att-change');
+                        // Remove focus from input and clear any leftover input
+                        $input_text.val('').blur();
 
-                    // Manually add choice deselect and event
-                    Chosen.single_deselect_control_build();
+                        // Make sure to trigger the input change
+                        $chosen.trigger('render-att-change');
+
+                        // Manually add choice deselect and event
+                        Chosen.single_deselect_control_build();
+                    }, 1);
                 });
 
                 // Populate search text if using custom input
@@ -3051,6 +3054,7 @@ var Render_Modal;
 
                 // Custom input (value doesn't exist in options)
                 if (!this.$input.find('option[value="' + value + '"]').length) {
+
                     this.$container.find('.chosen-search input[type="text"]').val(value);
                     this.$input.trigger('chosen:hiding_dropdown');
                     return;
