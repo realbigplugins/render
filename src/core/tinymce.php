@@ -436,7 +436,9 @@ class Render_tinymce extends Render {
 		}
 
 		// Get our shortcode data
-		$data = $render_shortcode_data[ $code ];
+		if ( isset( $render_shortcode_data [ $code ] ) ) {
+			$data = $render_shortcode_data[ $code ];
+		}
 
 		// Get our atts
 		$atts = shortcode_parse_atts( $atts );
@@ -461,7 +463,7 @@ class Render_tinymce extends Render {
 			$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, '_replace_shortcodes' ), $_content );
 		}
 
-		// If the shortcode explicitely said to leave alone, completely pass over
+		// If the shortcode explicitly said to leave alone, completely pass over
 		if ( isset( $data['ignore'] ) && ( $data['ignore'] == true || $data['ignore'] == 'true' ) ) {
 			return $entire_code;
 		}

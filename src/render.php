@@ -280,8 +280,8 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 			self::$shortcode_defaults = apply_filters( 'render_shortcode_defaults', array(
 				'function'    => '',
 				'title'       => '',
-				'description' => '',
-				'source'      => __( 'Unknown', 'Render' ),
+				'description' => __( 'Unrecognized shortcode.', 'Render' ),
+				'source'      => __( 'Source Unknown', 'Render' ),
 				'tags'        => '',
 				'category'    => 'other',
 				'atts'        => array(),
@@ -377,7 +377,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 
 				// Add the new option in
 				$update_options[] = $option;
-				$update_options = array_unique( $update_options );
+				$update_options   = array_unique( $update_options );
 
 				// Save it
 				update_option( 'render_updated_options', $update_options );
@@ -429,7 +429,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 					'dashicons-admin-generic',
 					82.9
 				);
-			});
+			} );
 
 			include_once __DIR__ . '/core/admin/settings.php';
 			include_once __DIR__ . '/core/admin/shortcodes.php';
@@ -591,6 +591,31 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 
 				foreach ( $shortcodes as $code => $args ) {
 
+					// If shortcode is in category "Other", add the default sc_attribute
+					if ( ! isset( $args['category'] ) || $args['category'] == 'other' ) {
+						$args['atts']['sc_attributes'] = array(
+							'label'       => __( 'Attributes', 'Render' ),
+							'description' => __( 'Enter the shortcode\'s attributes here.', 'Render' ),
+							'type'        => 'repeater',
+							'properties'  => array(
+								'fields' => array(
+									'attribute_name'  => array(
+										'label'    => __( 'Attribute Name', 'Render' ),
+										'validate' => array(
+											'DOES NOT CONTAIN' => '[]"\'',
+										),
+									),
+									'attribute_value' => array(
+										'label'    => __( 'Attribute Value', 'Render' ),
+										'validate' => array(
+											'DOES NOT CONTAIN' => '[]"\'',
+										),
+									),
+								),
+							),
+						);
+					}
+
 					// Setup shortcode defaults
 					$args = $this->parse_shortcode( $args );
 
@@ -613,6 +638,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 * @since {{VERSION}}
 		 *
 		 * @param array $shortcode The shortcode to parse.
+		 *
 		 * @return array The parsed shortcode.
 		 */
 		public static function parse_shortcode( $shortcode ) {
@@ -642,6 +668,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 * @since {{VERSION}}
 		 *
 		 * @param array $att The att to parse.
+		 *
 		 * @return array The parsed att.
 		 */
 		public static function parse_shortcode_att( $att ) {
@@ -703,6 +730,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 * @since {{VERSION}}
 		 *
 		 * @param array $pointers The pointers to use.
+		 *
 		 * @return array The new pointers.
 		 */
 		public static function add_main_pointer( $pointers ) {
@@ -711,9 +739,9 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 			$content .= '</p><p><span id="render-tracking-message">';
 			$content .= __( 'Render would like to gather anonymous tracking data about your site to improve your Render experience!', 'Render' );
 			$content .= '<br/><br/><span style="text-align: center; width: 100%; display: inline-block;">';
-			$content .='<input type="button" class="button render-button" name="render-allow-tracking" value="Allow Tracking" />';
+			$content .= '<input type="button" class="button render-button" name="render-allow-tracking" value="Allow Tracking" />';
 			$content .= '&nbsp;';
-			$content .='<input type="button" class="button" value="Do Not Allow" />';
+			$content .= '<input type="button" class="button" value="Do Not Allow" />';
 			$content .= '</span></span>';
 
 			$pointers['admin_menu'] = array(

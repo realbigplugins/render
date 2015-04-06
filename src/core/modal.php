@@ -42,6 +42,7 @@ class Render_Modal {
 	 * @since 1.0.0
 	 *
 	 * @param array $data Old data to be localized to Render.
+	 *
 	 * @return array New data to be localized to Render.
 	 */
 	public static function localize_shortcodes( $data ) {
@@ -79,7 +80,7 @@ class Render_Modal {
 		);
 
 		// For the time being, 1.11.4 is not out. Remove this when it is.
-		$jquery_ui_version = version_compare('1.11.3', $jquery_ui_version, '<' ) ? '1.11.3' : $jquery_ui_version;
+		$jquery_ui_version = version_compare( '1.11.3', $jquery_ui_version, '<' ) ? '1.11.3' : $jquery_ui_version;
 
 		/**
 		 * The stylesheet URL for jQuery UI.
@@ -118,6 +119,7 @@ class Render_Modal {
 	 * @access private
 	 *
 	 * @param array $data The current localization data.
+	 *
 	 * @return array The new localization data.
 	 */
 	static function _translations( $data ) {
@@ -131,6 +133,11 @@ class Render_Modal {
 		$data['l18n']['only_numbers']                 = __( 'Only numbers please', 'Render' );
 		$data['l18n']['cannot_change_from_shortcode'] = __( 'Cannot change from current shortcode. Remove first.', 'Render' );
 		$data['l18n']['this_field_required']          = __( 'This field is required', 'Render' );
+		$data['l18n']['other_sc_explanation'] = sprintf(
+			__( 'Render does not recognize these shortcodes. You can still use them, but they will not render a preview. Check out Render\'s %extensions%s to see if they can help you!.', 'Render' ),
+			'<a href="http://renderwp.com/extensions/">',
+			'</a>'
+		);
 
 		return $data;
 	}
@@ -227,14 +234,15 @@ class Render_Modal {
 		$att['classes']   = array_filter( $att['classes'] );
 
 		// Setup data
-		$data                  = array();
-		$data['att-name']      = $att_id;
-		$data['att-type']      = $att['type'];
-		$data['required']      = $att['required'] !== false ? 'true' : 'false';
-		$data['validate']      = $att['validate'] !== false ? 'true' : 'false';
-		$data['sanitize']      = $att['sanitize'] !== false ? 'true' : 'false';
-		$data['init-callback'] = $att['initCallback'] !== false ? $att['initCallback'] : 'false';
-		$data['no-init']       = $att['noInit'] !== false ? 'true' : 'false';
+		$data                    = array();
+		$data['att-name']        = $att_id;
+		$data['att-type']        = $att['type'];
+		$data['required']        = $att['required'] !== false ? 'true' : 'false';
+		$data['validate']        = $att['validate'] !== false ? 'true' : 'false';
+		$data['sanitize']        = $att['sanitize'] !== false ? 'true' : 'false';
+		$data['init-callback']   = $att['initCallback'] !== false ? $att['initCallback'] : 'false';
+		$data['no-init']         = $att['noInit'] !== false ? 'true' : 'false';
+		$data['repeater-parent'] = isset( $att['repeaterParent'] ) ? $att['repeaterParent'] : 'false';
 
 		$data_output = '';
 		foreach ( $data as $data_name => $data_value ) {
@@ -381,9 +389,9 @@ class Render_Modal {
 	private static function att_type_checkbox( $att_id, $att, $properties = array(), $shortcode ) {
 
 		$properties = wp_parse_args( $properties, array(
-			'value'   => '1',
-			'label'   => false,
-			'checked' => false,
+			'value'          => '1',
+			'label'          => false,
+			'checked'        => false,
 			'uncheckedValue' => '0',
 		) );
 
@@ -410,7 +418,7 @@ class Render_Modal {
 		<?php endif; ?>
 
 		<input type="hidden" class="render-modal-att-checkbox-unchecked"
-		       value="<?php echo $properties['uncheckedValue']; ?>" />
+		       value="<?php echo $properties['uncheckedValue']; ?>"/>
 	<?php
 	}
 
@@ -837,7 +845,8 @@ class Render_Modal {
 		}
 
 		foreach ( $properties['fields'] as $field_ID => $field ) {
-			$properties['fields'][ $field_ID ]['disabled'] = true;
+			$properties['fields'][ $field_ID ]['disabled']       = true;
+			$properties['fields'][ $field_ID ]['repeaterParent'] = $att_id;
 		}
 
 		for ( $i = 0; $i < intval( $properties['startWith'] ) + 1; $i ++ ) :
@@ -953,9 +962,9 @@ class Render_Modal {
 		} );
 
 		// Move unrecognized to bottom
-		foreach( $Render->shortcodes as $code => $shortcode ) {
+		foreach ( $Render->shortcodes as $code => $shortcode ) {
 
-			if ( $shortcode['source'] == __( 'Unknown', 'Render' ) ) {
+			if ( $shortcode['category'] == 'other' ) {
 				unset( $Render->shortcodes[ $code ] );
 				$Render->shortcodes[ $code ] = $shortcode;
 			}
@@ -963,6 +972,14 @@ class Render_Modal {
 
 		// Gets all categories in use
 		$used_categories = render_get_shortcode_used_categories();
+
+		// Move "Other" to end
+		if ( isset( $used_categories['other'] ) ) {
+
+			$_other = $used_categories['other'];
+			unset( $used_categories['other'] );
+			$used_categories['other'] = $_other;
+		}
 		?>
 
 		<div id="render-modal-backdrop"></div>
@@ -1050,8 +1067,7 @@ class Render_Modal {
 										</div>
 
 										<div class="render-modal-shortcode-description">
-											<?php echo $shortcode['description'] ?
-												$shortcode['description'] : __( 'No description available.', 'Render' ); ?>
+											<?php echo $shortcode['description']; ?>
 										</div>
 										<div style="clear: both; display: table;"></div>
 									</div>

@@ -943,6 +943,12 @@ $render-modal-height: 800px;
     box-sizing: border-box;
   }
 
+  // Other message
+  #render-modal-other-message {
+    font-style: italic;
+    color: #999;
+  }
+
   .render-modal-footer {
     padding: 8px 16px;
     background: #fcfcfc;
