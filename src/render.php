@@ -591,29 +591,9 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 
 				foreach ( $shortcodes as $code => $args ) {
 
-					// If shortcode is in category "Other", add the default sc_attribute
+					// If shortcode is in category "Other", add the default sc_attribute and add a description
 					if ( ! isset( $args['category'] ) || $args['category'] == 'other' ) {
-						$args['atts']['sc_attributes'] = array(
-							'label'       => __( 'Attributes', 'Render' ),
-							'description' => __( 'Enter the shortcode\'s attributes here.', 'Render' ),
-							'type'        => 'repeater',
-							'properties'  => array(
-								'fields' => array(
-									'attribute_name'  => array(
-										'label'    => __( 'Attribute Name', 'Render' ),
-										'validate' => array(
-											'DOES NOT CONTAIN' => '[]"\'',
-										),
-									),
-									'attribute_value' => array(
-										'label'    => __( 'Attribute Value', 'Render' ),
-										'validate' => array(
-											'DOES NOT CONTAIN' => '[]"\'',
-										),
-									),
-								),
-							),
-						);
+						$args = $this->parse_unrecognized_shortcode( $args, $code );
 					}
 
 					// Setup shortcode defaults
@@ -698,6 +678,88 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 			}
 
 			return $att;
+		}
+
+		/**
+		 * Gives the shortcode extra properties.
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @param $args array The old args.
+		 * @param $code string The code of the current shortcode.
+		 *
+		 * @return array The new args.
+		 */
+		function parse_unrecognized_shortcode( $args, $code ) {
+
+			static $integrations;
+
+			// Get integrations
+			if ( ! ( $integrations instanceof Render_Integrations ) ) {
+				include_once __DIR__ . '/core/integrations.php';
+				$integrations          = new Render_Integrations();
+			}
+
+			$integrated_shortcodes = $integrations->all_shortcodes;
+
+			// The default explanation for the user
+			$shortcode_explanation = __( 'Render does not recognize this shortcode. You may still use it, but you will not get a preview and you must manually enter attributes.', 'Render' );
+
+			// Check to see if Render has an integration available, and if it does, modify the description
+			if ( isset( $integrated_shortcodes[ $code ] ) ) {
+
+				$integrated_shortcode = $integrated_shortcodes[ $code ];
+				$integrated_plugin    = $integrations->integrations[ $integrated_shortcode['plugin'] ];
+
+				if ( isset( $integrated_shortcode[ 'noDisplay'] ) ) {
+					$args['noDisplay'] = true;
+					return $args;
+				}
+
+				/*
+				 * Translators:
+				 * %s:1 = Dependent plugin title
+				 * %s:2 = Opening of anchor
+				 * %s:3 = Closing of anchor
+				 */
+				$shortcode_explanation = sprintf(
+					__( 'This shortcode belongs to %s and is not currently integrated. Good news though, Render has an integration available %shere%s!', 'Render' ),
+					"<strong>$integrated_plugin[title]</strong>",
+					"<a href=\"$integrated_plugin[link]\" target=\"_blank\" class=\"render-stop-propagation\">",
+					'</a>'
+				);
+			}
+
+			// Lets the user know what's going on
+			$args['atts']['shortcode_explanation'] = array(
+				'type'        => 'section_break',
+				'description' => $shortcode_explanation,
+			);
+
+			// Allows manual adding of shortcodes
+			$args['atts']['sc_attributes'] = array(
+				'label'       => __( 'Attributes', 'Render' ),
+				'description' => __( 'Enter the shortcode\'s attributes here.', 'Render' ),
+				'type'        => 'repeater',
+				'properties'  => array(
+					'fields' => array(
+						'attribute_name'  => array(
+							'label'    => __( 'Attribute Name', 'Render' ),
+							'validate' => array(
+								'DOES NOT CONTAIN' => '[]"\'',
+							),
+						),
+						'attribute_value' => array(
+							'label'    => __( 'Attribute Value', 'Render' ),
+							'validate' => array(
+								'DOES NOT CONTAIN' => '[]"\'',
+							),
+						),
+					),
+				),
+			);
+
+			return $args;
 		}
 
 		/**

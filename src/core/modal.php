@@ -134,7 +134,7 @@ class Render_Modal {
 		$data['l18n']['cannot_change_from_shortcode'] = __( 'Cannot change from current shortcode. Remove first.', 'Render' );
 		$data['l18n']['this_field_required']          = __( 'This field is required', 'Render' );
 		$data['l18n']['other_sc_explanation'] = sprintf(
-			__( 'Render does not recognize these shortcodes. You can still use them, but they will not render a preview. Check out Render\'s %extensions%s to see if they can help you!.', 'Render' ),
+			__( 'Render does not recognize these shortcodes. You can still use them, but they will not render a preview. Check out Render\'s %sextensions%s to see if they can help you!.', 'Render' ),
 			'<a href="http://renderwp.com/extensions/">',
 			'</a>'
 		);
