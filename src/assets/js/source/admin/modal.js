@@ -1255,6 +1255,9 @@ var Render_Modal;
             elements.categories.find('li').first().addClass('active');
             elements.categories.find('> ul').css('left', 0);
 
+            // Other category description
+            elements.wrap.find('#render-modal-other-message').remove();
+
             // Reset buttons
             elements.remove.hide();
 
@@ -1352,7 +1355,8 @@ var Render_Modal;
             }
 
             // Get the content
-            if (props['wrapping']) {
+            // For unrecognized shortcodes, base wrapping on presence of content
+            if (props['wrapping'] || (render_data[code]['category'] == 'other' && selection)) {
 
                 if (nested) {
 

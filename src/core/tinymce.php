@@ -482,6 +482,9 @@ class Render_tinymce extends Render {
 
 		$tag = isset( $data['displayInline'] ) ? 'span' : 'div';
 
+		// Unrecognized shortcodes should be span
+		$tag = $Render->shortcodes[ $code ]['category'] == 'other' ? 'span' : $tag;
+
 		// Properly wrap the content
 		if ( ! empty( $content ) ) {
 
@@ -583,6 +586,11 @@ class Render_tinymce extends Render {
 		$disable_edit = $_POST['editor_id'] == 'render-tinymce-shortcode-content' ? 'disabled' : '';
 
 		$edit_content = isset( $data['wrapping'] ) && $data['wrapping'] === 'true' ? 'render-tinymce-edit-content' : '';
+
+		// Unrecognized shortcodes should have edit content button, if there is content
+		if ( $Render->shortcodes[ $code ]['category'] == 'other' && isset( $content ) && ! empty( $content ) ) {
+			$data['wrapping'] = 'true';
+		}
 
 		// Action button
 		if ( ! isset( $data['hideActions'] ) ) {
