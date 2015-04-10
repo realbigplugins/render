@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-define( 'RENDER_VERSION', '{{VERSION}}' );
+define( 'RENDER_VERSION', '1.1.0' );
 
 /**
  * The absolute server path to Render's root directory.
@@ -162,22 +162,51 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		);
 
 		/**
+		 * Contains available Render integrations information.
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @var Render_Integrations
+		 */
+		private $integrations;
+
+		/**
+		 * Handles Render admin notices.
+		 *
+		 * @since {{VERSION}}
+		 *
+		 * @var Render_Notices
+		 */
+		private $notices;
+
+		/**
 		 * Constructs the class.
 		 *
 		 * @since 1.0.0
 		 */
 		private function __construct() {
 
+			// Setup notices
+			require_once __DIR__ . '/core/notices.php';
+			$this->notices = new Render_Notices();
+
 			// Make sure we should be here
 			if ( version_compare( '5.3', phpversion(), '>' ) ) {
-				$this->notice();
+
+				$this->notices->add(
+					'render_version',
+					sprintf(
+						__( 'Render is not active because your server is not running at least PHP version 5.3. Please update or contact your server administrator. (PS: PHP 5.3 is %s year\'s old!)', 'Render' ),
+						intval( date( 'y' ) ) - 9
+					)
+				);
 
 				return;
 			}
 
 			define( 'RENDER_ACTIVE', true );
 
-			add_action( 'init', array( __CLASS__, 'pre_init' ), 0.1 );
+			add_action( 'init', array( $this, 'pre_init' ), 0.1 );
 			add_action( 'init', array( $this, 'post_init' ), 100 );
 		}
 
@@ -211,7 +240,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		public static function pre_init() {
+		public function pre_init() {
 
 			// Hook database interactions for options
 			add_action( 'updated_option', array( __CLASS__, 'updated_option' ), 10, 1 );
@@ -332,6 +361,10 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 
 			// Pointers
 			add_filter( 'current_screen', array( $this, '_pointers' ), 1 );
+
+
+			// Notices
+			add_action( 'admin_init', array( $this, '_initial_notices' ) );
 		}
 
 		/**
@@ -692,15 +725,13 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 */
 		function parse_unrecognized_shortcode( $args, $code ) {
 
-			static $integrations;
-
 			// Get integrations
-			if ( ! ( $integrations instanceof Render_Integrations ) ) {
+			if ( ! ( $this->integrations instanceof Render_Integrations ) ) {
 				include_once __DIR__ . '/core/integrations.php';
-				$integrations          = new Render_Integrations();
+				$this->integrations = new Render_Integrations();
 			}
 
-			$integrated_shortcodes = $integrations->all_shortcodes;
+			$integrated_shortcodes = $this->integrations->all_shortcodes;
 
 			// The default explanation for the user
 			$shortcode_explanation = __( 'Render does not recognize this shortcode. You may still use it, but you will not get a preview and you must manually enter attributes.', 'Render' );
@@ -709,7 +740,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 			if ( isset( $integrated_shortcodes[ $code ] ) ) {
 
 				$integrated_shortcode = $integrated_shortcodes[ $code ];
-				$integrated_plugin    = $integrations->integrations[ $integrated_shortcode['plugin'] ];
+				$integrated_plugin = $this->integrations->available_integrations[ $integrated_shortcode['plugin'] ];
 
 				if ( isset( $integrated_shortcode[ 'noDisplay'] ) ) {
 					$args['noDisplay'] = true;
@@ -821,6 +852,54 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		}
 
 		/**
+		 * Shows initial notices.
+		 *
+		 * @since  {{VERSION}}
+		 * @access private
+		 */
+		function _initial_notices() {
+
+			$notices = array();
+
+			// Add notices for integration plugins
+			if ( $this->integrations instanceof Render_Integrations && ! empty( $this->integrations->available_integrations ) ) {
+
+				foreach ( (array) $this->integrations->available_integrations as $plugin => $integration ) {
+
+					if ( is_plugin_active( $integration['name'] ) &&
+					     ! is_plugin_active( $integration['render_name'] )
+					) {
+						$notices[] = array(
+							'ID'          => "render-integration-notice-$plugin",
+							'message'     => sprintf(
+								__( 'Render has an integration available for %s. You can get it %shere%s.', 'Render' ),
+								"<strong>$integration[title]</strong>",
+								"<a href=\"$integration[link]\" target=\"_blank\">",
+								'</a>'
+							),
+							'type'        => 'update-nag',
+							'hide_button' => true,
+						);
+					}
+				}
+			}
+
+			if ( ! empty ( $notices ) ) {
+				foreach ( (array) $notices as $notice ) {
+
+					$notice = wp_parse_args( $notice, array(
+						'message'     => '',
+						'type'        => 'error',
+						'ID'          => false,
+						'hide_button' => false,
+					) );
+
+					$this->notices->add( $notice['ID'], $notice['message'], $notice['type'], $notice['hide_button'] );
+				}
+			}
+		}
+
+		/**
 		 * Initializes tracking.
 		 *
 		 * @since {{VERSION}}
@@ -857,26 +936,6 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 			foreach ( render_get_disabled_shortcodes() as $code ) {
 				$this->remove_shortcode( $code );
 			}
-		}
-
-		/**
-		 * Warns user about PHP version.
-		 *
-		 * @since 1.0.3
-		 */
-		private function notice() {
-			?>
-			<div class="error">
-				<p>
-					<?php
-					printf(
-						__( 'Render is not active because your server is not running at least PHP version 5.3. Please update or contact your server administrator. (PS: PHP 5.3 is %s year\'s old!)', 'Render' ),
-						intval( date( 'y' ) ) - 9
-					);
-					?>
-				</p>
-			</div>
-		<?php
 		}
 	}
 

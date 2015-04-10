@@ -4,6 +4,7 @@
  * @since 1.0.0
  *
  * @global Render_Data
+ * @global ajaxurl
  *
  * @package Render
  * @subpackage Modal
@@ -12,11 +13,39 @@
 
     // Stop propagation
     $(function () {
+
        $('.render-stop-propagation').click(function (e) {
 
            var event = e || window.event;
            event.stopPropagation();
        });
+    });
+
+    // Hide Render notices
+    $(function () {
+
+        $('.render-hide-notice').click(function () {
+
+            var notice_ID = $(this).data('notice');
+
+            $('#' + notice_ID).append('<div class="render-notice-cover"><span class="spinner"></span></div>');
+
+            $.ajax({
+                method: 'POST',
+                url: ajaxurl,
+                data: {
+                    action: 'render_hide_notice',
+                    notice_ID: notice_ID
+                },
+                complete: function () {
+                    $('#' + notice_ID).hide('blind', {}, 300, function () {
+                        $(this).remove();
+                    });
+                }
+            });
+
+            return false;
+        });
     });
 
     // Tracking data buttons
