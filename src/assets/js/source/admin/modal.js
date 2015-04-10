@@ -1115,7 +1115,8 @@ var Render_Modal;
 
                 // Open it if it's an accordion
                 if (elements.active_shortcode.hasClass('accordion-section')) {
-                    elements.active_shortcode.find('.accordion-section-content').slideDown(slide_transition);
+                    //elements.active_shortcode.find('.accordion-section-content').slideDown(slide_transition);
+                    elements.active_shortcode.find('.accordion-section-content').show();
                 }
 
                 // Init the atts (needs to be after the accordion opening to render Chosen properly)
@@ -1134,7 +1135,8 @@ var Render_Modal;
                         return true; // continue $.each
                     }
 
-                    attObj.$input.change();
+                    // Basically firing triggers
+                    attObj._setValue(attObj._getValue());
                 });
 
                 // Scroll it into view
