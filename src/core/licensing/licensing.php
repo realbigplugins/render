@@ -16,18 +16,18 @@ if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 }
 
 /**
- * This filter is documented in src/core/licensing/settings.php
+ * This filter is documented in core/licensing/settings.php
  */
 $extension_licenses = apply_filters( 'render_licensing_extensions', array() );
 
-foreach ( $extension_licenses as $extension => $label ) {
+foreach ( $extension_licenses as $extension => $name ) {
 
 	/**
 	 * Activate the license.
 	 *
 	 * @since 1.0.0
 	 */
-	add_action( 'admin_init', function () use ( $extension, $label ) {
+	add_action( 'admin_init', function () use ( $extension, $name ) {
 
 		// listen for our activate button to be clicked
 		if ( isset( $_POST["{$extension}_license_activate"] ) ) {
@@ -44,7 +44,7 @@ foreach ( $extension_licenses as $extension => $label ) {
 			$api_params = array(
 				'edd_action' => 'activate_license',
 				'license'    => $license,
-				'item_name'  => urlencode( $extension !== 'render' ? "Render {$label}" : 'Render' ),
+				'item_name'  => urlencode( $name ),
 				// the name of our product in EDD
 				'url'        => home_url()
 			);
@@ -76,7 +76,7 @@ foreach ( $extension_licenses as $extension => $label ) {
 	 *
 	 * @since 1.0.0
 	 */
-	add_action( 'admin_init', function () use ( $extension, $label ) {
+	add_action( 'admin_init', function () use ( $extension, $name ) {
 
 		// listen for our activate button to be clicked
 		if ( isset( $_POST["{$extension}_license_deactivate"] ) ) {
@@ -93,7 +93,7 @@ foreach ( $extension_licenses as $extension => $label ) {
 			$api_params = array(
 				'edd_action' => 'deactivate_license',
 				'license'    => $license,
-				'item_name'  => urlencode( $extension !== 'render' ? "Render {$label}" : 'Render' ),
+				'item_name'  => urlencode( $name ),
 				'url'        => home_url()
 			);
 
@@ -122,14 +122,14 @@ foreach ( $extension_licenses as $extension => $label ) {
 	} );
 }
 
-function render_check_license( $extension, $label ) {
+function render_check_license( $extension, $name ) {
 
 	$license = trim( get_option( "{$extension}_license_key" ) );
 
 	$api_params = array(
 		'edd_action' => 'check_license',
 		'license'    => $license,
-		'item_name'  => urlencode( $extension !== 'render' ? "Render {$label}" : 'Render' ),
+		'item_name'  => urlencode( $name ),
 		'url'        => home_url()
 	);
 

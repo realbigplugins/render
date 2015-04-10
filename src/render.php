@@ -261,7 +261,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 			// Licensing
 			render_setup_license(
 				'render',
-				'Render',
+				'', // Normally used for extension
 				RENDER_VERSION,
 				defined( 'RENDER_DEVELOPMENT' ) ? 'render-development/init.php' : __FILE__
 			);
@@ -361,7 +361,6 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 
 			// Pointers
 			add_filter( 'current_screen', array( $this, '_pointers' ), 1 );
-
 
 			// Notices
 			add_action( 'admin_init', array( $this, '_initial_notices' ) );

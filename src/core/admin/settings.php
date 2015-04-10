@@ -51,8 +51,7 @@ class Render_AdminPage_Settings {
 				if ( is_plugin_active( $integration['name'] ) &&
 				     ! is_plugin_active( $integration['render_name'] )
 				) {
-					$notices[] = array(
-						'ID'          => "render-integration-notice-$plugin-persistent",
+					$notices["render-integration-notice-$plugin-persistent"] = array(
 						'message'     => sprintf(
 							__( 'Render has an integration available for %s. You can get it %shere%s. %s shortcodes will not work as well as they could in Render without the integration.', 'Render' ),
 							"<strong>$integration[title]</strong>",
@@ -67,17 +66,36 @@ class Render_AdminPage_Settings {
 			}
 		}
 
+		// Add notices for non-registered products
+
+		/**
+		 * This filter is documented in core/licensing/settings.php
+		 */
+		$extension_licenses = apply_filters( 'render_licensing_extensions', array() );
+
+		foreach ( $extension_licenses as $extension => $name ) {
+
+			if ( render_check_license( $extension, $name ) != 'valid' ) {
+				$notices["render-extension-register-$extension"] = array(
+					'message' => sprintf(
+						__( '%s does not have an active license. You can not currently receive updates or support for it. Please activate %s with your license key.', 'Render' ),
+						$name,
+						$name
+					),
+				);
+			}
+		}
+
 		if ( ! empty ( $notices ) ) {
-			foreach ( (array) $notices as $notice ) {
+			foreach ( (array) $notices as $ID => $notice ) {
 
 				$notice = wp_parse_args( $notice, array(
 					'message'     => '',
 					'type'        => 'error',
-					'ID'          => false,
 					'hide_button' => false,
 				) );
 
-				$Render->notices->add( $notice['ID'], $notice['message'], $notice['type'], $notice['hide_button'] );
+				$Render->notices->add( $ID, $notice['message'], $notice['type'], $notice['hide_button'] );
 			}
 		}
 	}

@@ -646,6 +646,9 @@ function render_tinyme_log_out() {
  */
 function render_setup_license( $extension, $name, $version, $file_path, $author = 'Joel Worsham & Kyle Maurer' ) {
 
+	// Setup name
+	$name = empty( $name ) ? 'Render' : 'Render ' . $name;
+
 	/**
 	 * Initializes the EDD plugin updater.
 	 *
@@ -666,7 +669,7 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
 				'license'   => $license_key,
 				//
 				// the name of our product in EDD
-				'item_name' => urlencode( $extension !== 'render' ? "Render {$name}" : 'Render' ),
+				'item_name' => urlencode( $name ),
 				//
 				// author of this plugin
 				'author'    => $author
@@ -698,12 +701,11 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
 			$html = '</tr><tr class="plugin-update-tr"><td colspan="3" class="plugin-update"><div class="update-message">';
 
 			$html .= sprintf( __(
-				'%sRegister Render%s to receive access to support and updates. If you don\'t have a license, you can %sPurchase one here%s.',
+				'%sActivate your license for %s%s to receive access to support and updates.',
 				'Render'
 			),
 				'<a href="' . admin_url() . 'admin.php?page=render-settings">',
-				'</a>',
-				'<a href="http://realbigplugins.com/plugins/render/">',
+				$name,
 				'</a>'
 			);
 
