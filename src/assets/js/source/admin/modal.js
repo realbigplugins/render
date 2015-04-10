@@ -706,27 +706,36 @@ var Render_Modal;
         filterByCategory: function ($e) {
 
             var category = $e.data('category'),
-                shortcodes = elements.list.find('li');
+                $shortcodes = elements.list.find('li'),
+                $other_message;
 
             // Set all other categories to inactive, and this one to active
             elements.categories.find('li').removeClass('active');
             $e.addClass('active');
 
-            // Clear previorendery activated and opened items and clear forms
+            // Clear previously activated and opened items and clear forms
             this.refresh();
             this.closeShortcode();
             elements.active_shortcode = false;
 
-            if (category === 'all') {
-                shortcodes.show();
+            if (category == 'all') {
+                $shortcodes.show();
             } else {
-                shortcodes.each(function () {
-                    if (category !== $(this).data('category')) {
+                $shortcodes.each(function () {
+                    if (category != $(this).data('category')) {
                         $(this).hide();
                     } else {
                         $(this).show();
                     }
                 });
+            }
+
+            // Show special message for "Other" shortcodes
+            if (category == 'other') {
+                $other_message = $('<div id="render-modal-other-message" />').html(l18n['other_sc_explanation']);
+                elements.wrap.find('.render-modal-shortcodes-container').prepend($other_message);
+            } else {
+                elements.wrap.find('#render-modal-other-message').remove();
             }
 
             this.refreshRows();
@@ -875,7 +884,8 @@ var Render_Modal;
             var matches = new RegExp(shortcode_regex).exec(shortcode),
                 code = matches[2],
                 _atts = matches[3], atts = {},
-                content = matches[5];
+                content = matches[5],
+                props = render_data[code];
 
             // Get our att pairs
             var attRegEx = /(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/g,
@@ -888,9 +898,9 @@ var Render_Modal;
                     shortcode_att = render_data[code]['atts'][name];
 
                 // Skip if not an attribute of the shortcode
-                if (typeof shortcode_att == 'undefined') {
-                    continue;
-                }
+                //if (typeof shortcode_att == 'undefined') {
+                //    continue;
+                //}
 
                 // Un-escape from being an attr value
                 if (typeof value != 'undefined' && value.length) {
@@ -898,6 +908,33 @@ var Render_Modal;
                 }
 
                 atts[name] = value;
+            }
+
+            // If in "Other" category, ready them for the repeater field
+            if (props['category'] == 'other') {
+
+                var sc_attributes = {
+                    attribute_name: null,
+                    attribute_value: null
+                };
+
+                $.each(atts, function (name, value) {
+
+                    if (sc_attributes.attribute_name !== null) {
+                        sc_attributes.attribute_name += '::sep::';
+                    }
+
+                    if (sc_attributes.attribute_value !== null) {
+                        sc_attributes.attribute_value += '::sep::';
+                    }
+
+                    sc_attributes.attribute_name += name;
+                    sc_attributes.attribute_value += value;
+                });
+
+                atts = {
+                    sc_attributes: JSON.stringify(sc_attributes)
+                };
             }
 
             // Add on the content if there's a content attribute
@@ -957,7 +994,7 @@ var Render_Modal;
                         return true; // continue $.each
                     }
 
-                    Render_Modal.disableShortcode($(this), l18n.cannot_change_from_shortcode);
+                    Render_Modal.disableShortcode($(this), l18n['cannot_change_from_shortcode']);
                 });
             }
 
@@ -1274,8 +1311,23 @@ var Render_Modal;
 
                 var attObj = $(this).data('attObj');
 
-                // Skip if no attObj or if in a repeater
+                // Skip if no attObj or if in a repeater or if "sc_attributes" attr
                 if (!attObj || $(this).closest('.render-modal-repeater-field').length) {
+                    return true; // Continue $.each
+                }
+
+                // For "Other" category, turn the repeater into separate attributes
+                if (attObj.name == 'sc_attributes') {
+
+                    var sc_attributes = attObj._getValue();
+
+                    if (sc_attributes) {
+
+                        $.each(parseRepeaterField(JSON.parse(sc_attributes)), function (i, values) {
+                            att_output += ' ' + values['attribute_name'] + '="' + values['attribute_value'] + '"';
+                        });
+                    }
+
                     return true; // Continue $.each
                 }
 
@@ -1456,7 +1508,27 @@ var Render_Modal;
                 // If there's validation, let's do it
                 if (do_validate) {
 
-                    var validations = render_data[attObj.shortcode]['atts'][attObj.name]['validate'];
+                    var att_properties = render_data[attObj.shortcode]['atts'][attObj.name],
+                        validations;
+
+                    if (!att_properties) {
+
+                        var repeater_parent = attObj.$container.data('repeater-parent');
+
+                        if (repeater_parent) {
+                            att_properties = render_data[attObj.shortcode]['atts'][repeater_parent]['properties']['fields'][attObj.name];
+                        }
+                    }
+
+                    if (!att_properties) {
+                        return true; // continue $.each iteration
+                    }
+
+                    validations = att_properties['validate'];
+
+                    if (!validations) {
+                        return true; // continue $.each iteration
+                    }
 
                     $.each(validations, function (type, value) {
 
@@ -1477,7 +1549,7 @@ var Render_Modal;
                                 if (!att_value.match(regExp)) {
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid(l18n.enter_valid_url);
+                                    attObj.setInvalid(l18n['enter_valid_url']);
                                 }
                                 break;
 
@@ -1489,7 +1561,7 @@ var Render_Modal;
                                 if (!att_value.match(regExp)) {
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid(l18n.enter_valid_email);
+                                    attObj.setInvalid(l18n['enter_valid_email']);
                                 }
                                 break;
 
@@ -1510,7 +1582,29 @@ var Render_Modal;
 
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid(l18n.invalid_chars);
+                                    attObj.setInvalid(l18n['invalid_chars']);
+                                }
+
+                                break;
+
+                            // Specific characters not allowed
+                            case 'DOES NOT CONTAIN':
+
+                                // Prepare regex string
+                                value = value.split('');
+                                for (i = 0; i < value.length; i++) {
+                                    value[i] = esc_regex_string(value[i]) + (i !== value.length - 1 ? '|' : '');
+                                }
+                                value = value.join('');
+
+                                regExp = new RegExp(value, 'g');
+                                match = att_value.match(regExp);
+
+                                if (match !== null) {
+
+                                    att_valid = false;
+                                    validated = false;
+                                    attObj.setInvalid(l18n['invalid_chars'] + ': ' + match.join(' '));
                                 }
 
                                 break;
@@ -1522,7 +1616,7 @@ var Render_Modal;
 
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid((att_value.length - parseInt(value)) + ' ' + l18n.too_many_chars);
+                                    attObj.setInvalid((att_value.length - parseInt(value)) + ' ' + l18n['too_many_chars']);
                                 }
                                 break;
 
@@ -1533,7 +1627,7 @@ var Render_Modal;
 
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid((parseInt(value)) - att_value.length + ' ' + l18n.too_few_chars);
+                                    attObj.setInvalid((parseInt(value)) - att_value.length + ' ' + l18n['too_few_chars']);
                                 }
                                 break;
 
@@ -1543,7 +1637,7 @@ var Render_Modal;
                                 if (att_value.match(/[0-9]/)) {
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid(l18n.no_numbers);
+                                    attObj.setInvalid(l18n['no_numbers']);
                                 }
                                 break;
 
@@ -1555,7 +1649,7 @@ var Render_Modal;
                                 if (!numbers || (numbers[0] !== numbers.input)) {
                                     att_valid = false;
                                     validated = false;
-                                    attObj.setInvalid(l18n.only_numbers);
+                                    attObj.setInvalid(l18n['only_numbers']);
                                 }
                                 break;
 
@@ -2838,7 +2932,6 @@ var Render_Modal;
                         $deselect_all.hide('drop', {direction: 'right'}, 150, function () {
                             $(this).remove()
                         });
-                        ;
                     }
                 });
             }
@@ -2920,21 +3013,25 @@ var Render_Modal;
                         return;
                     }
 
-                    // Set the preview text to our custom input (and make it not look like the default text)
-                    $container.find('.chosen-single').removeClass('chosen-default')
-                        .find('> span').html(search_text);
+                    // TODO Potentially figure out why I need this timeout... It keeps being overriden if I don't
+                    setTimeout(function () {
 
-                    // Tell the Modal to use this new custom data
-                    $chosen.data('chosen-custom-input', search_text);
+                        // Set the preview text to our custom input (and make it not look like the default text)
+                        $container.find('.chosen-single').removeClass('chosen-default')
+                            .find('> span').html(search_text);
 
-                    // Remove focus from input and clear any leftover input
-                    $input_text.val('').blur();
+                        // Tell the Modal to use this new custom data
+                        $chosen.data('chosen-custom-input', search_text);
 
-                    // Make sure to trigger the input change
-                    $chosen.trigger('render-att-change');
+                        // Remove focus from input and clear any leftover input
+                        $input_text.val('').blur();
 
-                    // Manually add choice deselect and event
-                    Chosen.single_deselect_control_build();
+                        // Make sure to trigger the input change
+                        $chosen.trigger('render-att-change');
+
+                        // Manually add choice deselect and event
+                        Chosen.single_deselect_control_build();
+                    }, 1);
                 });
 
                 // Populate search text if using custom input
@@ -3053,6 +3150,7 @@ var Render_Modal;
 
                 // Custom input (value doesn't exist in options)
                 if (!this.$input.find('option[value="' + value + '"]').length) {
+
                     this.$container.find('.chosen-search input[type="text"]').val(value);
                     this.$input.trigger('chosen:hiding_dropdown');
                     return;
@@ -3830,7 +3928,7 @@ var Render_Modal;
          */
         this.getValue = function () {
 
-            var values = {};
+            var values = false;
 
             this.$container.find('.render-modal-att-row').each(function () {
 
@@ -3839,7 +3937,16 @@ var Render_Modal;
                     return true; // Continue $.each
                 }
 
-                var attObj = $(this).data('attObj');
+                var attObj = $(this).data('attObj'),
+                    value = attObj._getValue();
+
+                if (!value) {
+                    return true; // continue $.each
+                }
+
+                if (!values) {
+                    values = {};
+                }
 
                 if (typeof values[attObj.name] != 'undefined') {
                     // Att already set, append new value
@@ -3849,7 +3956,11 @@ var Render_Modal;
                 }
             });
 
-            return JSON.stringify(values);
+            if (values) {
+                return JSON.stringify(values);
+            } else {
+                return false;
+            }
         };
 
         /**

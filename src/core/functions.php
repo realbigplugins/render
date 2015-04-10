@@ -59,6 +59,7 @@ function render_add_shortcode_category( $category ) {
  * @since 1.0.0
  *
  * @param string $id The generic ID.
+ *
  * @return string The formatted name.
  */
 function render_translate_id_to_name( $id ) {
@@ -71,6 +72,7 @@ function render_translate_id_to_name( $id ) {
  * @since 1.0.0
  *
  * @param array $atts The un-escaped attributes.
+ *
  * @return array The escaped attributes.
  */
 function render_esc_atts( $atts ) {
@@ -97,6 +99,7 @@ function render_esc_atts( $atts ) {
  * @since {{VERSION}}
  *
  * @param string $content The attribute to be escaped.
+ *
  * @return string The escaped attribute.
  */
 function render_sc_attr_unescape( $content ) {
@@ -119,6 +122,7 @@ function render_sc_attr_unescape( $content ) {
  * @since 1.0.0
  *
  * @param string $content The content.
+ *
  * @return string The formatted content.
  */
 function render_strip_paragraphs_around_shortcodes( $content ) {
@@ -144,6 +148,7 @@ function render_strip_paragraphs_around_shortcodes( $content ) {
  *
  * @param array $atts    The shortcode attributes.
  * @param array $keyname The name of the key to grab values from.
+ *
  * @return array The new associative array.
  */
 function render_associative_atts( $atts, $keyname ) {
@@ -191,6 +196,7 @@ function render_associative_atts( $atts, $keyname ) {
  * @since 1.0.0
  *
  * @param string $message The error message to display.
+ *
  * @return string The HTML error message.
  */
 function render_sc_error( $message ) {
@@ -270,6 +276,7 @@ function render_get_shortcode_used_categories() {
  * @param string $template Which template to use.
  * @param array  $extra    Extra attribute parameters to use (or override).
  * @param array  $args     Optional args that some cases use.
+ *
  * @return array Attribute.
  */
 function render_sc_attr_template( $template, $extra = array(), $args = array() ) {
@@ -472,7 +479,7 @@ function render_sc_attr_template( $template, $extra = array(), $args = array() )
 					'allowCustomInput' => true,
 					'callback'         => array(
 						'function' => 'render_sc_post_list',
-						'args' => $args,
+						'args'     => $args,
 					),
 				),
 			);
@@ -684,25 +691,27 @@ function render_setup_license( $extension, $name, $version, $file_path, $author 
 	 *
 	 * @since {{VERSION}}
 	 */
-	add_action( 'after_plugin_row_' . plugin_basename( $file_path ), function () use( $extension, $name ) {
+	add_action( 'after_plugin_row_' . plugin_basename( $file_path ), function () use ( $extension, $name ) {
 
 		if ( render_check_license( $extension, $name ) != 'valid' ) {
 
 			$html = '</tr><tr class="plugin-update-tr"><td colspan="3" class="plugin-update"><div class="update-message">';
 
-			$html .= __( sprintf(
-				'%sRegister Render%s to receive access to support and updates. If you don\'t have one, you can  %sPurchase one here%s.',
+			$html .= sprintf( __(
+				'%sRegister Render%s to receive access to support and updates. If you don\'t have a license, you can %sPurchase one here%s.',
+				'Render'
+			),
 				'<a href="' . admin_url() . 'admin.php?page=render-settings">',
 				'</a>',
 				'<a href="http://realbigplugins.com/plugins/render/">',
 				'</a>'
-			), 'Render' );
+			);
 
 			$html .= '</div></td>';
 
 			echo $html;
 		}
-	});
+	} );
 }
 
 /**
@@ -755,6 +764,7 @@ function render_disable_tinymce_media_button( $hook_name, $label, $priority = 10
  * @see   Render_Modal::att_type_selectbox()
  *
  * @param array $options The options.
+ *
  * @return string The options HTML.
  */
 function render_build_options_html( $options ) {
