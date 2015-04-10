@@ -28,6 +28,7 @@
 
 .render-columns-wrapper {
   @include columns-width('.render-column-section');
+  @include clearfix;
 }
 
 .render-column-section {
