@@ -23,7 +23,7 @@ class Render_Integrations {
 	 *
 	 * @var array
 	 */
-	public $integrations;
+	public $available_integrations;
 
 	/**
 	 * A curated list of all shortcodes and properties about each one.
@@ -41,7 +41,7 @@ class Render_Integrations {
 	 */
 	public function __construct() {
 
-		$this->integrations = $this->_get_integrations();
+		$this->available_integrations = $this->_get_integrations();
 		$this->all_shortcodes = $this->_curate_shortcodes();
 	}
 
@@ -58,6 +58,7 @@ class Render_Integrations {
 		$integrations = array(
 			'woocommerce' => array(
 				'name' => 'woocommerce/woocommerce.php',
+				'render_name' => 'render-woocommerce/render-woocommerce.php',
 				'title' => 'WooCommerce',
 				'link' => 'http://realbigplugins.com/plugins/render-woocommerce/',
 				'supported_version' => '',
@@ -88,6 +89,7 @@ class Render_Integrations {
 			),
 			'easydigitaldownloads' => array(
 				'name' => 'easy-digital-downloads/easy-digital-downloads.php',
+				'render_name' => 'render-edd/render-edd.php',
 				'title' => 'Easy Digital Downloads',
 				'link' => 'http://realbigplugins.com/plugins/render-easy-digital-downloads/',
 				'supported_version' => '',
@@ -108,7 +110,8 @@ class Render_Integrations {
 				),
 			),
 			'projectpanorama' => array(
-				'name' => '',
+				'name' => 'project-panorama/project-panorama.php',
+				'render_name' => 'render-psp/render-psp.php',
 				'title' => 'Project Panorama',
 				'link' => '',
 				'supported_version',
@@ -133,13 +136,13 @@ class Render_Integrations {
 	 */
 	private function _curate_shortcodes() {
 
-		if ( empty( $this->integrations ) ) {
+		if ( empty( $this->available_integrations ) ) {
 			return array();
 		}
 
 		$shortcodes = array();
 
-		foreach ( $this->integrations as $plugin => $info ) {
+		foreach ( $this->available_integrations as $plugin => $info ) {
 
 			foreach ( $info['shortcodes'] as $code => $shortcode ) {
 
