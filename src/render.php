@@ -747,6 +747,9 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 					return $args;
 				}
 
+				// Add source
+				$args['source'] = $integrated_plugin['title'];
+
 				/*
 				 * Translators:
 				 * %s:1 = Dependent plugin title
