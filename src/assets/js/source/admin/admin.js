@@ -10,6 +10,15 @@
  */
 (function ($) {
 
+    // Stop propagation
+    $(function () {
+       $('.render-stop-propagation').click(function (e) {
+
+           var event = e || window.event;
+           event.stopPropagation();
+       });
+    });
+
     // Tracking data buttons
     $(document).on('render-init-pointers', function () {
 
