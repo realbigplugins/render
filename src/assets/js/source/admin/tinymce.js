@@ -980,12 +980,6 @@ var Render_tinymce;
 
             if (loading) {
 
-                // Makes sure the the loader stays for a minimum time
-                min_load_time = true;
-                setTimeout(function () {
-                    min_load_time = false;
-                }, 1000);
-
                 // Get a random loading message
                 var loading_messages = data['loading_messages'],
                     random_message = Math.floor(Math.random() * (loading_messages.length));
