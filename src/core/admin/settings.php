@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package    Render
  * @subpackage Admin
  */
-class Render_AdminPage_Settings extends Render {
+class Render_AdminPage_Settings {
 
 	/**
 	 * Constructs the class.
@@ -33,13 +33,63 @@ class Render_AdminPage_Settings extends Render {
 	}
 
 	/**
+	 * Loads initial notices for this Settings page.
+	 *
+	 * @since {{VERSION}}
+	 */
+	function _initial_notices() {
+
+		global $Render;
+
+		$notices = array();
+
+		// Add notices for integration plugins
+		if ( $Render->integrations instanceof Render_Integrations && ! empty( $Render->integrations->available_integrations ) ) {
+
+			foreach ( (array) $Render->integrations->available_integrations as $plugin => $integration ) {
+
+				if ( is_plugin_active( $integration['name'] ) &&
+				     ! is_plugin_active( $integration['render_name'] )
+				) {
+					$notices[] = array(
+						'ID'          => "render-integration-notice-$plugin-persistent",
+						'message'     => sprintf(
+							__( 'Render has an integration available for %s. You can get it %shere%s. %s shortcodes will not work as well as they could in Render without the integration.', 'Render' ),
+							"<strong>$integration[title]</strong>",
+							"<a href=\"$integration[link]\" target=\"_blank\">",
+							'</a>',
+							"<strong>$integration[title]</strong>"
+						),
+					);
+				}
+
+				$Render->notices->remove( "render-integration-notice-$plugin" );
+			}
+		}
+
+		if ( ! empty ( $notices ) ) {
+			foreach ( (array) $notices as $notice ) {
+
+				$notice = wp_parse_args( $notice, array(
+					'message'     => '',
+					'type'        => 'error',
+					'ID'          => false,
+					'hide_button' => false,
+				) );
+
+				$Render->notices->add( $notice['ID'], $notice['message'], $notice['type'], $notice['hide_button'] );
+			}
+		}
+	}
+
+	/**
 	 * Function for the admin menu to create a menu item in the settings tree.
 	 *
 	 * @since 1.0.0
 	 */
 	public function menu() {
 
-		add_submenu_page(
+		$hook = add_submenu_page(
 			'render-settings',
 			'Settings',
 			'Settings',
@@ -47,15 +97,19 @@ class Render_AdminPage_Settings extends Render {
 			'render-settings',
 			array( $this, 'page_output' )
 		);
+
+		add_action( "load-$hook", array( $this, 'page_specific' ) );
 	}
 
 	/**
-	 * Actions hooked only into this admin page.
+	 * Only fires on this settings page.
 	 *
-	 * @since 1.0.0
+	 * @since {{VERSION}}
 	 */
-	public static function page_specific() {
-		add_action( 'admin_body_class', array( __CLASS__, 'body_class' ) );
+	public function page_specific() {
+
+		// Load up any notices
+		$this->_initial_notices();
 	}
 
 	/**

@@ -168,7 +168,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 *
 		 * @var Render_Integrations
 		 */
-		private $integrations;
+		public $integrations;
 
 		/**
 		 * Handles Render admin notices.
@@ -177,7 +177,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 *
 		 * @var Render_Notices
 		 */
-		private $notices;
+		public $notices;
 
 		/**
 		 * Constructs the class.
