@@ -894,13 +894,7 @@ var Render_Modal;
             while (match = attRegEx.exec(_atts)) {
 
                 var name = match[3],
-                    value = match[4],
-                    shortcode_att = render_data[code]['atts'][name];
-
-                // Skip if not an attribute of the shortcode
-                //if (typeof shortcode_att == 'undefined') {
-                //    continue;
-                //}
+                    value = match[4];
 
                 // Un-escape from being an attr value
                 if (typeof value != 'undefined' && value.length) {
@@ -914,17 +908,17 @@ var Render_Modal;
             if (props['category'] == 'other') {
 
                 var sc_attributes = {
-                    attribute_name: null,
-                    attribute_value: null
+                    attribute_name: '',
+                    attribute_value: ''
                 };
 
                 $.each(atts, function (name, value) {
 
-                    if (sc_attributes.attribute_name !== null) {
+                    if (sc_attributes.attribute_name !== '') {
                         sc_attributes.attribute_name += '::sep::';
                     }
 
-                    if (sc_attributes.attribute_value !== null) {
+                    if (sc_attributes.attribute_value !== '') {
                         sc_attributes.attribute_value += '::sep::';
                     }
 
@@ -1327,7 +1321,11 @@ var Render_Modal;
                     if (sc_attributes) {
 
                         $.each(parseRepeaterField(JSON.parse(sc_attributes)), function (i, values) {
-                            att_output += ' ' + values['attribute_name'] + '="' + values['attribute_value'] + '"';
+
+                            // Add on if they exist and aren't empty
+                            if (values['attribute_name']) {
+                                att_output += ' ' + values['attribute_name'] + '="' + values['attribute_value'] + '"';
+                            }
                         });
                     }
 

@@ -724,6 +724,7 @@ if ( ! class_exists( 'Render' ) && ! defined( 'RENDER_UNINSTALLING' ) ) {
 		 */
 		function parse_unrecognized_shortcode( $args, $code ) {
 
+			// FIXME Add more to not-allowed characters (equal sign, for example)
 			// Get integrations
 			if ( ! ( $this->integrations instanceof Render_Integrations ) ) {
 				include_once __DIR__ . '/core/integrations.php';
