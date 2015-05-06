@@ -1,6 +1,6 @@
 {
   "name": "Render",
-  "version": "{{VERSION}}",
+  "version": "1.1.0",
   "description": "Render makes adding complex elements to your content simple and pain free. See what you can Render.",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
     "grunt": "~0.4",
     "grunt-string-replace": "~1.0",
     "grunt-autoprefixer": "~1.0",
-    "grunt-contrib-uglify": "~0.5",
+    "grunt-contrib-uglify": "~0.6",
     "grunt-contrib-imagemin": "~0.9",
     "grunt-contrib-watch": "~0.6",
     "grunt-contrib-sass": "~0.8",

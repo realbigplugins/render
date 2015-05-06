@@ -71,8 +71,10 @@ function _render_sc_custom_date( $atts ) {
 	// Escape atts
 	render_esc_atts( $atts );
 
-	$orig_timezone = date_default_timezone_get();
-	date_default_timezone_set( $atts['timezone'] );
+	if ( ! empty( $atts['timezone'] ) ) {
+		$orig_timezone = date_default_timezone_get();
+		date_default_timezone_set( $atts['timezone'] );
+	}
 
 	// Output in the specified format
 	switch ( $atts['format'] ) {
@@ -86,7 +88,9 @@ function _render_sc_custom_date( $atts ) {
 			$output = date( $atts['format'] );
 	}
 
-	date_default_timezone_set( $orig_timezone );
+	if ( ! empty( $atts['timezone'] ) ) {
+		date_default_timezone_set( $orig_timezone );
+	}
 
 	return $output;
 }
