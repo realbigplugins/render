@@ -13,7 +13,7 @@
  * @subpackage Modal
  */
 var Render_tinymce;
-(function ($) {
+(function (window, wp, wpviews, $) {
 
     //noinspection JSUnresolvedVariable
     var data = Render_Data,
@@ -57,10 +57,136 @@ var Render_tinymce;
 
             this.$shortcode_content_editor = $('#render-tinymce-sc-content-editor');
 
-            this.addToTinymce();
+            this.createWPView();
+
+            this.tinymceInit();
             this.binds();
-            this.keyboardShortcuts();
+            //this.keyboardShortcuts();
             this.createLoaders();
+        },
+
+        createWPView: function () {
+
+            var shortcodes = data['all_shortcodes'] || false,
+                rendertinymce = this;
+
+            if (shortcodes) {
+                $.each(shortcodes, function (code, shortcode) {
+
+                    // View already registered
+                    if (wpviews.get(code)) {
+                        return true; // continue $.each()
+                    }
+
+                    wpviews.register(code, {
+
+                        initialize: function () {
+                            this.renderShortcode();
+                        },
+
+                        edit : function( shortcode, update ) {
+
+                            var self = this;
+
+                            // Backwards compatability for WP pre-4.2
+                            if ( 'object' === typeof( shortcode ) ) {
+                                shortcode = decodeURIComponent( $(shortcode).attr('data-wpview-text') );
+                            }
+
+                            this.editing = true;
+                            rendertinymce.editing = true;
+
+                            Render_Modal.modify(shortcode);
+
+                            // Bind update function
+                            $(document).on('render-modal-update', function (e, output) {
+
+                                if (self.editing) {
+                                    delete self.editing;
+                                    delete rendertinymce.editing;
+                                    update(output.all);
+                                }
+                            });
+
+                        },
+
+                        renderShortcode: function () {
+
+                            var self = this;
+
+                            if (!this.getting) {
+
+                                this.getting = true;
+
+                                wp.ajax.post('render_shortcode', {
+                                    post_ID: $('#post_ID').val(),
+                                    shortcode: self.buildShortcode()
+                                    //shortcode: this.shortcodeModel.formatShortcode(),
+                                    //nonce: shortcodeUIData.nonces.preview,
+                                }).done(function (response) {
+
+                                    if ('' === response) {
+                                        self.content = 'empty!';
+                                    } else {
+                                        self.content = response;
+                                    }
+
+                                }).fail(function () {
+
+                                    self.content = 'error!';
+
+                                }).always(function () {
+
+                                    // So it only gets one time (waits for the AJAX to come back)
+                                    delete self.getting;
+
+                                    // Render the shortcode
+                                    self.render(null, true);
+
+                                });
+                            }
+                        },
+
+                        buildShortcode: function () {
+
+                            var shortcode = this.shortcode,
+                                attrs = shortcode['attrs']['named'],
+                                content = shortcode['content'],
+                                tag = shortcode['tag'],
+                                type = shortcode['type'],
+                                output = '[' + tag;
+
+                            // Add attributes if they exist
+                            if (attrs) {
+                                $.each(attrs, function (attr, value) {
+
+                                    // Skip empty attributes.
+                                    if ( ! value ||  value.length < 1 ) {
+                                        return;
+                                    }
+
+                                    output += ' ' + attr + '="' + value + '"';
+                                });
+                            }
+
+                            // Close opening tag
+                            output += ']';
+
+                            // Add content, if exists
+                            if (content) {
+                                output += content;
+                            }
+
+                            // Add closing tag, if exists
+                            if (type == 'closed') {
+                                output += '[/' + tag + ']';
+                            }
+
+                            return output;
+                        }
+                    });
+                })
+            }
         },
 
         /**
@@ -71,7 +197,7 @@ var Render_tinymce;
         binds: function () {
 
             $(document).on('render-modal-close', function () {
-                Render_tinymce.close();
+                //Render_tinymce.close();
             });
 
             $(document).on('render-modal-update', function () {
@@ -161,7 +287,7 @@ var Render_tinymce;
          *
          * @since 1.0.0
          */
-        addToTinymce: function () {
+        tinymceInit: function () {
 
             tinymce.PluginManager.add('render', function (editor) {
 
@@ -219,298 +345,6 @@ var Render_tinymce;
                     Render_tinymce.loadVisual();
                 });
 
-                // Setup keymap
-                editor.onKeyDown.add(function (editor, e) {
-
-                    e = e || event; // to deal with IE
-                    key_map[e.keyCode] = true;
-
-                    $(document).trigger('render-tinymce-key-tracker', [editor, e]);
-                });
-
-                editor.onKeyUp.add(function (editor, e) {
-
-                    e = e || event; // to deal with IE
-                    delete key_map[e.keyCode];
-
-                    $(document).trigger('render-tinymce-key-tracker', [editor, e]);
-                });
-
-                // Click the editor to edit shortcodes (but not in the sc content editor!)
-                editor.onClick.add(function (editor, event) {
-
-                    Render_tinymce.active_editor = editor;
-
-                    var $shortcode = $(event.target).closest('.render-tinymce-shortcode-wrapper'),
-                        content, container_html, shortcode;
-
-                    if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-edit')) {
-
-                        // Edit a shortcode
-                        content = $shortcode.find('.render-tinymce-shortcode-content').html();
-                        container_html = $('<div />').append($shortcode.clone()).html();
-                        shortcode = Render_tinymce.convertRenderedToLiteral(container_html);
-
-                        if (content && content.length) {
-                            Render_Modal.selection = content;
-                        }
-
-                        $shortcode.addClass('render-tinymce-editing');
-
-                        Render_tinymce.open(shortcode, $shortcode);
-
-                    } else if ($(event.target).hasClass('render-tinymce-shortcode-wrapper-remove')) {
-
-                        // Remove a shortcode
-                        $(event.target).closest('.render-tinymce-shortcode-wrapper').addClass('render-tinymce-editing');
-                        Render_tinymce.removeShortcode();
-
-                    } else if (
-                        !$shortcode.find('.nested-child').length &&
-                        $shortcode.length &&
-                        $shortcode.find('.render-tinymce-shortcode-content').length
-                    ) {
-
-                        // Notify user you can't edit shortcode content when in sc content editor
-                        if (editor.id == 'render-tinymce-shortcode-content') {
-
-                            var message = data['l18n']['cannot_edit_sc_content'],
-                                timeout = null;
-
-                            // Eventually show more detailed message
-                            if (sc_editor_error_timeout !== null) {
-                                message = data['l18n']['cannot_edit_sc_content_detail'];
-                                timeout = 6000;
-                            }
-
-                            // Replace {shortcode1} snd {shortcode2} with actual names
-                            message = message.replace(/\{shortcode1}/g, Render_tinymce.$shortcode_content_editor.data('name'));
-                            message = message.replace(/\{shortcode2}/g, $shortcode.data('name'));
-
-                            Render_tinymce.showSCEditorError(message, timeout);
-                            return;
-                        }
-
-                        // Edit a shortcode's content
-                        $shortcode.addClass('render-tinymce-editing-content');
-                        Render_tinymce.editShortcodeContent();
-                    }
-                });
-
-                // If the cursor is somehow in a shortcode, and the backspace key is pressed, remove the highest-level
-                // up parent shortcode. This prevents any strange occurrences from happening when deleting nodes
-                // inside shortcodes
-                $(document).on('render-tinymce-key-tracker', function () {
-
-                    // Only fire on specific keys (or key combos)
-                    if (key_map[13] || // Enter
-                        key_map[8] ||  // Backspace
-                        key_map[46] || // Delete
-                        ((key_map[17] || key_map[91]) && key_map[86]) || // Paste
-                        ((key_map[17] || key_map[91]) && key_map[88])    // Cut
-                    ) {
-
-                        var $node = $(Render_tinymce.active_editor.selection.getNode()),
-                            $shortcode = $node.parents('.render-tinymce-shortcode-wrapper').last();
-
-                        // It's possible that the current node is a shortcode
-                        if (!$shortcode.length) {
-                            $shortcode = $node.closest('.render-tinymce-shortcode-wrapper');
-                        }
-
-                        // If we've found one (either the current node, or a parent somewhere up the DOM), delete it.
-                        if ($shortcode.length) {
-                            Render_tinymce.active_editor.dom.remove($shortcode.get(0));
-                        }
-                    }
-                });
-
-                // If trying to delete lines above or below the shortcode, don't delete the shortcode itself!
-                editor.onKeyDown.add(function (editor, event) {
-
-                    var $node = $(editor.selection.getNode()),
-                        $shortcode_before = $node.prev('.render-tinymce-shortcode-wrapper'),
-                        $shortcode_after = $node.next('.render-tinymce-shortcode-wrapper'),
-                        cursor = editor.selection.getRng().startOffset;
-
-                    // Backspace
-                    if (event.which == 8) {
-
-                        // Delete line under shortcode
-                        if (cursor === 0 && $shortcode_before.length) {
-
-                            if (!$node.text().length) {
-                                editor.dom.remove($node.get(0));
-                            }
-
-                            event.preventDefault();
-                            return false;
-                        }
-                    }
-
-                    // Delete
-                    if (event.which == 46) {
-
-                        // Delete line above shortcode
-                        if (cursor === $node.text().length && $shortcode_after.length) {
-
-                            if (!$node.text().length) {
-                                editor.dom.remove($node.get(0));
-                            }
-
-                            event.preventDefault();
-                            return false;
-                        }
-                    }
-                });
-
-                // Set the cursor before or after a shortcode when clicking next to it
-                editor.on('click', function (event) {
-
-                    var x = event.clientX,
-                        y = event.clientY,
-                        $body = $(editor.getBody()),
-                        $first = $body.contents().first().filter('.render-tinymce-shortcode-wrapper'),
-                        $last = $body.contents().last().filter('.render-tinymce-shortcode-wrapper');
-
-                    if ($first.length && y < $first.offset().top) {
-
-                        // Click above block shortcode
-                        var $before = $('<p />').append('&nbsp;');
-
-                        $body.prepend($before);
-                        editor.nodeChanged();
-
-                        editor.selection.select($before.get(0));
-                        editor.selection.collapse(true);
-
-                        event.preventDefault();
-
-                    } else if ($last.length && y > $last.offset().top + $last.height()) {
-
-                        // Click below block shortcode
-                        var $after = $('<p />').append('&nbsp;');
-
-                        $body.append($after);
-                        editor.nodeChanged();
-
-                        editor.selection.select($after.get(0));
-                        editor.selection.collapse(true);
-
-                        event.preventDefault();
-
-                    } else {
-
-                        var $line = $(event.target),
-                            $line_last = $line.contents().last().filter('.render-tinymce-shortcode-wrapper'),
-                            $line_first = $line.contents().first().filter('.render-tinymce-shortcode-wrapper');
-
-                        if ($line_first.length && x < $line_first.offset().left) {
-
-                            // Click to the right of inline shortcode
-                            $line_first.before('&nbsp;');
-                            editor.nodeChanged();
-
-                            editor.selection.select($line.get(0));
-                            editor.selection.collapse();
-
-                            event.preventDefault();
-
-                        } else if ($line_last.length && x > $line_last.offset().left + $line_last.width()) {
-
-                            // Click to the left of inline shortcode
-                            event.preventDefault();
-
-                            $line_last.after('&nbsp;');
-                            editor.nodeChanged();
-
-                            editor.selection.select($line.get(0));
-                            editor.selection.collapse(false);
-                        }
-                    }
-                });
-
-                // When clicking an image with a shortcode, don't allow resizing
-                editor.on('nodechange', function (event) {
-
-                    Render_tinymce.active_editor = editor;
-
-                    // Must be image
-                    if (event.element.nodeName != 'IMG') {
-                        return;
-                    }
-
-                    var $img = $(event.element),
-                        $shortcode = $img.closest('.render-tinymce-shortcode-wrapper'),
-                        $body = $(editor.getBody()),
-                        shortcode_data, $resize_elements;
-
-                    // Must be in a shortcode
-                    if (!$shortcode.length) {
-                        return;
-                    }
-
-                    shortcode_data = render_shortcode_data[$shortcode.data('code')]['render'];
-
-                    // Must not have image editing allowed
-                    if (typeof shortcode_data != 'undefined' && typeof shortcode_data['allowImageEditing'] != 'undefined') {
-                        return;
-                    }
-
-                    // Hide the handles
-                    setTimeout(function () {
-                        $resize_elements = $body.find('.mce-resizehandle');
-                        $resize_elements.hide();
-                    }, 1);
-                });
-
-                editor.on('init', function () {
-
-                    Render_tinymce.active_editor = editor;
-                    Render_tinymce.editorBinds($(editor.getBody()));
-                });
-
-                // Init and switch to Visual
-                editor.on('init show', function () {
-
-                    // Delay allows for setting content before loading
-                    setTimeout(function () {
-                        Render_tinymce.active_editor = editor;
-                        Render_tinymce.loadVisual();
-                    }, 1);
-                });
-
-                // Switch to Text or Submit post
-                editor.on('PostProcess', function (e) {
-                    e.content = Render_tinymce.loadText(e.content);
-                });
-
-                // Prevent adding undo levels on rendering shortcodes
-                editor.on('BeforeAddUndo', function (event) {
-
-                    if (!render_shortcode_data) {
-                        return;
-                    }
-
-                    var shortcodeRegEx = '\\[(',
-                        codes = false;
-
-                    $.each(render_shortcode_data, function (code) {
-                        shortcodeRegEx += code + '|';
-                    });
-
-                    shortcodeRegEx = new RegExp(shortcodeRegEx.substring(0, shortcodeRegEx.length - 1) + ')');
-
-                    if (event.level.content.length) {
-                        codes = event.level.content.match(shortcodeRegEx);
-                    }
-
-                    // If we found any unmodified shortcodes, then this is the undo level that renders shortcodes, so
-                    // we DON'T want to add it to the undo levels
-                    if (codes) {
-                        event.preventDefault();
-                    }
-                });
             });
         },
 
@@ -893,23 +727,11 @@ var Render_tinymce;
          */
         update: function () {
 
-            // If we're editing a shortcode, select the node with TinyMCE
-            var $shortcode = $(this.active_editor.dom.select('.render-tinymce-editing'));
-            if ($shortcode.length) {
-                this.active_editor.selection.select($shortcode.get(0));
+            if (this.editing) {
+                return;
             }
 
-            // Replace or insert the content
-            if (this.active_editor.selection.getContent().length) {
-                this.active_editor.selection.setContent(Render_Modal.output.all);
-            } else {
-                this.active_editor.insertContent(Render_Modal.output.all);
-            }
-
-            // Render the shortcodes
-            if (data['do_render']) {
-                this.loadVisual();
-            }
+            this.active_editor.insertContent(Render_Modal.output.all);
         },
 
         /**
@@ -1124,4 +946,4 @@ var Render_tinymce;
     window['RenderRefreshTinyMCE'] = function () {
         Render_tinymce.loadVisual();
     };
-})(jQuery);
+})(window, window.wp, window.wp.mce.views, window.jQuery);

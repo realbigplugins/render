@@ -359,14 +359,12 @@ class Render_tinymce extends Render {
 	 *
 	 * @since 1.0.0
 	 */
-	public static function render_shortcodes() {
+	public static function render_shortcode() {
 
 		global $render_shortcode_data, $Render, $content;
 
-		define( 'RENDER_TINYMCE', true );
-
-		$render_shortcode_data = $_POST['shortcode_data'];
-		$content               = stripslashes( $_POST['content'] );
+//		$render_shortcode_data = $_POST['shortcode_data'];
+//		$content               = stripslashes( $_POST['content'] );
 
 		// Remove any disabled shortcodes
 		foreach ( render_get_disabled_shortcodes() as $code ) {
@@ -393,12 +391,22 @@ class Render_tinymce extends Render {
 			render_tinyme_log_out();
 		}
 
-		$pattern = get_shortcode_regex();
+		$post_ID = stripslashes( $_POST['post_ID'] );
+		$shortcode = stripslashes( $_POST['shortcode'] );
 
-		$content = render_strip_paragraphs_around_shortcodes( $content );
-		$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, '_replace_shortcodes' ), $content );
+		// Setup current postdata
+		if ( ! empty( $post_ID ) ) {
 
-		echo $content;
+			global $post;
+			$post = get_post( $post_ID );
+			setup_postdata( $post );
+		}
+
+		if ( ! empty( $shortcode ) ) {
+			$shortcode = do_shortcode( $shortcode );
+		}
+
+		wp_send_json_success( $shortcode );
 
 		die();
 	}
@@ -440,6 +448,16 @@ class Render_tinymce extends Render {
 			$data = $render_shortcode_data[ $code ];
 		}
 
+		// If no data is provided, do not render
+		if ( ! isset( $data ) ) {
+			return $entire_code;
+		}
+
+		// If the shortcode explicitly said to leave alone, completely pass over
+		if ( isset( $data['ignore'] ) && ( $data['ignore'] == true || $data['ignore'] == 'true' ) ) {
+			return $entire_code;
+		}
+
 		// Get our atts
 		$atts = shortcode_parse_atts( $atts );
 
@@ -461,11 +479,6 @@ class Render_tinymce extends Render {
 		if ( ! empty( $_content ) ) {
 			$pattern = get_shortcode_regex();
 			$content = preg_replace_callback( "/$pattern/s", array( __CLASS__, '_replace_shortcodes' ), $_content );
-		}
-
-		// If the shortcode explicitly said to leave alone, completely pass over
-		if ( isset( $data['ignore'] ) && ( $data['ignore'] == true || $data['ignore'] == 'true' ) ) {
-			return $entire_code;
 		}
 
 		// If this is a wrapping code, but no content is provided, use dummy content
@@ -565,13 +578,23 @@ class Render_tinymce extends Render {
 			$atts = htmlentities( preg_replace( '/<br.*?\/>/', '::br::', $atts ) );
 		}
 
-		$output = '';
-
 		$name = $Render->shortcodes[ $code ]['title'];
 
 		// Start the wrapper
+		$output = '';
+
+		// If block element, provide special wrapper
+		if ( $tag == 'div' && ! isset( $data['nested']['parent'] ) ) {
+//			$output .= '<div class="render-tinymce-shortcode-container wpview-wrap"><p class="wpview-selection-before"></p>';
+//			$output .= '<div class="render-tinymce-shortcode-container wpview-wrap">';
+			$classes[] = 'wpview-wrap';
+		}
 
 		$output .= "<$tag class='render-tinymce-shortcode-wrapper " . implode( ' ', $classes ) . "' data-code='$code' data-atts='$atts' data-name='$name'>";
+
+		if ( $tag == 'div' && ! isset( $data['nested']['parent'] ) ) {
+			$output .= '<p class="wpview-selection-before"></p>';
+		}
 
 		$output .= ! empty( $shortcode_output ) ? $shortcode_output : '<span class="render-shortcode-no-output">(no output)</span>';
 
@@ -606,7 +629,13 @@ class Render_tinymce extends Render {
 			$output .= '</span>';
 		}
 
+		// If block element, provide special wrapper (close)
+		if ( $tag == 'div' && ! isset( $data['nested']['parent'] ) ) {
+			$output .= '<p class="wpview-selection-after"></p>';
+		}
+
 		$output .= "</$tag>";
+
 
 		// Reset the parent
 		if ( $parent == $code ) {
@@ -675,5 +704,5 @@ add_action( 'current_screen', function ( $screen ) {
 
 // Always add the AJAX
 add_action( 'render_tinymce_ajax', array( 'Render_tinymce', 'render_ajax' ), 1 );
-add_action( 'wp_ajax_render_render_shortcode', array( 'Render_tinymce', 'render_shortcode' ) );
-add_action( 'wp_ajax_render_render_shortcodes', array( 'Render_tinymce', 'render_shortcodes' ) );
+add_action( 'wp_ajax_render_shortcode', array( 'Render_tinymce', 'render_shortcode' ) );
+//add_action( 'wp_ajax_render_render_shortcodes', array( 'Render_tinymce', 'render_shortcodes' ) );

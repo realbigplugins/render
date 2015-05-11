@@ -888,13 +888,19 @@ var Render_Modal;
                 props = render_data[code];
 
             // Get our att pairs
-            var attRegEx = /(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/g,
+            var attRegEx = /(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/gmi,
                 match;
 
             while (match = attRegEx.exec(_atts)) {
 
-                var name = match[3],
-                    value = match[4];
+                var name = match[1],
+                    value = match[2];
+
+                // Fallback
+                if ( !name) {
+                    name = match[3];
+                    value= match[4];
+                }
 
                 // Un-escape from being an attr value
                 if (typeof value != 'undefined' && value.length) {
@@ -933,6 +939,7 @@ var Render_Modal;
 
             // Add on the content if there's a content attribute
             if (content) {
+                this.selection = content;
                 atts.content = HTMLtoTextarea(content);
             }
 
@@ -1467,7 +1474,7 @@ var Render_Modal;
                 nested: nested
             };
 
-            $(document).trigger('render-modal-update');
+            $(document).trigger('render-modal-update', this.output);
 
             this.close();
         },
